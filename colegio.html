@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ColegioLibre | Comunidad escolar</title>
+    <meta
+      name="description"
+      content="Explorá productos publicados por estudiantes de una comunidad escolar dentro de ColegioLibre."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./colegio.css?v=20260727-2" />
+    <link rel="stylesheet" href="./notifications.css?v=20260727-1" />
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path d="m21 21-4.35-4.35" />
+        <circle cx="11" cy="11" r="6.5" />
+      </symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path d="M12 20.4 4.95 13.5a4.86 4.86 0 0 1 0-6.99 5.08 5.08 0 0 1 7.05 0L12 7.52l1-1.01a5.08 5.08 0 0 1 7.05 0 4.86 4.86 0 0 1 0 6.99Z" />
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4.5 19.5a8.5 8.5 0 0 1 15 0" />
+      </symbol>
+      <symbol id="icon-message" viewBox="0 0 24 24">
+        <path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z" />
+        <path d="M8 9h8M8 13h5" />
+      </symbol>
+      <symbol id="icon-school" viewBox="0 0 24 24">
+        <path d="M3 9.5 12 4l9 5.5-9 5.5Z" />
+        <path d="M6.5 11.6v4.4c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5v-4.4" />
+      </symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+        <path d="M12 21s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10Z" />
+        <circle cx="12" cy="11" r="2.5" />
+      </symbol>
+      <symbol id="icon-box" viewBox="0 0 24 24">
+        <path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5z" />
+        <path d="M12 20v-7" />
+        <path d="M4 8.5 12 13l8-4.5" />
+      </symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24">
+        <path d="m9 6 6 6-6 6" />
+      </symbol>
+    </svg>
+
+    <header class="site-header">
+      <div class="site-shell site-header__row">
+        <a class="brand-link" href="./index.html" aria-label="ColegioLibre">
+          <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+        </a>
+
+        <form class="search-bar" id="school-global-search-form" role="search">
+          <label class="sr-only" for="school-global-search">Buscar material escolar</label>
+          <input
+            id="school-global-search"
+            type="search"
+            placeholder="¿Qué material estás buscando?"
+            autocomplete="off"
+          />
+          <button class="search-submit" type="submit" aria-label="Buscar">
+            <svg class="icon"><use href="#icon-search"></use></svg>
+          </button>
+        </form>
+
+        <nav class="header-actions" aria-label="Accesos principales">
+          <a class="header-link" href="./mensajes.html">Mensajes</a>
+          <a class="header-link" href="./perfil.html">Mi cuenta</a>
+          <a class="header-link header-link--cta" href="./publicar.html">Publicá tu producto</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-shell school-page">
+      <section class="school-hero">
+        <div class="school-hero__copy">
+          <p class="section-kicker">Comunidad escolar</p>
+          <h1 id="school-name">Cargando colegio...</h1>
+          <p class="school-location" id="school-location">
+            <svg class="icon"><use href="#icon-pin"></use></svg>
+            <span>Cargando ubicación...</span>
+          </p>
+          <p class="school-official-name" id="school-official-name" hidden></p>
+          <p class="school-description">
+            Encontrá libros, cuadernos, útiles y tecnología publicados por estudiantes
+            reales de esta comunidad.
+          </p>
+
+          <div class="school-stats">
+            <article class="school-stat">
+              <span class="school-stat__label">Productos activos</span>
+              <strong id="school-products-count">0</strong>
+            </article>
+            <article class="school-stat">
+              <span class="school-stat__label">Publicadores</span>
+              <strong id="school-publishers-count">0</strong>
+            </article>
+            <article class="school-stat">
+              <span class="school-stat__label">Categorias activas</span>
+              <strong id="school-categories-count">0</strong>
+            </article>
+          </div>
+        </div>
+
+        <aside class="school-hero__aside">
+          <div class="community-card">
+            <div class="community-card__logo" id="school-logo-wrap" hidden>
+              <img id="school-logo" alt="" />
+            </div>
+            <div class="community-card__head">
+              <span class="community-card__icon">
+                <svg class="icon"><use href="#icon-school"></use></svg>
+              </span>
+              <div>
+                <h2>Red escolar activa</h2>
+                <p id="school-code-label">Cargando código...</p>
+              </div>
+            </div>
+
+            <p>
+              Publicá gratis dentro de tu colegio y conectate con estudiantes de la
+              misma comunidad para mover materiales reales.
+            </p>
+
+            <a
+              class="community-card__action"
+              id="school-publish-link"
+              href="./publicar.html"
+            >
+              Publicar en esta comunidad
+            </a>
+          </div>
+        </aside>
+      </section>
+
+      <section class="school-products-panel">
+        <div class="school-products-head">
+          <div>
+            <p class="section-kicker">Marketplace del colegio</p>
+            <h2>Publicaciones del colegio</h2>
+          </div>
+
+          <div class="school-filters">
+            <label class="filter-search" for="school-products-search">
+              <svg class="icon"><use href="#icon-search"></use></svg>
+              <input id="school-products-search" type="search" placeholder="Buscar dentro del colegio" />
+            </label>
+
+            <label class="filter-select">
+              <span class="sr-only">Filtrar por categoría</span>
+              <select id="school-category-filter">
+                <option value="">Todas las categorías</option>
+                <option value="Libros">Libros</option>
+                <option value="Apuntes">Apuntes</option>
+                <option value="Cuadernos">Cuadernos</option>
+                <option value="Útiles">Útiles</option>
+                <option value="Mochilas">Mochilas</option>
+                <option value="Tecnología">Tecnología</option>
+                <option value="Uniformes">Uniformes</option>
+                <option value="Otros">Otros</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="school-products-grid" id="school-products-grid"></div>
+        <div class="school-empty-state" id="school-empty-state" hidden>
+          Este colegio todavía no tiene publicaciones activas para este filtro.
+        </div>
+      </section>
+
+      <section class="publisher-panel">
+        <div class="publisher-panel__head">
+          <div>
+            <p class="section-kicker">Estudiantes publicando</p>
+            <h2>Publicadores destacados</h2>
+          </div>
+        </div>
+
+        <div class="publisher-list" id="publisher-list"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="school-toast" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase.js?v=20260727-4"></script>
+    <script src="./colegio.js?v=20260727-2"></script>
+    <script src="./notifications.js?v=20260727-1"></script>
+  </body>
+</html>

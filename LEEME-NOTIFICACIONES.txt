@@ -1,0 +1,87 @@
+COLEGIOLIBRE · SISTEMA DE NOTIFICACIONES
+=========================================
+
+QUÉ HACE
+
+- Agrega una campanita “Avisos” en Home, Publicar, Producto, Perfil y Mensajes.
+- Muestra la cantidad de notificaciones sin leer.
+- Abre un panel con hasta 40 avisos recientes.
+- Permite marcar todas las notificaciones como leídas.
+- Actualiza el panel en tiempo real.
+- Abre directamente la conversación o el producto correspondiente.
+
+EVENTOS AUTOMÁTICOS
+
+- Nuevo mensaje: avisa al otro participante de la conversación.
+- Nuevo favorito: avisa al dueño de la publicación.
+- Producto reservado: avisa al comprador de esa conversación.
+- Producto vendido: avisa al comprador.
+- Producto disponible nuevamente: avisa al comprador anterior.
+
+Los avisos repetidos sin leer se agrupan para no llenar el panel con veinte
+notificaciones iguales.
+
+PASO 1 · CONFIGURAR SUPABASE
+
+1. Entrá en Supabase.
+2. Abrí SQL Editor.
+3. Tocá “New query”.
+4. Abrí 1_CONFIGURAR_NOTIFICACIONES_SUPABASE.sql.
+5. Copiá todo, pegalo en el query nuevo y tocá Run.
+
+Al terminar tienen que aparecer tres valores:
+
+- tabla_notificaciones = true
+- productos_con_reserva = true
+- tres_automatizaciones = true
+
+No borres el query anterior de Mensajes 2.0 y no hace falta volver a ejecutarlo.
+
+PASO 2 · REEMPLAZAR ARCHIVOS
+
+Reemplazá en tu proyecto todos los archivos del ZIP que tengan el mismo nombre.
+Agregá además los dos archivos nuevos:
+
+- notifications.css
+- notifications.js
+
+Los archivos principales incluidos son:
+
+- index.html
+- styles.css
+- script.js
+- jsonboarding.js
+- publicar.html / publicar.css / publicar.js
+- producto.html / producto.css / producto.js
+- perfil.html / perfil.css / perfil.js
+- mensajes.html / mensajes.css / mensajes.js
+- login.html / login.css / login.js
+- supabase.js
+- notifications.css / notifications.js
+
+No borres products.js ni la carpeta images de tu proyecto.
+
+PASO 3 · DESPLEGAR
+
+Volvé a desplegar los archivos en Vercel.
+
+PRUEBA COMPLETA CON DOS CUENTAS
+
+1. Iniciá sesión con la Cuenta A y publicá un producto.
+2. Abrí el producto con la Cuenta B y guardalo como favorito.
+3. Cuenta A debe recibir “Guardaron tu publicación”.
+4. Cuenta B abre una conversación y envía un mensaje.
+5. Cuenta A debe recibir “Nuevo mensaje”.
+6. Cuenta A abre el chat y toca Reservar.
+7. Cuenta B debe recibir “Te reservaron un producto”.
+8. Cuenta A toca Marcar vendido.
+9. Cuenta B debe recibir el aviso de venta.
+10. Tocá cada aviso: debe abrir el producto o chat correcto.
+
+SEGURIDAD
+
+- Cada usuario solamente puede leer sus propias notificaciones.
+- Los usuarios no pueden crear notificaciones falsas.
+- Las notificaciones se crean mediante triggers protegidos en Supabase.
+- Los usuarios solamente pueden modificar el campo read de sus propios avisos.
+- reserved_for se asigna al comprador desde la conversación seleccionada.

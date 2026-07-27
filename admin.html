@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrador de colegios | ColegioLibre</title>
+    <meta
+      name="description"
+      content="Panel privado para administrar colegios y códigos de comunidad en ColegioLibre."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./admin.css?v=20260724-admin1" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <div class="admin-shell admin-header__inner">
+        <a class="admin-brand" href="./index.html" aria-label="Volver al inicio de ColegioLibre">
+          <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+          <span>Administrador</span>
+        </a>
+
+        <nav class="admin-header__actions" aria-label="Acciones del administrador">
+          <a href="./index.html">Ver sitio</a>
+          <button id="admin-logout" type="button">Cerrar sesión</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="admin-shell admin-page">
+      <section class="access-card" id="admin-gate" aria-live="polite">
+        <span class="access-card__loader" aria-hidden="true"></span>
+        <h1 id="admin-gate-title">Verificando acceso...</h1>
+        <p id="admin-gate-message">
+          Estamos comprobando que tu cuenta tenga permisos de administrador.
+        </p>
+        <a id="admin-gate-action" href="./index.html" hidden>Volver al inicio</a>
+      </section>
+
+      <div id="admin-dashboard" hidden>
+        <section class="admin-intro">
+          <div>
+            <p class="admin-kicker">Panel privado</p>
+            <h1>Colegios y códigos</h1>
+            <p>
+              Creá comunidades escolares con un código único generado automáticamente.
+            </p>
+          </div>
+
+          <div class="admin-session">
+            <span>Sesión administrativa</span>
+            <strong id="admin-email">Cargando...</strong>
+            <button id="refresh-dashboard" type="button">Actualizar datos</button>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Resumen administrativo">
+          <article class="metric-card">
+            <span>Colegios</span>
+            <strong id="metric-schools">0</strong>
+            <small>Total registrado</small>
+          </article>
+          <article class="metric-card metric-card--green">
+            <span>Activos</span>
+            <strong id="metric-active">0</strong>
+            <small>Visibles para estudiantes</small>
+          </article>
+          <article class="metric-card metric-card--yellow">
+            <span>Estudiantes</span>
+            <strong id="metric-students">0</strong>
+            <small>Perfiles vinculados</small>
+          </article>
+          <article class="metric-card metric-card--blue">
+            <span>Publicaciones</span>
+            <strong id="metric-products">0</strong>
+            <small>Productos registrados</small>
+          </article>
+        </section>
+
+        <section class="admin-workspace">
+          <aside class="school-editor">
+            <div class="panel-heading">
+              <div>
+                <p class="admin-kicker">Configuración</p>
+                <h2 id="school-form-title">Crear colegio</h2>
+              </div>
+              <button class="text-button" id="cancel-edit" type="button" hidden>Cancelar edición</button>
+            </div>
+
+            <form id="school-form" class="school-form">
+              <input id="school-id" type="hidden" />
+
+              <label class="field field--wide">
+                <span>Nombre del colegio</span>
+                <input
+                  id="school-name"
+                  type="text"
+                  maxlength="120"
+                  placeholder="Ej: Instituto Sara Eccleston"
+                  required
+                />
+              </label>
+
+              <label class="field">
+                <span>Prefijo del código</span>
+                <input
+                  id="school-prefix"
+                  type="text"
+                  maxlength="8"
+                  placeholder="Ej: ECCL"
+                  autocomplete="off"
+                />
+                <small>Opcional. Se limpia y combina con cuatro caracteres aleatorios.</small>
+              </label>
+
+              <label class="field">
+                <span>Provincia</span>
+                <input
+                  id="school-province"
+                  type="text"
+                  maxlength="80"
+                  value="Buenos Aires"
+                  required
+                />
+              </label>
+
+              <label class="field">
+                <span>Ciudad o localidad</span>
+                <input id="school-city" type="text" maxlength="80" placeholder="Ej: CABA" />
+              </label>
+
+              <label class="field">
+                <span>Zona</span>
+                <input id="school-zone" type="text" maxlength="80" placeholder="Ej: Villa General Mitre" />
+              </label>
+
+              <label class="field field--wide">
+                <span>URL del logo</span>
+                <input id="school-logo" type="url" placeholder="https://..." />
+              </label>
+
+              <fieldset class="color-fields field--wide">
+                <legend>Colores del colegio</legend>
+                <label>
+                  <span>Principal</span>
+                  <input id="school-primary-color" type="color" value="#0B2E6B" />
+                </label>
+                <label>
+                  <span>Secundario</span>
+                  <input id="school-secondary-color" type="color" value="#67C23A" />
+                </label>
+                <label>
+                  <span>Acento</span>
+                  <input id="school-accent-color" type="color" value="#FFC72C" />
+                </label>
+              </fieldset>
+
+              <label class="status-field field--wide">
+                <input id="school-active" type="checkbox" checked />
+                <span>
+                  <strong>Colegio activo</strong>
+                  <small>Permite que aparezca en el buscador y acepte nuevos estudiantes.</small>
+                </span>
+              </label>
+
+              <div class="code-preview field--wide">
+                <span>Código</span>
+                <strong id="school-code-preview">Se generará automáticamente</strong>
+              </div>
+
+              <button class="primary-button field--wide" id="save-school" type="submit">
+                Crear colegio y generar código
+              </button>
+            </form>
+          </aside>
+
+          <section class="schools-panel">
+            <div class="panel-heading panel-heading--list">
+              <div>
+                <p class="admin-kicker">Directorio</p>
+                <h2>Colegios registrados</h2>
+              </div>
+
+              <div class="school-list-filters">
+                <label>
+                  <span class="sr-only">Buscar colegio</span>
+                  <input id="school-search" type="search" placeholder="Buscar nombre, código o zona" />
+                </label>
+                <label>
+                  <span class="sr-only">Filtrar por estado</span>
+                  <select id="school-status-filter">
+                    <option value="">Todos</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="schools-table-wrap">
+              <table class="schools-table">
+                <thead>
+                  <tr>
+                    <th>Colegio</th>
+                    <th>Código</th>
+                    <th>Comunidad</th>
+                    <th>Estado</th>
+                    <th><span class="sr-only">Acciones</span></th>
+                  </tr>
+                </thead>
+                <tbody id="schools-table-body"></tbody>
+              </table>
+            </div>
+
+            <div class="schools-empty" id="schools-empty" hidden>
+              No encontramos colegios para estos filtros.
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <div class="admin-toast" id="admin-toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase.js"></script>
+    <script src="./admin.js?v=20260724-admin1"></script>
+  </body>
+</html>

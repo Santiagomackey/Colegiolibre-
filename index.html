@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ColegioLibre | Marketplace de material escolar usado</title>
+    <meta
+      name="description"
+      content="ColegioLibre es el marketplace argentino donde estudiantes compran, venden e intercambian materiales escolares usados de forma simple, segura y sustentable."
+    />
+    <meta
+      name="keywords"
+      content="marketplace escolar, libros usados, cuadernos usados, utiles escolares, estudiantes argentina, colegio libre"
+    />
+    <meta name="theme-color" content="#0B2E6B" />
+    <meta property="og:title" content="ColegioLibre | Marketplace de material escolar usado" />
+    <meta
+      property="og:description"
+      content="Comprá, vendé e intercambiá materiales entre estudiantes con una experiencia premium, confiable y hecha para Argentina."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=20260726-account-flow1" />
+    <link rel="stylesheet" href="notifications.css?v=20260727-1" />
+  </head>
+  
+  <body>
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
+
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path d="M21 21l-4.35-4.35" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <circle cx="11" cy="11" r="6.25" fill="none" stroke="currentColor" stroke-width="1.8" />
+      </symbol>
+      <symbol id="icon-message" viewBox="0 0 24 24">
+        <path
+          d="M7 18l-3 2v-4a8 8 0 1 1 3 2z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path
+          d="M12 20.4l-1.1-1C5.3 14.3 2 11.3 2 7.7A4.7 4.7 0 0 1 6.7 3 5.1 5.1 0 0 1 12 6a5.1 5.1 0 0 1 5.3-3A4.7 4.7 0 0 1 22 7.7c0 3.6-3.3 6.6-8.9 11.7z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path
+          d="M5 20a7 7 0 0 1 14 0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path
+          d="M12 3l7 3v5c0 5-2.7 8.2-7 10-4.3-1.8-7-5-7-10V6z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <path d="M9.5 12.2l1.8 1.8 3.5-3.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-leaf" viewBox="0 0 24 24">
+        <path
+          d="M18.5 5.5c-5 0-9 4-9 9 0 1.6.4 3 1.1 4.3 5.7-.5 9.9-4.7 10.4-10.4A8.3 8.3 0 0 0 18.5 5.5z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <path d="M6 20c2.5-3.5 5.8-6.6 10-9.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-tag" viewBox="0 0 24 24">
+        <path
+          d="M11 4H5v6l7.5 7.5a2.1 2.1 0 0 0 3 0l5-5a2.1 2.1 0 0 0 0-3z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <circle cx="8" cy="8" r="1.2" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24">
+        <path
+          d="M16.5 19a4.5 4.5 0 0 0-9 0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+        <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M20.2 18a3.6 3.6 0 0 0-2.7-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M6.5 14.5A3.6 3.6 0 0 0 3.8 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-book" viewBox="0 0 24 24">
+        <path
+          d="M6 4h11a3 3 0 0 1 3 3v11H9a3 3 0 0 0-3 3z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <path d="M6 4v17a3 3 0 0 1 3-3h11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-notebook" viewBox="0 0 24 24">
+        <rect x="6" y="3.5" width="12" height="17" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M9 3.5v17M12.5 8h2.5M12.5 12h2.5M12.5 16h2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-pencil" viewBox="0 0 24 24">
+        <path
+          d="M4 20l4.7-1.1L20 7.6 16.4 4 5.1 15.3z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <path d="M13.8 6.6l3.6 3.6M4 20h4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-backpack" viewBox="0 0 24 24">
+        <path
+          d="M8 8V6a4 4 0 1 1 8 0v2"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+        <path
+          d="M6.5 8h11a2.5 2.5 0 0 1 2.5 2.5V19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8.5A2.5 2.5 0 0 1 6.5 8z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <path d="M9 12h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-laptop" viewBox="0 0 24 24">
+        <rect x="5" y="5" width="14" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M3 18h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24">
+        <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-sparkles" viewBox="0 0 24 24">
+        <path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M19 3v3M20.5 4.5h-3M5 16v3M6.5 17.5h-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+        <path
+          d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+        <circle cx="12" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+      </symbol>
+      <symbol id="icon-help" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path
+          d="M9.8 9.2a2.6 2.6 0 1 1 4.1 2.1c-.9.6-1.4 1.1-1.4 2"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+        <circle cx="12" cy="17.1" r="1" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-logout" viewBox="0 0 24 24">
+        <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M14 8l4 4-4 4M9 12h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+    </svg>
+
+    <div class="page-shell">
+      <div class="page-glow page-glow--left"></div>
+      <div class="page-glow page-glow--right"></div>
+
+      <header class="site-header">
+        <div class="container">
+          <div class="header-top">
+            <a class="brand brand--desktop" href="index.html" aria-label="Volver al inicio de ColegioLibre">
+              <img src="images/Logo Colegiolibre horizontal.png">
+            </a>
+
+            <div class="header-actions-wrap">
+              <a class="brand brand--mobile" href="index.html" aria-label="Volver al inicio de ColegioLibre">
+                <img data-logo="compact" alt="ColegioLibre" />
+              </a>
+
+              <form class="search-bar search-bar--desktop" id="search-form-desktop" role="search">
+                <label class="sr-only" for="desktop-search">Buscar material escolar</label>
+                <span class="icon-shell icon-shell--ghost" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-search"></use></svg>
+                </span>
+                <input
+                  id="desktop-search"
+                  class="search-input"
+                  type="search"
+                  placeholder="¿Qué material estás buscando?"
+                  autocomplete="off"
+                />
+                <button class="search-submit" type="submit" aria-label="Buscar productos">
+                  <svg class="icon"><use href="#icon-search"></use></svg>
+                </button>
+              </form>
+
+              <div class="header-actions header-actions--desktop" aria-label="Acciones rápidas">
+                <a class="quick-action" id="header-messages-link" href="mensajes.html" aria-label="Mensajes" data-requires-auth>
+                  <svg class="icon"><use href="#icon-message"></use></svg>
+                  <span>Mensajes</span>
+                </a>
+                <a class="quick-action" id="header-favorites-link" href="index.html?favorites=1" aria-label="Favoritos" data-requires-auth>
+                  <svg class="icon"><use href="#icon-heart"></use></svg>
+                  <span>Favoritos</span>
+                </a>
+               
+                  <div class="account-wrapper">
+  <a id="accountButton" class="quick-action quick-action--auth" href="login.html" aria-label="Acceder a tu cuenta">
+  <svg class="icon"><use href="#icon-user"></use></svg>
+  <span id="accountText">Iniciar sesión</span>
+</a>
+</div>
+
+<button
+  class="quick-action quick-action--logout"
+  id="header-logout-button"
+  type="button"
+  aria-label="Cerrar sesión"
+  hidden
+>
+  <svg class="icon"><use href="#icon-logout"></use></svg>
+  <span>Salir</span>
+</button>
+
+<a href="publicar.html" id="header-publish-link" class="cta-button cta-button--amber" data-requires-auth>
+    Publicá tu producto
+</a>
+              </div>
+
+              <div class="header-actions header-actions--mobile">
+                <a
+                  class="cta-button cta-button--amber cta-button--compact"
+                  id="mobile-publish-link"
+                  href="publicar.html"
+                  data-requires-auth
+                >Publicá</a>
+                <button
+                  class="menu-toggle"
+                  id="menu-toggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="mobile-menu"
+                  aria-label="Abrir navegación"
+                >
+                  <svg class="icon menu-open-icon"><use href="#icon-menu"></use></svg>
+                  <svg class="icon menu-close-icon"><use href="#icon-close"></use></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <form class="search-bar search-bar--mobile" id="search-form-mobile" role="search">
+            <label class="sr-only" for="mobile-search">Buscar material escolar</label>
+            <span class="icon-shell icon-shell--ghost" aria-hidden="true">
+              <svg class="icon"><use href="#icon-search"></use></svg>
+            </span>
+            <input
+              id="mobile-search"
+              class="search-input"
+              type="search"
+              placeholder="¿Qué material estás buscando?"
+              autocomplete="off"
+            />
+            <button class="search-submit" type="submit" aria-label="Buscar productos">
+              <svg class="icon"><use href="#icon-search"></use></svg>
+            </button>
+          </form>
+
+          <div class="mobile-shortcuts" aria-label="Accesos rápidos">
+            <a class="shortcut-card" id="mobile-messages-link" href="mensajes.html" data-requires-auth>
+              <svg class="icon"><use href="#icon-message"></use></svg>
+              <span>Mensajes</span>
+            </a>
+            <a class="shortcut-card" id="mobile-favorites-link" href="index.html?favorites=1" data-requires-auth>
+              <svg class="icon"><use href="#icon-heart"></use></svg>
+              <span>Favoritos</span>
+            </a>
+            <a class="shortcut-card" id="mobile-account-link" href="perfil.html">
+              <svg class="icon"><use href="#icon-user"></use></svg>
+              <span>Mi perfil</span>
+            </a>
+          </div>
+
+          <div class="header-nav">
+            <nav class="primary-nav" aria-label="Categorías principales">
+              <a class="nav-pill nav-pill--active" id="open-categories" href="#productos">
+  <svg class="icon"><use href="#icon-menu"></use></svg>
+  <span>Categorías</span>
+</a>
+              
+            </nav>
+          </div>
+
+          <div class="mobile-menu" id="mobile-menu" hidden>
+            <div class="mobile-menu-panel">
+              <a href="#productos" data-close-menu="true">Categorías</a>
+              <a href="#productos" data-category-link="Libros" data-close-menu="true">Libros</a>
+              <a href="#productos" data-category-link="Apuntes" data-close-menu="true">Apuntes</a>
+              <a href="#productos" data-category-link="Cuadernos" data-close-menu="true">Cuadernos</a>
+              <a href="#productos" data-category-link="Útiles" data-close-menu="true">Útiles</a>
+              <a href="#productos" data-category-link="Mochilas" data-close-menu="true">Mochilas</a>
+              <a href="#productos" data-category-link="Tecnología" data-close-menu="true">Tecnología</a>
+              <a href="#productos" data-category-link="Uniformes" data-close-menu="true">Uniformes</a>
+              <a href="#productos" data-category-link="Otros" data-close-menu="true">Otros</a>
+              <a href="#como-funciona" data-close-menu="true">¿Cómo funciona?</a>
+              <a href="#ayuda" data-close-menu="true">Ayuda</a>
+              <button id="mobile-logout-button" class="mobile-logout-button" type="button" hidden>
+                <svg class="icon"><use href="#icon-logout"></use></svg>
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main id="contenido-principal">
+        <section class="hero-section reveal" id="hero">
+          <div class="container">
+            <div class="hero-panel">
+              <div class="hero-copy">
+    
+                <h1>
+                  El marketplace de
+                  <span>material escolar <em>usado</em></span>
+                </h1>
+                <p>Comprá, vendé e intercambiá materiales entre estudiantes.</p>
+
+                <div class="hero-cta-row">
+                  <a class="cta-button cta-button--green" href="#productos">Explorá productos</a>
+                  <a class="text-link" href="#como-funciona">
+                    Ver cómo funciona
+                    <svg class="icon"><use href="#icon-chevron"></use></svg>
+                  </a>
+                </div>
+              </div>
+
+              <div class="hero-collage hero-collage--single" aria-hidden="true">
+                <img src="images/materiales.png" alt="Materiales escolares" class="hero-main-image" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="trust-section reveal" id="categorias">
+          <div class="container">
+            <div class="trust-grid" id="trust-grid"></div>
+          </div>
+        </section>
+
+        <section class="products-section" id="productos">
+          <div class="container products-layout">
+            <div class="products-column">
+              <div class="section-heading reveal">
+                <div>
+                  <p class="section-kicker" id="products-kicker">Selección para vos</p>
+                  <h2 id="products-title">Recomendados para vos</h2>
+                </div>
+                <a class="text-link text-link--dark" href="#como-funciona">
+                  Ver cómo comprar
+                  <svg class="icon"><use href="#icon-chevron"></use></svg>
+                </a>
+              </div>
+              <div class="scope-selector reveal">
+                <span class="scope-label" id="scope-summary-label">
+                  Viendo productos de toda Argentina
+                </span>
+
+                <div class="scope-actions">
+                  <button class="scope-btn is-active" data-scope="school">
+                    Mi colegio
+                  </button>
+
+                  <button class="scope-btn" data-scope="zone">
+                    Mi zona
+                  </button>
+
+                  <button class="scope-btn" data-scope="country">
+                    Toda Argentina
+                  </button>
+                </div>
+              </div>
+              <nav class="home-category-nav reveal" aria-label="Explorar productos por categoría">
+                <span class="home-category-title">Explorá por categoría</span>
+                <div class="category-pills" id="category-pills"></div>
+              </nav>
+              <div class="filter-panel reveal">
+                <div class="filter-row filter-row--split">
+                  <p>Filtrar por estado:</p>
+                  <div class="condition-pills" id="condition-pills"></div>
+                  <label class="sort-control" for="sort-select">
+                    Ordenar por
+                    <select id="sort-select">
+                      <option value="random">Recomendados</option>
+                      <option value="recent">Más recientes</option>
+                      <option value="price-asc">Menor precio</option>
+                      <option value="price-desc">Mayor precio</option>
+                    </select>
+                  </label>
+                </div>
+                <div
+                  class="category-specific-filters"
+                  id="category-specific-filters"
+                  aria-label="Filtros específicos de la categoría"
+                  hidden
+                >
+                  <label class="academic-level-control" id="level-filter-group" for="school-level-filter" hidden>
+                    <span>Nivel:</span>
+                    <select id="school-level-filter">
+                      <option value="">Todos</option>
+                      <option value="Primaria">Primaria</option>
+                      <option value="Secundaria">Secundaria</option>
+                    </select>
+                  </label>
+
+                  <div class="academic-year-filter" id="year-filter-group" hidden>
+                    <span class="academic-filter-label">Año:</span>
+                    <div class="year-pills" id="year-pills"></div>
+                  </div>
+
+                  <label class="dynamic-select-filter" id="subject-filter-group" for="subject-filter" hidden>
+                    <span>Materia:</span>
+                    <select id="subject-filter">
+                      <option value="">Todas</option>
+                    </select>
+                  </label>
+
+                  <label class="dynamic-select-filter" id="subcategory-filter-group" for="subcategory-filter" hidden>
+                    <span id="subcategory-filter-label">Tipo:</span>
+                    <select id="subcategory-filter">
+                      <option value="">Todos</option>
+                    </select>
+                  </label>
+
+                  <div class="dynamic-pill-filter" id="size-filter-group" hidden>
+                    <span class="academic-filter-label" id="size-filter-label">Talle:</span>
+                    <div class="size-pills" id="size-pills"></div>
+                  </div>
+                </div>
+                <div class="filter-summary" id="filter-summary" aria-live="polite"></div>
+              </div>
+              
+              <div class="product-grid" id="product-grid" aria-live="polite"></div>
+              <div class="empty-state" id="empty-state" hidden>
+                <h3>No encontramos productos para esa búsqueda.</h3>
+                <p>Probá con otro término, otro estado o volvé a ver todos los destacados.</p>
+                <button class="ghost-button" id="clear-filters" type="button">Limpiar filtros</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section
+          class="category-marketplace-section"
+          id="category-marketplace"
+          aria-labelledby="category-marketplace-title"
+        >
+          <div class="container">
+            <header class="category-marketplace-heading reveal">
+              <div>
+                <p class="section-kicker">Explorá el marketplace</p>
+                <h2 id="category-marketplace-title">Todo para el colegio, ordenado por categoría</h2>
+              </div>
+              <p>
+                Cada estantería muestra una selección breve. Entrá en “Ver todos” para explorar la categoría completa.
+              </p>
+            </header>
+
+            <div class="category-shelves" id="category-shelves"></div>
+          </div>
+        </section>
+
+        <section class="steps-section reveal" id="como-funciona">
+          <div class="container">
+            <div class="steps-panel">
+              <div class="steps-copy">
+                <p class="section-kicker">Cómo funciona</p>
+                <h2>Una forma simple de circular materiales escolares</h2>
+                <p>
+                  Diseñado para que comprar, vender y cambiar materiales sea rápido, confiable y accesible en todo el
+                  país.
+                </p>
+              </div>
+              <div class="steps-grid" id="steps-grid"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer footer-medium" id="ayuda">
+        <div class="container footer-medium-inner">
+          <div class="footer-medium-grid">
+            <div class="footer-medium-brand">
+              <img src="images/Logo Colegiolibre horizontal.png">
+              <p>
+                El marketplace donde estudiantes compran, venden e intercambian materiales escolares de forma simple,
+                segura y sustentable.
+              </p>
+            </div>
+
+            <nav class="footer-medium-col" aria-label="ColegioLibre">
+              <h3>ColegioLibre</h3>
+              <a href="#hero">Nosotros</a>
+              <a href="#como-funciona">Cómo funciona</a>
+              <a href="#productos">Publicar producto</a>
+              <a href="#ayuda">Términos</a>
+            </nav>
+
+            <nav class="footer-medium-col" aria-label="Ayuda">
+              <h3>Ayuda</h3>
+              <a href="#ayuda">Centro de ayuda</a>
+              <a href="#como-funciona">Cómo comprar</a>
+              <a href="#como-funciona">Cómo vender</a>
+              <a href="#ayuda">Preguntas frecuentes</a>
+            </nav>
+
+            <nav class="footer-medium-col" aria-label="Categorías">
+              <h3>Categorías</h3>
+              <a href="#productos" data-category-link="Libros">Libros</a>
+              <a href="#productos" data-category-link="Apuntes">Apuntes</a>
+              <a href="#productos" data-category-link="Cuadernos">Cuadernos</a>
+              <a href="#productos" data-category-link="Útiles">Útiles</a>
+              <a href="#productos" data-category-link="Mochilas">Mochilas</a>
+              <a href="#productos" data-category-link="Tecnología">Tecnología</a>
+              <a href="#productos" data-category-link="Uniformes">Uniformes</a>
+              <a href="#productos" data-category-link="Otros">Otros</a>
+            </nav>
+
+    <div class="footer-medium-contact">
+
+    <h3>Contacto</h3>
+
+    <p>
+        ¿Tenés alguna duda o necesitás ayuda?
+        Escribinos y te responderemos lo antes posible.
+    </p>
+
+   <a
+    href="https://mail.google.com/mail/?view=cm&fs=1&to=ayudacolegiolibre@gmail.com&su=Consulta%20desde%20ColegioLibre"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="footer-contact-btn"
+  >
+    Enviar un correo
+  </a>
+    <span class="footer-contact-mail">
+     
+    </span>
+
+  </div>
+          </div>
+
+          <div class="footer-medium-bottom">
+            <p>© <span id="current-year"></span> ColegioLibre</p>
+            <p>Hecho por estudiantes para estudiantes en Argentina.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+<div class="category-overlay" id="category-overlay"></div>
+
+<aside class="category-drawer" id="category-drawer">
+  <div class="drawer-header">
+    
+    <button id="close-categories" type="button">×</button>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Material escolar</h3>
+    <a href="#productos" data-category-link="Libros">Libros <span>›</span></a>
+    <a href="#productos" data-category-link="Apuntes">Apuntes <span>›</span></a>
+    <a href="#productos" data-category-link="Cuadernos">Cuadernos <span>›</span></a>
+    <a href="#productos" data-category-link="Útiles">Útiles <span>›</span></a>
+    <a href="#productos" data-category-link="Mochilas">Mochilas <span>›</span></a>
+    <a href="#productos" data-category-link="Tecnología">Tecnología <span>›</span></a>
+    <a href="#productos" data-category-link="Uniformes">Uniformes <span>›</span></a>
+    <a href="#productos" data-category-link="Otros">Otros <span>›</span></a>
+  </div>
+
+  <div class="drawer-section">
+    <h3>ColegioLibre</h3>
+    <a href="#como-funciona">Cómo funciona <span>›</span></a>
+    <a href="#productos">Publicar producto <span>›</span></a>
+    <a href="#ayuda">Ayuda <span>›</span></a>
+  </div>
+</aside>
+
+
+
+<div class="onboarding-modal" id="onboarding-modal" hidden>
+  <section
+    class="onboarding-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="onboarding-title"
+  >
+    <img class="onboarding-logo" src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+
+    <p class="onboarding-eyebrow">Tu comunidad escolar</p>
+    <h2 id="onboarding-title">¡Bienvenido!</h2>
+    <p>Configurá tu cuenta para encontrar productos de tu colegio.</p>
+
+    <div class="onboarding-progress" aria-label="Configuración de cuenta">
+      <span class="is-active">1</span>
+      <i></i>
+      <span>2</span>
+      <strong>Perfil y colegio</strong>
+    </div>
+
+    <form id="onboarding-form" class="onboarding-form" novalidate>
+      <label>
+        Nombre
+        <input
+          id="onboarding-name"
+          type="text"
+          placeholder="Tu nombre"
+          autocomplete="name"
+          minlength="2"
+          maxlength="80"
+          required
+        />
+      </label>
+
+      <label>
+        Nivel escolar
+        <select id="onboarding-school-level" required>
+          <option value="">Seleccioná tu nivel</option>
+          <option value="Primaria">Primaria</option>
+          <option value="Secundaria">Secundaria</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </label>
+
+      <div class="school-picker-field">
+        <span class="school-picker-label">Colegio</span>
+        <button
+          class="school-picker-button"
+          id="open-school-search"
+          type="button"
+          aria-haspopup="dialog"
+        >
+          <span class="school-picker-icon" aria-hidden="true">⌕</span>
+          <span id="school-picker-text">Buscar y seleccionar mi colegio</span>
+          <span class="school-picker-arrow" aria-hidden="true">›</span>
+        </button>
+        <input id="onboarding-school-code" type="hidden" />
+      </div>
+
+      <p class="school-picker-help">
+        Buscá por el nombre conocido, las siglas o la dirección del colegio.
+      </p>
+
+      <p id="selected-school-preview" class="selected-school-preview" hidden></p>
+      <p
+        id="onboarding-message"
+        class="onboarding-message"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+      <button class="onboarding-submit" id="onboarding-submit" type="submit">
+        Continuar
+      </button>
+    </form>
+  </section>
+</div>
+
+<div class="school-modal" id="school-modal" hidden>
+  <section
+    class="school-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="school-search-title"
+  >
+    <img class="school-logo" src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+
+    <p class="school-card-eyebrow">Padrón oficial argentino</p>
+    <h2 id="school-search-title">Buscar tu colegio</h2>
+    <p class="school-card-copy">
+      Escribí el nombre conocido o las siglas. Si no aparece, probá con su dirección.
+    </p>
+
+    <label class="school-search-box" for="school-search-input">
+      <span aria-hidden="true">⌕</span>
+      <input
+        id="school-search-input"
+        class="school-search-input"
+        type="search"
+        placeholder="Ej: Florida Day, FDS o Urquiza 2151…"
+        autocomplete="off"
+      />
+    </label>
+
+    <div
+      id="school-results"
+      class="school-results"
+      role="list"
+      aria-live="polite"
+    ></div>
+
+    <button id="close-school-search" class="school-close" type="button">
+      Volver
+    </button>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+<script src="./products.js"></script>
+<script src="./jsonboarding.js?v=20260726-account-flow1"></script>
+<script src="./script.js?v=20260726-account-flow1"></script>
+<script src="./notifications.js?v=20260727-1"></script>
+    
+  </body>
+</html>
