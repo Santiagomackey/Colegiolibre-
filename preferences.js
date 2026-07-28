@@ -145,6 +145,7 @@
     "Menor precio": "Lowest price",
     "Mayor precio": "Highest price",
     "Nivel:": "Level:",
+    "Nivel": "Level",
     "Año:": "Year:",
     "Materia:": "Subject:",
     "Tipo:": "Type:",
@@ -301,6 +302,14 @@
     "Año o grado": "Year or grade",
     "Seleccioná el año": "Select the year",
     "Materia": "Subject",
+    "Matemática": "Mathematics",
+    "Lengua y Literatura": "Language and Literature",
+    "Inglés": "English",
+    "Historia": "History",
+    "Geografía": "Geography",
+    "Biología": "Biology",
+    "Física": "Physics",
+    "Química": "Chemistry",
     "Seleccioná la materia": "Select the subject",
     "Tipo de producto": "Product type",
     "Seleccioná una opción": "Select an option",
@@ -478,6 +487,12 @@
     "Cada estantería muestra una selección breve. Entrá en “Ver todos” para explorar la categoría completa.": "Each section shows a short selection. Choose “View all” to browse the full category.",
     "Una forma simple de circular materiales escolares": "A simple way to give school supplies a second life",
     "Diseñado para que comprar, vender y cambiar materiales sea rápido, confiable y accesible en todo el país.": "Designed to make buying, selling and exchanging school supplies quick, reliable and accessible nationwide.",
+    "Buscá por materia o categoría": "Search by subject or category",
+    "Filtrá por estado, categoría, precio y colegio para encontrar exactamente lo que necesitás.": "Filter by condition, category, price and school to find exactly what you need.",
+    "Conectate con estudiantes reales": "Connect with real students",
+    "Chateá con estudiantes de tu comunidad, coordiná entrega y resolvé dudas rápido.": "Chat with students in your community, arrange delivery and quickly clear up any questions.",
+    "Comprá, vendé o intercambiá": "Buy, sell or exchange",
+    "Publicá gratis, ahorrá plata y mové materiales dentro de tu red escolar.": "List for free, save money and give school supplies a second life within your school network.",
     "El marketplace donde estudiantes compran, venden e intercambian materiales escolares de forma simple, segura y sustentable.": "The marketplace where students buy, sell and exchange school supplies simply, safely and sustainably.",
     "¿Tenés alguna duda o necesitás ayuda? Escribinos y te responderemos lo antes posible.": "Have a question or need help? Write to us and we’ll get back to you as soon as possible.",
     "Configurá tu cuenta para encontrar productos de tu colegio.": "Set up your account to find products from your school.",
@@ -1119,6 +1134,9 @@
     },
     setLanguage: applyLanguage,
     setTheme: applyTheme,
-    translate: translateString
+    translate: translateString,
+    refresh(target = document.body) {
+      if (language === "en" && target) translateTree(target);
+    }
   };
 })();

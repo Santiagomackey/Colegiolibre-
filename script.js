@@ -603,6 +603,8 @@ function renderSteps() {
       `
     )
     .join("");
+
+  window.colegioLibrePreferences?.refresh?.(elements.stepsGrid);
 }
 
 function renderConditionPills() {

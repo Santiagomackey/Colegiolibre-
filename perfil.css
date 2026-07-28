@@ -2100,3 +2100,42 @@ body[data-sidebar-open="true"] .layout-overlay {
     font-size: 0.78rem;
   }
 }
+
+/* =========================================================
+   PERFIL: UN ÚNICO SCROLL DE PÁGINA
+   En escritorio el menú y el contenido pertenecen al mismo
+   flujo. En móvil el menú conserva su comportamiento de drawer.
+========================================================= */
+
+@media (min-width: 981px) {
+  .page-layout {
+    align-items: stretch;
+    padding-top: 28px;
+  }
+
+  .profile-sidebar {
+    position: relative;
+    top: auto;
+    align-self: stretch;
+    height: auto;
+    min-height: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .content-column {
+    align-self: start;
+    padding-top: 0 !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .profile-sidebar {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
