@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v14";
+const CACHE_VERSION = "colegiolibre-pwa-v15";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -10,6 +10,7 @@ const APP_SHELL = [
   "/polish.css",
   "/script.js",
   "/mobile-ui.js",
+  "/native-bridge.js",
   "/pwa.js",
   "/preferences.js",
   "/products.js",
@@ -47,6 +48,25 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const destination = new URL(
+    event.notification.data?.url || "/index.html",
+    self.location.origin
+  ).href;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      const existing = clients.find((client) => client.url.startsWith(self.location.origin));
+      if (existing) {
+        existing.navigate(destination);
+        return existing.focus();
+      }
+      return self.clients.openWindow(destination);
+    })
+  );
 });
 
 self.addEventListener("fetch", (event) => {

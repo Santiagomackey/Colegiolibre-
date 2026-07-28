@@ -540,6 +540,43 @@ img {
   font-size: 0.94rem;
 }
 
+.upload-help-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.camera-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0 1rem;
+  border: 1px solid rgba(11, 46, 107, 0.18);
+  border-radius: 13px;
+  background: #fff;
+  color: var(--color-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.camera-button:hover,
+.camera-button:focus-visible {
+  border-color: rgba(103, 194, 58, 0.65);
+  box-shadow: 0 8px 22px rgba(11, 46, 107, 0.09);
+}
+
+.camera-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -836,6 +873,16 @@ select:focus-visible {
 
   .upload-tile--hero {
     min-height: 124px;
+  }
+
+  .upload-help-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .camera-button {
+    justify-content: center;
+    width: 100%;
   }
 
   .form-actions {

@@ -98,6 +98,8 @@ const previewArt = document.querySelector("#preview-art");
 const descriptionCounter = document.querySelector("#descripcion-counter");
 
 const fileInput = document.querySelector("#fotos");
+const cameraInput = document.querySelector("#foto-camara");
+const cameraTrigger = document.querySelector("#camera-trigger");
 const uploadTiles = Array.from(document.querySelectorAll(".upload-tile"));
 const uploadTrigger = document.querySelector("#upload-trigger");
 const cancelButton = document.querySelector("#cancelar");
@@ -494,6 +496,32 @@ function bindUploadEvents() {
   fileInput.addEventListener("change", () => {
     if (fileInput.files?.length) {
       setImages(fileInput.files);
+    }
+  });
+
+  cameraInput?.addEventListener("change", () => {
+    if (cameraInput.files?.length) {
+      setImages(cameraInput.files);
+      cameraInput.value = "";
+    }
+  });
+
+  cameraTrigger?.addEventListener("click", async () => {
+    cameraTrigger.disabled = true;
+    try {
+      const nativePhoto = await window.colegioLibreNative?.takePhoto?.();
+      if (nativePhoto instanceof File) {
+        setImages([nativePhoto]);
+        return;
+      }
+      cameraInput.value = "";
+      cameraInput.click();
+    } catch (error) {
+      if (error?.message !== "USER_CANCELLED") {
+        showToast("No pudimos abrir la cámara. Podés elegir una foto de la galería.");
+      }
+    } finally {
+      cameraTrigger.disabled = false;
     }
   });
 }

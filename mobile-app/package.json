@@ -1,0 +1,26 @@
+{
+  "name": "colegiolibre-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplicación móvil oficial de ColegioLibre con Capacitor.",
+  "scripts": {
+    "sync": "npx cap sync",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "run:android": "npx cap run android",
+    "run:ios": "npx cap run ios",
+    "doctor": "npx cap doctor"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.4.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/camera": "8.2.1",
+    "@capacitor/core": "8.4.2",
+    "@capacitor/ios": "8.4.2",
+    "@capacitor/local-notifications": "8.2.1",
+    "@capacitor/push-notifications": "8.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.4.2"
+  }
+}

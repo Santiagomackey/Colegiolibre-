@@ -87,9 +87,14 @@
             Cargando…
           </p>
         </div>
-        <button class="cl-notification-mark-all" type="button" data-mark-all disabled>
-          Marcar leídas
-        </button>
+        <div class="cl-notification-panel__tools">
+          <button class="cl-notification-system" type="button" data-enable-system>
+            Activar avisos
+          </button>
+          <button class="cl-notification-mark-all" type="button" data-mark-all disabled>
+            Marcar leídas
+          </button>
+        </div>
       </div>
       <div class="cl-notification-list" data-notification-list>
         <div class="cl-notification-loading">Cargando notificaciones…</div>
@@ -97,9 +102,11 @@
     `;
 
     panel.querySelector("[data-mark-all]").addEventListener("click", markAllRead);
+    panel.querySelector("[data-enable-system]").addEventListener("click", enableSystemNotifications);
     panel.addEventListener("click", (event) => event.stopPropagation());
     document.body.appendChild(panel);
     state.panel = panel;
+    updateSystemPermissionButton();
   }
 
   function bindGlobalEvents() {
@@ -333,10 +340,78 @@
 
           if (payload.eventType === "INSERT" || isFreshUpdate) {
             showToast(payload.new?.title || "Tenés una nueva notificación.");
+            await showSystemNotification(payload.new || {});
           }
         }
       )
       .subscribe();
+  }
+
+  async function enableSystemNotifications() {
+    const button = state.panel?.querySelector("[data-enable-system]");
+    if (button) button.disabled = true;
+    try {
+      if (window.colegioLibreNative?.isNative) {
+        await window.colegioLibreNative.requestNotificationPermission();
+      } else if ("Notification" in window) {
+        await Notification.requestPermission();
+      }
+    } catch {
+      showToast("No se pudieron activar los avisos del dispositivo.");
+    } finally {
+      if (button) button.disabled = false;
+      updateSystemPermissionButton();
+    }
+  }
+
+  function updateSystemPermissionButton() {
+    const button = state.panel?.querySelector("[data-enable-system]");
+    if (!button) return;
+    if (window.colegioLibreNative?.isNative) {
+      button.textContent = "Avisos del teléfono";
+      return;
+    }
+    if (!("Notification" in window)) {
+      button.hidden = true;
+      return;
+    }
+    button.hidden = false;
+    button.textContent =
+      Notification.permission === "granted"
+        ? "Avisos activados"
+        : Notification.permission === "denied"
+          ? "Avisos bloqueados"
+          : "Activar avisos";
+    button.disabled = Notification.permission === "denied";
+  }
+
+  async function showSystemNotification(notification) {
+    const title = notification.title || "ColegioLibre";
+    const options = {
+      body: notification.body || "Tenés una nueva notificación.",
+      icon: "/images/icon-192.png",
+      badge: "/images/icon-192.png",
+      tag: `colegiolibre-${notification.id || Date.now()}`,
+      data: {
+        url:
+          getSafeDestination(notification.action_url) ||
+          (notification.conversation_id
+            ? `mensajes.html?id=${encodeURIComponent(notification.conversation_id)}`
+            : notification.product_id
+              ? `producto.html?id=${encodeURIComponent(notification.product_id)}`
+              : "index.html")
+      }
+    };
+
+    if (window.colegioLibreNative?.isNative) {
+      await window.colegioLibreNative.showNotification(title, options);
+      return;
+    }
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const registration = await navigator.serviceWorker?.ready;
+    if (registration?.showNotification) {
+      await registration.showNotification(title, options);
+    }
   }
 
   function togglePanel(trigger) {

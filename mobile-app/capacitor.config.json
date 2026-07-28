@@ -1,0 +1,31 @@
+{
+  "appId": "com.colegiolibre.app",
+  "appName": "ColegioLibre",
+  "webDir": "www",
+  "server": {
+    "url": "https://colegiolibre.vercel.app",
+    "cleartext": false,
+    "androidScheme": "https",
+    "allowNavigation": [
+      "colegiolibre.vercel.app",
+      "*.supabase.co"
+    ]
+  },
+  "plugins": {
+    "Camera": {
+      "allowEditing": false,
+      "saveToGallery": false
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_launcher_foreground",
+      "iconColor": "#67C23A"
+    },
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
+}
