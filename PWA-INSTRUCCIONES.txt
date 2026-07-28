@@ -1,0 +1,37 @@
+COLEGIOLIBRE · INSTALACIÓN COMO APP
+====================================
+
+IMPORTANTE
+----------
+La instalación funciona únicamente desde la versión publicada con HTTPS
+(por ejemplo, https://colegiolibre.vercel.app). Abrir index.html directamente
+desde una carpeta no permite registrar el service worker.
+
+ANDROID (CHROME)
+----------------
+1. Abrí ColegioLibre en Chrome.
+2. Esperá el aviso "Instalá ColegioLibre" y tocá "Instalar".
+3. Si no aparece, abrí el menú de Chrome y elegí "Instalar aplicación" o
+   "Agregar a pantalla principal".
+4. ColegioLibre aparecerá junto a las demás aplicaciones.
+
+IPHONE / IPAD (SAFARI)
+----------------------
+1. Abrí ColegioLibre desde Safari.
+2. Tocá el botón Compartir.
+3. Elegí "Agregar a inicio".
+4. Confirmá con "Agregar".
+
+COMPROBAR UNA ACTUALIZACIÓN
+---------------------------
+Cuando se publique una versión nueva, la aplicación mostrará el aviso
+"Hay una nueva versión". Tocá "Actualizar" para cargarla.
+
+PRUEBA RECOMENDADA
+------------------
+1. Publicá esta carpeta en Vercel.
+2. Abrí /manifest.webmanifest y comprobá que se muestre el JSON.
+3. Abrí /service-worker.js y comprobá que responda sin error 404.
+4. Instalá la aplicación en un Android y, si está disponible, en un iPhone.
+5. Cerrala y volvé a abrirla desde el icono.
+6. Confirmá que abra sin barra del navegador y conserve la sesión.
