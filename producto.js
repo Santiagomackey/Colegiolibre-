@@ -234,8 +234,11 @@ const elements = {
   reportDetails: document.querySelector("#product-report-details"),
   productSchoolLink: document.querySelector("#product-school-link"),
   productTitle: document.querySelector("#product-title"),
+  productUpdatedDate: document.querySelector("#product-updated-date"),
+  productUpdatedRow: document.querySelector("#product-updated-row"),
   productViews: document.querySelector("#product-views"),
   saveButton: document.querySelector("#save-button"),
+  shareButton: document.querySelector("#share-button"),
   sellerAvatar: document.querySelector("#seller-avatar"),
   sellerName: document.querySelector("#seller-name"),
   sellerProfileLink: document.querySelector("#seller-profile-link"),
@@ -290,6 +293,7 @@ function bindEvents() {
   elements.reportClose?.addEventListener("click", closeProductReport);
   elements.reportCancel?.addEventListener("click", closeProductReport);
   elements.reportForm?.addEventListener("submit", submitProductReport);
+  elements.shareButton?.addEventListener("click", shareCurrentProduct);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !elements.reportModal?.hidden) {
@@ -304,7 +308,7 @@ function bindHeaderNavigation() {
     window.location.href = "mensajes.html";
   });
   headerButtons[1]?.addEventListener("click", () => {
-    window.location.href = "perfil.html?view=favorites";
+    window.location.href = "favoritos.html";
   });
   headerButtons[2]?.addEventListener("click", () => {
     window.location.href = "perfil.html";
@@ -516,6 +520,7 @@ function renderProduct(product) {
   elements.productPrice.textContent = formatPrice(product.price);
   elements.productLocation.textContent = product.location;
   elements.productPublishedDate.textContent = formatPublishedDate(product.created_at);
+  renderUpdatedDate(product);
   elements.productViews.textContent = formatViews(product.views);
   elements.conditionBadge.textContent = product.condition;
   elements.conditionBadge.dataset.condition = product.condition;
@@ -531,6 +536,48 @@ function renderProduct(product) {
   renderSchoolLinks(product);
   setFavoriteState(favoriteIds.has(product.id));
   updateProductActions(product);
+}
+
+function renderUpdatedDate(product) {
+  if (!elements.productUpdatedRow || !elements.productUpdatedDate) return;
+
+  const createdAt = new Date(product.created_at || 0).getTime();
+  const updatedAt = new Date(product.updated_at || product.created_at || 0).getTime();
+  const wasUpdated =
+    Number.isFinite(createdAt) &&
+    Number.isFinite(updatedAt) &&
+    updatedAt - createdAt > 60 * 1000;
+
+  elements.productUpdatedRow.hidden = !wasUpdated;
+  if (wasUpdated) {
+    elements.productUpdatedDate.textContent = `Actualizado ${formatPublishedDate(
+      product.updated_at
+    ).replace(/^Publicado\s*/i, "").toLowerCase()}`;
+  }
+}
+
+async function shareCurrentProduct() {
+  if (!currentProduct) return;
+
+  const shareData = {
+    title: currentProduct.title,
+    text: `${currentProduct.title} en ColegioLibre`,
+    url: window.location.href
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+
+    await navigator.clipboard.writeText(window.location.href);
+    showToast("Enlace copiado.");
+  } catch (error) {
+    if (error?.name !== "AbortError") {
+      showToast("No se pudo compartir la publicación.");
+    }
+  }
 }
 
 function renderBreadcrumbs(product) {

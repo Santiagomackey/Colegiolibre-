@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20260728-4"></script>
+    <script src="./preferences.js?v=20260728-7"></script>
     <title>ColegioLibre | Mi perfil</title>
     <meta
       name="description"
@@ -16,10 +16,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./perfil.css?v=20260728-trade1" />
+    <link rel="stylesheet" href="./perfil.css?v=20260728-final1" />
     <link rel="stylesheet" href="./notifications.css?v=20260728-trade1" />
-    <link rel="stylesheet" href="./polish.css?v=20260728-4" />
-    <link rel="stylesheet" href="./preferences.css?v=20260728-4" />
+    <link rel="stylesheet" href="./polish.css?v=20260728-7" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-7" />
 </head>
   <body data-sidebar-open="false">
     <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -171,6 +171,10 @@
             <svg class="icon"><use href="#icon-message"></use></svg>
             <span>Mensajes</span>
           </button>
+          <a class="profile-nav__item" href="./favoritos.html">
+            <svg class="icon"><use href="#icon-heart"></use></svg>
+            <span>Favoritos</span>
+          </a>
           <button class="profile-nav__item" type="button" data-profile-view="purchases">
             <svg class="icon"><use href="#icon-bag"></use></svg>
             <span>Compras</span>
@@ -364,9 +368,14 @@
             </div>
 
             <div class="settings-actions">
-              <button class="ghost-button ghost-button--profile" type="button" id="settings-logout-button">
-                Cerrar sesión
-              </button>
+              <div class="settings-danger-actions">
+                <button class="ghost-button ghost-button--profile" type="button" id="settings-logout-button">
+                  Cerrar sesión
+                </button>
+                <button class="danger-outline-button" type="button" id="settings-deactivate-button">
+                  Desactivar cuenta
+                </button>
+              </div>
               <button class="publish-button publish-button--green" type="submit">
                 Guardar cambios
               </button>
@@ -384,7 +393,7 @@
           </div>
 
           <div class="publication-card__copy">
-            <h3 class="publication-card__title"></h3>
+            <h3 class="publication-card__title" data-product-title data-no-translate></h3>
             <p class="publication-card__subline" hidden></p>
             <div class="publication-card__meta">
               <span class="publication-card__price"></span>
@@ -433,7 +442,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js?v=20260728-verification1"></script>
 <script src="./products.js"></script>
-<script src="./perfil.js?v=20260728-professional1"></script>
+<script src="./perfil.js?v=20260728-final1"></script>
 <script src="./notifications.js?v=20260728-trade1"></script>
   </body>
 </html>

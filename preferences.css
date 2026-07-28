@@ -492,6 +492,29 @@ html[data-theme="dark"] .marketplace-rail__link {
   color: #8fb8ff !important;
 }
 
+html[data-theme="dark"] .steps-panel {
+  background: #090c10 !important;
+}
+
+html[data-theme="dark"] .step-card {
+  background: #11151b !important;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .step-card h3 {
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] .step-card p {
+  color: #a9b2bf !important;
+}
+
+html[data-theme="dark"] .step-index {
+  color: #ffffff !important;
+  background: #1d4f91 !important;
+}
+
 html[data-theme="dark"] :is(
   .section-heading h2,
   .category-marketplace-heading h2,

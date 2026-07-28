@@ -408,10 +408,15 @@ async function init() {
   setupReveal();
   hydrateUrlState();
 
+  if (state.showOnlyFavorites) {
+    window.location.replace("favoritos.html");
+    return;
+  }
+
   let onboardingResult = null;
   if (typeof initOnboarding === "function") {
     const onboardingDestination = state.showOnlyFavorites
-      ? "index.html?favorites=1"
+      ? "favoritos.html"
       : state.requestedScope === "school"
         ? "colegio.html"
         : "";
@@ -427,7 +432,7 @@ async function init() {
     (state.user ? await getCurrentProfile(true) : null);
 
   if (state.showOnlyFavorites && !state.user) {
-    window.location.replace(buildLoginUrl("index.html?favorites=1"));
+    window.location.replace(buildLoginUrl("favoritos.html"));
     return;
   }
 
@@ -1957,7 +1962,7 @@ function productCard(product) {
 
       <div class="product-body">
         <a class="product-main-link" href="${productUrl}">
-          <h3 class="product-title">
+          <h3 class="product-title" data-product-title data-no-translate>
             ${escapeHtml(product.title)}
           </h3>
 

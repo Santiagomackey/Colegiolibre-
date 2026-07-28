@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./preferences.js?v=20260728-7"></script>
+    <title>ColegioLibre | Favoritos</title>
+    <meta
+      name="description"
+      content="Tus productos guardados en ColegioLibre."
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./favoritos.css?v=20260728-1" />
+    <link rel="stylesheet" href="./polish.css?v=20260728-7" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-7" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="favorites-header">
+      <div class="favorites-shell favorites-header__inner">
+        <a class="favorites-brand" href="./index.html" aria-label="Volver al inicio de ColegioLibre">
+          <img src="./images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+        </a>
+
+        <nav class="favorites-nav" aria-label="Navegación principal">
+          <a href="./index.html">Marketplace</a>
+          <a href="./mensajes.html">Mensajes</a>
+          <a href="./perfil.html">Mi perfil</a>
+          <a class="favorites-publish" href="./publicar.html">Publicar producto</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="favorites-main favorites-shell" id="contenido">
+      <section class="favorites-hero" aria-labelledby="favorites-title">
+        <div>
+          <p class="favorites-kicker">TU COLECCIÓN</p>
+          <h1 id="favorites-title">Productos favoritos</h1>
+          <p>Guardá materiales interesantes y volvé a encontrarlos sin tener que buscarlos otra vez.</p>
+        </div>
+        <div class="favorites-total" aria-live="polite">
+          <strong id="favorites-count">0</strong>
+          <span id="favorites-count-label">productos guardados</span>
+        </div>
+      </section>
+
+      <section class="favorites-toolbar" aria-label="Buscar y ordenar favoritos">
+        <label class="favorites-search">
+          <span class="sr-only">Buscar dentro de favoritos</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.4"></circle>
+            <path d="m16 16 4.2 4.2"></path>
+          </svg>
+          <input
+            id="favorites-search"
+            type="search"
+            placeholder="Buscar dentro de tus favoritos"
+            autocomplete="off"
+          />
+        </label>
+
+        <label class="favorites-sort">
+          <span>Ordenar por</span>
+          <select id="favorites-sort">
+            <option value="saved">Guardados recientemente</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
+            <option value="newest">Publicados recientemente</option>
+          </select>
+        </label>
+      </section>
+
+      <section aria-live="polite" aria-busy="true" id="favorites-results">
+        <div class="favorites-grid" id="favorites-grid">
+          <article class="favorite-skeleton"></article>
+          <article class="favorite-skeleton"></article>
+          <article class="favorite-skeleton"></article>
+          <article class="favorite-skeleton"></article>
+        </div>
+
+        <div class="favorites-empty" id="favorites-empty" hidden>
+          <div class="favorites-empty__icon" aria-hidden="true">♡</div>
+          <h2 id="favorites-empty-title">Todavía no guardaste productos</h2>
+          <p id="favorites-empty-text">Cuando encuentres algo que te interese, tocá el corazón para guardarlo acá.</p>
+          <a href="./index.html">Explorar productos</a>
+        </div>
+
+        <div class="favorites-error" id="favorites-error" hidden>
+          <h2>No pudimos cargar tus favoritos</h2>
+          <p>Revisá tu conexión e intentá nuevamente.</p>
+          <button id="favorites-retry" type="button">Reintentar</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="favorites-toast" id="favorites-toast" role="status" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase.js?v=20260728-security1"></script>
+    <script src="./products.js"></script>
+    <script src="./favoritos.js?v=20260728-1"></script>
+  </body>
+</html>

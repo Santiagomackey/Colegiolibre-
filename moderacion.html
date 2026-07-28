@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20260728-4"></script>
+    <script src="./preferences.js?v=20260728-7"></script>
     <meta name="robots" content="noindex,nofollow" />
     <title>Administración | ColegioLibre</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,9 +12,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./moderacion.css?v=20260728-verification1" />
-    <link rel="stylesheet" href="./polish.css?v=20260728-4" />
-    <link rel="stylesheet" href="./preferences.css?v=20260728-4" />
+    <link rel="stylesheet" href="./moderacion.css?v=20260728-final1" />
+    <link rel="stylesheet" href="./polish.css?v=20260728-7" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-7" />
 </head>
   <body>
     <header class="moderation-header">
@@ -47,6 +47,7 @@
         </button>
         <button type="button" data-admin-tab="rules">Productos prohibidos</button>
         <button type="button" data-admin-tab="accounts">Cuentas</button>
+        <button type="button" data-admin-tab="history">Historial</button>
       </nav>
 
       <section class="admin-section" data-admin-section="reports">
@@ -249,12 +250,29 @@
         </section>
         <section class="admin-list" id="accounts-list" aria-live="polite"></section>
       </section>
+
+      <section class="admin-section" data-admin-section="history" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Auditoría</p>
+            <h2>Historial administrativo</h2>
+            <span>Registro de cambios sensibles en productos, reportes y cuentas.</span>
+          </div>
+        </div>
+        <section class="moderation-toolbar moderation-toolbar--single">
+          <label>
+            Buscar
+            <input id="history-search" type="search" placeholder="Acción, resumen, usuario o producto" />
+          </label>
+        </section>
+        <section class="admin-list" id="history-list" aria-live="polite"></section>
+      </section>
     </main>
 
     <div class="toast" id="moderation-toast" hidden></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./supabase.js?v=20260728-verification1"></script>
-    <script src="./moderacion.js?v=20260728-verification1"></script>
+    <script src="./moderacion.js?v=20260728-final1"></script>
   </body>
 </html>

@@ -19,3 +19,24 @@ El sitio está preparado para desplegarse en Vercel sin un comando de compilaci�
 ## Backend
 
 La autenticación y los datos utilizan Supabase. La clave incluida en el frontend es una clave pública (`publishable`); nunca agregues una clave `service_role` ni otros secretos privados al repositorio.
+
+## Configuración final de producción
+
+Después de ejecutar los archivos SQL anteriores, abrí un Query nuevo en Supabase
+y ejecutá:
+
+`sql/8_ENDURECER_PRODUCCION_Y_AUDITORIA.sql`
+
+Este archivo agrega:
+
+- Galería persistente de hasta seis imágenes por producto.
+- Índices para productos, favoritos, mensajes y notificaciones.
+- Historial administrativo.
+- Límites básicos contra spam.
+- Desactivación segura de cuenta.
+
+## Favoritos
+
+La página `favoritos.html` requiere una sesión iniciada. Lee únicamente los
+favoritos del usuario autenticado mediante las políticas RLS existentes y
+permite buscar, ordenar, abrir o quitar productos guardados.

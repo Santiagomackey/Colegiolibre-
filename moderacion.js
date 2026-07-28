@@ -13,6 +13,8 @@
     copyGeneratedCode: document.getElementById("copy-generated-code"),
     generatedCode: document.getElementById("generated-code"),
     generatedCodeValue: document.getElementById("generated-code-value"),
+    historyList: document.getElementById("history-list"),
+    historySearch: document.getElementById("history-search"),
     inviteExpiresAt: document.getElementById("invite-expires-at"),
     inviteForm: document.getElementById("invite-form"),
     inviteLabel: document.getElementById("invite-label"),
@@ -51,6 +53,7 @@
     currentTab: "reports",
     currentUser: null,
     generatedPlainCode: "",
+    history: [],
     invites: [],
     memberships: [],
     moderationProducts: new Map(),
@@ -100,6 +103,7 @@
       renderVerifications
     );
     elements.accountSearch.addEventListener("input", renderAccounts);
+    elements.historySearch?.addEventListener("input", renderHistory);
     elements.inviteForm.addEventListener("submit", createInviteCode);
     elements.ruleForm.addEventListener("submit", createRule);
     elements.ruleSeverity.addEventListener("change", syncRulePenalty);
@@ -128,6 +132,7 @@
     const loaders = {
       accounts: loadAccounts,
       automatic: loadAutomaticReviews,
+      history: loadHistory,
       invites: loadInvites,
       reports: loadReports,
       rules: loadRules,
@@ -161,6 +166,83 @@
     }
 
     (data || []).forEach((profile) => state.profiles.set(profile.id, profile));
+  }
+
+  async function loadHistory() {
+    const { data, error } = await window.colegioLibreSupabase
+      .from("admin_audit_log")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500);
+
+    if (error) {
+      elements.historyList.innerHTML = emptyCard(
+        "No se pudo cargar el historial. Ejecutá el archivo SQL 8."
+      );
+      return;
+    }
+
+    state.history = data || [];
+    await loadProfiles(state.history.map((item) => item.actor_id));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const search = normalizeText(elements.historySearch?.value);
+    const items = state.history.filter((item) => {
+      const actor = state.profiles.get(item.actor_id);
+      return normalizeText(
+        `${item.action} ${item.summary} ${item.target_type} ${
+          actor?.name || ""
+        } ${JSON.stringify(item.metadata || {})}`
+      ).includes(search);
+    });
+
+    if (!items.length) {
+      elements.historyList.innerHTML = emptyCard(
+        "No hay acciones administrativas para estos filtros."
+      );
+      return;
+    }
+
+    elements.historyList.innerHTML = items
+      .map((item) => {
+        const actor = state.profiles.get(item.actor_id);
+        const metadata = item.metadata || {};
+        return `
+          <article class="audit-card">
+            <div class="audit-card__head">
+              <div>
+                <span>${escapeHtml(auditActionLabel(item.action))}</span>
+                <h3>${escapeHtml(item.summary)}</h3>
+              </div>
+              <time>${escapeHtml(formatDateTime(item.created_at))}</time>
+            </div>
+            <p>
+              Responsable: ${escapeHtml(actor?.name || "Sistema automático")}
+              · Objetivo: ${escapeHtml(item.target_type || "registro")}
+            </p>
+            ${
+              metadata.title
+                ? `<strong data-product-title data-no-translate>${escapeHtml(metadata.title)}</strong>`
+                : ""
+            }
+            <details>
+              <summary>Ver detalles técnicos</summary>
+              <pre>${escapeHtml(JSON.stringify(metadata, null, 2))}</pre>
+            </details>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function auditActionLabel(action) {
+    return {
+      account_status_changed: "Estado de cuenta",
+      product_status_changed: "Estado de publicación",
+      report_status_changed: "Estado de reporte"
+    }[action] || action;
   }
 
   async function loadAutomaticReviews() {

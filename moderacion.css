@@ -631,6 +631,66 @@ textarea {
   text-align: center;
 }
 
+.audit-card {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #dfe6f0;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.audit-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.audit-card__head span {
+  color: #4d9f29;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.audit-card__head h3 {
+  margin: 5px 0 0;
+  color: #0b2e6b;
+}
+
+.audit-card__head time,
+.audit-card p {
+  color: #6c7a90;
+  font-size: 0.84rem;
+}
+
+.audit-card p {
+  margin: 0;
+}
+
+.audit-card details {
+  padding-top: 8px;
+  border-top: 1px solid #e6ebf2;
+}
+
+.audit-card summary {
+  color: #0b2e6b;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.audit-card pre {
+  overflow: auto;
+  margin: 12px 0 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f5f7fa;
+  color: #334155;
+  font-size: 0.75rem;
+}
+
 .toast {
   position: fixed;
   right: 22px;

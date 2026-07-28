@@ -19,6 +19,19 @@
   const originalAttributes = new WeakMap();
   const translationQueue = new Set();
   let translationTask = null;
+  const protectedContentSelector = [
+    "[data-no-translate]",
+    "[data-product-title]",
+    ".product-title",
+    ".publication-card__title",
+    ".similar-card__title",
+    ".school-product-card__title",
+    "#product-title",
+    "script",
+    "style",
+    "code",
+    "pre"
+  ].join(", ");
 
   const translations = new Map(Object.entries({
     "Saltar al contenido": "Skip to content",
@@ -41,6 +54,40 @@
     "Buscar material escolar": "Search school supplies",
     "Mensajes": "Messages",
     "Favoritos": "Favorites",
+    "ColegioLibre | Favoritos": "ColegioLibre | Favorites",
+    "TU COLECCIÓN": "YOUR COLLECTION",
+    "Productos favoritos": "Favorite products",
+    "Guardá materiales interesantes y volvé a encontrarlos sin tener que buscarlos otra vez.": "Save interesting school items and find them again without searching.",
+    "productos guardados": "saved products",
+    "producto guardado": "saved product",
+    "Buscar dentro de tus favoritos": "Search your favorites",
+    "Buscar dentro de favoritos": "Search favorites",
+    "Ordenar por": "Sort by",
+    "Guardados recientemente": "Recently saved",
+    "Menor precio": "Lowest price",
+    "Mayor precio": "Highest price",
+    "Publicados recientemente": "Recently listed",
+    "Todavía no guardaste productos": "You have not saved any products yet",
+    "Cuando encuentres algo que te interese, tocá el corazón para guardarlo acá.": "When you find something interesting, tap the heart to save it here.",
+    "No encontramos coincidencias": "No matches found",
+    "Probá con otro título, categoría, colegio o ubicación.": "Try another title, category, school or location.",
+    "No pudimos cargar tus favoritos": "We could not load your favorites",
+    "Revisá tu conexión e intentá nuevamente.": "Check your connection and try again.",
+    "Reintentar": "Try again",
+    "Quitar de favoritos": "Remove from favorites",
+    "Producto quitado de favoritos.": "Product removed from favorites.",
+    "No se pudo quitar el producto de favoritos.": "The product could not be removed from favorites.",
+    "Compartir": "Share",
+    "Enlace copiado.": "Link copied.",
+    "No se pudo compartir la publicación.": "The listing could not be shared.",
+    "Desactivar cuenta": "Deactivate account",
+    "Desactivando...": "Deactivating...",
+    "La cuenta no fue desactivada.": "The account was not deactivated.",
+    "Historial": "History",
+    "Historial administrativo": "Administrative history",
+    "Registro de cambios sensibles en productos, reportes y cuentas.": "Record of sensitive changes to products, reports and accounts.",
+    "No hay acciones administrativas para estos filtros.": "There are no administrative actions for these filters.",
+    "Ver detalles técnicos": "View technical details",
     "Iniciar sesión": "Sign in",
     "Cerrar sesión": "Sign out",
     "Salir": "Sign out",
@@ -677,6 +724,15 @@
     "Estado de cuenta actualizado.": "Account status updated.",
     "Conversación": "Conversation",
     "Publicación": "Listing",
+    "visita": "view",
+    "favorito": "favorite",
+    "mensaje": "message",
+    "Aprobada": "Approved",
+    "Revisando": "Reviewing",
+    "No aprobada": "Not approved",
+    "Editar y volver a enviar": "Edit and resubmit",
+    "Reactivar producto": "Reactivate product",
+    "Pausar producto": "Pause product",
     "Sin verificar": "Unverified",
     "Información incorrecta": "Incorrect information",
     "No se pudieron cargar las notificaciones.": "Notifications could not be loaded.",
@@ -826,13 +882,14 @@
   function translateTextNode(node) {
     if (!node.nodeValue?.trim()) return;
     const parent = node.parentElement;
-    if (!parent || parent.closest("[data-no-translate], script, style, code, pre")) return;
+    if (!parent || parent.closest(protectedContentSelector)) return;
     if (!originalText.has(node)) originalText.set(node, node.nodeValue);
     const original = originalText.get(node);
     node.nodeValue = language === "en" ? translateString(original) : original;
   }
 
   function translateElementAttributes(element) {
+    if (element.closest?.(protectedContentSelector)) return;
     if (!originalAttributes.has(element)) originalAttributes.set(element, new Map());
     const originals = originalAttributes.get(element);
     for (const attribute of ["placeholder", "title", "aria-label"]) {

@@ -386,13 +386,21 @@ function populateFormForEditing(product) {
 
   clearObjectUrls();
   imageSlots.length = 0;
-  if (product.image_url) {
+  const existingImages = [
+    product.image_url,
+    ...(Array.isArray(product.image_urls) ? product.image_urls : [])
+  ]
+    .filter(Boolean)
+    .filter((url, index, values) => values.indexOf(url) === index)
+    .slice(0, 6);
+
+  existingImages.forEach((url) => {
     imageSlots.push({
       file: null,
       isExisting: true,
-      url: product.image_url
+      url
     });
-  }
+  });
 
   updateDescriptionCounter();
   updatePreview();
@@ -412,7 +420,7 @@ function bindHeaderNavigation() {
     window.location.href = "mensajes.html";
   });
   headerButtons[1]?.addEventListener("click", () => {
-    window.location.href = "perfil.html?view=favorites";
+    window.location.href = "favoritos.html";
   });
   headerButtons[2]?.addEventListener("click", () => {
     window.location.href = "perfil.html";
@@ -729,9 +737,19 @@ function renderUploads() {
 }
 
 function setImages(files) {
-  const incomingFiles = Array.from(files)
-    .filter((file) => file.type.startsWith("image/"))
+  const selectedFiles = Array.from(files);
+  const invalidFiles = selectedFiles.filter(
+    (file) => !file.type.startsWith("image/") || file.size > 6 * 1024 * 1024
+  );
+  const incomingFiles = selectedFiles
+    .filter(
+      (file) => file.type.startsWith("image/") && file.size <= 6 * 1024 * 1024
+    )
     .slice(0, 6 - imageSlots.length);
+
+  if (invalidFiles.length) {
+    showToast("Algunas imágenes no son válidas o superan los 6 MB.");
+  }
 
   incomingFiles.forEach((file) => {
     imageSlots.push({
@@ -786,17 +804,53 @@ function resetFormState() {
   updatePreview();
 }
 
-async function uploadMainImage() {
-  if (!imageSlots[0]?.file) return null;
+async function optimizeImage(file) {
+  if (!file || !file.type.startsWith("image/")) return file;
 
-  const file = imageSlots[0].file;
-  const fileExt = file.name.split(".").pop();
-  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: false });
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
+
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.84)
+    );
+    return blob || file;
+  } catch (_error) {
+    return file;
+  }
+}
+
+async function uploadImage(file) {
+  const optimizedFile = await optimizeImage(file);
+  const wasOptimized = optimizedFile !== file;
+  const fallbackExtension =
+    file.name.split(".").pop()?.replace(/[^a-z0-9]/gi, "").toLowerCase() ||
+    "jpg";
+  const fileExtension = wasOptimized ? "jpg" : fallbackExtension;
+  const contentType = wasOptimized
+    ? "image/jpeg"
+    : file.type || "application/octet-stream";
+  const fileName = `${crypto.randomUUID()}.${fileExtension}`;
   const filePath = `products/${fileName}`;
 
   const { error } = await window.colegioLibreSupabase.storage
     .from("product-images")
-    .upload(filePath, file);
+    .upload(filePath, optimizedFile, {
+      cacheControl: "31536000",
+      contentType,
+      upsert: false
+    });
 
   if (error) {
     console.error(error);
@@ -808,6 +862,23 @@ async function uploadMainImage() {
     .getPublicUrl(filePath);
 
   return data.publicUrl;
+}
+
+async function uploadProductImages() {
+  const urls = [];
+
+  for (const slot of imageSlots.slice(0, 6)) {
+    if (slot.isExisting && slot.url) {
+      urls.push(slot.url);
+      continue;
+    }
+
+    if (slot.file) {
+      urls.push(await uploadImage(slot.file));
+    }
+  }
+
+  return urls.filter(Boolean);
 }
 
 async function handleSubmit(event) {
@@ -931,13 +1002,8 @@ async function handleSubmit(event) {
       return;
     }
 
-    let imageUrl = imageSlots[0]?.isExisting
-      ? imageSlots[0].url
-      : null;
-
-    if (imageSlots[0]?.file) {
-      imageUrl = await uploadMainImage();
-    }
+    const uploadedImageUrls = await uploadProductImages();
+    const imageUrl = uploadedImageUrls[0] || null;
 
     const nowIso = new Date().toISOString();
 
@@ -948,6 +1014,7 @@ async function handleSubmit(event) {
       price: priceValue,
       description: description,
       image_url: imageUrl,
+      image_urls: uploadedImageUrls,
 
       location:
         finalLocation ||

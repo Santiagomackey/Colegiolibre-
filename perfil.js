@@ -39,6 +39,7 @@ const settingsSchoolCode = document.querySelector("#settings-school-code");
 const settingsSchoolName = document.querySelector("#settings-school-name");
 const settingsZone = document.querySelector("#settings-zone");
 const settingsLogoutButton = document.querySelector("#settings-logout-button");
+const settingsDeactivateButton = document.querySelector("#settings-deactivate-button");
 
 const dashboardSummary = document.querySelector("#dashboard-summary");
 const metricActiveProducts = document.querySelector("#metric-active-products");
@@ -182,10 +183,7 @@ function hydrateViewState() {
   ]);
 
   if (rawView === "favorites") {
-    state.currentSection = "publications";
-    state.pendingNotice = "Favoritos se está rediseñando.";
-    params.delete("view");
-    history.replaceState(null, "", `${window.location.pathname}${params.toString() ? `?${params}` : ""}`);
+    window.location.replace("favoritos.html");
     return;
   }
 
@@ -1134,6 +1132,7 @@ function bindEvents() {
 
   settingsForm?.addEventListener("submit", handleSettingsSubmit);
   settingsLogoutButton?.addEventListener("click", handleLogout);
+  settingsDeactivateButton?.addEventListener("click", handleAccountDeactivation);
   settingsSchoolCode?.addEventListener("input", () => {
     settingsSchoolName.value = "";
   });
@@ -1242,6 +1241,42 @@ async function handleLogout() {
   }
 
   window.location.href = "index.html";
+}
+
+async function handleAccountDeactivation() {
+  const firstConfirmation = window.confirm(
+    "¿Querés desactivar tu cuenta? Tus publicaciones activas se pausarán y se eliminarán tus favoritos."
+  );
+  if (!firstConfirmation) return;
+
+  const confirmationText = window.prompt(
+    'Para confirmar, escribí "DESACTIVAR".'
+  );
+  if (confirmationText !== "DESACTIVAR") {
+    showToast("La cuenta no fue desactivada.");
+    return;
+  }
+
+  settingsDeactivateButton.disabled = true;
+  settingsDeactivateButton.textContent = "Desactivando...";
+
+  const { error } = await window.colegioLibreSupabase.rpc(
+    "deactivate_own_account"
+  );
+
+  if (error) {
+    console.error("Error desactivando cuenta:", error);
+    settingsDeactivateButton.disabled = false;
+    settingsDeactivateButton.textContent = "Desactivar cuenta";
+    showToast(
+      error.message ||
+        "No se pudo desactivar la cuenta. Ejecutá primero el archivo SQL 8."
+    );
+    return;
+  }
+
+  await window.colegioLibreSupabase.auth.signOut();
+  window.location.replace("index.html");
 }
 
 })();

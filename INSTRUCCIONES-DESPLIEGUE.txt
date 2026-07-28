@@ -58,6 +58,23 @@ https://colegiolibre.vercel.app/
 - Editar, pausar, reactivar y marcar como vendido.
 - Iniciar una conversación desde otra cuenta.
 - Probar favoritos, reportes y bloqueos.
+
+CONFIGURACIÓN NUEVA
+-------------------
+
+Ejecutar en un Query nuevo de Supabase:
+
+sql/8_ENDURECER_PRODUCCION_Y_AUDITORIA.sql
+
+El resultado final debe mostrar:
+
+- auditoria_configurada: true
+- triggers_auditoria_configurados: true
+- limites_spam_configurados: true
+
+Este paso es necesario para guardar las seis imágenes, ver el historial
+administrativo, aplicar límites contra spam y habilitar la desactivación de
+cuenta.
 - Revisar Home, producto, publicar y mensajes en un celular.
 - Cambiar a modo oscuro, recorrer varias páginas y volver al modo claro.
 - Cambiar a English, comprobar Home, formularios, perfil, mensajes y administración.

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20260728-4"></script>
+    <script src="./preferences.js?v=20260728-7"></script>
     <title>ColegioLibre | Cargando publicación</title>
     <meta
       name="description"
@@ -17,8 +17,8 @@
     />
     <link rel="stylesheet" href="./producto.css?v=20260727-2" />
     <link rel="stylesheet" href="./notifications.css?v=20260727-1" />
-    <link rel="stylesheet" href="./polish.css?v=20260728-4" />
-    <link rel="stylesheet" href="./preferences.css?v=20260728-4" />
+    <link rel="stylesheet" href="./polish.css?v=20260728-7" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-7" />
 </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -139,7 +139,7 @@
 
         <section class="details-column" aria-labelledby="product-title">
           <div class="product-head">
-            <h1 id="product-title">Cargando publicación…</h1>
+            <h1 id="product-title" data-product-title data-no-translate>Cargando publicación…</h1>
             <div class="product-badges">
               <span class="condition-badge" id="product-condition-badge">Cargando</span>
               <span class="availability-badge" id="product-status-badge" data-status="available">Cargando</span>
@@ -170,6 +170,10 @@
             <p>
               <svg class="icon"><use href="#icon-eye"></use></svg>
               <span id="product-views">0 vistas</span>
+            </p>
+            <p id="product-updated-row" hidden>
+              <svg class="icon"><use href="#icon-clock"></use></svg>
+              <span id="product-updated-date"></span>
             </p>
           </div>
 
@@ -205,6 +209,9 @@
             >
               <span>Guardar en favoritos</span>
               <svg class="icon"><use href="#icon-heart"></use></svg>
+            </button>
+            <button class="secondary-action" id="share-button" type="button">
+              <span>Compartir</span>
             </button>
             <button class="report-action" id="report-product-button" type="button">
               <svg class="icon"><use href="#icon-flag"></use></svg>
@@ -298,7 +305,7 @@
           <img class="similar-card__image" alt="" />
         </div>
         <div class="similar-card__body">
-          <h3 class="similar-card__title"></h3>
+          <h3 class="similar-card__title" data-product-title data-no-translate></h3>
           <p class="similar-card__meta"></p>
           <p class="similar-card__price"></p>
         </div>
@@ -369,7 +376,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js?v=20260728-verification1"></script>
 <script src="./products.js"></script>
-<script src="./producto.js?v=20260728-verification1"></script>
+<script src="./producto.js?v=20260728-final1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
 </body>
 </html>

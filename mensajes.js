@@ -548,7 +548,7 @@
           )}" alt="${escapeHtml(product.title)}" />
         </div>
         <div class="product-card__body">
-          <h3>${escapeHtml(product.title)}</h3>
+          <h3 data-product-title data-no-translate>${escapeHtml(product.title)}</h3>
           <p class="product-card__price">${escapeHtml(
             formatPrice(product.price)
           )}</p>

@@ -150,7 +150,7 @@
           product.image_url || FALLBACK_PRODUCT_IMAGE
         )}" alt="${escapeHtml(product.title)}" />
         <div class="product-card__body">
-          <h3>${escapeHtml(product.title)}</h3>
+          <h3 data-product-title data-no-translate>${escapeHtml(product.title)}</h3>
           <strong>${escapeHtml(formatPrice(product.price))}</strong>
           <span>${escapeHtml(product.location)} · ${escapeHtml(
             formatRelativeDate(product.created_at)

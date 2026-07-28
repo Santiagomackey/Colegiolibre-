@@ -360,7 +360,7 @@ function renderProducts() {
       </div>
       <div class="school-product-card__body">
         <span class="school-product-card__seller">${escapeHtml(product.seller_name || "Estudiante")}</span>
-        <h3 class="school-product-card__title">${escapeHtml(product.title)}</h3>
+        <h3 class="school-product-card__title" data-product-title data-no-translate>${escapeHtml(product.title)}</h3>
         <p class="school-product-card__price">${escapeHtml(formatPrice(product.price))}</p>
         <span class="school-product-card__location">${escapeHtml(product.location)}</span>
       </div>
