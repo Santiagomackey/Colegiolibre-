@@ -13,6 +13,7 @@ const {
   getInitials,
   getProductFavoriteCount,
   getStatusLabel,
+  isAdminUser,
   loadUserDashboard
 } = window.colegioLibreApi;
 
@@ -62,6 +63,8 @@ const state = {
   pendingProductIds: new Set(),
   products: [],
   profile: null,
+  schoolMembership: null,
+  transactions: [],
   stats: {
     activeCount: 0,
     soldCount: 0,
@@ -133,6 +136,8 @@ async function initPerfil() {
   }
 
   await hydrateDashboard(state.currentUser.id);
+  await hydrateTransactions();
+  await exposeAdminNavigation();
   renderCounts();
   renderDashboard();
   renderSettingsForm();
@@ -143,6 +148,24 @@ async function initPerfil() {
   }
 }
 
+async function exposeAdminNavigation() {
+  if (!(await isAdminUser())) return;
+  const secondaryNav = document.querySelector(".profile-nav--secondary");
+  if (!secondaryNav || secondaryNav.querySelector("[data-admin-moderation]")) {
+    return;
+  }
+
+  secondaryNav.insertAdjacentHTML(
+    "afterbegin",
+    `
+      <a class="profile-nav__item" href="moderacion.html" data-admin-moderation>
+        <svg class="icon"><use href="#icon-shield"></use></svg>
+        <span>Moderación</span>
+      </a>
+    `
+  );
+}
+
 function getCurrentProfileDestination() {
   return `perfil.html${window.location.search}`;
 }
@@ -150,7 +173,13 @@ function getCurrentProfileDestination() {
 function hydrateViewState() {
   const params = new URLSearchParams(window.location.search);
   const rawView = params.get("view");
-  const allowedViews = new Set(["publications", "messages", "purchases", "sales", "settings"]);
+  const allowedViews = new Set([
+    "publications",
+    "messages",
+    "purchases",
+    "sales",
+    "settings"
+  ]);
 
   if (rawView === "favorites") {
     state.currentSection = "publications";
@@ -211,6 +240,28 @@ function hydrateProfileCard() {
   document.getElementById("profile-avatar").textContent = getInitials(state.profile?.name);
 }
 
+async function loadSchoolMembership() {
+  if (!state.currentUser?.id || !state.profile?.school_code) {
+    state.schoolMembership = null;
+    return;
+  }
+
+  const { data, error } = await window.colegioLibreSupabase
+    .from("school_memberships")
+    .select("*")
+    .eq("user_id", state.currentUser.id)
+    .eq("school_code", String(state.profile.school_code).trim().toUpperCase())
+    .maybeSingle();
+
+  if (error) {
+    console.warn("No se pudo cargar la verificación escolar:", error);
+    state.schoolMembership = null;
+    return;
+  }
+
+  state.schoolMembership = data || null;
+}
+
 function partitionProducts() {
   const activeStatuses = new Set(["available", "reserved"]);
 
@@ -227,6 +278,41 @@ function partitionProducts() {
     .map(mapProductToPublication);
 }
 
+async function hydrateTransactions() {
+  const { data, error } = await window.colegioLibreSupabase
+    .from("transactions")
+    .select("*")
+    .or(
+      `buyer_id.eq.${state.currentUser.id},seller_id.eq.${state.currentUser.id}`
+    )
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    console.warn("El historial de operaciones todavía no está disponible:", error);
+    state.transactions = [];
+    return;
+  }
+
+  const productIds = [
+    ...new Set((data || []).map((transaction) => transaction.product_id))
+  ];
+  let products = [];
+
+  if (productIds.length) {
+    const productResponse = await window.colegioLibreSupabase
+      .from("products")
+      .select("id, title, image_url, price")
+      .in("id", productIds);
+    products = productResponse.data || [];
+  }
+
+  const productsById = new Map(products.map((product) => [product.id, product]));
+  state.transactions = (data || []).map((transaction) => ({
+    ...transaction,
+    product: productsById.get(transaction.product_id) || null
+  }));
+}
+
 function mapProductToPublication(product) {
   return {
     category: product.category || "Otros",
@@ -235,6 +321,8 @@ function mapProductToPublication(product) {
     id: product.id,
     image_url: product.image_url || FALLBACK_PRODUCT_IMAGE,
     messages: Number(state.messageCounts[product.id] || 0),
+    moderationReason: product.moderation_reason || null,
+    moderationStatus: product.moderation_status || "approved",
     price: formatPrice(product.price),
     published: formatPublishedDate(product.created_at),
     size: product.size || null,
@@ -313,18 +401,11 @@ function renderCurrentSection() {
     return;
   }
 
-  renderUtilitySection({
-    actionHref: "index.html",
-    actionLabel: "Explorar marketplace",
-    body:
-      "Todavía no armamos un historial de compras completo. En la próxima iteración vamos a mostrar reservas, acuerdos y materiales comprados.",
-    eyebrow: "Próximamente",
-    metrics: [
-      { label: "Reservados", value: String(state.publicationsByState.active.filter((item) => item.status === "reserved").length) },
-      { label: "Colegio activo", value: state.profile?.school_name || "Sin colegio" }
-    ],
-    title: "Compras en preparación"
-  });
+  renderTransactionHistory(
+    state.transactions.filter(
+      (transaction) => transaction.buyer_id === state.currentUser.id
+    )
+  );
 }
 
 function updateSectionUi() {
@@ -352,6 +433,189 @@ function updateSectionUi() {
       button.removeAttribute("aria-current");
     }
   });
+}
+
+function renderVerificationSection() {
+  const profile = state.profile || {};
+  const accountStatus = profile.account_status || "active";
+  const verificationStatus =
+    profile.school_verification_status || "unverified";
+  const emailConfirmed = Boolean(state.currentUser?.email_confirmed_at);
+  const statusConfig = {
+    pending: {
+      label: "Pendiente de revisión",
+      tone: "warning",
+      text:
+        "Tu colegio ya fue enviado a revisión. Un administrador puede aprobarlo desde el Centro de moderación."
+    },
+    rejected: {
+      label: "Solicitud rechazada",
+      tone: "danger",
+      text:
+        state.schoolMembership?.rejection_reason ||
+        "La solicitud no pudo aprobarse. Revisá tu colegio o probá con un código válido."
+    },
+    unverified: {
+      label: "Colegio sin verificar",
+      tone: "neutral",
+      text:
+        "Verificá tu colegio con un código temporal o enviá una solicitud manual."
+    },
+    verified: {
+      label: "Colegio verificado",
+      tone: "success",
+      text:
+        "Ya podés publicar, contactar vendedores, usar mensajes y entrar a Mi colegio."
+    }
+  };
+  const config = statusConfig[verificationStatus] || statusConfig.unverified;
+  const accountLabels = {
+    active: "Cuenta activa",
+    banned: "Cuenta bloqueada",
+    suspended: "Cuenta suspendida"
+  };
+  const verifiedDate = profile.school_verified_at
+    ? formatPublishedDate(profile.school_verified_at)
+    : "";
+
+  utilityPanel.innerHTML = `
+    <div class="verification-layout">
+      <article class="verification-card verification-card--${escapeHtml(config.tone)}">
+        <div class="verification-card__icon" aria-hidden="true">
+          <svg class="icon"><use href="#icon-shield"></use></svg>
+        </div>
+        <div>
+          <p class="section-kicker">Estado de tu comunidad</p>
+          <h2>${escapeHtml(config.label)}</h2>
+          <p>${escapeHtml(config.text)}</p>
+          <div class="verification-facts">
+            <span><strong>Colegio</strong>${escapeHtml(profile.school_name || "Sin colegio")}</span>
+            <span><strong>Email</strong>${emailConfirmed ? "Confirmado" : "Pendiente"}</span>
+            <span><strong>Cuenta</strong>${escapeHtml(accountLabels[accountStatus] || accountStatus)}</span>
+            ${
+              verifiedDate
+                ? `<span><strong>Verificado</strong>${escapeHtml(verifiedDate)}</span>`
+                : ""
+            }
+          </div>
+        </div>
+      </article>
+
+      ${
+        accountStatus !== "active"
+          ? `
+            <article class="verification-action-card verification-action-card--blocked">
+              <p class="section-kicker">Acceso restringido</p>
+              <h3>${escapeHtml(accountLabels[accountStatus])}</h3>
+              <p>No podés publicar ni iniciar conversaciones mientras tu cuenta esté restringida. Contactá al equipo administrador de ColegioLibre.</p>
+            </article>
+          `
+          : verificationStatus === "verified"
+            ? `
+              <article class="verification-action-card">
+                <p class="section-kicker">Todo listo</p>
+                <h3>Tu acceso está habilitado</h3>
+                <p>La verificación pertenece a ${escapeHtml(profile.school_name || "tu colegio")}. Si cambiás de colegio, vas a tener que verificarlo nuevamente.</p>
+                <a class="verification-primary-action" href="colegio.html?code=${encodeURIComponent(profile.school_code || "")}">Ir a Mi colegio</a>
+              </article>
+            `
+            : `
+              <article class="verification-action-card">
+                <p class="section-kicker">Verificación inmediata</p>
+                <h3>Ingresá el código de tu colegio</h3>
+                <p>Los códigos son temporales y solo sirven para el colegio asociado a tu perfil.</p>
+                <form id="verification-code-form" class="verification-code-form">
+                  <label>
+                    Código
+                    <input id="verification-code" type="text" maxlength="20" autocomplete="off" placeholder="CL-A7F2-9K3M" />
+                  </label>
+                  <button type="submit">Verificar con código</button>
+                </form>
+                <div class="verification-divider"><span>o</span></div>
+                <button
+                  class="verification-secondary-action"
+                  id="request-school-review"
+                  type="button"
+                  ${verificationStatus === "pending" ? "disabled" : ""}
+                >
+                  ${verificationStatus === "pending" ? "Revisión ya solicitada" : "Solicitar revisión manual"}
+                </button>
+                <small>La revisión manual no cambia tu colegio; solo confirma que pertenecés a esa comunidad.</small>
+              </article>
+            `
+      }
+    </div>
+  `;
+
+  const codeInput = document.getElementById("verification-code");
+  codeInput?.addEventListener("input", () => {
+    codeInput.value = codeInput.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9-]/g, "");
+  });
+  document
+    .getElementById("verification-code-form")
+    ?.addEventListener("submit", handleVerificationCode);
+  document
+    .getElementById("request-school-review")
+    ?.addEventListener("click", requestManualVerification);
+}
+
+async function handleVerificationCode(event) {
+  event.preventDefault();
+  const input = document.getElementById("verification-code");
+  const button = event.currentTarget.querySelector("button");
+  const invitationCode = input?.value.trim().toUpperCase();
+
+  if (!invitationCode) {
+    showToast("Ingresá el código de verificación.");
+    input?.focus();
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Verificando…";
+  const { error } = await window.colegioLibreSupabase.rpc(
+    "redeem_school_invite_code",
+    { invitation_code: invitationCode }
+  );
+
+  if (error) {
+    button.disabled = false;
+    button.textContent = "Verificar con código";
+    showToast(error.message || "El código no es válido.");
+    return;
+  }
+
+  await refreshVerificationState();
+  showToast("Tu colegio quedó verificado.");
+}
+
+async function requestManualVerification() {
+  const button = document.getElementById("request-school-review");
+  button.disabled = true;
+  button.textContent = "Enviando…";
+
+  const { error } = await window.colegioLibreSupabase.rpc(
+    "request_school_verification"
+  );
+
+  if (error) {
+    button.disabled = false;
+    button.textContent = "Solicitar revisión manual";
+    showToast(error.message || "No se pudo enviar la solicitud.");
+    return;
+  }
+
+  await refreshVerificationState();
+  showToast("Solicitud enviada para revisión.");
+}
+
+async function refreshVerificationState() {
+  await hydrateDashboard(state.currentUser.id);
+  await loadSchoolMembership();
+  renderDashboard();
+  renderVerificationSection();
 }
 
 function renderPublicationList(items, emptyMessage) {
@@ -401,6 +665,69 @@ function renderUtilitySection(config) {
         </a>
       </div>
     </article>
+  `;
+}
+
+function renderTransactionHistory(transactions) {
+  if (!transactions.length) {
+    renderUtilitySection({
+      actionHref: "index.html",
+      actionLabel: "Explorar productos",
+      body:
+        "Cuando reserves o compres un producto desde el chat, la operación aparecerá acá.",
+      eyebrow: "Historial",
+      metrics: [
+        { label: "Compras verificadas", value: "0" },
+        { label: "Colegio", value: state.profile?.school_name || "Sin colegio" }
+      ],
+      title: "Todavía no tenés compras"
+    });
+    return;
+  }
+
+  const statusLabels = {
+    cancelled: "Cancelada",
+    completed: "Completada",
+    reserved: "Reservada"
+  };
+
+  utilityPanel.innerHTML = `
+    <div class="transaction-history">
+      ${transactions
+        .map(
+          (transaction) => `
+            <article class="transaction-card">
+              <img
+                src="${escapeHtml(
+                  transaction.product?.image_url || FALLBACK_PRODUCT_IMAGE
+                )}"
+                alt="${escapeHtml(transaction.product?.title || "Producto")}"
+              />
+              <div>
+                <span class="transaction-card__status" data-status="${escapeHtml(
+                  transaction.status
+                )}">${escapeHtml(
+                  statusLabels[transaction.status] || transaction.status
+                )}</span>
+                <h3>${escapeHtml(
+                  transaction.product?.title || "Producto de ColegioLibre"
+                )}</h3>
+                <p>${escapeHtml(
+                  transaction.status === "completed"
+                    ? "La operación fue confirmada por el vendedor."
+                    : transaction.status === "reserved"
+                      ? "El vendedor reservó este producto para vos."
+                      : "La reserva fue cancelada."
+                )}</p>
+              </div>
+              <a href="mensajes.html?id=${encodeURIComponent(
+                transaction.conversation_id
+              )}">Abrir conversación</a>
+            </article>
+          `
+        )
+        .join("")}
+    </div>
   `;
 }
 
@@ -458,8 +785,23 @@ function buildPublicationCard(item) {
   stats[2].querySelector(".publication-stat__label").textContent =
     item.messages === 1 ? "mensaje" : "mensajes";
 
-  published.textContent = `${item.published} · ${getStatusLabel(item.status)}`;
-  dropdown.innerHTML = buildMenuActions(item.status);
+  const moderationLabels = {
+    approved: "Aprobada",
+    manual_review: "En revisión",
+    pending: "Revisando",
+    rejected: "No aprobada"
+  };
+  const moderationLabel = moderationLabels[item.moderationStatus];
+  published.textContent = `${item.published} · ${
+    moderationLabel || getStatusLabel(item.status)
+  }`;
+  if (
+    item.moderationReason &&
+    ["pending", "manual_review", "rejected"].includes(item.moderationStatus)
+  ) {
+    published.title = item.moderationReason;
+  }
+  dropdown.innerHTML = buildMenuActions(item.status, item.moderationStatus);
 
   card.addEventListener("click", (event) => {
     if (event.target.closest(".publication-menu")) {
@@ -497,8 +839,14 @@ function buildPublicationCard(item) {
   return fragment;
 }
 
-function buildMenuActions(status) {
+function buildMenuActions(status, moderationStatus = "approved") {
   if (status === "paused") {
+    if (moderationStatus !== "approved") {
+      return `
+        <button type="button" role="menuitem" data-edit-action>Editar y volver a enviar</button>
+        <button type="button" role="menuitem" data-status-action="sold">Marcar como vendido</button>
+      `;
+    }
     return `
       <button type="button" role="menuitem" data-edit-action>Editar publicación</button>
       <button type="button" role="menuitem" data-status-action="available">Reactivar producto</button>
@@ -522,8 +870,18 @@ function buildMenuActions(status) {
 
 async function updateProductStatus(productId, nextStatus, sourceButton) {
   const allowedStatuses = new Set(["available", "paused", "sold"]);
+  const currentProduct = state.products.find((product) => product.id === productId);
 
   if (!allowedStatuses.has(nextStatus) || state.pendingProductIds.has(productId)) {
+    return false;
+  }
+
+  if (
+    nextStatus === "sold" &&
+    !window.confirm(
+      "Si la venta fue con alguien del chat, conviene completarla desde esa conversación para registrar al comprador y habilitar las calificaciones. ¿Querés marcarla como vendida sin asociar un comprador?"
+    )
+  ) {
     return false;
   }
 
@@ -532,22 +890,34 @@ async function updateProductStatus(productId, nextStatus, sourceButton) {
   sourceButton?.setAttribute("disabled", "");
 
   try {
-    const updatePayload = {
-      status: nextStatus,
-      updated_at: new Date().toISOString()
-    };
+    let response;
 
-    if (nextStatus === "available") {
-      updatePayload.reserved_for = null;
+    if (nextStatus === "available" && currentProduct?.status === "sold") {
+      response = await window.colegioLibreSupabase.rpc(
+        "reopen_product_listing",
+        { target_product: productId }
+      );
+    } else {
+      const updatePayload = {
+        status: nextStatus,
+        updated_at: new Date().toISOString()
+      };
+
+      if (nextStatus === "available") {
+        updatePayload.reserved_for = null;
+      }
+
+      response = await window.colegioLibreSupabase
+        .from("products")
+        .update(updatePayload)
+        .eq("id", productId)
+        .eq("user_id", state.currentUser.id)
+        .select("id, status")
+        .maybeSingle();
     }
 
-    const { data: updatedProduct, error } = await window.colegioLibreSupabase
-      .from("products")
-      .update(updatePayload)
-      .eq("id", productId)
-      .eq("user_id", state.currentUser.id)
-      .select("id, status")
-      .maybeSingle();
+    const { data, error } = response;
+    const updatedProduct = Array.isArray(data) ? data[0] : data;
 
     if (error) {
       throw error;
@@ -572,7 +942,7 @@ async function updateProductStatus(productId, nextStatus, sourceButton) {
     return true;
   } catch (error) {
     console.error("Error actualizando estado:", error);
-    showToast("No se pudo actualizar el estado.");
+    showToast(error.message || "No se pudo actualizar el estado.");
     return false;
   } finally {
     state.pendingProductIds.delete(productId);
@@ -594,7 +964,13 @@ function activateTab(nextState) {
 }
 
 function activateSection(nextSection) {
-  const allowedViews = new Set(["publications", "messages", "purchases", "sales", "settings"]);
+  const allowedViews = new Set([
+    "publications",
+    "messages",
+    "purchases",
+    "sales",
+    "settings"
+  ]);
   state.currentSection = allowedViews.has(nextSection) ? nextSection : "publications";
 
   if (state.currentSection === "sales") {
@@ -714,6 +1090,9 @@ async function handleSettingsSubmit(event) {
   const name = settingsName.value.trim();
   const requestedSchoolCode = settingsSchoolCode.value.trim().toUpperCase();
   const requestedZone = settingsZone.value.trim();
+  const previousSchoolCode = String(state.profile?.school_code || "")
+    .trim()
+    .toUpperCase();
 
   if (!name) {
     showToast("Completá tu nombre para guardar los ajustes.");
@@ -764,11 +1143,19 @@ async function handleSettingsSubmit(event) {
   }
 
   await hydrateDashboard(state.currentUser.id);
+  await loadSchoolMembership();
   renderCounts();
   renderDashboard();
   renderSettingsForm();
   renderCurrentSection();
-  showToast("Ajustes guardados correctamente.");
+  const schoolChanged =
+    previousSchoolCode !==
+    String(schoolCode || "").trim().toUpperCase();
+  showToast(
+    schoolChanged
+      ? "Colegio actualizado. Tenés que verificarlo nuevamente."
+      : "Ajustes guardados correctamente."
+  );
 }
 
 async function handleLogout() {

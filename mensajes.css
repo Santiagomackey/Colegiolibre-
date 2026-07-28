@@ -820,3 +820,265 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* ColegioLibre · confianza y seguridad */
+.chat-safety-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.chat-safety-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #d9e1ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #526077;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-safety-actions button:hover {
+  border-color: #b8c6dc;
+  color: #0b2e6b;
+  background: #f7f9fc;
+}
+
+.chat-safety-actions button[data-blocked="true"] {
+  border-color: #ffd4d4;
+  color: #a12f2f;
+  background: #fff5f5;
+}
+
+.chat-safety-actions .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.conversation-trust {
+  padding: 0 18px 18px;
+}
+
+.trust-status-card {
+  padding: 14px;
+  border: 1px solid #dce7f7;
+  border-radius: 15px;
+  background: #f7faff;
+  color: #34445f;
+}
+
+.trust-status-card--complete {
+  border-color: #cceabd;
+  background: #f4fbed;
+}
+
+.trust-status-card strong,
+.trust-status-card span {
+  display: block;
+}
+
+.trust-status-card strong {
+  color: #0b2e6b;
+  font-size: 13px;
+}
+
+.trust-status-card span {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.review-form {
+  margin-top: 12px;
+}
+
+.review-form__stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 10px 0;
+}
+
+.review-form__stars input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.review-form__stars label {
+  color: #cbd3df;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.review-form__stars label:hover,
+.review-form__stars label:hover ~ label,
+.review-form__stars input:checked ~ label {
+  color: #ffc72c;
+}
+
+.review-form textarea {
+  width: 100%;
+  min-height: 82px;
+  resize: vertical;
+  padding: 11px 12px;
+  border: 1px solid #d8e0ec;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.review-form button {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 9px;
+  border: 0;
+  border-radius: 12px;
+  background: #0b2e6b;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.review-form button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.safety-modal[hidden] {
+  display: none;
+}
+
+.safety-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.safety-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(4, 18, 44, 0.56);
+  backdrop-filter: blur(4px);
+}
+
+.safety-modal__dialog {
+  position: relative;
+  width: min(100%, 520px);
+  padding: 24px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(7, 31, 76, 0.28);
+}
+
+.safety-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.safety-modal__head h2 {
+  margin: 4px 0 0;
+  color: #0b2e6b;
+  font-size: 23px;
+}
+
+.safety-modal__close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #dce3ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #40506a;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.safety-modal__intro {
+  margin: 14px 0 18px;
+  color: #64718a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.safety-modal form,
+.safety-modal label {
+  display: grid;
+  gap: 8px;
+}
+
+.safety-modal form {
+  gap: 16px;
+}
+
+.safety-modal label span {
+  color: #152f63;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.safety-modal select,
+.safety-modal textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid #d6deea;
+  border-radius: 13px;
+  background: #fff;
+  color: #15233a;
+  font: inherit;
+}
+
+.safety-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.safety-modal__actions button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.safety-modal__cancel {
+  border: 1px solid #d5deea;
+  background: #fff;
+  color: #42516a;
+}
+
+.safety-modal__submit {
+  border: 0;
+  background: #0b2e6b;
+  color: #fff;
+}
+
+@media (max-width: 860px) {
+  .chat-safety-actions span {
+    display: none;
+  }
+
+  .chat-safety-actions button {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+}

@@ -406,8 +406,14 @@ async function init() {
 
   let onboardingResult = null;
   if (typeof initOnboarding === "function") {
+    const onboardingDestination = state.showOnlyFavorites
+      ? "index.html?favorites=1"
+      : state.requestedScope === "school"
+        ? "colegio.html"
+        : "";
+
     onboardingResult = await initOnboarding({
-      next: state.showOnlyFavorites ? "index.html?favorites=1" : ""
+      next: onboardingDestination
     });
   }
 
@@ -420,15 +426,18 @@ async function init() {
     window.location.replace(buildLoginUrl("index.html?favorites=1"));
     return;
   }
+
+  if (state.requestedScope === "school" && state.profile?.school_code) {
+    window.location.replace(buildSchoolCommunityUrl(state.profile));
+    return;
+  }
+
   const canUseRequestedScope =
     state.requestedScope === "country" ||
-    (state.requestedScope === "school" && state.profile?.school_code) ||
     (state.requestedScope === "zone" && state.profile?.zone_code);
   state.activeScope = canUseRequestedScope
     ? state.requestedScope
-    : state.profile?.school_code
-      ? "school"
-      : "country";
+    : "country";
 
   await loadProducts();
   await refreshFavorites();
@@ -947,9 +956,18 @@ function bindEvents() {
     button.addEventListener("click", async () => {
       const nextScope = button.dataset.scope || "country";
 
-      if (nextScope !== "country") {
+      if (nextScope === "school") {
+        const access = await ensureAccountReady("colegio.html");
+        if (!access) return;
+
+        window.location.assign(buildSchoolCommunityUrl(access.profile));
+        return;
+      }
+
+      if (nextScope === "zone") {
         const access = await ensureAccountReady(
-          `index.html?scope=${encodeURIComponent(nextScope)}`
+          `index.html?scope=${encodeURIComponent(nextScope)}`,
+          { requireVerification: false }
         );
         if (!access) return;
       }
@@ -1010,7 +1028,8 @@ function getSafeLocalDestination(rawValue = "index.html") {
     "perfil.html",
     "publicar.html",
     "mensajes.html",
-    "favoritos.html"
+    "favoritos.html",
+    "colegio.html"
   ]);
 
   try {
@@ -1037,8 +1056,12 @@ function buildOnboardingUrl(destination) {
   return `index.html?onboarding=1&next=${encodeURIComponent(safeDestination)}`;
 }
 
-async function ensureAccountReady(destination) {
+async function ensureAccountReady(destination, options = {}) {
   const safeDestination = getSafeLocalDestination(destination);
+  const page = safeDestination.split("?")[0];
+  const requireActiveAccount =
+    options.requireVerification ??
+    ["colegio.html", "mensajes.html", "publicar.html"].includes(page);
   const user = await getCurrentUser(true);
 
   if (!user) {
@@ -1059,6 +1082,21 @@ async function ensureAccountReady(destination) {
     return null;
   }
 
+  if (
+    requireActiveAccount &&
+    window.colegioLibreApi.isAccountRestricted(profile)
+  ) {
+    showToast(
+      profile.account_status === "banned"
+        ? "Tu cuenta está bloqueada. Revisá el estado desde tu perfil."
+        : "Tu cuenta está suspendida temporalmente."
+    );
+    window.setTimeout(() => {
+      window.location.assign("perfil.html");
+    }, 900);
+    return null;
+  }
+
   return { profile, user };
 }
 
@@ -1073,6 +1111,13 @@ async function handleProtectedLinkClick(event) {
   if (access) {
     window.location.assign(destination);
   }
+}
+
+function buildSchoolCommunityUrl(profile = state.profile) {
+  const schoolCode = String(profile?.school_code || "").trim();
+  return schoolCode
+    ? `colegio.html?code=${encodeURIComponent(schoolCode)}`
+    : "colegio.html";
 }
 
 async function handleLogout() {
@@ -1741,8 +1786,15 @@ function updateProductsHeading() {
     return;
   }
 
-  elements.productsKicker.textContent = "Selección para vos";
-  elements.productsTitle.textContent = "Recomendados para vos";
+  if (state.activeScope === "zone" && state.profile?.zone_code) {
+    elements.productsKicker.textContent = "Cerca tuyo";
+    elements.productsTitle.textContent =
+      `Recomendados en ${state.profile.zone_code}`;
+    return;
+  }
+
+  elements.productsKicker.textContent = "Selección nacional";
+  elements.productsTitle.textContent = "Recomendados de toda Argentina";
 }
 
 function buildSummary(total, productLimit = getCurrentProductLimit()) {

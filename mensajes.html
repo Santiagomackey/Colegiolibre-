@@ -61,6 +61,14 @@
         <path d="m4 7 8-4 8 4-8 4Z" />
         <path d="M4 7v10l8 4 8-4V7M12 11v10" />
       </symbol>
+      <symbol id="icon-flag" viewBox="0 0 24 24">
+        <path d="M5 21V4" />
+        <path d="M5 5h11l-2 4 2 4H5" />
+      </symbol>
+      <symbol id="icon-block" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m5.7 5.7 12.6 12.6" />
+      </symbol>
     </svg>
 
     <header class="site-header">
@@ -124,6 +132,17 @@
               <p id="chat-subtitle">Elegí un chat para ver el historial completo.</p>
               <p class="typing-indicator" id="typing-indicator" hidden>Escribiendo…</p>
             </div>
+
+            <div class="chat-safety-actions" id="chat-safety-actions" hidden>
+              <button id="report-conversation-button" type="button">
+                <svg class="icon"><use href="#icon-flag"></use></svg>
+                <span>Reportar</span>
+              </button>
+              <button id="block-user-button" type="button">
+                <svg class="icon"><use href="#icon-block"></use></svg>
+                <span>Bloquear</span>
+              </button>
+            </div>
           </header>
 
           <section class="messages-list" id="messages-list" aria-live="polite">
@@ -166,9 +185,69 @@
 
     <div class="toast" id="messages-toast" hidden></div>
 
+    <div class="safety-modal" id="conversation-report-modal" hidden>
+      <button
+        class="safety-modal__backdrop"
+        id="conversation-report-backdrop"
+        type="button"
+        aria-label="Cerrar reporte"
+      ></button>
+      <section
+        class="safety-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="conversation-report-title"
+      >
+        <div class="safety-modal__head">
+          <div>
+            <p class="section-kicker">Seguridad</p>
+            <h2 id="conversation-report-title">Reportar conversación</h2>
+          </div>
+          <button
+            class="safety-modal__close"
+            id="conversation-report-close"
+            type="button"
+            aria-label="Cerrar"
+          >×</button>
+        </div>
+        <p class="safety-modal__intro">
+          El reporte será revisado por el equipo de ColegioLibre. La otra persona no verá quién lo envió.
+        </p>
+        <form id="conversation-report-form">
+          <label>
+            <span>Motivo</span>
+            <select id="conversation-report-reason" required>
+              <option value="">Seleccioná un motivo</option>
+              <option value="fraud">Posible fraude o engaño</option>
+              <option value="harassment">Acoso o mensajes ofensivos</option>
+              <option value="unsafe">Conducta o encuentro inseguro</option>
+              <option value="spam">Spam</option>
+              <option value="inappropriate">Contenido inapropiado</option>
+              <option value="other">Otro motivo</option>
+            </select>
+          </label>
+          <label>
+            <span>Contanos qué pasó</span>
+            <textarea
+              id="conversation-report-details"
+              maxlength="1000"
+              rows="5"
+              placeholder="No incluyas contraseñas ni información bancaria."
+            ></textarea>
+          </label>
+          <div class="safety-modal__actions">
+            <button class="safety-modal__cancel" id="conversation-report-cancel" type="button">
+              Cancelar
+            </button>
+            <button class="safety-modal__submit" type="submit">Enviar reporte</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabase.js?v=20260727-2"></script>
-    <script src="./mensajes.js?v=20260727-2"></script>
+    <script src="./supabase.js?v=20260728-verification1"></script>
+    <script src="./mensajes.js?v=20260728-verification1"></script>
     <script src="./notifications.js?v=20260727-1"></script>
   </body>
 </html>

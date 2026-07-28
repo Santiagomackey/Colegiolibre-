@@ -405,6 +405,7 @@
     const titles = {
       favorite: "Guardaron tu producto",
       message: "Nuevo mensaje",
+      review_requested: "Calificá la operación",
       reserved: "Producto reservado",
       sold: "Producto vendido",
       available: "Producto disponible"
@@ -428,6 +429,9 @@
     }
     if (type === "sold") {
       return '<svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>';
+    }
+    if (type === "review_requested") {
+      return '<svg viewBox="0 0 24 24"><path d="m12 3.5 2.7 5.48 6.05.88-4.38 4.27 1.03 6.03L12 17.32 6.6 20.16l1.03-6.03-4.38-4.27 6.05-.88Z"></path></svg>';
     }
     return '<svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4Z"></path><path d="M4 7v10l8 4 8-4V7M12 11v10"></path></svg>';
   }

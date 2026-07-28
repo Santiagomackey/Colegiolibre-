@@ -21,8 +21,10 @@
   const elements = {
     accountLink: document.getElementById("messages-account-link"),
     chatAvatar: document.getElementById("chat-avatar"),
+    chatSafetyActions: document.getElementById("chat-safety-actions"),
     chatSubtitle: document.getElementById("chat-subtitle"),
     chatTitle: document.getElementById("chat-title"),
+    blockUserButton: document.getElementById("block-user-button"),
     conversationList: document.getElementById("conversation-list"),
     conversationSearch: document.getElementById("conversation-search"),
     globalSearchForm: document.getElementById("global-search-form"),
@@ -34,6 +36,14 @@
     messagesList: document.getElementById("messages-list"),
     mobileBackButton: document.getElementById("mobile-back-button"),
     productPanel: document.getElementById("product-panel"),
+    reportConversationButton: document.getElementById("report-conversation-button"),
+    reportModal: document.getElementById("conversation-report-modal"),
+    reportBackdrop: document.getElementById("conversation-report-backdrop"),
+    reportClose: document.getElementById("conversation-report-close"),
+    reportCancel: document.getElementById("conversation-report-cancel"),
+    reportForm: document.getElementById("conversation-report-form"),
+    reportReason: document.getElementById("conversation-report-reason"),
+    reportDetails: document.getElementById("conversation-report-details"),
     sendButton: document.querySelector("#message-form button"),
     toast: document.getElementById("messages-toast"),
     typingIndicator: document.getElementById("typing-indicator")
@@ -50,7 +60,8 @@
     sending: false,
     typingChannel: null,
     typingHideTimer: null,
-    typingStopTimer: null
+    typingStopTimer: null,
+    userBlocked: false
   };
 
   initMessagesPage();
@@ -73,6 +84,11 @@
       window.location.replace(
         `index.html?onboarding=1&next=${encodeURIComponent(destination)}`
       );
+      return;
+    }
+
+    if (window.colegioLibreApi.isAccountRestricted(profile)) {
+      window.location.replace("perfil.html");
       return;
     }
 
@@ -114,6 +130,22 @@
 
     elements.mobileBackButton?.addEventListener("click", () => {
       document.body.dataset.view = "list";
+    });
+
+    elements.reportConversationButton?.addEventListener(
+      "click",
+      openConversationReport
+    );
+    elements.reportBackdrop?.addEventListener("click", closeConversationReport);
+    elements.reportClose?.addEventListener("click", closeConversationReport);
+    elements.reportCancel?.addEventListener("click", closeConversationReport);
+    elements.reportForm?.addEventListener("submit", submitConversationReport);
+    elements.blockUserButton?.addEventListener("click", toggleActiveUserBlock);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !elements.reportModal?.hidden) {
+        closeConversationReport();
+      }
     });
 
     window.addEventListener("beforeunload", cleanRealtimeChannels);
@@ -489,6 +521,8 @@
     elements.chatTitle.textContent = name;
     elements.chatSubtitle.textContent = getConversationSchool(conversation);
     elements.typingIndicator.hidden = true;
+    elements.chatSafetyActions.hidden = false;
+    void hydrateBlockState(conversation);
   }
 
   function renderProductPanel(conversation) {
@@ -499,7 +533,9 @@
     }
 
     const isSeller = conversation.seller_id === state.currentUser.id;
-    const ownerActions = isSeller ? buildOwnerProductActions(product) : "";
+    const ownerActions = isSeller
+      ? buildOwnerProductActions(product, conversation)
+      : "";
 
     elements.productPanel.innerHTML = `
       <article class="product-card">
@@ -540,6 +576,7 @@
             <svg class="icon"><use href="#icon-open"></use></svg>
           </a>
         </div>
+        <div class="conversation-trust" id="conversation-trust-panel"></div>
       </article>
     `;
 
@@ -555,9 +592,11 @@
           updateProductStatus(conversation, button.dataset.productStatus)
         );
       });
+
+    void hydrateConversationTrust(conversation);
   }
 
-  function buildOwnerProductActions(product) {
+  function buildOwnerProductActions(product, conversation) {
     if (product.status === "sold") {
       return `
         <div class="product-owner-actions">
@@ -569,6 +608,18 @@
     }
 
     if (product.status === "reserved") {
+      if (
+        product.reserved_for &&
+        product.reserved_for !== conversation.buyer_id
+      ) {
+        return `
+          <div class="trust-status-card">
+            <strong>Reservado para otro comprador</strong>
+            <span>Abrí la conversación correcta para administrar esa reserva.</span>
+          </div>
+        `;
+      }
+
       return `
         <div class="product-owner-actions">
           <button class="product-status-action" type="button" data-product-status="available">
@@ -630,38 +681,61 @@
       button.disabled = true;
     });
 
-    const statusUpdate = {
-      status: nextStatus,
-      updated_at: new Date().toISOString()
-    };
+    let response;
 
-    if (nextStatus === "available") {
-      statusUpdate.reserved_for = null;
-    } else if (nextStatus === "reserved") {
-      statusUpdate.reserved_for = conversation.buyer_id;
+    if (nextStatus === "reserved") {
+      response = await window.colegioLibreSupabase.rpc(
+        "reserve_product_for_conversation",
+        { target_conversation: conversation.id }
+      );
     } else if (nextStatus === "sold") {
-      statusUpdate.reserved_for =
-        conversation.product.reserved_for || conversation.buyer_id;
+      response = await window.colegioLibreSupabase.rpc(
+        "complete_sale_for_conversation",
+        { target_conversation: conversation.id }
+      );
+    } else if (
+      nextStatus === "available" &&
+      conversation.product.status === "reserved"
+    ) {
+      response = await window.colegioLibreSupabase.rpc(
+        "cancel_product_reservation",
+        { target_conversation: conversation.id }
+      );
+    } else if (
+      nextStatus === "available" &&
+      conversation.product.status === "sold"
+    ) {
+      response = await window.colegioLibreSupabase.rpc(
+        "reopen_product_listing",
+        { target_product: conversation.product.id }
+      );
+    } else {
+      response = await window.colegioLibreSupabase
+        .from("products")
+        .update({
+          status: nextStatus,
+          reserved_for: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", conversation.product.id)
+        .eq("user_id", state.currentUser.id)
+        .select("*")
+        .single();
     }
 
-    const { data, error } = await window.colegioLibreSupabase
-      .from("products")
-      .update(statusUpdate)
-      .eq("id", conversation.product.id)
-      .eq("user_id", state.currentUser.id)
-      .select("*")
-      .single();
+    const { data, error } = response;
 
     if (error) {
       console.error("Error cambiando estado:", error);
-      showToast("No se pudo cambiar el estado del producto.");
+      showToast(error.message || "No se pudo cambiar el estado del producto.");
       buttons.forEach((button) => {
         button.disabled = false;
       });
       return;
     }
 
-    conversation.product = safeProductRecord(data);
+    const productData = Array.isArray(data) ? data[0] : data;
+    conversation.product = safeProductRecord(productData);
     renderProductPanel(conversation);
     showToast(
       nextStatus === "reserved"
@@ -670,6 +744,259 @@
           ? "Producto marcado como vendido."
           : "Producto disponible nuevamente."
     );
+  }
+
+  async function hydrateConversationTrust(conversation) {
+    const panel = elements.productPanel.querySelector(
+      "#conversation-trust-panel"
+    );
+    if (!panel || !conversation.product) return;
+
+    if (conversation.product.status === "reserved") {
+      panel.innerHTML = `
+        <div class="trust-status-card">
+          <strong>Reserva registrada</strong>
+          <span>
+            ColegioLibre no procesa pagos. Revisen el producto y coordinen el
+            intercambio en un lugar seguro.
+          </span>
+        </div>
+      `;
+      return;
+    }
+
+    if (conversation.product.status !== "sold") {
+      panel.innerHTML = `
+        <div class="trust-status-card">
+          <strong>Intercambio sin pagos dentro de la plataforma</strong>
+          <span>
+            No envíes dinero por adelantado. Usá este chat para coordinar y
+            revisá el producto antes de pagar.
+          </span>
+        </div>
+      `;
+      return;
+    }
+
+    const { data: transaction, error: transactionError } =
+      await window.colegioLibreSupabase
+        .from("transactions")
+        .select("id, buyer_id, seller_id, status, completed_at")
+        .eq("conversation_id", conversation.id)
+        .eq("status", "completed")
+        .order("completed_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    if (transactionError || !transaction) {
+      panel.innerHTML = `
+        <div class="trust-status-card trust-status-card--complete">
+          <strong>Venta finalizada</strong>
+          <span>La operación quedó marcada como completada.</span>
+        </div>
+      `;
+      return;
+    }
+
+    const { data: ownReview } = await window.colegioLibreSupabase
+      .from("reviews")
+      .select("id, rating, comment")
+      .eq("transaction_id", transaction.id)
+      .eq("reviewer_id", state.currentUser.id)
+      .maybeSingle();
+
+    if (ownReview) {
+      panel.innerHTML = `
+        <div class="trust-status-card trust-status-card--complete">
+          <strong>Gracias por calificar esta operación</strong>
+          <span>Tu calificación: ${"★".repeat(
+            Number(ownReview.rating || 0)
+          )}${"☆".repeat(5 - Number(ownReview.rating || 0))}</span>
+        </div>
+      `;
+      return;
+    }
+
+    const reviewedName = getConversationName(conversation);
+    const inputName = `review-rating-${transaction.id}`;
+    panel.innerHTML = `
+      <div class="trust-status-card trust-status-card--complete">
+        <strong>Venta finalizada</strong>
+        <span>Calificá tu experiencia con ${escapeHtml(reviewedName)}.</span>
+        <form class="review-form" data-review-form data-transaction-id="${escapeHtml(
+          transaction.id
+        )}">
+          <div class="review-form__stars" aria-label="Calificación">
+            ${[5, 4, 3, 2, 1]
+              .map(
+                (rating) => `
+                  <input
+                    id="${inputName}-${rating}"
+                    name="${inputName}"
+                    type="radio"
+                    value="${rating}"
+                    ${rating === 5 ? "required" : ""}
+                  />
+                  <label for="${inputName}-${rating}" aria-label="${rating} estrellas">★</label>
+                `
+              )
+              .join("")}
+          </div>
+          <textarea
+            maxlength="500"
+            data-review-comment
+            placeholder="Comentario opcional (máximo 500 caracteres)"
+          ></textarea>
+          <button type="submit">Enviar calificación</button>
+        </form>
+      </div>
+    `;
+
+    panel
+      .querySelector("[data-review-form]")
+      ?.addEventListener("submit", (event) =>
+        submitReview(event, conversation)
+      );
+  }
+
+  async function submitReview(event, conversation) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const rating = Number(
+      new FormData(form).get(`review-rating-${form.dataset.transactionId}`)
+    );
+    const comment = form.querySelector("[data-review-comment]")?.value.trim();
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (!rating) {
+      showToast("Elegí una calificación de 1 a 5 estrellas.");
+      return;
+    }
+
+    submitButton.disabled = true;
+    const { error } = await window.colegioLibreSupabase.rpc(
+      "submit_transaction_review",
+      {
+        target_transaction: form.dataset.transactionId,
+        selected_rating: rating,
+        review_comment: comment || null
+      }
+    );
+
+    if (error) {
+      console.error("Error enviando calificación:", error);
+      showToast(error.message || "No se pudo enviar la calificación.");
+      submitButton.disabled = false;
+      return;
+    }
+
+    showToast("Calificación enviada. ¡Gracias!");
+    await hydrateConversationTrust(conversation);
+  }
+
+  function getActiveConversation() {
+    return state.conversations.find(
+      (conversation) => conversation.id === state.activeConversationId
+    );
+  }
+
+  async function hydrateBlockState(conversation) {
+    const otherUserId = getOtherUserId(conversation);
+    const { data, error } = await window.colegioLibreSupabase
+      .from("user_blocks")
+      .select("blocked_id")
+      .eq("blocker_id", state.currentUser.id)
+      .eq("blocked_id", otherUserId)
+      .maybeSingle();
+
+    state.userBlocked = !error && Boolean(data);
+    elements.blockUserButton.dataset.blocked = String(state.userBlocked);
+    elements.blockUserButton.querySelector("span").textContent =
+      state.userBlocked ? "Desbloquear" : "Bloquear";
+
+    if (
+      conversation.id === state.activeConversationId &&
+      state.userBlocked
+    ) {
+      setComposerEnabled(false);
+      elements.messageInput.placeholder = "Desbloqueá al usuario para volver a escribir.";
+    } else if (conversation.id === state.activeConversationId) {
+      setComposerEnabled(true);
+      elements.messageInput.placeholder = "Escribí un mensaje...";
+    }
+  }
+
+  async function toggleActiveUserBlock() {
+    const conversation = getActiveConversation();
+    if (!conversation) return;
+
+    const otherUserId = getOtherUserId(conversation);
+    const action = state.userBlocked ? "unblock_user" : "block_user";
+    const question = state.userBlocked
+      ? "¿Querés desbloquear a este usuario?"
+      : "¿Querés bloquear a este usuario? No podrán seguir enviándose mensajes.";
+
+    if (!window.confirm(question)) return;
+
+    elements.blockUserButton.disabled = true;
+    const { error } = await window.colegioLibreSupabase.rpc(action, {
+      target_user: otherUserId
+    });
+    elements.blockUserButton.disabled = false;
+
+    if (error) {
+      console.error("Error actualizando bloqueo:", error);
+      showToast(error.message || "No se pudo actualizar el bloqueo.");
+      return;
+    }
+
+    state.userBlocked = !state.userBlocked;
+    await hydrateBlockState(conversation);
+    showToast(state.userBlocked ? "Usuario bloqueado." : "Usuario desbloqueado.");
+  }
+
+  function openConversationReport() {
+    if (!getActiveConversation()) return;
+    elements.reportModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    elements.reportReason.focus();
+  }
+
+  function closeConversationReport() {
+    elements.reportModal.hidden = true;
+    document.body.style.overflow = "";
+    elements.reportForm.reset();
+  }
+
+  async function submitConversationReport(event) {
+    event.preventDefault();
+    const conversation = getActiveConversation();
+    if (!conversation) return;
+
+    const submitButton = elements.reportForm.querySelector(
+      'button[type="submit"]'
+    );
+    submitButton.disabled = true;
+
+    const { error } = await window.colegioLibreSupabase.rpc(
+      "create_safety_report",
+      {
+        selected_target_type: "conversation",
+        selected_target_id: conversation.id,
+        selected_reason: elements.reportReason.value,
+        report_details: elements.reportDetails.value.trim() || null
+      }
+    );
+
+    submitButton.disabled = false;
+    if (error) {
+      console.error("Error enviando reporte:", error);
+      showToast(error.message || "No se pudo enviar el reporte.");
+      return;
+    }
+
+    closeConversationReport();
+    showToast("Reporte enviado. Gracias por avisarnos.");
   }
 
   function renderProductPlaceholder(
@@ -816,6 +1143,7 @@
     elements.chatTitle.textContent = "Seleccioná una conversación";
     elements.chatSubtitle.textContent = "ColegioLibre";
     elements.typingIndicator.hidden = true;
+    elements.chatSafetyActions.hidden = true;
     elements.messagesList.innerHTML = `
       <div class="empty-chat">
         <strong>No hay conversación abierta.</strong>
@@ -872,7 +1200,11 @@
 
     if (error) {
       console.error("Error enviando mensaje:", error);
-      showToast("No se pudo enviar el mensaje.");
+      showToast(
+        error.code === "42501"
+          ? "No se pueden enviar mensajes en esta conversación."
+          : "No se pudo enviar el mensaje."
+      );
       return;
     }
 

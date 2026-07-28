@@ -61,6 +61,10 @@
       <symbol id="icon-star" viewBox="0 0 24 24">
         <path d="m12 3.5 2.7 5.48 6.05.88-4.38 4.27 1.03 6.03L12 17.32 6.6 20.16l1.03-6.03-4.38-4.27 6.05-.88Z" />
       </symbol>
+      <symbol id="icon-flag" viewBox="0 0 24 24">
+        <path d="M5 21V4" />
+        <path d="M5 5h11l-2 4 2 4H5" />
+      </symbol>
     </svg>
 
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -201,6 +205,10 @@
               <span>Guardar en favoritos</span>
               <svg class="icon"><use href="#icon-heart"></use></svg>
             </button>
+            <button class="report-action" id="report-product-button" type="button">
+              <svg class="icon"><use href="#icon-flag"></use></svg>
+              <span>Reportar publicación</span>
+            </button>
           </div>
         </section>
 
@@ -215,8 +223,8 @@
     <h3 id="seller-name">Cargando...</h3>
     <p id="seller-school">Cargando colegio...</p>
 
-    <div class="seller-rating" aria-label="Miembro de la comunidad ColegioLibre">
-      <span>Miembro de la comunidad ColegioLibre</span>
+    <div class="seller-rating" id="seller-rating-summary" aria-label="Reputación del vendedor">
+      <span>Cargando reputación...</span>
     </div>
   </div>
 </div>
@@ -297,10 +305,70 @@
     </template>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <div class="safety-modal" id="product-report-modal" hidden>
+      <button
+        class="safety-modal__backdrop"
+        id="product-report-backdrop"
+        type="button"
+        aria-label="Cerrar reporte"
+      ></button>
+      <section
+        class="safety-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-report-title"
+      >
+        <div class="safety-modal__head">
+          <div>
+            <p class="report-kicker">Seguridad</p>
+            <h2 id="product-report-title">Reportar publicación</h2>
+          </div>
+          <button
+            class="safety-modal__close"
+            id="product-report-close"
+            type="button"
+            aria-label="Cerrar"
+          >×</button>
+        </div>
+        <p class="safety-modal__intro">
+          Revisaremos el producto y al vendedor. Tu identidad no se mostrará en la publicación.
+        </p>
+        <form id="product-report-form">
+          <label>
+            <span>Motivo</span>
+            <select id="product-report-reason" required>
+              <option value="">Seleccioná un motivo</option>
+              <option value="fraud">Posible fraude o engaño</option>
+              <option value="wrong_information">Información o categoría incorrecta</option>
+              <option value="inappropriate">Contenido inapropiado</option>
+              <option value="unsafe">Producto o propuesta insegura</option>
+              <option value="spam">Spam o publicación repetida</option>
+              <option value="other">Otro motivo</option>
+            </select>
+          </label>
+          <label>
+            <span>Detalles</span>
+            <textarea
+              id="product-report-details"
+              maxlength="1000"
+              rows="5"
+              placeholder="Explicanos brevemente qué observaste."
+            ></textarea>
+          </label>
+          <div class="safety-modal__actions">
+            <button class="safety-modal__cancel" id="product-report-cancel" type="button">
+              Cancelar
+            </button>
+            <button class="safety-modal__submit" type="submit">Enviar reporte</button>
+          </div>
+        </form>
+      </section>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase.js?v=20260727-2"></script>
+<script src="./supabase.js?v=20260728-verification1"></script>
 <script src="./products.js"></script>
-<script src="./producto.js?v=20260727-2"></script>
+<script src="./producto.js?v=20260728-verification1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
 </body>
 </html>

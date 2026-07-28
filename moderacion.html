@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administración | ColegioLibre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./moderacion.css?v=20260728-verification1" />
+  </head>
+  <body>
+    <header class="moderation-header">
+      <div class="site-shell moderation-header__row">
+        <a href="./index.html" aria-label="Ir al inicio">
+          <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+        </a>
+        <div>
+          <span>Administración</span>
+          <strong>Confianza y seguridad</strong>
+        </div>
+        <a class="back-link" href="./index.html">Volver al marketplace</a>
+      </div>
+    </header>
+
+    <main class="site-shell moderation-page">
+      <section class="moderation-hero">
+        <div>
+          <p>Centro de control</p>
+          <h1>Administración de ColegioLibre</h1>
+          <span>Revisión automática, reportes, cuentas y reglas de publicación.</span>
+        </div>
+        <button id="refresh-current-section" type="button">Actualizar</button>
+      </section>
+
+      <nav class="admin-tabs" aria-label="Secciones administrativas">
+        <button class="is-active" type="button" data-admin-tab="reports">Reportes</button>
+        <button type="button" data-admin-tab="automatic">
+          Revisión automática <span id="pending-automatic-badge">0</span>
+        </button>
+        <button type="button" data-admin-tab="rules">Productos prohibidos</button>
+        <button type="button" data-admin-tab="accounts">Cuentas</button>
+      </nav>
+
+      <section class="admin-section" data-admin-section="reports">
+        <div class="section-heading">
+          <div>
+            <p>Moderación</p>
+            <h2>Reportes de la comunidad</h2>
+          </div>
+        </div>
+
+        <section class="report-metrics" aria-label="Resumen">
+          <article><span>Pendientes</span><strong id="pending-count">0</strong></article>
+          <article><span>En revisión</span><strong id="reviewing-count">0</strong></article>
+          <article><span>Resueltos</span><strong id="resolved-count">0</strong></article>
+        </section>
+
+        <section class="moderation-toolbar">
+          <label>
+            Estado
+            <select id="report-status-filter">
+              <option value="open">Pendientes y en revisión</option>
+              <option value="pending">Pendientes</option>
+              <option value="reviewing">En revisión</option>
+              <option value="resolved">Resueltos</option>
+              <option value="dismissed">Descartados</option>
+              <option value="all">Todos</option>
+            </select>
+          </label>
+          <label>
+            Buscar
+            <input id="report-search" type="search" placeholder="Usuario, motivo o detalle" />
+          </label>
+        </section>
+
+        <section class="reports-list" id="reports-list" aria-live="polite"></section>
+      </section>
+
+      <section class="admin-section" data-admin-section="automatic" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Moderación preventiva</p>
+            <h2>Revisión de publicaciones</h2>
+            <span>El bot publica lo seguro, bloquea lo prohibido y te muestra únicamente los casos dudosos.</span>
+          </div>
+        </div>
+        <section class="moderation-toolbar">
+          <label>
+            Resultado
+            <select id="automatic-status-filter">
+              <option value="open">Pendientes de revisión</option>
+              <option value="manual_review">Revisión manual</option>
+              <option value="pending">Procesando</option>
+              <option value="rejected">Bloqueadas</option>
+              <option value="approved">Aprobadas</option>
+              <option value="all">Todas</option>
+            </select>
+          </label>
+          <label>
+            Buscar
+            <input id="automatic-search" type="search" placeholder="Producto, usuario o motivo" />
+          </label>
+        </section>
+        <section class="admin-list" id="automatic-list" aria-live="polite"></section>
+      </section>
+
+      <section class="admin-section" data-admin-section="verifications" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Comunidades escolares</p>
+            <h2>Solicitudes de verificación</h2>
+            <span>Aprobá únicamente a quienes pertenezcan al colegio indicado.</span>
+          </div>
+        </div>
+        <section class="moderation-toolbar">
+          <label>
+            Estado
+            <select id="verification-status-filter">
+              <option value="pending">Pendientes</option>
+              <option value="verified">Aprobadas</option>
+              <option value="rejected">Rechazadas</option>
+              <option value="all">Todas</option>
+            </select>
+          </label>
+          <label>
+            Buscar
+            <input id="verification-search" type="search" placeholder="Persona, colegio o código" />
+          </label>
+        </section>
+        <section class="admin-list" id="verifications-list" aria-live="polite"></section>
+      </section>
+
+      <section class="admin-section" data-admin-section="invites" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Acceso automático</p>
+            <h2>Códigos temporales por colegio</h2>
+            <span>El código completo se muestra una sola vez cuando se crea.</span>
+          </div>
+        </div>
+
+        <form class="admin-form" id="invite-form">
+          <label>
+            Código del colegio
+            <input id="invite-school-code" type="text" required placeholder="Ej: FDS-A4K8" />
+          </label>
+          <label>
+            Etiqueta
+            <input id="invite-label" type="text" maxlength="120" placeholder="Ej: Familias 1.º A" />
+          </label>
+          <label>
+            Cantidad de usos
+            <input id="invite-max-uses" type="number" min="1" max="10000" value="1" required />
+          </label>
+          <label>
+            Vence
+            <input id="invite-expires-at" type="datetime-local" required />
+          </label>
+          <button type="submit">Crear código temporal</button>
+        </form>
+
+        <article class="generated-code" id="generated-code" hidden>
+          <div>
+            <span>Código creado</span>
+            <strong id="generated-code-value"></strong>
+            <small>Copialo ahora. Por seguridad, después solo se mostrará una parte.</small>
+          </div>
+          <button id="copy-generated-code" type="button">Copiar</button>
+        </article>
+
+        <section class="admin-list" id="invites-list" aria-live="polite"></section>
+      </section>
+
+      <section class="admin-section" data-admin-section="rules" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Catálogo seguro</p>
+            <h2>Reglas para productos prohibidos</h2>
+            <span>“Bloquear” rechaza la publicación; “Revisar” la deja pausada.</span>
+          </div>
+        </div>
+
+        <form class="admin-form admin-form--rules" id="rule-form">
+          <label>
+            Buscar en
+            <select id="rule-field">
+              <option value="all">Título, descripción y categoría</option>
+              <option value="title">Título</option>
+              <option value="description">Descripción</option>
+              <option value="category">Categoría</option>
+            </select>
+          </label>
+          <label>
+            Coincidencia
+            <select id="rule-match-type">
+              <option value="contains">Contiene</option>
+              <option value="exact">Es exactamente</option>
+            </select>
+          </label>
+          <label>
+            Palabra o frase
+            <input id="rule-pattern" type="text" minlength="2" maxlength="120" required placeholder="Ej: bebida alcohólica" />
+          </label>
+          <label>
+            Acción
+            <select id="rule-severity">
+              <option value="block">Bloquear</option>
+              <option value="review">Mandar a revisión</option>
+            </select>
+          </label>
+          <label class="admin-form__wide">
+            Motivo que verá el usuario
+            <input id="rule-reason" type="text" minlength="3" maxlength="300" required placeholder="Este tipo de producto no está permitido en ColegioLibre." />
+          </label>
+          <button type="submit">Agregar regla</button>
+        </form>
+
+        <section class="admin-list" id="rules-list" aria-live="polite"></section>
+      </section>
+
+      <section class="admin-section" data-admin-section="accounts" hidden>
+        <div class="section-heading">
+          <div>
+            <p>Usuarios</p>
+            <h2>Estado de cuentas</h2>
+            <span>Las publicaciones activas se pausan automáticamente al suspender o bloquear.</span>
+          </div>
+        </div>
+        <section class="moderation-toolbar moderation-toolbar--single">
+          <label>
+            Buscar
+            <input id="account-search" type="search" placeholder="Nombre, colegio o código" />
+          </label>
+        </section>
+        <section class="admin-list" id="accounts-list" aria-live="polite"></section>
+      </section>
+    </main>
+
+    <div class="toast" id="moderation-toast" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase.js?v=20260728-verification1"></script>
+    <script src="./moderacion.js?v=20260728-verification1"></script>
+  </body>
+</html>

@@ -1133,3 +1133,186 @@ input:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* ColegioLibre · reportes de seguridad */
+.report-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: #69778d;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#seller-rating-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+#seller-rating-summary strong {
+  color: #0b2e6b;
+  font-size: 13px;
+}
+
+#seller-rating-summary span {
+  color: #67758b;
+  font-size: 12px;
+}
+
+#seller-rating-summary .verified-school-badge {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eaf7e3;
+  color: #36791f;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.report-action:hover {
+  color: #a33131;
+}
+
+.report-action .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.safety-modal[hidden] {
+  display: none;
+}
+
+.safety-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.safety-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(4, 18, 44, 0.56);
+  backdrop-filter: blur(4px);
+}
+
+.safety-modal__dialog {
+  position: relative;
+  width: min(100%, 520px);
+  padding: 24px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(7, 31, 76, 0.28);
+}
+
+.safety-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.report-kicker {
+  margin: 0;
+  color: #67c23a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.safety-modal__head h2 {
+  margin: 4px 0 0;
+  color: #0b2e6b;
+  font-size: 23px;
+}
+
+.safety-modal__close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #dce3ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #40506a;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.safety-modal__intro {
+  margin: 14px 0 18px;
+  color: #64718a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.safety-modal form,
+.safety-modal label {
+  display: grid;
+  gap: 8px;
+}
+
+.safety-modal form {
+  gap: 16px;
+}
+
+.safety-modal label span {
+  color: #152f63;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.safety-modal select,
+.safety-modal textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid #d6deea;
+  border-radius: 13px;
+  background: #fff;
+  color: #15233a;
+  font: inherit;
+}
+
+.safety-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.safety-modal__actions button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.safety-modal__cancel {
+  border: 1px solid #d5deea;
+  background: #fff;
+  color: #42516a;
+}
+
+.safety-modal__submit {
+  border: 0;
+  background: #0b2e6b;
+  color: #fff;
+}
+
+@media (max-width: 560px) {
+  .report-action {
+    width: 100%;
+  }
+}

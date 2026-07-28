@@ -15,7 +15,8 @@
     "producto.html",
     "publicar.html",
     "favoritos.html",
-    "mensajes.html"
+    "mensajes.html",
+    "colegio.html"
   ]);
   const params = new URLSearchParams(window.location.search);
 

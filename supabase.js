@@ -279,6 +279,14 @@ function safeProductRecord(product) {
     image_url: (product && product.image_url) || FALLBACK_PRODUCT_IMAGE,
     location: buildLocation(product),
     favorites_count: Number((product && product.favorites_count) || 0),
+    moderation_confidence:
+      product && product.moderation_confidence !== null
+        ? Number(product.moderation_confidence)
+        : null,
+    moderation_reason: (product && product.moderation_reason) || null,
+    moderation_source: (product && product.moderation_source) || null,
+    moderation_status: (product && product.moderation_status) || "approved",
+    moderated_at: (product && product.moderated_at) || null,
     price: Number((product && product.price) || 0),
     reserved_for: (product && product.reserved_for) || null,
     school_code: (product && product.school_code) || null,
@@ -333,17 +341,28 @@ function safeSchoolRecord(school) {
 
 function safeProfileRecord(profile) {
   return {
+    account_status: (profile && profile.account_status) || "active",
     created_at: (profile && profile.created_at) || null,
     id: (profile && profile.id) || null,
     member_since: (profile && (profile.member_since || profile.created_at)) || null,
+    moderation_restriction_until:
+      (profile && profile.moderation_restriction_until) || null,
+    moderation_strikes: Number((profile && profile.moderation_strikes) || 0),
     name: (profile && profile.name) || "Usuario ColegioLibre",
     rating: Number((profile && profile.rating) || 0),
+    rating_count: Number((profile && profile.rating_count) || 0),
     response_time: Number((profile && profile.response_time) || 0),
     role: (profile && profile.role) || "user",
     sales_count: Number((profile && profile.sales_count) || 0),
     school_code: (profile && profile.school_code) || null,
     school_level: (profile && profile.school_level) || null,
     school_name: (profile && profile.school_name) || "Colegio no especificado",
+    school_verification_status:
+      (profile && profile.school_verification_status) || "unverified",
+    school_verification_updated_at:
+      (profile && profile.school_verification_updated_at) || null,
+    school_verified_at: (profile && profile.school_verified_at) || null,
+    verification_method: (profile && profile.verification_method) || null,
     zone_code: (profile && profile.zone_code) || "Zona no especificada"
   };
 }
@@ -920,6 +939,19 @@ async function isAdminUser() {
   return Boolean(data && data.user_id);
 }
 
+function isAccountRestricted(profile) {
+  if (!profile) return false;
+  if (profile.account_status === "banned") return true;
+
+  const restrictionUntil = profile.moderation_restriction_until
+    ? new Date(profile.moderation_restriction_until).getTime()
+    : null;
+
+  if (restrictionUntil && restrictionUntil > Date.now()) return true;
+  if (profile.account_status === "suspended" && !restrictionUntil) return true;
+  return false;
+}
+
 window.colegioLibreApi = {
   FALLBACK_PRODUCT_IMAGE,
   buildLocation,
@@ -951,6 +983,7 @@ window.colegioLibreApi = {
   getZoneLabel,
   incrementProductViews,
   isAdminUser,
+  isAccountRestricted,
   isMissingRelationError,
   loadPublicProfileBundle,
   loadUserDashboard,

@@ -124,6 +124,61 @@ const publishState = {
   isReady: false
 };
 
+async function moderateSavedProduct(productId) {
+  const { data } = await window.colegioLibreSupabase.auth.getSession();
+  const accessToken = data?.session?.access_token;
+
+  if (!accessToken) {
+    return {
+      decision: "manual_review",
+      reason: "La publicación quedó guardada y será revisada."
+    };
+  }
+
+  try {
+    const response = await fetch("/api/moderate-product", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ productId })
+    });
+    const contentType = response.headers.get("content-type") || "";
+    const result = contentType.includes("application/json")
+      ? await response.json()
+      : null;
+
+    if (!response.ok) {
+      throw new Error(result?.error || "La revisión automática no respondió.");
+    }
+
+    return result;
+  } catch (error) {
+    console.warn("La publicación quedó en revisión manual:", error);
+    return {
+      decision: "manual_review",
+      reason: "No pudimos completar la revisión automática. La publicación quedó guardada para revisión."
+    };
+  }
+}
+
+function moderationMessage(result, isEditMode) {
+  if (result?.decision === "approved") {
+    return isEditMode
+      ? "Cambios aprobados. La publicación ya está disponible."
+      : "¡Publicación aprobada y disponible!";
+  }
+
+  if (result?.decision === "rejected") {
+    return `No pudimos publicar este producto: ${
+      result.reason || "no cumple las reglas de ColegioLibre."
+    }`;
+  }
+
+  return result?.reason || "La publicación quedó en revisión.";
+}
+
 initPublishPage().catch(handleInitializationError);
 
 async function initPublishPage() {
@@ -197,6 +252,14 @@ async function ensurePublishAccess() {
     window.location.replace(
       `index.html?onboarding=1&next=${encodeURIComponent(destination)}`
     );
+    return false;
+  }
+
+  if (window.colegioLibreApi.isAccountRestricted(profile)) {
+    showToast("Tu cuenta no está habilitada para publicar.");
+    window.setTimeout(() => {
+      window.location.replace("perfil.html");
+    }, 900);
     return false;
   }
 
@@ -839,6 +902,14 @@ async function handleSubmit(event) {
       return;
     }
 
+    if (window.colegioLibreApi.isAccountRestricted(profile)) {
+      showToast("Tu cuenta no está habilitada para publicar.");
+      window.setTimeout(() => {
+        window.location.href = "perfil.html";
+      }, 900);
+      return;
+    }
+
     let imageUrl = imageSlots[0]?.isExisting
       ? imageSlots[0].url
       : null;
@@ -882,7 +953,7 @@ async function handleSubmit(event) {
           .update(editableProductFields)
           .eq("id", editProductId)
           .eq("user_id", user.id)
-          .select("id")
+          .select("id, status, moderation_status")
           .maybeSingle();
 
       if (updateError) {
@@ -893,12 +964,14 @@ async function handleSubmit(event) {
         throw new Error("No tenés permiso para editar esta publicación.");
       }
 
+      showToast("Cambios guardados. Estamos revisando la publicación…");
+      const moderationResult = await moderateSavedProduct(updatedProduct.id);
       publishState.hasCompleted = true;
-      showToast("¡Publicación actualizada correctamente!");
+      showToast(moderationMessage(moderationResult, true));
 
       window.setTimeout(() => {
         window.location.href = "perfil.html";
-      }, 900);
+      }, moderationResult?.decision === "approved" ? 900 : 1800);
       return;
     }
 
@@ -915,29 +988,36 @@ async function handleSubmit(event) {
       zone: profile.zone_code || null,
       zone_code: profile.zone_code || null,
       country: "Argentina",
-      status: "available",
+      status: "paused",
+      moderation_status: "pending",
       views: 0,
       created_at: nowIso
     };
 
     console.log("Producto que se enviará:", product);
 
-    const { error: insertError } =
+    const { data: insertedProduct, error: insertError } =
       await window.colegioLibreSupabase
         .from("products")
-        .insert(product);
+        .insert(product)
+        .select("id, status, moderation_status")
+        .single();
 
     if (insertError) {
       throw insertError;
     }
 
+    showToast("Producto recibido. Lo estamos revisando…");
+    const moderationResult = await moderateSavedProduct(insertedProduct.id);
     publishState.hasCompleted = true;
-    showToast("¡Producto publicado correctamente!");
+    showToast(moderationMessage(moderationResult, false));
 
     window.setTimeout(() => {
       window.location.href =
-        `colegio.html?code=${encodeURIComponent(profile.school_code)}`;
-    }, 1000);
+        moderationResult?.decision !== "approved"
+          ? "perfil.html"
+          : `colegio.html?code=${encodeURIComponent(profile.school_code)}`;
+    }, moderationResult?.decision === "approved" ? 900 : 1800);
   } catch (error) {
     console.error(
       publishState.isEditMode ? "ERROR AL EDITAR:" : "ERROR AL PUBLICAR:",

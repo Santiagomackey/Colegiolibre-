@@ -220,6 +220,14 @@ const elements = {
   productLocation: document.querySelector("#product-location"),
   productPrice: document.querySelector("#product-price"),
   productPublishedDate: document.querySelector("#product-published-date"),
+  reportButton: document.querySelector("#report-product-button"),
+  reportModal: document.querySelector("#product-report-modal"),
+  reportBackdrop: document.querySelector("#product-report-backdrop"),
+  reportClose: document.querySelector("#product-report-close"),
+  reportCancel: document.querySelector("#product-report-cancel"),
+  reportForm: document.querySelector("#product-report-form"),
+  reportReason: document.querySelector("#product-report-reason"),
+  reportDetails: document.querySelector("#product-report-details"),
   productSchoolLink: document.querySelector("#product-school-link"),
   productTitle: document.querySelector("#product-title"),
   productViews: document.querySelector("#product-views"),
@@ -227,6 +235,7 @@ const elements = {
   sellerAvatar: document.querySelector("#seller-avatar"),
   sellerName: document.querySelector("#seller-name"),
   sellerProfileLink: document.querySelector("#seller-profile-link"),
+  sellerRatingSummary: document.querySelector("#seller-rating-summary"),
   sellerSchool: document.querySelector("#seller-school"),
   sellerSchoolLink: document.querySelector("#seller-school-link"),
   sellerZone: document.querySelector("#seller-zone"),
@@ -272,6 +281,17 @@ function bindEvents() {
   elements.mainFavoriteButton?.addEventListener("click", () => handleFavoriteToggle(productId));
   elements.saveButton?.addEventListener("click", () => handleFavoriteToggle(productId));
   elements.contactButton?.addEventListener("click", handleContactSeller);
+  elements.reportButton?.addEventListener("click", openProductReport);
+  elements.reportBackdrop?.addEventListener("click", closeProductReport);
+  elements.reportClose?.addEventListener("click", closeProductReport);
+  elements.reportCancel?.addEventListener("click", closeProductReport);
+  elements.reportForm?.addEventListener("submit", submitProductReport);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !elements.reportModal?.hidden) {
+      closeProductReport();
+    }
+  });
 }
 
 function bindHeaderNavigation() {
@@ -695,6 +715,37 @@ function renderSeller(product) {
   } else {
     elements.sellerProfileLink.removeAttribute("href");
   }
+
+  void hydrateSellerTrust(product.user_id);
+}
+
+async function hydrateSellerTrust(userId) {
+  if (!elements.sellerRatingSummary || !userId) return;
+
+  const { data, error } = await window.colegioLibreSupabase
+    .from("profiles")
+    .select(
+      "rating, rating_count, sales_count, school_code, school_verification_status"
+    )
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error || !data) {
+    elements.sellerRatingSummary.innerHTML =
+      "<span>Miembro de la comunidad ColegioLibre</span>";
+    return;
+  }
+
+  const rating = Number(data.rating || 0);
+  const ratingCount = Number(data.rating_count || 0);
+  const salesCount = Number(data.sales_count || 0);
+  const stars = ratingCount ? `${rating.toFixed(1)} ★` : "Sin calificaciones";
+
+  elements.sellerRatingSummary.innerHTML = `
+    <strong>${stars}</strong>
+    <span>${ratingCount} ${ratingCount === 1 ? "calificación" : "calificaciones"} · ${salesCount} ${salesCount === 1 ? "venta" : "ventas"}</span>
+    <span class="verified-school-badge">Miembro de la comunidad</span>
+  `;
 }
 
 function updateProductActions(product) {
@@ -710,6 +761,7 @@ function updateProductActions(product) {
     : "#";
   elements.saveButton.hidden = isOwner;
   elements.mainFavoriteButton.hidden = isOwner;
+  elements.reportButton.hidden = isOwner;
 
   if (isOwner) return;
 
@@ -883,6 +935,64 @@ async function handleFavoriteToggle(id) {
   showToast(result.active ? "Producto guardado en favoritos." : "Producto quitado de favoritos.");
 }
 
+async function openProductReport() {
+  if (!currentProduct) return;
+
+  const user = currentUser || (await getCurrentUser());
+  const destination = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
+
+  if (!user) {
+    window.location.href = `login.html?next=${encodeURIComponent(destination)}`;
+    return;
+  }
+
+  if (user.id === currentProduct.user_id) {
+    showToast("No podés reportar tu propia publicación.");
+    return;
+  }
+
+  currentUser = user;
+  elements.reportModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  elements.reportReason.focus();
+}
+
+function closeProductReport() {
+  elements.reportModal.hidden = true;
+  document.body.style.overflow = "";
+  elements.reportForm.reset();
+}
+
+async function submitProductReport(event) {
+  event.preventDefault();
+  if (!currentProduct) return;
+
+  const submitButton = elements.reportForm.querySelector(
+    'button[type="submit"]'
+  );
+  submitButton.disabled = true;
+
+  const { error } = await window.colegioLibreSupabase.rpc(
+    "create_safety_report",
+    {
+      selected_target_type: "product",
+      selected_target_id: currentProduct.id,
+      selected_reason: elements.reportReason.value,
+      report_details: elements.reportDetails.value.trim() || null
+    }
+  );
+
+  submitButton.disabled = false;
+  if (error) {
+    console.error("Error enviando reporte:", error);
+    showToast(error.message || "No se pudo enviar el reporte.");
+    return;
+  }
+
+  closeProductReport();
+  showToast("Reporte enviado. Gracias por cuidar la comunidad.");
+}
+
 async function handleContactSeller() {
   if (!currentProduct || currentProduct.status !== "available") {
     showToast("Este producto no está disponible para contactar.");
@@ -901,6 +1011,14 @@ async function handleContactSeller() {
   if (!profile?.school_code) {
     window.location.href =
       `index.html?onboarding=1&next=${encodeURIComponent(destination)}`;
+    return;
+  }
+
+  if (window.colegioLibreApi.isAccountRestricted(profile)) {
+    showToast("Tu cuenta no está habilitada para iniciar conversaciones.");
+    window.setTimeout(() => {
+      window.location.href = "perfil.html";
+    }, 900);
     return;
   }
 

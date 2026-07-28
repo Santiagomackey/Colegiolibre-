@@ -1,275 +1,292 @@
 (function () {
+  "use strict";
 
-const {
-  FALLBACK_PRODUCT_IMAGE,
-  escapeHtml,
-  fetchFavoriteIds,
-  formatMemberSince,
-  formatPrice,
-  formatPublishedDate,
-  formatRating,
-  formatResponseTime,
-  formatViews,
-  getCurrentUser,
-  getProductFavoriteCount,
-  getInitials,
-  loadPublicProfileBundle,
-  safeProductRecord,
-  toggleFavorite
-} = window.colegioLibreApi;
+  const {
+    FALLBACK_PRODUCT_IMAGE,
+    escapeHtml,
+    formatMemberSince,
+    formatPrice,
+    formatRelativeDate,
+    getCurrentUser,
+    getInitials,
+    safeProductRecord
+  } = window.colegioLibreApi;
 
-const publicUserId = new URLSearchParams(window.location.search).get("id");
+  const profileId = new URLSearchParams(window.location.search).get("id");
+  const elements = {
+    avatar: document.getElementById("profile-avatar"),
+    blockButton: document.getElementById("block-profile-button"),
+    memberSince: document.getElementById("profile-member-since"),
+    name: document.getElementById("profile-name"),
+    productCount: document.getElementById("profile-product-count"),
+    products: document.getElementById("public-products"),
+    productsEmpty: document.getElementById("products-empty"),
+    profileActions: document.getElementById("profile-actions"),
+    rating: document.getElementById("profile-rating"),
+    ratingCount: document.getElementById("profile-rating-count"),
+    reportBackdrop: document.getElementById("user-report-backdrop"),
+    reportButton: document.getElementById("report-user-button"),
+    reportCancel: document.getElementById("user-report-cancel"),
+    reportClose: document.getElementById("user-report-close"),
+    reportDetails: document.getElementById("user-report-details"),
+    reportForm: document.getElementById("user-report-form"),
+    reportModal: document.getElementById("user-report-modal"),
+    reportReason: document.getElementById("user-report-reason"),
+    reviews: document.getElementById("reviews-list"),
+    reviewsEmpty: document.getElementById("reviews-empty"),
+    salesCount: document.getElementById("profile-sales-count"),
+    school: document.getElementById("profile-school"),
+    searchForm: document.getElementById("public-profile-search"),
+    searchInput: document.getElementById("public-profile-search-input"),
+    toast: document.getElementById("public-profile-toast"),
+    verifiedBadge: document.getElementById("verified-badge"),
+    zone: document.getElementById("profile-zone")
+  };
 
-const elements = {
-  accountLink: document.getElementById("public-account-link"),
-  emptyState: document.getElementById("public-empty-state"),
-  grid: document.getElementById("public-products-grid"),
-  name: document.getElementById("profile-name"),
-  profileRating: document.getElementById("profile-rating"),
-  profileResponseTime: document.getElementById("profile-response-time"),
-  productsCount: document.getElementById("profile-products-count"),
-  schoolCommunityLink: document.getElementById("school-community-link"),
-  schoolLink: document.getElementById("profile-school-link"),
-  searchForm: document.getElementById("public-profile-search-form"),
-  searchInput: document.getElementById("public-profile-search"),
-  soldCount: document.getElementById("profile-sold-count"),
-  tabCountActive: document.getElementById("tab-count-active"),
-  tabCountSold: document.getElementById("tab-count-sold"),
-  tabs: Array.from(document.querySelectorAll(".public-tab")),
-  toast: document.getElementById("toast"),
-  totalFavorites: document.getElementById("profile-total-favorites"),
-  totalViews: document.getElementById("profile-total-views"),
-  userAvatar: document.getElementById("profile-avatar"),
-  userSince: document.getElementById("profile-member-since"),
-  zone: document.getElementById("profile-zone")
-};
+  const state = {
+    currentUser: null,
+    isBlocked: false,
+    profile: null
+  };
 
-const state = {
-  currentTab: "active",
-  favoriteCountMap: new Map(),
-  favoriteIds: new Set(),
-  products: [],
-  profile: null,
-  stats: {
-    soldCount: 0,
-    totalFavorites: 0,
-    totalPublications: 0,
-    totalViews: 0
-  }
-};
-
-initPublicProfile();
-
-async function initPublicProfile() {
   bindEvents();
+  void initPublicProfile();
 
-  const currentUser = await getCurrentUser();
-  if (elements.accountLink) {
-    elements.accountLink.href = currentUser ? "perfil.html" : "login.html";
-    elements.accountLink.textContent = currentUser ? "Mi cuenta" : "Ingresar";
+  async function initPublicProfile() {
+    if (!profileId) {
+      showToast("No se encontró el perfil.");
+      return;
+    }
+
+    state.currentUser = await getCurrentUser();
+    const [profileResponse, productsResponse, reviewsResponse] =
+      await Promise.all([
+        window.colegioLibreSupabase
+          .from("profiles")
+          .select("*")
+          .eq("id", profileId)
+          .maybeSingle(),
+        window.colegioLibreSupabase
+          .from("products")
+          .select("*")
+          .eq("user_id", profileId)
+          .in("status", ["available", "reserved"])
+          .order("created_at", { ascending: false }),
+        window.colegioLibreSupabase
+          .from("reviews")
+          .select("id, reviewer_id, rating, comment, created_at")
+          .eq("reviewed_id", profileId)
+          .order("created_at", { ascending: false })
+          .limit(30)
+      ]);
+
+    if (profileResponse.error || !profileResponse.data) {
+      console.error("Error cargando perfil:", profileResponse.error);
+      showToast("No se pudo cargar este perfil.");
+      return;
+    }
+
+    state.profile = profileResponse.data;
+    renderProfile(profileResponse.data);
+    renderProducts(productsResponse.data || []);
+    await renderReviews(reviewsResponse.data || []);
+
+    if (state.currentUser && state.currentUser.id !== profileId) {
+      elements.profileActions.hidden = false;
+      await hydrateBlockState();
+    }
   }
 
-  if (!publicUserId) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  await loadBundle();
-  renderTabs();
-  renderProducts();
-}
-
-function bindEvents() {
-  elements.tabs.forEach((button) => {
-    button.addEventListener("click", () => {
-      state.currentTab = button.dataset.state || "active";
-      renderTabs();
-      renderProducts();
+  function bindEvents() {
+    elements.searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const term = elements.searchInput.value.trim();
+      window.location.href = term
+        ? `index.html?search=${encodeURIComponent(term)}`
+        : "index.html";
     });
-  });
 
-  elements.searchForm?.addEventListener("submit", (event) => {
+    elements.reportButton.addEventListener("click", openReport);
+    elements.blockButton.addEventListener("click", toggleBlock);
+    elements.reportBackdrop.addEventListener("click", closeReport);
+    elements.reportClose.addEventListener("click", closeReport);
+    elements.reportCancel.addEventListener("click", closeReport);
+    elements.reportForm.addEventListener("submit", submitReport);
+  }
+
+  function renderProfile(profile) {
+    const rating = Number(profile.rating || 0);
+    const ratingCount = Number(profile.rating_count || 0);
+    const salesCount = Number(profile.sales_count || 0);
+
+    elements.name.textContent = profile.name || "Usuario ColegioLibre";
+    elements.avatar.textContent = getInitials(profile.name);
+    elements.school.textContent = profile.school_name || "Colegio no especificado";
+    elements.zone.textContent = profile.zone_code || "Zona no especificada";
+    elements.memberSince.textContent = `Miembro desde ${formatMemberSince(
+      profile.member_since || profile.created_at
+    )}`;
+    elements.rating.textContent = ratingCount
+      ? `${rating.toFixed(1)} ★`
+      : "Sin calificaciones";
+    elements.ratingCount.textContent = String(ratingCount);
+    elements.salesCount.textContent = String(salesCount);
+    elements.verifiedBadge.hidden = true;
+    document.title = `${profile.name || "Perfil"} | ColegioLibre`;
+  }
+
+  function renderProducts(products) {
+    const safeProducts = products.map(safeProductRecord);
+    elements.productCount.textContent = String(safeProducts.length);
+    elements.products.innerHTML = "";
+    elements.productsEmpty.hidden = safeProducts.length > 0;
+
+    safeProducts.forEach((product) => {
+      const link = document.createElement("a");
+      link.className = "product-card";
+      link.href = `producto.html?id=${encodeURIComponent(product.id)}`;
+      link.innerHTML = `
+        <img src="${escapeHtml(
+          product.image_url || FALLBACK_PRODUCT_IMAGE
+        )}" alt="${escapeHtml(product.title)}" />
+        <div class="product-card__body">
+          <h3>${escapeHtml(product.title)}</h3>
+          <strong>${escapeHtml(formatPrice(product.price))}</strong>
+          <span>${escapeHtml(product.location)} · ${escapeHtml(
+            formatRelativeDate(product.created_at)
+          )}</span>
+        </div>
+      `;
+      link.querySelector("img").addEventListener("error", (event) => {
+        event.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+      });
+      elements.products.appendChild(link);
+    });
+  }
+
+  async function renderReviews(reviews) {
+    elements.reviews.innerHTML = "";
+    elements.reviewsEmpty.hidden = reviews.length > 0;
+    if (!reviews.length) return;
+
+    const reviewerIds = [...new Set(reviews.map((review) => review.reviewer_id))];
+    const { data: reviewers } = await window.colegioLibreSupabase
+      .from("profiles")
+      .select("id, name")
+      .in("id", reviewerIds);
+    const names = new Map(
+      (reviewers || []).map((profile) => [profile.id, profile.name])
+    );
+
+    reviews.forEach((review) => {
+      const card = document.createElement("article");
+      card.className = "review-card";
+      card.innerHTML = `
+        <div class="review-card__head">
+          <strong>${escapeHtml(names.get(review.reviewer_id) || "Usuario de ColegioLibre")}</strong>
+          <span class="review-card__stars">${"★".repeat(
+            Number(review.rating)
+          )}${"☆".repeat(5 - Number(review.rating))}</span>
+        </div>
+        ${
+          review.comment
+            ? `<p>${escapeHtml(review.comment)}</p>`
+            : "<p>Calificación sin comentario.</p>"
+        }
+        <time>${escapeHtml(formatRelativeDate(review.created_at))}</time>
+      `;
+      elements.reviews.appendChild(card);
+    });
+  }
+
+  async function requireLogin() {
+    if (state.currentUser) return true;
+    window.location.href = `login.html?next=${encodeURIComponent(
+      `perfil-publico.html?id=${profileId}`
+    )}`;
+    return false;
+  }
+
+  async function hydrateBlockState() {
+    const { data } = await window.colegioLibreSupabase
+      .from("user_blocks")
+      .select("blocked_id")
+      .eq("blocker_id", state.currentUser.id)
+      .eq("blocked_id", profileId)
+      .maybeSingle();
+    state.isBlocked = Boolean(data);
+    elements.blockButton.dataset.blocked = String(state.isBlocked);
+    elements.blockButton.textContent = state.isBlocked ? "Desbloquear" : "Bloquear";
+  }
+
+  async function toggleBlock() {
+    if (!(await requireLogin())) return;
+    const question = state.isBlocked
+      ? "¿Querés desbloquear a este usuario?"
+      : "¿Querés bloquear a este usuario? No podrán iniciar nuevas conversaciones.";
+    if (!window.confirm(question)) return;
+
+    elements.blockButton.disabled = true;
+    const { error } = await window.colegioLibreSupabase.rpc(
+      state.isBlocked ? "unblock_user" : "block_user",
+      { target_user: profileId }
+    );
+    elements.blockButton.disabled = false;
+
+    if (error) {
+      showToast(error.message || "No se pudo actualizar el bloqueo.");
+      return;
+    }
+
+    state.isBlocked = !state.isBlocked;
+    await hydrateBlockState();
+    showToast(state.isBlocked ? "Usuario bloqueado." : "Usuario desbloqueado.");
+  }
+
+  async function openReport() {
+    if (!(await requireLogin())) return;
+    elements.reportModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    elements.reportReason.focus();
+  }
+
+  function closeReport() {
+    elements.reportModal.hidden = true;
+    document.body.style.overflow = "";
+    elements.reportForm.reset();
+  }
+
+  async function submitReport(event) {
     event.preventDefault();
-    const term = elements.searchInput?.value.trim();
-    const url = term ? `index.html?search=${encodeURIComponent(term)}` : "index.html";
-    window.location.href = url;
-  });
-}
+    const submitButton = elements.reportForm.querySelector('[type="submit"]');
+    submitButton.disabled = true;
 
-async function loadBundle() {
-  const bundle = await loadPublicProfileBundle(publicUserId);
-
-  state.profile = bundle.profile || null;
-  state.products = (bundle.products || []).map(safeProductRecord);
-  state.favoriteCountMap = bundle.favoriteCountMap || new Map();
-  state.stats = bundle.stats || state.stats;
-  state.favoriteIds = await fetchFavoriteIds(state.products.map((product) => product.id));
-  hydrateProfileSummary();
-}
-
-function hydrateProfileSummary() {
-  const fallbackProduct = state.products[0] || null;
-  const profileName = state.profile?.name || fallbackProduct?.seller_name || "Vendedor ColegioLibre";
-  const schoolName = state.profile?.school_name || fallbackProduct?.school_name || "Colegio no especificado";
-  const schoolCode = state.profile?.school_code || fallbackProduct?.school_code || null;
-  const zoneLabel = state.profile?.zone_code || fallbackProduct?.zone_code || "Zona no especificada";
-  const totalViews = state.stats.totalViews || state.products.reduce((sum, product) => sum + Number(product.views || 0), 0);
-  const totalPublished = state.stats.totalPublications || state.products.length;
-
-  document.title = `ColegioLibre | ${profileName}`;
-
-  elements.name.textContent = profileName;
-  elements.userAvatar.textContent = getInitials(profileName);
-  elements.zone.textContent = zoneLabel;
-  elements.productsCount.textContent = String(totalPublished);
-  elements.soldCount.textContent = String(state.stats.soldCount || 0);
-  elements.profileRating.textContent = formatRating(state.profile?.rating);
-  elements.profileResponseTime.textContent = formatResponseTime(state.profile?.response_time);
-  elements.totalViews.textContent = formatViews(totalViews);
-  elements.totalFavorites.textContent = String(state.stats.totalFavorites || 0);
-  elements.userSince.textContent = formatMemberSince(state.profile?.member_since);
-
-  if (schoolCode) {
-    const schoolHref = `colegio.html?code=${encodeURIComponent(schoolCode)}`;
-    elements.schoolLink.href = schoolHref;
-    elements.schoolLink.textContent = schoolName;
-    elements.schoolCommunityLink.href = schoolHref;
-    elements.schoolCommunityLink.textContent = `Ver comunidad de ${schoolName}`;
-  } else {
-    elements.schoolLink.removeAttribute("href");
-    elements.schoolLink.textContent = schoolName;
-    elements.schoolCommunityLink.removeAttribute("href");
-    elements.schoolCommunityLink.textContent = "Colegio no disponible";
-  }
-}
-
-function renderTabs() {
-  const activeCount = getProductsForCurrentTab("active").length;
-  const soldCount = getProductsForCurrentTab("sold").length;
-
-  elements.tabCountActive.textContent = `(${activeCount})`;
-  elements.tabCountSold.textContent = `(${soldCount})`;
-
-  elements.tabs.forEach((button) => {
-    const isActive = button.dataset.state === state.currentTab;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-selected", String(isActive));
-  });
-}
-
-function getProductsForCurrentTab(tabName = state.currentTab) {
-  if (tabName === "sold") {
-    return state.products.filter((product) => product.status === "sold");
-  }
-
-  return state.products.filter((product) => product.status === "available" || product.status === "reserved");
-}
-
-function renderProducts() {
-  const products = getProductsForCurrentTab();
-  elements.grid.innerHTML = "";
-
-  if (!products.length) {
-    elements.emptyState.hidden = false;
-    return;
-  }
-
-  elements.emptyState.hidden = true;
-
-  products.forEach((product) => {
-    const card = document.createElement("article");
-    card.className = "public-card";
-    card.tabIndex = 0;
-    card.setAttribute("role", "link");
-    card.setAttribute("aria-label", `Abrir producto ${product.title}`);
-    card.innerHTML = `
-      <div class="public-card__media">
-        <span class="public-card__badge">${escapeHtml(product.condition)}</span>
-        <button
-          class="public-card__favorite ${state.favoriteIds.has(product.id) ? "is-active" : ""}"
-          type="button"
-          aria-label="Guardar ${escapeHtml(product.title)} en favoritos"
-          aria-pressed="${state.favoriteIds.has(product.id)}"
-          data-favorite-id="${escapeHtml(product.id)}"
-        >
-          <svg class="icon"><use href="#icon-heart"></use></svg>
-        </button>
-        <img src="${escapeHtml(product.image_url || FALLBACK_PRODUCT_IMAGE)}" alt="${escapeHtml(product.title)}" />
-      </div>
-      <div class="public-card__body">
-        <div class="public-card__meta">
-          <span class="public-card__school">${escapeHtml(product.school_name || "ColegioLibre")}</span>
-          <span>${escapeHtml(product.location)}</span>
-        </div>
-        <h3 class="public-card__title">${escapeHtml(product.title)}</h3>
-        <p class="public-card__price">${escapeHtml(formatPrice(product.price))}</p>
-        <div class="public-card__footer">
-          <span><svg class="icon"><use href="#icon-clock"></use></svg>${escapeHtml(formatPublishedDate(product.created_at))}</span>
-          <span><svg class="icon"><use href="#icon-box"></use></svg>${escapeHtml(formatViews(product.views))}</span>
-          <span><svg class="icon"><use href="#icon-heart"></use></svg>${escapeHtml(String(getProductFavoriteCount(product, state.favoriteCountMap)))}</span>
-        </div>
-      </div>
-    `;
-
-    const image = card.querySelector("img");
-    image.onerror = () => {
-      image.src = FALLBACK_PRODUCT_IMAGE;
-    };
-
-    const favoriteButton = card.querySelector("[data-favorite-id]");
-    favoriteButton.addEventListener("click", async (event) => {
-      event.stopPropagation();
-      await handleFavoriteToggle(product.id, favoriteButton);
-    });
-
-    card.addEventListener("click", () => {
-      window.location.href = `producto.html?id=${encodeURIComponent(product.id)}`;
-    });
-
-    card.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        window.location.href = `producto.html?id=${encodeURIComponent(product.id)}`;
+    const { error } = await window.colegioLibreSupabase.rpc(
+      "create_safety_report",
+      {
+        selected_target_type: "user",
+        selected_target_id: profileId,
+        selected_reason: elements.reportReason.value,
+        report_details: elements.reportDetails.value.trim() || null
       }
-    });
+    );
+    submitButton.disabled = false;
 
-    elements.grid.appendChild(card);
-  });
-}
+    if (error) {
+      showToast(error.message || "No se pudo enviar el reporte.");
+      return;
+    }
 
-async function handleFavoriteToggle(productId, button) {
-  const result = await toggleFavorite(productId);
-
-  if (result?.requiresAuth) {
-    window.location.href = "login.html";
-    return;
+    closeReport();
+    showToast("Reporte enviado. Gracias por avisarnos.");
   }
 
-  if (result?.error) {
-    console.error("Error actualizando favorito:", result.error);
-    showToast("No se pudo actualizar el favorito.");
-    return;
+  function showToast(message) {
+    elements.toast.textContent = message;
+    elements.toast.hidden = false;
+    window.clearTimeout(showToast.timeoutId);
+    showToast.timeoutId = window.setTimeout(() => {
+      elements.toast.hidden = true;
+    }, 2500);
   }
-
-  if (result.active) {
-    state.favoriteIds.add(productId);
-  } else {
-    state.favoriteIds.delete(productId);
-  }
-
-  const isActive = Boolean(result.active);
-  button.classList.toggle("is-active", isActive);
-  button.setAttribute("aria-pressed", String(isActive));
-  showToast(isActive ? "Producto guardado en favoritos." : "Producto quitado de favoritos.");
-}
-
-function showToast(message) {
-  elements.toast.textContent = message;
-  elements.toast.hidden = false;
-  window.clearTimeout(showToast.timeoutId);
-  showToast.timeoutId = window.setTimeout(() => {
-    elements.toast.hidden = true;
-  }, 2200);
-}
-
 })();

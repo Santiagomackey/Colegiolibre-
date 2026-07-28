@@ -5,6 +5,7 @@ const {
   escapeHtml,
   fetchFavoriteIds,
   formatPrice,
+  getCurrentProfile,
   getCurrentUser,
   getInitials,
   getSchoolByCode,
@@ -53,9 +54,12 @@ async function initSchoolPage() {
   bindEvents();
 
   if (!schoolCode) {
-    window.location.href = "index.html";
+    await resolveSchoolFromAccount();
     return;
   }
+
+  const hasAccess = await ensureSchoolAccess();
+  if (!hasAccess) return;
 
   await loadSchool();
 
@@ -68,6 +72,74 @@ async function initSchoolPage() {
   renderHero();
   renderProducts();
   renderPublishers();
+}
+
+async function ensureSchoolAccess() {
+  const user = await getCurrentUser(true);
+  if (!user) {
+    window.location.replace(
+      `login.html?next=${encodeURIComponent(
+        `colegio.html?code=${schoolCode}`
+      )}`
+    );
+    return false;
+  }
+
+  const profile = await getCurrentProfile(true);
+  const profileSchoolCode = String(profile?.school_code || "")
+    .trim()
+    .toUpperCase();
+
+  if (!profileSchoolCode) {
+    window.location.replace(
+      `index.html?onboarding=1&next=${encodeURIComponent("colegio.html")}`
+    );
+    return false;
+  }
+
+  if (window.colegioLibreApi.isAccountRestricted(profile)) {
+    window.location.replace("perfil.html");
+    return false;
+  }
+
+  if (profileSchoolCode !== schoolCode) {
+    window.location.replace(
+      `colegio.html?code=${encodeURIComponent(profileSchoolCode)}`
+    );
+    return false;
+  }
+
+  return true;
+}
+
+async function resolveSchoolFromAccount() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    window.location.replace(
+      `login.html?next=${encodeURIComponent("colegio.html")}`
+    );
+    return;
+  }
+
+  const profile = await getCurrentProfile(true);
+  const profileSchoolCode = String(profile?.school_code || "").trim();
+
+  if (!profileSchoolCode) {
+    window.location.replace(
+      `index.html?onboarding=1&next=${encodeURIComponent("colegio.html")}`
+    );
+    return;
+  }
+
+  if (window.colegioLibreApi.isAccountRestricted(profile)) {
+    window.location.replace("perfil.html");
+    return;
+  }
+
+  window.location.replace(
+    `colegio.html?code=${encodeURIComponent(profileSchoolCode)}`
+  );
 }
 
 function bindEvents() {

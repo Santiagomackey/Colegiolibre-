@@ -9,7 +9,8 @@
     "perfil.html",
     "publicar.html",
     "mensajes.html",
-    "favoritos.html"
+    "favoritos.html",
+    "colegio.html"
   ]);
 
   let selectedOnboardingSchool = null;
@@ -392,7 +393,7 @@
     if (!formValues) return;
 
     setSubmitBusy(submitButton, true);
-    setOnboardingMessage("Verificando colegio…", "loading");
+    setOnboardingMessage("Comprobando el colegio…", "loading");
 
     const { data: school, error: schoolError } =
       await window.colegioLibreSupabase
@@ -453,20 +454,42 @@
       console.warn("El perfil se guardó, pero no sus metadatos:", metadataError);
     }
 
+    const completedProfile = {
+      ...profile,
+      account_status: "active"
+    };
+
     window.dispatchEvent(
       new CustomEvent("colegiolibre:profile-ready", {
-        detail: { destination: pendingDestination, profile }
+        detail: { destination: pendingDestination, profile: completedProfile }
       })
     );
 
-    setOnboardingMessage("¡Listo! Tu cuenta ya está configurada.", "success");
+    setOnboardingMessage("¡Listo! Ya podés usar ColegioLibre.", "success");
     window.setTimeout(() => {
-      if (pendingDestination && pendingDestination !== "index.html") {
-        window.location.assign(pendingDestination);
+      const destination = getPostOnboardingDestination(
+        pendingDestination,
+        completedProfile
+      );
+
+      if (destination && destination !== "index.html") {
+        window.location.assign(destination);
       } else {
         window.location.assign("index.html");
       }
     }, 650);
+  }
+
+  function getPostOnboardingDestination(destination, profile) {
+    const safeDestination = getSafeDestination(destination);
+    if (safeDestination?.startsWith("colegio.html")) {
+      const schoolCode = String(profile?.school_code || "").trim();
+      return schoolCode
+        ? `colegio.html?code=${encodeURIComponent(schoolCode)}`
+        : "index.html";
+    }
+
+    return safeDestination || "index.html";
   }
 
   function updateSelectedSchoolPreview(school) {
