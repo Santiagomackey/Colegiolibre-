@@ -86,11 +86,12 @@ function localDecision(product) {
 
   if (REVIEW_PATTERNS.some((pattern) => pattern.test(text))) {
     return {
-      decision: "manual_review",
-      reason: "La publicación necesita una revisión rápida de seguridad.",
+      decision: "rejected",
+      reason:
+        "No compartas datos de contacto, enlaces ni propuestas de pago por fuera de ColegioLibre.",
       severity: "medium",
       source: "fallback",
-      confidence: 0.82
+      confidence: 0.96
     };
   }
 
@@ -198,7 +199,7 @@ async function loadProduct(productId) {
 
 async function matchDatabaseRules(product) {
   const rules = await supabaseRequest(
-    "/rest/v1/prohibited_product_rules?is_active=eq.true&select=field,match_type,pattern,severity,reason",
+    "/rest/v1/prohibited_product_rules?is_active=eq.true&select=field,match_type,pattern,severity,reason,adds_strike",
     {},
     true
   );
@@ -224,10 +225,15 @@ async function matchDatabaseRules(product) {
     return {
       decision: rule.severity === "block" ? "rejected" : "manual_review",
       reason: rule.reason,
-      severity: rule.severity === "block" ? "high" : "medium",
+      severity:
+        rule.severity === "block" && rule.adds_strike ? "high" : "medium",
       source: "rules",
       confidence: 1,
-      details: { matched_rule: rule.pattern, field: rule.field }
+      details: {
+        matched_rule: rule.pattern,
+        field: rule.field,
+        adds_strike: Boolean(rule.adds_strike)
+      }
     };
   }
 
@@ -323,7 +329,7 @@ async function callOpenAIListingReview(product, apiKey) {
         {
           role: "system",
           content:
-            "Sos el revisor de ColegioLibre, un marketplace argentino de materiales escolares que también usan menores. Aprobá únicamente bienes escolares legales y apropiados: libros, apuntes, cuadernos, útiles, mochilas, tecnología educativa, uniformes y artículos directamente relacionados. Rechazá armas, drogas, alcohol, tabaco/vapeo, medicamentos, material sexual, documentos falsos, artículos robados y servicios peligrosos. Mandá a revisión manual lo ambiguo, pedidos de pago externo o datos de contacto. No inventes datos."
+            "Sos el revisor de ColegioLibre, un marketplace argentino de materiales escolares que también usan menores. Aprobá únicamente bienes escolares legales y apropiados: libros, apuntes, cuadernos, útiles, mochilas, tecnología educativa, uniformes y artículos directamente relacionados. Rechazá armas, drogas, alcohol, tabaco/vapeo, medicamentos, material sexual, documentos falsos, artículos robados y servicios peligrosos. Rechazá con severidad medium los datos de contacto, enlaces o pedidos de pago externo. Usá manual_review únicamente cuando el producto sea realmente ambiguo. No inventes datos."
         },
         {
           role: "user",

@@ -34,6 +34,7 @@
     reviewingCount: document.getElementById("reviewing-count"),
     ruleField: document.getElementById("rule-field"),
     ruleForm: document.getElementById("rule-form"),
+    ruleAddsStrike: document.getElementById("rule-adds-strike"),
     ruleMatchType: document.getElementById("rule-match-type"),
     rulePattern: document.getElementById("rule-pattern"),
     ruleReason: document.getElementById("rule-reason"),
@@ -60,6 +61,7 @@
   };
 
   bindEvents();
+  syncRulePenalty();
   setDefaultInviteExpiry();
   void initModeration();
 
@@ -100,7 +102,14 @@
     elements.accountSearch.addEventListener("input", renderAccounts);
     elements.inviteForm.addEventListener("submit", createInviteCode);
     elements.ruleForm.addEventListener("submit", createRule);
+    elements.ruleSeverity.addEventListener("change", syncRulePenalty);
     elements.copyGeneratedCode.addEventListener("click", copyGeneratedCode);
+  }
+
+  function syncRulePenalty() {
+    const canAddStrike = elements.ruleSeverity.value === "block";
+    elements.ruleAddsStrike.disabled = !canAddStrike;
+    if (!canAddStrike) elements.ruleAddsStrike.value = "false";
   }
 
   async function activateTab(tab) {
@@ -719,7 +728,10 @@
         rule_match_type: elements.ruleMatchType.value,
         rule_pattern: elements.rulePattern.value.trim(),
         rule_severity: elements.ruleSeverity.value,
-        rule_reason: elements.ruleReason.value.trim()
+        rule_reason: elements.ruleReason.value.trim(),
+        rule_adds_strike:
+          elements.ruleSeverity.value === "block" &&
+          elements.ruleAddsStrike.value === "true"
       }
     );
     submitButton.disabled = false;
@@ -764,6 +776,7 @@
                 <span>Campo: ${escapeHtml(fieldLabel(rule.field))}</span>
                 <span>Coincidencia: ${escapeHtml(matchLabel(rule.match_type))}</span>
                 <span>Acción: ${rule.severity === "block" ? "Bloquear" : "Revisar"}</span>
+                <span>Cuenta: ${rule.adds_strike ? "Suma strike" : "Sin sanción"}</span>
               </div>
             </div>
             <div class="admin-card__actions">

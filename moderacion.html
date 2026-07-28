@@ -180,7 +180,7 @@
           <div>
             <p>Catálogo seguro</p>
             <h2>Reglas para productos prohibidos</h2>
-            <span>“Bloquear” rechaza la publicación; “Revisar” la deja pausada.</span>
+            <span>“Bloquear” rechaza la publicación. El strike es opcional y debe reservarse para casos graves.</span>
           </div>
         </div>
 
@@ -210,6 +210,13 @@
             <select id="rule-severity">
               <option value="block">Bloquear</option>
               <option value="review">Mandar a revisión</option>
+            </select>
+          </label>
+          <label>
+            Efecto en la cuenta
+            <select id="rule-adds-strike">
+              <option value="false">Sin sanción</option>
+              <option value="true">Sumar un strike</option>
             </select>
           </label>
           <label class="admin-form__wide">

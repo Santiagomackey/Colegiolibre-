@@ -395,7 +395,7 @@ textarea {
 }
 
 .admin-form--rules {
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, minmax(135px, 1fr));
 }
 
 .admin-form label {
@@ -425,7 +425,7 @@ textarea {
 }
 
 .admin-form__wide {
-  grid-column: span 3;
+  grid-column: span 4;
 }
 
 .generated-code {
