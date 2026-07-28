@@ -1,0 +1,80 @@
+COLEGIOLIBRE · VERSIÓN PROFESIONAL
+=================================
+
+1. HACÉ UNA COPIA DE SEGURIDAD
+Conservá una copia de tu carpeta actual antes de reemplazar archivos.
+
+2. REEMPLAZÁ EL PROYECTO
+Copiá TODO el contenido de esta carpeta sobre el proyecto ColegioLibre oficial.
+No copies solamente los HTML: las carpetas images, api, scripts y sql también son necesarias.
+
+La carpeta api debe contener ÚNICAMENTE:
+
+api/
+└── moderate-product.js
+
+login.html, login.css, login.js y todos los demás archivos de la página
+deben permanecer en la carpeta principal. No los pongas dentro de api.
+
+3. VARIABLES DE VERCEL
+En Vercel > tu proyecto > Settings > Environment Variables confirmá:
+
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY (privada; nunca debe estar en archivos del navegador)
+- OPENAI_API_KEY (opcional; la moderación por reglas funciona sin esta clave)
+- OPENAI_REVIEW_MODEL (opcional)
+
+Después de modificar variables, hacé un nuevo deployment.
+
+4. SUPABASE
+Los archivos sql/1 a sql/6 son el historial de configuración ya utilizado.
+NO vuelvas a ejecutarlos indiscriminadamente si tu base ya funciona.
+
+El archivo:
+sql/7_COMPROBAR_SEGURIDAD_Y_LANZAMIENTO.sql
+es de solo lectura y sirve para revisar RLS, políticas, triggers, Storage,
+productos públicos y posibles duplicados antes del lanzamiento.
+
+5. VALIDACIÓN LOCAL
+Con Node.js instalado, abrí una terminal dentro del proyecto y ejecutá:
+
+node scripts/validate-project.mjs
+
+Debe terminar con “Validación correcta”.
+
+6. PUBLICACIÓN
+Confirmá los cambios en Git, sincronizalos y esperá a que Vercel muestre
+el deployment como Ready. Probá siempre el dominio estable:
+
+https://colegiolibre.vercel.app/
+
+7. PRUEBA MÍNIMA ANTES DE COMPARTIR
+
+- Crear una cuenta e iniciar/cerrar sesión.
+- Buscar y elegir un colegio.
+- Publicar un producto permitido.
+- Publicar una prueba con “pagar por fuera” y confirmar que se rechace.
+- Editar, pausar, reactivar y marcar como vendido.
+- Iniciar una conversación desde otra cuenta.
+- Probar favoritos, reportes y bloqueos.
+- Revisar Home, producto, publicar y mensajes en un celular.
+- Cambiar a modo oscuro, recorrer varias páginas y volver al modo claro.
+- Cambiar a English, comprobar Home, formularios, perfil, mensajes y administración.
+- Recargar la página y confirmar que idioma y tema permanezcan seleccionados.
+
+8. TEMA E IDIOMA
+Todas las páginas cargan preferences.js y preferences.css.
+El control flotante inferior permite:
+
+- Cambiar entre modo claro y oscuro.
+- Cambiar entre Español y English.
+
+La elección queda guardada en el navegador. El idioma modifica únicamente
+los textos visibles; las categorías y estados enviados a Supabase conservan
+sus valores originales para no romper filtros, consultas ni políticas.
+
+IMPORTANTE
+ColegioLibre no procesa pagos ni actúa como intermediario financiero.
+No solicites DNI solo para permitir el registro o aplicar sanciones:
+Supabase ya entrega un identificador único a cada cuenta.

@@ -448,10 +448,13 @@
     if (hours < 24) return `Hace ${hours} h`;
     const days = Math.floor(hours / 24);
     if (days < 7) return `Hace ${days} d`;
-    return date.toLocaleDateString("es-AR", {
+    return date.toLocaleDateString(
+      window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR",
+      {
       day: "2-digit",
       month: "short"
-    });
+      }
+    );
   }
 
   function isMissingNotificationsTable(error) {

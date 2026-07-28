@@ -161,7 +161,9 @@ function getInitials(name) {
 }
 
 function formatPrice(price) {
-  return `$${Number(price || 0).toLocaleString("es-AR")}`;
+  const locale =
+    window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+  return `$${Number(price || 0).toLocaleString(locale)}`;
 }
 
 function formatRelativeDate(dateValue) {
@@ -176,7 +178,9 @@ function formatRelativeDate(dateValue) {
   if (diffDays === 1) return "Ayer";
   if (diffDays < 7) return `Hace ${diffDays} días`;
 
-  return date.toLocaleDateString("es-AR");
+  const locale =
+    window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+  return date.toLocaleDateString(locale);
 }
 
 function formatPublishedDate(dateValue) {
@@ -194,7 +198,9 @@ function formatPublishedDate(dateValue) {
 function formatDateTime(dateValue) {
   if (!dateValue) return "";
 
-  return new Date(dateValue).toLocaleString("es-AR", {
+  const locale =
+    window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+  return new Date(dateValue).toLocaleString(locale, {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
@@ -210,7 +216,9 @@ function formatViews(count) {
 function formatMemberSince(dateValue) {
   if (!dateValue) return "Reciente";
 
-  return new Date(dateValue).toLocaleDateString("es-AR", {
+  const locale =
+    window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+  return new Date(dateValue).toLocaleDateString(locale, {
     month: "long",
     year: "numeric"
   });

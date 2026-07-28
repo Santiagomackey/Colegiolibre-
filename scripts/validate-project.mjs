@@ -29,6 +29,23 @@ function report(message) {
 
 walk(rootPath);
 
+const apiFiles = files.filter((file) => projectPath(file).startsWith("api/"));
+for (const file of apiFiles) {
+  if (extname(file) !== ".js") {
+    report(
+      `Archivo inválido dentro de api/: ${projectPath(file)}. ` +
+      "Vercel reserva esa carpeta para funciones JavaScript."
+    );
+  }
+}
+
+const apiNames = new Set();
+for (const file of apiFiles) {
+  const route = projectPath(file).replace(/^api\//, "").replace(/\.[^.]+$/, "");
+  if (apiNames.has(route)) report(`Ruta API duplicada en Vercel: /api/${route}`);
+  apiNames.add(route);
+}
+
 for (const file of files.filter((item) => extname(item) === ".js")) {
   try {
     execFileSync(process.execPath, ["--check", file], { stdio: "pipe" });

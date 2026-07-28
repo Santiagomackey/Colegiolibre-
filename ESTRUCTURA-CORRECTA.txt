@@ -1,0 +1,54 @@
+ESTRUCTURA CORRECTA PARA VERCEL
+==============================
+
+ColegioLibre/
+├── api/
+│   └── moderate-product.js
+├── images/
+│   ├── Colegiolibre footer.png
+│   ├── Logo Colegiolibre horizontal.png
+│   ├── caja-colegiolibre.png
+│   ├── materiales.png
+│   └── materiales.webp
+├── scripts/
+│   └── validate-project.mjs
+├── sql/
+├── index.html
+├── styles.css
+├── script.js
+├── preferences.css
+├── preferences.js
+├── login.html
+├── login.css
+├── login.js
+├── publicar.html
+├── publicar.css
+├── publicar.js
+├── producto.html
+├── producto.css
+├── producto.js
+├── mensajes.html
+├── mensajes.css
+├── mensajes.js
+├── perfil.html
+├── perfil.css
+├── perfil.js
+├── colegio.html
+├── colegio.css
+├── colegio.js
+├── moderacion.html
+├── moderacion.css
+├── moderacion.js
+├── admin.html
+├── admin.css
+├── admin.js
+├── supabase.js
+├── notifications.css
+├── notifications.js
+├── vercel.json
+└── demás páginas y documentación
+
+REGLA FUNDAMENTAL
+Dentro de api/ no debe haber HTML, CSS, imágenes ni archivos de la página.
+Vercel interpreta cada archivo de api/ como una función. Por eso login.html,
+login.css y login.js deben estar en la raíz del proyecto, nunca dentro de api/.

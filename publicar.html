@@ -3,19 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./preferences.js?v=20260728-1"></script>
     <title>ColegioLibre | Publicá tu producto</title>
     <meta
       name="description"
       content="Publicá libros, cuadernos, útiles y tecnología escolar usada en ColegioLibre con una vista previa en tiempo real."
     />
+    <meta name="robots" content="noindex,nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./publicar.css?v=20260727-1" />
+    <link rel="stylesheet" href="./publicar.css?v=20260728-professional1" />
     <link rel="stylesheet" href="./notifications.css?v=20260727-1" />
+    <link rel="stylesheet" href="./polish.css?v=20260728-2" />
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -213,6 +216,9 @@
             <fieldset class="field-group field-group--full">
               <legend>Estado del producto</legend>
               <div class="condition-selector" role="radiogroup" aria-label="Estado del producto">
+                <input class="sr-only sr-only--input" id="estado-nuevo" name="estado" type="radio" value="Nuevo" />
+                <label for="estado-nuevo">Nuevo</label>
+
                 <input class="sr-only sr-only--input" id="estado-como-nuevo" name="estado" type="radio" value="Como nuevo" />
                 <label for="estado-como-nuevo">Como nuevo</label>
 
@@ -273,8 +279,10 @@
               <textarea
                 id="descripcion"
                 name="descripcion"
+                minlength="20"
                 maxlength="500"
                 rows="4"
+                required
                 placeholder="Contá el estado del producto, edición, si tiene marcas, subrayados, etc."
               ></textarea>
             </div>
@@ -343,7 +351,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js?v=20260728-verification1"></script>
-<script src="./publicar.js?v=20260728-verification1"></script>
+<script src="./publicar.js?v=20260728-professional1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
     
   </body>

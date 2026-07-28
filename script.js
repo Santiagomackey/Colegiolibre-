@@ -1,7 +1,7 @@
 (function () {
 
 function createLocalApiFallback() {
-  const localFallbackImage = "images/materiales.png";
+  const localFallbackImage = "images/materiales.webp";
   const statusLabels = {
     available: "Disponible",
     paused: "Pausado",
@@ -26,7 +26,9 @@ function createLocalApiFallback() {
   }
 
   function localFormatPrice(price) {
-    return `$${Number(price || 0).toLocaleString("es-AR")}`;
+    const locale =
+      window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+    return `$${Number(price || 0).toLocaleString(locale)}`;
   }
 
   function localGetStatusLabel(status) {
@@ -229,7 +231,7 @@ const categoryShelfDetails = {
 
 const trustFeatures = [
   {
-    description: "Compras protegidas",
+    description: "Moderación, reportes y chat seguro",
     icon: "shield",
     title: "Seguridad"
   },
@@ -1666,15 +1668,25 @@ function renderCategoryShelves() {
   const scopedProducts = sortProducts(
     state.products.filter((product) => matchesActiveScope(product))
   );
+  const featuredIds = new Set(
+    scopedProducts
+      .slice(0, HOME_RECOMMENDED_LIMIT)
+      .map((product) => String(product.id || ""))
+  );
 
   const shelves = categoryOptions
     .map((category) => {
-      const products = scopedProducts
+      const categoryProducts = scopedProducts
         .filter(
           (product) =>
             normalizeText(product.category) === normalizeText(category)
-        )
-        .slice(0, CATEGORY_SHELF_LIMIT);
+        );
+      const productsWithoutFeatured = categoryProducts.filter(
+        (product) => !featuredIds.has(String(product.id || ""))
+      );
+      const products = (
+        productsWithoutFeatured.length ? productsWithoutFeatured : categoryProducts
+      ).slice(0, CATEGORY_SHELF_LIMIT);
 
       return { category, products };
     });
@@ -1916,6 +1928,7 @@ function productCard(product) {
             src="${escapeHtml(product.image_url || FALLBACK_PRODUCT_IMAGE)}"
             alt="${escapeHtml(product.title)}"
             loading="lazy"
+            decoding="async"
           >
         </a>
 

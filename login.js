@@ -536,7 +536,12 @@
         window.location.assign(nextPage);
       }, 700);
     } catch (error) {
-      console.error("No se pudo comprobar la sesión:", error);
+      const missingSession =
+        error?.name === "AuthSessionMissingError" ||
+        String(error?.message || "").toLowerCase().includes("session missing");
+      if (!missingSession) {
+        console.error("No se pudo comprobar la sesión:", error);
+      }
     }
   }
 

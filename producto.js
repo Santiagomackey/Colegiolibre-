@@ -1,7 +1,7 @@
 (function () {
 
 function createProductPageFallbackApi() {
-  const localFallbackImage = "images/materiales.png";
+  const localFallbackImage = "images/materiales.webp";
   const statusLabels = {
     available: "Disponible",
     paused: "Pausado",
@@ -19,7 +19,9 @@ function createProductPageFallbackApi() {
   }
 
   function localFormatPrice(price) {
-    return `$${Number(price || 0).toLocaleString("es-AR")}`;
+    const locale =
+      window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+    return `$${Number(price || 0).toLocaleString(locale)}`;
   }
 
   function localFormatRelativeDate(dateValue) {
@@ -34,7 +36,9 @@ function createProductPageFallbackApi() {
     if (diffDays === 1) return "Ayer";
     if (diffDays < 7) return `Hace ${diffDays} dias`;
 
-    return date.toLocaleDateString("es-AR");
+    const locale =
+      window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+    return date.toLocaleDateString(locale);
   }
 
   function localFormatPublishedDate(dateValue) {
@@ -656,6 +660,8 @@ function renderGallery(product) {
   images.forEach((url, index) => {
     const thumb = document.createElement("button");
     const image = document.createElement("img");
+    image.decoding = "async";
+    image.loading = "lazy";
 
     thumb.className = `gallery-thumb${index === 0 ? " is-active" : ""}`;
     thumb.type = "button";

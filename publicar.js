@@ -124,6 +124,16 @@ const publishState = {
   isReady: false
 };
 
+function isMissingSessionError(error) {
+  const name = String(error?.name || "");
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    name === "AuthSessionMissingError" ||
+    message.includes("auth session missing") ||
+    message.includes("session missing")
+  );
+}
+
 async function moderateSavedProduct(productId) {
   const { data } = await window.colegioLibreSupabase.auth.getSession();
   const accessToken = data?.session?.access_token;
@@ -224,7 +234,7 @@ async function ensurePublishAccess() {
   const { data: authData, error: authError } =
     await window.colegioLibreSupabase.auth.getUser();
 
-  if (authError) {
+  if (authError && !isMissingSessionError(authError)) {
     throw authError;
   }
 
@@ -591,10 +601,14 @@ function bindFormEvents() {
 
 function formatPrice(value) {
   if (!value || Number.isNaN(Number(value))) {
-    return `$${defaultContent.price.toLocaleString("es-AR")}`;
+    const locale =
+      window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+    return `$${defaultContent.price.toLocaleString(locale)}`;
   }
 
-  return `$${Number(value).toLocaleString("es-AR")}`;
+  const locale =
+    window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
+  return `$${Number(value).toLocaleString(locale)}`;
 }
 
 function getSelectedCondition() {
@@ -837,6 +851,13 @@ async function handleSubmit(event) {
       return;
     }
 
+    const description = descriptionInput.value.trim();
+    if (description.length < 20) {
+      showToast("Agregá una descripción de al menos 20 caracteres.");
+      descriptionInput.focus();
+      return;
+    }
+
     if (categoryConfig?.academic && (!schoolLevel || !schoolYear)) {
       showToast("Seleccioná el nivel y el año o grado.");
       return;
@@ -860,7 +881,7 @@ async function handleSubmit(event) {
     const { data: authData, error: authError } =
       await window.colegioLibreSupabase.auth.getUser();
 
-    if (authError) {
+    if (authError && !isMissingSessionError(authError)) {
       throw authError;
     }
 
@@ -925,7 +946,7 @@ async function handleSubmit(event) {
       category: category,
       condition: getSelectedCondition(),
       price: priceValue,
-      description: descriptionInput.value.trim(),
+      description: description,
       image_url: imageUrl,
 
       location:

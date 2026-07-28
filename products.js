@@ -252,7 +252,7 @@ async function cargarProductosDesdeSupabase() {
     condition: product.condition || "Usado",
     category: product.category || "Libros",
     description: product.description || "",
-    image_url: product.image_url || "images/materiales.png",
+    image_url: product.image_url || "images/materiales.webp",
     seller_name: product.seller_name || "Usuario ColegioLibre",
     user_id: product.user_id || null,
     school_code: product.school_code || null,

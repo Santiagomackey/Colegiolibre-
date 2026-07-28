@@ -1,0 +1,305 @@
+:root {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cl-bg: #08101f;
+  --cl-surface: #101a2d;
+  --cl-surface-2: #162238;
+  --cl-border: #2a3850;
+  --cl-text: #eef4ff;
+  --cl-muted: #a9b6cc;
+  --cl-blue: #78a8ff;
+  --cl-green: #8bdd61;
+  --cl-yellow: #ffd969;
+  --color-background: #08101f;
+  --color-bg: #08101f;
+  --color-bg-soft: #0d1728;
+  --color-surface: #101a2d;
+  --color-border: #2a3850;
+  --color-border-strong: #3a4963;
+  --color-text: #eef4ff;
+  --color-text-soft: #a9b6cc;
+  --color-text-muted: #8f9db5;
+  --color-text-faint: #8391aa;
+  --color-primary-soft: #162b4d;
+  --color-accent-green-soft: #183525;
+  --color-accent-yellow-soft: #3b3215;
+  --navy: #0b2e6b;
+  --navy-dark: #0b2e6b;
+  --navy-deep: #071f4b;
+  --navy-soft: #214f92;
+  --ink: #eef4ff;
+  --muted: #a9b6cc;
+  --line: #2a3850;
+  --surface: #101a2d;
+  --surface-soft: #162238;
+  --white: #101a2d;
+  --background: #08101f;
+  --text: #eef4ff;
+  --text-soft: #a9b6cc;
+  --border: #2a3850;
+  --primary: #17458e;
+  --primary-strong: #123a79;
+  --blue: #17458e;
+}
+
+.preference-controls {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 10020;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(11, 46, 107, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 40px rgba(11, 46, 107, 0.18);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.preference-controls__button {
+  min-width: 42px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  color: #0b2e6b;
+  background: transparent;
+  font: 700 0.78rem/1 Inter, system-ui, sans-serif;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.preference-controls__button:hover {
+  background: #edf3ff;
+}
+
+.preference-controls__button:active {
+  transform: scale(0.96);
+}
+
+.preference-controls__button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.preference-controls__language {
+  min-width: 48px;
+}
+
+html[data-theme="dark"] body {
+  background: var(--cl-bg) !important;
+  color: var(--cl-text) !important;
+}
+
+html[data-theme="dark"] :is(
+  header,
+  nav,
+  footer,
+  aside,
+  section,
+  article,
+  main,
+  form,
+  dialog,
+  .site-header,
+  .topbar,
+  .header,
+  .main-header,
+  .profile-sidebar,
+  .auth-panel,
+  .auth-form-panel,
+  .admin-header,
+  .moderation-header,
+  .legal-header
+) {
+  border-color: var(--cl-border);
+}
+
+html[data-theme="dark"] :is(
+  .product-card,
+  .category-shelf,
+  .filters-panel,
+  .scope-switcher,
+  .profile-card,
+  .profile-panel,
+  .metric-card,
+  .publication-card,
+  .transaction-card,
+  .conversation-card,
+  .chat-panel,
+  .product-info,
+  .seller-card,
+  .detail-card,
+  .publish-form,
+  .preview-card,
+  .auth-card,
+  .admin-card,
+  .access-card,
+  .legal-card,
+  .legal-section,
+  .school-card,
+  .modal,
+  .modal-card,
+  .dialog-card,
+  .empty-state,
+  .safety-card,
+  .form-section,
+  .table-shell,
+  .admin-tabs,
+  .moderation-hero,
+  .moderation-page section,
+  .category-drawer,
+  .mobile-menu,
+  .onboarding-card,
+  .school-search-card
+) {
+  background-color: var(--cl-surface) !important;
+  border-color: var(--cl-border) !important;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"] :is(
+  input,
+  select,
+  textarea,
+  .search-box,
+  .search-input,
+  .filter-select,
+  .school-search-box,
+  .upload-zone
+) {
+  color: var(--cl-text) !important;
+  background-color: var(--cl-surface-2) !important;
+  border-color: var(--cl-border) !important;
+}
+
+html[data-theme="dark"] :is(input, textarea)::placeholder {
+  color: #8998b2 !important;
+  opacity: 1;
+}
+
+html[data-theme="dark"] :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  strong,
+  label,
+  legend,
+  .product-title,
+  .product-card__title,
+  .price,
+  .product-price,
+  .profile-name,
+  .seller-name,
+  .admin-page,
+  .legal-page
+) {
+  color: var(--cl-text) !important;
+}
+
+html[data-theme="dark"] :is(
+  p,
+  small,
+  .muted,
+  .meta,
+  .description,
+  .product-location,
+  .product-meta,
+  .section-copy,
+  .helper-text,
+  .form-hint,
+  .empty-state,
+  .legal-page li
+) {
+  color: var(--cl-muted) !important;
+}
+
+html[data-theme="dark"] :is(
+  .site-header,
+  .main-header,
+  .topbar,
+  .admin-header,
+  .moderation-header,
+  .legal-header,
+  footer,
+  .site-footer
+) {
+  background-color: #0c1628 !important;
+}
+
+html[data-theme="dark"] a:not(.primary-button):not(.btn-primary) {
+  color: var(--cl-blue);
+}
+
+html[data-theme="dark"] :is(.filter-pill, .category-pill, .year-pill, .tab-button) {
+  color: var(--cl-text);
+  background: var(--cl-surface-2);
+  border-color: var(--cl-border);
+}
+
+html[data-theme="dark"] :is(
+  .filter-pill.is-active,
+  .category-pill.is-active,
+  .year-pill.is-active,
+  .tab-button.is-active
+) {
+  color: #fff;
+  background: #17458e;
+}
+
+html[data-theme="dark"] .preference-controls {
+  background: rgba(16, 26, 45, 0.94);
+  border-color: var(--cl-border);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.36);
+}
+
+html[data-theme="dark"] .preference-controls__button {
+  color: var(--cl-text);
+}
+
+html[data-theme="dark"] .preference-controls__button:hover {
+  background: var(--cl-surface-2);
+}
+
+@media (max-width: 640px) {
+  .preference-controls {
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .preference-controls__button {
+    min-width: 40px;
+    min-height: 40px;
+    padding-inline: 10px;
+  }
+
+  .preference-controls__button span:not(.preference-controls__language-label) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+}
+
+@media print {
+  .preference-controls {
+    display: none !important;
+  }
+}

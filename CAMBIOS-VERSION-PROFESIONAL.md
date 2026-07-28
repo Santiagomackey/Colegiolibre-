@@ -17,6 +17,9 @@
 - Encabezados de seguridad y caché estática mediante `vercel.json`.
 - Validador local para JavaScript, JSON, IDs, recursos y secretos.
 - Consulta SQL de solo lectura para comprobar RLS, políticas, triggers y consistencia.
+- Modo oscuro global, responsive y persistente.
+- Selector Español/English en todas las páginas, incluidos formularios, paneles y contenido dinámico.
+- Estructura de Vercel corregida: `api/` contiene únicamente `moderate-product.js`.
 
 ## Límites que requieren una prueba real
 

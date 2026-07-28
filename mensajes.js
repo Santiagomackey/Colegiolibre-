@@ -1437,14 +1437,20 @@
       date.getFullYear() === now.getFullYear();
 
     return sameDay
-      ? date.toLocaleTimeString("es-AR", {
+      ? date.toLocaleTimeString(
+          window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR",
+          {
           hour: "2-digit",
           minute: "2-digit"
-        })
-      : date.toLocaleDateString("es-AR", {
+          }
+        )
+      : date.toLocaleDateString(
+          window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR",
+          {
           day: "2-digit",
           month: "2-digit"
-        });
+          }
+        );
   }
 
   function showToast(message) {

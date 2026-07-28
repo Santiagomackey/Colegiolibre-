@@ -639,6 +639,11 @@ img {
   color: #194e9f;
 }
 
+.preview-badge[data-condition="Nuevo"] {
+  background: linear-gradient(135deg, #eff9e8 0%, #ccebb9 100%);
+  color: #2f6f1d;
+}
+
 .preview-visual {
   position: relative;
   min-height: 386px;
