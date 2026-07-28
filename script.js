@@ -1249,6 +1249,8 @@ function applyCategory(category) {
 function openCategoryDrawer() {
   if (elements.categoryDrawer) {
     elements.categoryDrawer.classList.add("is-open");
+    elements.categoryDrawer.setAttribute("aria-hidden", "false");
+    elements.categoryDrawer.inert = false;
   }
 
   if (elements.categoryOverlay) {
@@ -1340,6 +1342,8 @@ function syncFavoritesUrl() {
 function closeCategoryDrawer() {
   if (elements.categoryDrawer) {
     elements.categoryDrawer.classList.remove("is-open");
+    elements.categoryDrawer.setAttribute("aria-hidden", "true");
+    elements.categoryDrawer.inert = true;
   }
 
   if (elements.categoryOverlay) {

@@ -1,0 +1,37 @@
+COLEGIOLIBRE — PRUEBA FINAL CON DOS CUENTAS
+
+Esta lista comprueba las acciones que ningún análisis estático puede confirmar.
+Usá dos cuentas de prueba, nunca cuentas personales reales.
+
+CUENTA A — VENDEDOR
+1. Crear cuenta y seleccionar un colegio.
+2. Publicar un producto con 2 imágenes.
+3. Editar título, precio y estado.
+4. Pausar y reactivar.
+5. Confirmar que un producto pausado no aparece en la Home.
+
+CUENTA B — COMPRADOR
+6. Abrir el producto.
+7. Agregarlo y quitarlo de favoritos.
+8. Contactar al vendedor.
+9. Enviar un mensaje y comprobar que aparece en la cuenta A.
+10. Reportar únicamente el producto de prueba.
+
+CUENTA A — CIERRE
+11. Reservar el producto para la cuenta B.
+12. Marcar la operación como completada.
+13. Confirmar que el producto pasa a Vendidos.
+14. Enviar una calificación de prueba.
+
+ADMINISTRACIÓN
+15. Confirmar que el reporte aparece en Moderación.
+16. Aprobar o resolver el reporte de prueba.
+17. Revisar que la acción quede registrada en Historial.
+
+INTERFAZ
+18. Repetir Home, producto, perfil y mensajes en claro y oscuro.
+19. Cambiar a inglés y confirmar que solo los títulos de productos permanecen
+    sin traducir.
+20. Probar en celular y verificar que no exista desplazamiento horizontal.
+
+Al terminar, eliminá las publicaciones y reportes de prueba.

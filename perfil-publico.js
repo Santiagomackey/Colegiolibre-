@@ -119,9 +119,11 @@
     const ratingCount = Number(profile.rating_count || 0);
     const salesCount = Number(profile.sales_count || 0);
 
-    elements.name.textContent = profile.name || "Usuario ColegioLibre";
+    const profileName = profile.name || "Usuario ColegioLibre";
+    const schoolName = profile.school_name || "Colegio no especificado";
+    elements.name.textContent = profileName;
     elements.avatar.textContent = getInitials(profile.name);
-    elements.school.textContent = profile.school_name || "Colegio no especificado";
+    elements.school.textContent = schoolName;
     elements.zone.textContent = profile.zone_code || "Zona no especificada";
     elements.memberSince.textContent = `Miembro desde ${formatMemberSince(
       profile.member_since || profile.created_at
@@ -129,6 +131,36 @@
     elements.rating.textContent = ratingCount
       ? `${rating.toFixed(1)} ★`
       : "Sin calificaciones";
+
+    document.title = `${profileName} | ColegioLibre`;
+    const canonicalUrl = new URL(
+      `perfil-publico.html?id=${encodeURIComponent(profileId)}`,
+      window.location.origin
+    ).href;
+    const description = `Conocé la reputación y las publicaciones de ${profileName} en la comunidad de ${schoolName}.`;
+    let canonical = document.head.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalUrl;
+
+    [
+      ["name", "description", description],
+      ["property", "og:title", document.title],
+      ["property", "og:description", description],
+      ["property", "og:type", "profile"],
+      ["property", "og:url", canonicalUrl]
+    ].forEach(([attribute, key, content]) => {
+      let meta = document.head.querySelector(`meta[${attribute}="${key}"]`);
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute(attribute, key);
+        document.head.appendChild(meta);
+      }
+      meta.content = content;
+    });
     elements.ratingCount.textContent = String(ratingCount);
     elements.salesCount.textContent = String(salesCount);
     elements.verifiedBadge.hidden = true;

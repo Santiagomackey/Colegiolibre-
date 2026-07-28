@@ -206,6 +206,49 @@ const CONDITION_OPTIONS = ["Nuevo", "Como nuevo", "Usado", "Muy usado"];
 const VIEW_COOLDOWN_MS = 12 * 60 * 60 * 1000;
 const productId = new URLSearchParams(window.location.search).get("id");
 
+function upsertMeta(selector, attributes, content) {
+  let element = document.head.querySelector(selector);
+  if (!element) {
+    element = document.createElement("meta");
+    Object.entries(attributes).forEach(([name, value]) => {
+      element.setAttribute(name, value);
+    });
+    document.head.appendChild(element);
+  }
+  element.setAttribute("content", String(content || ""));
+}
+
+function updateProductSeo(product) {
+  const canonicalUrl = new URL(`producto.html?id=${encodeURIComponent(product.id)}`, window.location.origin).href;
+  const description = String(
+    product.description ||
+      `${product.title}, material escolar publicado en ColegioLibre.`
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 155);
+  const imageUrl = new URL(
+    product.image_url || FALLBACK_PRODUCT_IMAGE,
+    window.location.href
+  ).href;
+
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.appendChild(canonical);
+  }
+  canonical.href = canonicalUrl;
+
+  upsertMeta('meta[name="description"]', { name: "description" }, description);
+  upsertMeta('meta[property="og:title"]', { property: "og:title" }, `${product.title} | ColegioLibre`);
+  upsertMeta('meta[property="og:description"]', { property: "og:description" }, description);
+  upsertMeta('meta[property="og:type"]', { property: "og:type" }, "product");
+  upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonicalUrl);
+  upsertMeta('meta[property="og:image"]', { property: "og:image" }, imageUrl);
+  upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
+}
+
 const elements = {
   attributesGrid: document.querySelector("#product-attributes"),
   attributesSection: document.querySelector("#attributes-section"),
@@ -515,6 +558,7 @@ async function updateViews(product) {
 
 function renderProduct(product) {
   document.title = `ColegioLibre | ${product.title}`;
+  updateProductSeo(product);
 
   elements.productTitle.textContent = product.title;
   elements.productPrice.textContent = formatPrice(product.price);

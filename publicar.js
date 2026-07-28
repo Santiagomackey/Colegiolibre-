@@ -1082,8 +1082,6 @@ async function handleSubmit(event) {
       created_at: nowIso
     };
 
-    console.log("Producto que se enviará:", product);
-
     const { data: insertedProduct, error: insertError } =
       await window.colegioLibreSupabase
         .from("products")

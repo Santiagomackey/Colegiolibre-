@@ -533,6 +533,9 @@ img {
   color: var(--color-text-soft);
   font-size: 0.9rem;
   font-weight: 600;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
 
 .dashboard-metric-card strong,
@@ -566,6 +569,16 @@ img {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.9rem;
+}
+
+@media (max-width: 1450px) and (min-width: 981px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(3, minmax(130px, 1fr));
+  }
+
+  .dashboard-profile-card__grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
 }
 
 .publication-panel {

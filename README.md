@@ -20,6 +20,19 @@ El sitio está preparado para desplegarse en Vercel sin un comando de compilaci�
 
 La autenticación y los datos utilizan Supabase. La clave incluida en el frontend es una clave pública (`publishable`); nunca agregues una clave `service_role` ni otros secretos privados al repositorio.
 
+## Auditoría antes de publicar
+
+Ejecutá:
+
+```bash
+node scripts/validate-project.mjs
+node scripts/audit-release.mjs
+```
+
+Después completá `PRUEBAS-ANTES-DE-LANZAR.txt` con dos cuentas de prueba. El
+análisis automático valida estructura, seguridad y referencias; las acciones
+entre usuarios necesitan una prueba real contra Supabase.
+
 ## Configuración final de producción
 
 Después de ejecutar los archivos SQL anteriores, abrí un Query nuevo en Supabase

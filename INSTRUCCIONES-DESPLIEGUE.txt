@@ -40,8 +40,9 @@ productos públicos y posibles duplicados antes del lanzamiento.
 Con Node.js instalado, abrí una terminal dentro del proyecto y ejecutá:
 
 node scripts/validate-project.mjs
+node scripts/audit-release.mjs
 
-Debe terminar con “Validación correcta”.
+Deben terminar con “Validación correcta” y “Auditoría de lanzamiento correcta”.
 
 6. PUBLICACIÓN
 Confirmá los cambios en Git, sincronizalos y esperá a que Vercel muestre
@@ -50,6 +51,8 @@ el deployment como Ready. Probá siempre el dominio estable:
 https://colegiolibre.vercel.app/
 
 7. PRUEBA MÍNIMA ANTES DE COMPARTIR
+
+Seguí también la lista PRUEBAS-ANTES-DE-LANZAR.txt con dos cuentas de prueba.
 
 - Crear una cuenta e iniciar/cerrar sesión.
 - Buscar y elegir un colegio.

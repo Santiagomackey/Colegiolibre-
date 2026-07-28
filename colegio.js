@@ -48,6 +48,40 @@ const state = {
   selectedCategory: ""
 };
 
+function updateSchoolSeo(schoolName, schoolLocation) {
+  const canonicalUrl = new URL(
+    `colegio.html?code=${encodeURIComponent(schoolCode)}`,
+    window.location.origin
+  ).href;
+  const description = `Encontrá libros, uniformes y materiales escolares publicados por la comunidad de ${schoolName} en ${schoolLocation}.`;
+
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.appendChild(canonical);
+  }
+  canonical.href = canonicalUrl;
+
+  const metaEntries = [
+    ["name", "description", description],
+    ["property", "og:title", `${schoolName} | ColegioLibre`],
+    ["property", "og:description", description],
+    ["property", "og:type", "website"],
+    ["property", "og:url", canonicalUrl]
+  ];
+
+  metaEntries.forEach(([attribute, key, content]) => {
+    let meta = document.head.querySelector(`meta[${attribute}="${key}"]`);
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute(attribute, key);
+      document.head.appendChild(meta);
+    }
+    meta.content = content;
+  });
+}
+
 initSchoolPage();
 
 async function initSchoolPage() {
@@ -57,9 +91,6 @@ async function initSchoolPage() {
     await resolveSchoolFromAccount();
     return;
   }
-
-  const hasAccess = await ensureSchoolAccess();
-  if (!hasAccess) return;
 
   await loadSchool();
 
@@ -203,6 +234,7 @@ function renderHero() {
   const categories = new Set(state.products.map((product) => product.category).filter(Boolean));
 
   document.title = `ColegioLibre | ${schoolName}`;
+  updateSchoolSeo(schoolName, schoolLocation);
   elements.name.textContent = schoolName;
   elements.location.innerHTML = `
     <svg class="icon"><use href="#icon-pin"></use></svg>
