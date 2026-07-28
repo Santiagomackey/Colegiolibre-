@@ -43,6 +43,8 @@ const pages = [
   "privacidad.html",
   "terminos.html",
   "productos-prohibidos.html",
+  "beta.html",
+  "beta-admin.html",
   "404.html"
 ];
 

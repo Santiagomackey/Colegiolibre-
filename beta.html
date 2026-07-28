@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./preferences.js?v=20260728-11"></script>
+    <title>Prueba beta | ColegioLibre</title>
+    <meta name="description" content="Recorrido guiado para probar ColegioLibre desde celulares y computadoras." />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0B2E6B" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./beta.css?v=20260728-1" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-11" />
+    <link rel="stylesheet" href="./pwa.css?v=20260728-1" />
+  </head>
+  <body>
+    <header class="beta-header">
+      <a href="./index.html" aria-label="Volver a ColegioLibre">
+        <img src="./images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+      </a>
+      <span data-copy="badge">Programa beta</span>
+    </header>
+
+    <main class="beta-shell">
+      <section class="beta-hero">
+        <div>
+          <p data-copy="eyebrow">Ayudanos a mejorar</p>
+          <h1 data-copy="title">Probá ColegioLibre desde tu celular</h1>
+          <p data-copy="intro">
+            Completá estas pruebas como usarías normalmente la aplicación. Si algo falla o resulta confuso, reportalo al final.
+          </p>
+        </div>
+        <img src="./images/icon-192.png" alt="" />
+      </section>
+
+      <section class="beta-progress" aria-labelledby="progress-title">
+        <div>
+          <span data-copy="progressLabel">Tu progreso</span>
+          <strong id="progress-title"><span id="completed-count">0</span>/10</strong>
+        </div>
+        <div class="beta-progress__track" aria-hidden="true">
+          <span id="progress-bar"></span>
+        </div>
+        <p id="progress-message" aria-live="polite"></p>
+      </section>
+
+      <section class="beta-section" aria-labelledby="tasks-title">
+        <div class="beta-section__heading">
+          <div>
+            <p data-copy="tasksEyebrow">Recorrido recomendado</p>
+            <h2 id="tasks-title" data-copy="tasksTitle">10 pruebas importantes</h2>
+          </div>
+          <button id="reset-tasks" type="button" data-copy="reset">Reiniciar</button>
+        </div>
+        <div class="beta-task-list" id="beta-task-list"></div>
+      </section>
+
+      <section class="beta-section beta-feedback" id="feedback" aria-labelledby="feedback-title">
+        <div class="beta-section__heading">
+          <div>
+            <p data-copy="feedbackEyebrow">Tu experiencia</p>
+            <h2 id="feedback-title" data-copy="feedbackTitle">Contanos qué pasó</h2>
+          </div>
+        </div>
+
+        <form id="beta-feedback-form">
+          <div class="beta-form-grid">
+            <label>
+              <span data-copy="typeLabel">Tipo de comentario</span>
+              <select id="feedback-type" required>
+                <option value="" data-copy="selectOption">Seleccioná una opción</option>
+                <option value="bug" data-copy="typeBug">Encontré un error</option>
+                <option value="confusing" data-copy="typeConfusing">Algo fue confuso</option>
+                <option value="suggestion" data-copy="typeSuggestion">Tengo una sugerencia</option>
+                <option value="positive" data-copy="typePositive">Algo me gustó</option>
+              </select>
+            </label>
+
+            <label>
+              <span data-copy="pageLabel">¿Dónde ocurrió?</span>
+              <select id="feedback-page" required>
+                <option value="" data-copy="selectPage">Seleccioná la página</option>
+                <option value="home">Home</option>
+                <option value="login" data-copy="pageLogin">Registro o inicio de sesión</option>
+                <option value="school" data-copy="pageSchool">Selección del colegio</option>
+                <option value="product" data-copy="pageProduct">Detalle de producto</option>
+                <option value="publish" data-copy="pagePublish">Publicar o editar</option>
+                <option value="favorites" data-copy="pageFavorites">Favoritos</option>
+                <option value="messages" data-copy="pageMessages">Mensajes</option>
+                <option value="profile" data-copy="pageProfile">Perfil</option>
+                <option value="install" data-copy="pageInstall">Instalación de la app</option>
+                <option value="other" data-copy="pageOther">Otra parte</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="beta-rating">
+            <legend data-copy="ratingLabel">Calificación general</legend>
+            <div id="rating-options"></div>
+          </fieldset>
+
+          <label>
+            <span data-copy="descriptionLabel">¿Qué pasó o qué mejorarías?</span>
+            <textarea
+              id="feedback-description"
+              rows="5"
+              minlength="10"
+              maxlength="2000"
+              required
+              data-placeholder-es="Contanos con el mayor detalle posible."
+              data-placeholder-en="Tell us what happened with as much detail as possible."
+            ></textarea>
+          </label>
+
+          <label>
+            <span data-copy="stepsLabel">Pasos para repetir el problema <small data-copy="optional">(opcional)</small></span>
+            <textarea
+              id="feedback-steps"
+              rows="3"
+              maxlength="1500"
+              data-placeholder-es="Ejemplo: abrí Favoritos, toqué un producto y apareció una pantalla vacía."
+              data-placeholder-en="Example: I opened Saved, tapped a product and saw a blank screen."
+            ></textarea>
+          </label>
+
+          <p class="beta-privacy" data-copy="privacy">
+            No incluyas contraseñas, códigos, DNI, direcciones ni conversaciones privadas.
+          </p>
+
+          <button class="beta-submit" id="feedback-submit" type="submit" data-copy="submit">
+            Enviar comentario
+          </button>
+          <p class="beta-form-status" id="feedback-status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+    <script src="./supabase.js?v=20260728-verification1"></script>
+    <script src="./beta.js?v=20260728-1"></script>
+    <script src="./pwa.js?v=20260728-1"></script>
+  </body>
+</html>

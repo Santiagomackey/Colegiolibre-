@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./preferences.js?v=20260728-11"></script>
+    <title>Reportes beta | ColegioLibre</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0B2E6B" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./beta-admin.css?v=20260728-1" />
+    <link rel="stylesheet" href="./preferences.css?v=20260728-11" />
+    <link rel="stylesheet" href="./pwa.css?v=20260728-1" />
+  </head>
+  <body>
+    <header class="beta-admin-header">
+      <div class="beta-admin-shell">
+        <a href="./index.html" aria-label="Ir al inicio">
+          <img src="./images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+        </a>
+        <div>
+          <span>Administración</span>
+          <strong>Pruebas beta</strong>
+        </div>
+        <a class="beta-admin-back" href="./moderacion.html">Volver a moderación</a>
+      </div>
+    </header>
+
+    <main class="beta-admin-shell beta-admin-main">
+      <section class="beta-admin-hero">
+        <div>
+          <p>Experiencia real</p>
+          <h1>Reportes de los testers</h1>
+          <span>Errores, sugerencias y calificaciones enviadas desde la prueba guiada.</span>
+        </div>
+        <button id="beta-admin-refresh" type="button">Actualizar</button>
+      </section>
+
+      <section class="beta-admin-metrics" aria-label="Resumen de reportes">
+        <article><span>Nuevos</span><strong id="metric-new">0</strong></article>
+        <article><span>En revisión</span><strong id="metric-reviewing">0</strong></article>
+        <article><span>Resueltos</span><strong id="metric-resolved">0</strong></article>
+        <article><span>Promedio</span><strong id="metric-rating">—</strong></article>
+      </section>
+
+      <section class="beta-admin-toolbar">
+        <label>
+          Estado
+          <select id="beta-status-filter">
+            <option value="open">Nuevos y en revisión</option>
+            <option value="all">Todos</option>
+            <option value="new">Nuevos</option>
+            <option value="reviewing">En revisión</option>
+            <option value="resolved">Resueltos</option>
+            <option value="dismissed">Descartados</option>
+          </select>
+        </label>
+        <label>
+          Tipo
+          <select id="beta-type-filter">
+            <option value="all">Todos</option>
+            <option value="bug">Errores</option>
+            <option value="confusing">Confusos</option>
+            <option value="suggestion">Sugerencias</option>
+            <option value="positive">Positivos</option>
+          </select>
+        </label>
+        <label class="beta-admin-search">
+          Buscar
+          <input id="beta-search" type="search" placeholder="Página, comentario o dispositivo" />
+        </label>
+      </section>
+
+      <p class="beta-admin-status" id="beta-admin-status" aria-live="polite">Cargando reportes…</p>
+      <section class="beta-admin-list" id="beta-admin-list" aria-live="polite"></section>
+    </main>
+
+    <div class="beta-admin-toast" id="beta-admin-toast" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+    <script src="./supabase.js?v=20260728-verification1"></script>
+    <script src="./beta-admin.js?v=20260728-1"></script>
+    <script src="./pwa.js?v=20260728-1"></script>
+  </body>
+</html>
