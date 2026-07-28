@@ -4,10 +4,6 @@
   const STORAGE_THEME = "colegiolibre-theme";
   const STORAGE_LANGUAGE = "colegiolibre-language";
   const root = document.documentElement;
-  const style = document.createElement("link");
-  style.rel = "stylesheet";
-  style.href = "./preferences.css?v=20260728-3";
-  document.head.appendChild(style);
   const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)");
   const storedTheme = localStorage.getItem(STORAGE_THEME);
   const storedLanguage = localStorage.getItem(STORAGE_LANGUAGE);
