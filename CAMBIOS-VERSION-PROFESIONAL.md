@@ -20,6 +20,11 @@
 - Modo oscuro global, responsive y persistente.
 - Selector Español/English en todas las páginas, incluidos formularios, paneles y contenido dinámico.
 - Estructura de Vercel corregida: `api/` contiene únicamente `moderate-product.js`.
+- Tema oscuro negro profesional con superficies, bordes y contraste propios.
+- Consulta inicial del Home limitada para no descargar la tabla completa.
+- Máximo de cuatro estanterías relevantes y eliminación de categorías vacías en el Home.
+- Renderizado diferido de secciones fuera de pantalla mediante `content-visibility`.
+- Traducciones dinámicas agrupadas en tareas de baja prioridad para evitar bloqueos.
 
 ## Límites que requieren una prueba real
 

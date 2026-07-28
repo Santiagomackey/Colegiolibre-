@@ -209,3 +209,19 @@ textarea {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Evita calcular y pintar secciones que todavía están fuera de pantalla. */
+.category-shelf,
+#como-funciona,
+.site-footer,
+.legal-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+.product-card,
+.category-card,
+.publication-card,
+.conversation-card {
+  contain: layout paint style;
+}

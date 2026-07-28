@@ -140,6 +140,8 @@ const {
 const HOME_RECOMMENDED_LIMIT = 5;
 const HOME_FILTERED_LIMIT = 10;
 const CATEGORY_SHELF_LIMIT = 5;
+const CATEGORY_SHELF_MAX = 4;
+const HOME_QUERY_LIMIT = 150;
 const conditionOptions = ["Nuevo", "Como nuevo", "Usado", "Muy usado"];
 const categoryOptions = ["Libros", "Apuntes", "Cuadernos", "Útiles", "Mochilas", "Tecnología", "Uniformes", "Otros"];
 const schoolYearOptions = [1, 2, 3, 4, 5, 6, 7];
@@ -1455,7 +1457,8 @@ async function loadProducts() {
         .from("products")
         .select("*")
         .not("user_id", "is", null)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(HOME_QUERY_LIMIT);
 
       data = response.data || [];
       error = response.error || null;
@@ -1689,9 +1692,11 @@ function renderCategoryShelves() {
       ).slice(0, CATEGORY_SHELF_LIMIT);
 
       return { category, products };
-    });
+    })
+    .filter(({ products }) => products.length)
+    .slice(0, CATEGORY_SHELF_MAX);
 
-  elements.categoryMarketplace.hidden = false;
+  elements.categoryMarketplace.hidden = shelves.length === 0;
   elements.categoryShelves.innerHTML = shelves
     .map(({ category, products }) => {
       const details = categoryShelfDetails[category] || categoryShelfDetails.Otros;

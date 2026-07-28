@@ -6,7 +6,7 @@
   const root = document.documentElement;
   const style = document.createElement("link");
   style.rel = "stylesheet";
-  style.href = "./preferences.css?v=20260728-2";
+  style.href = "./preferences.css?v=20260728-3";
   document.head.appendChild(style);
   const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)");
   const storedTheme = localStorage.getItem(STORAGE_THEME);
@@ -21,6 +21,8 @@
   let translating = false;
   const originalText = new WeakMap();
   const originalAttributes = new WeakMap();
+  const translationQueue = new Set();
+  let translationTask = null;
 
   const translations = new Map(Object.entries({
     "Saltar al contenido": "Skip to content",
@@ -875,6 +877,32 @@
     }
   }
 
+  function flushTranslationQueue() {
+    translationTask = null;
+    const queued = [...translationQueue].filter((node) => node?.isConnected);
+    translationQueue.clear();
+    const roots = queued.filter(
+      (node) => !queued.some((candidate) => candidate !== node && candidate.contains?.(node))
+    );
+    roots.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) translateTextNode(node);
+      if (node.nodeType === Node.ELEMENT_NODE) translateTree(node);
+    });
+  }
+
+  function scheduleTranslation(node) {
+    if (!node || language !== "en") return;
+    translationQueue.add(node);
+    if (translationTask !== null) return;
+    if ("requestIdleCallback" in window) {
+      translationTask = window.requestIdleCallback(flushTranslationQueue, {
+        timeout: 120
+      });
+    } else {
+      translationTask = window.requestAnimationFrame(flushTranslationQueue);
+    }
+  }
+
   function applyTheme(nextTheme, persist = true) {
     theme = nextTheme === "dark" ? "dark" : "light";
     root.dataset.theme = theme;
@@ -970,10 +998,7 @@
     observer = new MutationObserver((mutations) => {
       if (translating || language !== "en") return;
       for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE) translateTextNode(node);
-          if (node.nodeType === Node.ELEMENT_NODE) translateTree(node);
-        });
+        mutation.addedNodes.forEach(scheduleTranslation);
       }
     });
     observer.observe(document.body, {

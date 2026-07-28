@@ -62,6 +62,7 @@ https://colegiolibre.vercel.app/
 - Cambiar a modo oscuro, recorrer varias páginas y volver al modo claro.
 - Cambiar a English, comprobar Home, formularios, perfil, mensajes y administración.
 - Recargar la página y confirmar que idioma y tema permanezcan seleccionados.
+- Desplazarse desde el inicio hasta el footer y comprobar que el scroll sea fluido.
 
 8. TEMA E IDIOMA
 Todas las páginas cargan preferences.js y preferences.css.

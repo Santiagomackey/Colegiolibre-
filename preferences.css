@@ -4,42 +4,42 @@
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --cl-bg: #090e19;
-  --cl-surface: #111827;
-  --cl-surface-2: #182235;
-  --cl-border: rgba(203, 213, 225, 0.14);
-  --cl-text: #f8fafc;
-  --cl-muted: #aeb9ca;
-  --cl-blue: #8ab4ff;
+  --cl-bg: #050608;
+  --cl-surface: #0d0f12;
+  --cl-surface-2: #15181d;
+  --cl-border: rgba(255, 255, 255, 0.1);
+  --cl-text: #f5f7fa;
+  --cl-muted: #a5abb5;
+  --cl-blue: #8fb8ff;
   --cl-green: #8bdd61;
   --cl-yellow: #ffd969;
-  --color-background: #090e19;
-  --color-bg: #090e19;
-  --color-bg-soft: #0d1422;
-  --color-surface: #111827;
-  --color-border: rgba(203, 213, 225, 0.14);
-  --color-border-strong: rgba(203, 213, 225, 0.23);
-  --color-text: #f8fafc;
-  --color-text-soft: #aeb9ca;
-  --color-text-muted: #909db1;
-  --color-text-faint: #8290a7;
-  --color-primary-soft: #172a49;
+  --color-background: #050608;
+  --color-bg: #050608;
+  --color-bg-soft: #090b0e;
+  --color-surface: #0d0f12;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-text: #f5f7fa;
+  --color-text-soft: #a5abb5;
+  --color-text-muted: #858c98;
+  --color-text-faint: #757d8a;
+  --color-primary-soft: #12223d;
   --color-accent-green-soft: #183525;
   --color-accent-yellow-soft: #3b3215;
   --navy: #0b2e6b;
   --navy-dark: #0b2e6b;
   --navy-deep: #071f4b;
   --navy-soft: #214f92;
-  --ink: #f8fafc;
-  --muted: #aeb9ca;
-  --line: rgba(203, 213, 225, 0.14);
-  --surface: #111827;
-  --surface-soft: #182235;
-  --white: #111827;
-  --background: #090e19;
-  --text: #f8fafc;
-  --text-soft: #aeb9ca;
-  --border: rgba(203, 213, 225, 0.14);
+  --ink: #f5f7fa;
+  --muted: #a5abb5;
+  --line: rgba(255, 255, 255, 0.1);
+  --surface: #0d0f12;
+  --surface-soft: #15181d;
+  --white: #0d0f12;
+  --background: #050608;
+  --text: #f5f7fa;
+  --text-soft: #a5abb5;
+  --border: rgba(255, 255, 255, 0.1);
   --primary: #17458e;
   --primary-strong: #123a79;
   --blue: #17458e;
@@ -239,7 +239,7 @@ html[data-theme="dark"] :is(
   footer,
   .site-footer
 ) {
-  background-color: #0c1321 !important;
+  background-color: #080a0d !important;
 }
 
 html[data-theme="dark"] a:not(.primary-button):not(.btn-primary) {
