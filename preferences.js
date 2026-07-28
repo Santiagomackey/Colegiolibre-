@@ -6,7 +6,7 @@
   const root = document.documentElement;
   const style = document.createElement("link");
   style.rel = "stylesheet";
-  style.href = "./preferences.css?v=20260728-1";
+  style.href = "./preferences.css?v=20260728-2";
   document.head.appendChild(style);
   const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)");
   const storedTheme = localStorage.getItem(STORAGE_THEME);
@@ -964,6 +964,7 @@
   root.dataset.language = language;
 
   document.addEventListener("DOMContentLoaded", () => {
+    if (!root.dataset.originalTitle) root.dataset.originalTitle = document.title;
     createControls();
     applyLanguage(language, false);
     observer = new MutationObserver((mutations) => {
@@ -973,16 +974,11 @@
           if (node.nodeType === Node.TEXT_NODE) translateTextNode(node);
           if (node.nodeType === Node.ELEMENT_NODE) translateTree(node);
         });
-        if (mutation.type === "characterData") {
-          originalText.delete(mutation.target);
-          translateTextNode(mutation.target);
-        }
       }
     });
     observer.observe(document.body, {
       childList: true,
-      subtree: true,
-      characterData: true
+      subtree: true
     });
   });
 

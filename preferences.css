@@ -4,42 +4,42 @@
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --cl-bg: #08101f;
-  --cl-surface: #101a2d;
-  --cl-surface-2: #162238;
-  --cl-border: #2a3850;
-  --cl-text: #eef4ff;
-  --cl-muted: #a9b6cc;
-  --cl-blue: #78a8ff;
+  --cl-bg: #090e19;
+  --cl-surface: #111827;
+  --cl-surface-2: #182235;
+  --cl-border: rgba(203, 213, 225, 0.14);
+  --cl-text: #f8fafc;
+  --cl-muted: #aeb9ca;
+  --cl-blue: #8ab4ff;
   --cl-green: #8bdd61;
   --cl-yellow: #ffd969;
-  --color-background: #08101f;
-  --color-bg: #08101f;
-  --color-bg-soft: #0d1728;
-  --color-surface: #101a2d;
-  --color-border: #2a3850;
-  --color-border-strong: #3a4963;
-  --color-text: #eef4ff;
-  --color-text-soft: #a9b6cc;
-  --color-text-muted: #8f9db5;
-  --color-text-faint: #8391aa;
-  --color-primary-soft: #162b4d;
+  --color-background: #090e19;
+  --color-bg: #090e19;
+  --color-bg-soft: #0d1422;
+  --color-surface: #111827;
+  --color-border: rgba(203, 213, 225, 0.14);
+  --color-border-strong: rgba(203, 213, 225, 0.23);
+  --color-text: #f8fafc;
+  --color-text-soft: #aeb9ca;
+  --color-text-muted: #909db1;
+  --color-text-faint: #8290a7;
+  --color-primary-soft: #172a49;
   --color-accent-green-soft: #183525;
   --color-accent-yellow-soft: #3b3215;
   --navy: #0b2e6b;
   --navy-dark: #0b2e6b;
   --navy-deep: #071f4b;
   --navy-soft: #214f92;
-  --ink: #eef4ff;
-  --muted: #a9b6cc;
-  --line: #2a3850;
-  --surface: #101a2d;
-  --surface-soft: #162238;
-  --white: #101a2d;
-  --background: #08101f;
-  --text: #eef4ff;
-  --text-soft: #a9b6cc;
-  --border: #2a3850;
+  --ink: #f8fafc;
+  --muted: #aeb9ca;
+  --line: rgba(203, 213, 225, 0.14);
+  --surface: #111827;
+  --surface-soft: #182235;
+  --white: #111827;
+  --background: #090e19;
+  --text: #f8fafc;
+  --text-soft: #aeb9ca;
+  --border: rgba(203, 213, 225, 0.14);
   --primary: #17458e;
   --primary-strong: #123a79;
   --blue: #17458e;
@@ -162,7 +162,6 @@ html[data-theme="dark"] :is(
   .table-shell,
   .admin-tabs,
   .moderation-hero,
-  .moderation-page section,
   .category-drawer,
   .mobile-menu,
   .onboarding-card,
@@ -170,7 +169,7 @@ html[data-theme="dark"] :is(
 ) {
   background-color: var(--cl-surface) !important;
   border-color: var(--cl-border) !important;
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16);
 }
 
 html[data-theme="dark"] :is(
@@ -240,7 +239,7 @@ html[data-theme="dark"] :is(
   footer,
   .site-footer
 ) {
-  background-color: #0c1628 !important;
+  background-color: #0c1321 !important;
 }
 
 html[data-theme="dark"] a:not(.primary-button):not(.btn-primary) {
