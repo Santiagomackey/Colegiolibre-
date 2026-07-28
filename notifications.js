@@ -405,6 +405,7 @@
     const titles = {
       favorite: "Guardaron tu producto",
       message: "Nuevo mensaje",
+      reservation_cancelled: "Reserva cancelada",
       review_requested: "Calificá la operación",
       reserved: "Producto reservado",
       sold: "Producto vendido",

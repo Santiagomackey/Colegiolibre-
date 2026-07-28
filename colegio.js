@@ -351,7 +351,12 @@ function renderProducts() {
         >
           <svg class="icon"><use href="#icon-heart"></use></svg>
         </button>
-        <img src="${escapeHtml(product.image_url || FALLBACK_PRODUCT_IMAGE)}" alt="${escapeHtml(product.title)}" />
+        <img
+          src="${escapeHtml(product.image_url || FALLBACK_PRODUCT_IMAGE)}"
+          alt="${escapeHtml(product.title)}"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div class="school-product-card__body">
         <span class="school-product-card__seller">${escapeHtml(product.seller_name || "Estudiante")}</span>

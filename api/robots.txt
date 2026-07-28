@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /moderacion.html
+Disallow: /mensajes.html
+Disallow: /perfil.html
+Disallow: /publicar.html
+
+Sitemap: https://colegiolibre.vercel.app/sitemap.xml

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <link rel="icon" type="image/png" href="images/Logo Colegiolibre horizontal.png">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ColegioLibre | Marketplace de material escolar usado</title>
@@ -19,6 +20,12 @@
       content="Comprá, vendé e intercambiá materiales entre estudiantes con una experiencia premium, confiable y hecha para Argentina."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://colegiolibre.vercel.app/" />
+    <meta property="og:site_name" content="ColegioLibre" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:image" content="https://colegiolibre.vercel.app/images/materiales.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://colegiolibre.vercel.app/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,6 +34,7 @@
     />
     <link rel="stylesheet" href="styles.css?v=20260728-verification1" />
     <link rel="stylesheet" href="notifications.css?v=20260727-1" />
+    <link rel="stylesheet" href="polish.css?v=20260728-2" />
   </head>
   
   <body>
@@ -202,7 +210,7 @@
         <div class="container">
           <div class="header-top">
             <a class="brand brand--desktop" href="index.html" aria-label="Volver al inicio de ColegioLibre">
-              <img src="images/Logo Colegiolibre horizontal.png">
+              <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre">
             </a>
 
             <div class="header-actions-wrap">
@@ -335,7 +343,7 @@
               <a href="#productos" data-category-link="Uniformes" data-close-menu="true">Uniformes</a>
               <a href="#productos" data-category-link="Otros" data-close-menu="true">Otros</a>
               <a href="#como-funciona" data-close-menu="true">¿Cómo funciona?</a>
-              <a href="#ayuda" data-close-menu="true">Ayuda</a>
+              <a href="ayuda.html" data-close-menu="true">Ayuda</a>
               <button id="mobile-logout-button" class="mobile-logout-button" type="button" hidden>
                 <svg class="icon"><use href="#icon-logout"></use></svg>
                 Cerrar sesión
@@ -367,7 +375,14 @@
               </div>
 
               <div class="hero-collage hero-collage--single" aria-hidden="true">
-                <img src="images/materiales.png" alt="Materiales escolares" class="hero-main-image" />
+                <img
+                  src="images/materiales.webp"
+                  alt="Mochila, cuadernos y resaltador escolar"
+                  class="hero-main-image"
+                  width="1200"
+                  height="800"
+                  fetchpriority="high"
+                />
               </div>
             </div>
           </div>
@@ -523,7 +538,7 @@
         <div class="container footer-medium-inner">
           <div class="footer-medium-grid">
             <div class="footer-medium-brand">
-              <img src="images/Logo Colegiolibre horizontal.png">
+              <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre">
               <p>
                 El marketplace donde estudiantes compran, venden e intercambian materiales escolares de forma simple,
                 segura y sustentable.
@@ -534,16 +549,18 @@
               <h3>ColegioLibre</h3>
               <a href="#hero">Nosotros</a>
               <a href="#como-funciona">Cómo funciona</a>
-              <a href="#productos">Publicar producto</a>
-              <a href="#ayuda">Términos</a>
+              <a href="publicar.html">Publicar producto</a>
+              <a href="terminos.html">Términos</a>
+              <a href="privacidad.html">Privacidad</a>
             </nav>
 
             <nav class="footer-medium-col" aria-label="Ayuda">
               <h3>Ayuda</h3>
-              <a href="#ayuda">Centro de ayuda</a>
-              <a href="#como-funciona">Cómo comprar</a>
-              <a href="#como-funciona">Cómo vender</a>
-              <a href="#ayuda">Preguntas frecuentes</a>
+              <a href="ayuda.html">Centro de ayuda</a>
+              <a href="ayuda.html#comprar">Cómo comprar</a>
+              <a href="ayuda.html#publicar">Cómo vender</a>
+              <a href="seguridad.html">Seguridad</a>
+              <a href="productos-prohibidos.html">Productos prohibidos</a>
             </nav>
 
             <nav class="footer-medium-col" aria-label="Categorías">
@@ -594,7 +611,7 @@
 <aside class="category-drawer" id="category-drawer">
   <div class="drawer-header">
     
-    <button id="close-categories" type="button">×</button>
+    <button id="close-categories" type="button" aria-label="Cerrar categorías">×</button>
   </div>
 
   <div class="drawer-section">
@@ -613,7 +630,7 @@
     <h3>ColegioLibre</h3>
     <a href="#como-funciona">Cómo funciona <span>›</span></a>
     <a href="#productos">Publicar producto <span>›</span></a>
-    <a href="#ayuda">Ayuda <span>›</span></a>
+    <a href="ayuda.html">Ayuda <span>›</span></a>
   </div>
 </aside>
 
@@ -740,8 +757,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js?v=20260728-verification1"></script>
 <script src="./products.js"></script>
-<script src="./jsonboarding.js?v=20260728-verification1"></script>
-<script src="./script.js?v=20260728-verification1"></script>
+<script src="./jsonboarding.js?v=20260728-professional1"></script>
+<script src="./script.js?v=20260728-professional1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
     
   </body>

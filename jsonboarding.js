@@ -66,7 +66,11 @@
     const { data, error: userError } = await client.auth.getUser();
     const user = data?.user || null;
 
-    if (userError) {
+    const missingSession =
+      userError?.name === "AuthSessionMissingError" ||
+      String(userError?.message || "").toLowerCase().includes("session missing");
+
+    if (userError && !missingSession) {
       console.error("No se pudo comprobar la sesión:", userError);
       return { required: false, user: null };
     }

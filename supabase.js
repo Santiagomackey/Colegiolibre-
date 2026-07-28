@@ -1,7 +1,7 @@
 const SUPABASE_URL = "https://riqhwmszshleyyaxlwqu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_FYZUQhaTqN6gL-KenUnzWg__nGQLrhJ";
 
-const FALLBACK_PRODUCT_IMAGE = "images/materiales.png";
+const FALLBACK_PRODUCT_IMAGE = "images/materiales.webp";
 
 const PRODUCT_STATUS = {
   available: "Disponible",

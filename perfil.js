@@ -702,6 +702,8 @@ function renderTransactionHistory(transactions) {
                   transaction.product?.image_url || FALLBACK_PRODUCT_IMAGE
                 )}"
                 alt="${escapeHtml(transaction.product?.title || "Producto")}"
+                loading="lazy"
+                decoding="async"
               />
               <div>
                 <span class="transaction-card__status" data-status="${escapeHtml(
@@ -717,18 +719,90 @@ function renderTransactionHistory(transactions) {
                     ? "La operación fue confirmada por el vendedor."
                     : transaction.status === "reserved"
                       ? "El vendedor reservó este producto para vos."
-                      : "La reserva fue cancelada."
+                      : transaction.cancelled_by === state.currentUser.id
+                        ? "Cancelaste esta reserva."
+                        : "El vendedor canceló la reserva."
                 )}</p>
               </div>
-              <a href="mensajes.html?id=${encodeURIComponent(
-                transaction.conversation_id
-              )}">Abrir conversación</a>
+              <div class="transaction-card__actions">
+                <a href="mensajes.html?id=${encodeURIComponent(
+                  transaction.conversation_id
+                )}">Abrir conversación</a>
+                ${
+                  transaction.status === "reserved"
+                    ? `
+                      <button
+                        type="button"
+                        data-cancel-purchase-reservation="${escapeHtml(
+                          transaction.id
+                        )}"
+                      >
+                        Cancelar reserva
+                      </button>
+                    `
+                    : ""
+                }
+              </div>
             </article>
           `
         )
         .join("")}
     </div>
   `;
+
+  utilityPanel
+    .querySelectorAll("[data-cancel-purchase-reservation]")
+    .forEach((button) => {
+      button.addEventListener("click", () =>
+        cancelPurchaseReservation(
+          button.dataset.cancelPurchaseReservation,
+          button
+        )
+      );
+    });
+}
+
+async function cancelPurchaseReservation(transactionId, button) {
+  const transaction = state.transactions.find(
+    (item) =>
+      item.id === transactionId &&
+      item.buyer_id === state.currentUser.id &&
+      item.status === "reserved"
+  );
+
+  if (!transaction) {
+    showToast("Esta reserva ya no está activa.");
+    return;
+  }
+
+  if (
+    !window.confirm(
+      "¿Querés cancelar la reserva? El producto volverá a estar disponible."
+    )
+  ) {
+    return;
+  }
+
+  button.disabled = true;
+  const { error } = await window.colegioLibreSupabase.rpc(
+    "cancel_product_reservation",
+    { target_conversation: transaction.conversation_id }
+  );
+
+  if (error) {
+    console.error("Error cancelando la reserva:", error);
+    showToast(error.message || "No se pudo cancelar la reserva.");
+    button.disabled = false;
+    return;
+  }
+
+  await hydrateTransactions();
+  renderTransactionHistory(
+    state.transactions.filter(
+      (item) => item.buyer_id === state.currentUser.id
+    )
+  );
+  showToast("Reserva cancelada. El vendedor recibió el aviso.");
 }
 
 function buildPublicationCard(item) {
@@ -747,7 +821,7 @@ function buildPublicationCard(item) {
   card.dataset.productId = item.id;
 
   if (thumb) {
-    thumb.innerHTML = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`;
+    thumb.innerHTML = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`;
     const image = thumb.querySelector("img");
     image.onerror = () => {
       image.src = FALLBACK_PRODUCT_IMAGE;

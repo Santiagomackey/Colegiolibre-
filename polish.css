@@ -1,0 +1,211 @@
+/* ColegioLibre · capa compartida de terminación visual */
+html {
+  min-width: 320px;
+  scroll-padding-top: 104px;
+  scrollbar-gutter: stable;
+}
+
+body {
+  width: 100%;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+form,
+fieldset,
+[class*="grid"],
+[class*="layout"],
+[class*="panel"],
+[class*="card"] {
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(255, 199, 44, 0.92);
+  outline-offset: 3px;
+}
+
+:where(button, input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+
+button:disabled {
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:where(input, select, textarea) {
+  max-width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+:where(#productos, #como-funciona, #ayuda, .product-panel, .profile-section, .admin-section) {
+  scroll-margin-top: 112px;
+}
+
+:where(
+  .category-pills,
+  .scope-tabs,
+  .condition-pills,
+  .publication-tabs,
+  .profile-nav,
+  .admin-tabs,
+  .gallery-thumbs,
+  .filter-chips,
+  .year-filter,
+  .size-filter
+) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+:where(
+  .category-pills,
+  .scope-tabs,
+  .condition-pills,
+  .publication-tabs,
+  .profile-nav,
+  .admin-tabs,
+  .gallery-thumbs,
+  .filter-chips,
+  .year-filter,
+  .size-filter
+)::-webkit-scrollbar {
+  display: none;
+}
+
+:where(.category-pills, .scope-tabs, .condition-pills, .publication-tabs, .profile-nav, .admin-tabs) > * {
+  flex: 0 0 auto;
+}
+
+:where(
+  .onboarding-card,
+  .school-card,
+  .report-modal__dialog,
+  .safety-modal__dialog,
+  .publication-menu__dropdown
+) {
+  max-width: calc(100vw - 24px);
+}
+
+:where(.onboarding-card, .school-card, .report-modal__dialog, .safety-modal__dialog) {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+:where(.toast, #toast, .notification-toast) {
+  max-width: min(430px, calc(100vw - 24px));
+  overflow-wrap: anywhere;
+}
+
+:where(.product-card, .similar-card, .publication-card, .community-card, .dashboard-metric-card) {
+  overflow-wrap: anywhere;
+}
+
+.messages-page,
+.messages-app,
+.auth-shell,
+.auth-panel {
+  min-height: 100svh;
+}
+
+.messages-list,
+.conversation-list,
+.chat-panel,
+.auth-panel {
+  overscroll-behavior: contain;
+}
+
+.auth-panel {
+  overflow-y: auto;
+}
+
+.message-composer {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 980px) {
+  html {
+    scroll-padding-top: 82px;
+  }
+}
+
+@media (max-width: 700px) {
+  html {
+    scrollbar-gutter: auto;
+  }
+
+  body {
+    min-width: 0;
+  }
+
+  :where(.site-shell, .page-shell, .product-page, .publish-page, .profile-main) {
+    width: 100%;
+  }
+
+  .publication-menu__dropdown {
+    right: 0;
+    left: auto;
+  }
+}
+
+@media (max-width: 430px) {
+  :where(.onboarding-modal, .school-modal, .report-modal, .safety-modal) {
+    padding: 8px;
+  }
+
+  :where(.onboarding-card, .school-card, .report-modal__dialog, .safety-modal__dialog) {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 20px;
+  }
+
+  :where(.toast, #toast, .notification-toast) {
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: 8px;
+    width: auto;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
