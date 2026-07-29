@@ -143,3 +143,12 @@ test("los avisos mantienen contraste en el encabezado oscuro", () => {
   assert.match(css, /\.cl-notification-mark-all/);
   assert.match(css, /\.cl-notification-system/);
 });
+
+test("el desplazamiento evita repintados costosos", () => {
+  const css = read("polish.css");
+
+  assert.match(css, /scroll-behavior:\s*auto !important/);
+  assert.match(css, /\.site-header,[\s\S]*?backdrop-filter:\s*none !important/);
+  assert.match(css, /\.product-card,[\s\S]*?content-visibility:\s*auto/);
+  assert.match(css, /contain-intrinsic-size:\s*auto 420px/);
+});

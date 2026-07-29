@@ -3,12 +3,39 @@ html {
   min-width: 320px;
   scroll-padding-top: 104px;
   scrollbar-gutter: stable;
+  /* El desplazamiento de rueda/táctil debe responder de inmediato.
+     Las animaciones suaves se reservan para acciones puntuales de JS. */
+  scroll-behavior: auto !important;
 }
 
 body {
   width: 100%;
   min-height: 100svh;
   overflow-x: hidden;
+}
+
+/* Rendimiento de scroll:
+   desenfocar una superficie sticky/fixed obliga a repintar la pantalla en
+   cada frame. Una superficie casi opaca conserva el diseño y desplaza fluido. */
+:where(
+  .site-header,
+  .legal-header,
+  .beta-header,
+  .admin-header,
+  .preference-controls,
+  .cl-notification-panel,
+  .mobile-bottom-nav
+) {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html:not([data-theme="dark"]) :where(.site-header, .legal-header, .beta-header, .admin-header) {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}
+
+html[data-theme="dark"] :where(.site-header, .legal-header, .beta-header, .admin-header) {
+  background-color: rgba(8, 10, 13, 0.98) !important;
 }
 
 main,
@@ -224,4 +251,26 @@ textarea {
 .publication-card,
 .conversation-card {
   contain: layout paint style;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
+
+/* Las secciones largas se renderizan al acercarse al viewport. */
+:where(
+  .products-grid,
+  .similar-grid,
+  .favorites-grid,
+  .publication-list,
+  .school-products,
+  .reports-list
+) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 780px;
+}
+
+@media (max-width: 760px) {
+  /* Los halos difuminados son decorativos y caros en teléfonos. */
+  .page-glow {
+    display: none !important;
+  }
 }
