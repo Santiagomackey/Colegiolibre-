@@ -121,3 +121,23 @@ test("el modo oscuro conserva contraste en todas las páginas públicas", () => 
     assert.ok(css.includes(selector), `Falta contraste oscuro para ${selector}`);
   }
 });
+
+test("los logos oscuros están acotados por página y publicar conserva su vista previa", () => {
+  const preferences = read("preferences.css");
+  const publishCss = read("publicar.css");
+  const publishHtml = read("publicar.html");
+
+  assert.match(publishHtml, /class="publish-body"/);
+  assert.match(preferences, /\.publish-body/);
+  assert.doesNotMatch(preferences, /:is\(\.brand-link,\s*\.legal-brand\)/);
+  assert.match(publishCss, /\.preview-panel\s*\{[\s\S]*?position: sticky/);
+  assert.match(publishCss, /@media \(max-width: 1220px\)[\s\S]*?\.preview-panel\s*\{[\s\S]*?position: relative/);
+});
+
+test("los avisos mantienen contraste en el encabezado oscuro", () => {
+  const css = read("preferences.css");
+
+  assert.match(css, /\.cl-notification-trigger\s*\{/);
+  assert.match(css, /\.cl-notification-mark-all/);
+  assert.match(css, /\.cl-notification-system/);
+});

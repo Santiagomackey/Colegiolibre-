@@ -1074,13 +1074,67 @@ html[data-theme="dark"] .similar-card__favorite.is-active {
 }
 
 /* V22: consistencia final de contraste y superficies en modo oscuro. */
-html[data-theme="dark"] :is(.brand-link, .legal-brand) {
+html[data-theme="dark"] .legal-brand {
   display: inline-flex;
   align-items: center;
   padding: 0.38rem 0.62rem;
   border-radius: 13px;
   background: rgba(255, 255, 255, 0.96) !important;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] :is(
+  .publish-body,
+  .product-detail-body,
+  .school-community-body
+) .site-header .brand-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.42rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] :is(
+  .publish-body,
+  .product-detail-body,
+  .school-community-body
+) .site-header .brand-link img {
+  display: block;
+  width: 168px !important;
+  max-height: 46px;
+  object-fit: contain;
+}
+
+html[data-theme="dark"] .publish-body,
+html[data-theme="dark"] .publish-body :is(
+  .publish-page,
+  .publish-layout,
+  .publish-main,
+  .publish-form
+) {
+  background-color: var(--cl-bg) !important;
+}
+
+html[data-theme="dark"] .publish-body .publish-layout {
+  background: transparent !important;
+}
+
+html[data-theme="dark"] .publish-body .publish-form {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .publish-body .site-header {
+  background: rgba(8, 10, 13, 0.94) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .publish-body .preview-panel {
+  background: #0d0f12 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 html[data-theme="dark"] :is(
@@ -1183,4 +1237,42 @@ html[data-theme="dark"] .legal-cta:is(:hover, :focus-visible),
 html[data-theme="dark"] .legal-nav__primary:is(:hover, :focus-visible) {
   color: #ffffff !important;
   background: #2463ba !important;
+}
+
+html[data-theme="dark"] .cl-notification-trigger {
+  color: #a9c8ff !important;
+}
+
+html[data-theme="dark"] .cl-notification-trigger:is(
+  :hover,
+  :focus-visible,
+  [aria-expanded="true"]
+) {
+  color: #ffffff !important;
+  background: rgba(143, 184, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] :is(
+  .cl-notification-mark-all,
+  .cl-notification-item__icon,
+  .cl-notification-empty strong
+) {
+  color: #a9c8ff !important;
+}
+
+html[data-theme="dark"] .cl-notification-system {
+  color: #b9efa0 !important;
+  background: rgba(103, 194, 58, 0.12) !important;
+  border-color: rgba(139, 221, 97, 0.22) !important;
+}
+
+@media (max-width: 860px) {
+  html[data-theme="dark"] :is(
+    .publish-body,
+    .product-detail-body,
+    .school-community-body
+  ) .site-header .brand-link img {
+    width: 142px !important;
+    max-height: 40px;
+  }
 }

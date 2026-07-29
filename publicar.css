@@ -137,7 +137,9 @@ img {
 }
 
 .brand-link img {
-  width: 272px;
+  display: block;
+  width: 188px;
+  max-width: 100%;
   height: auto;
 }
 
@@ -622,8 +624,12 @@ img {
 }
 
 .preview-panel {
-  position: relative;
-  top: auto;
+  position: sticky;
+  top: 116px;
+  max-height: calc(100vh - 136px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   padding: 1.45rem 1.45rem 1.55rem;
   border-radius: var(--radius-xl);
   background: linear-gradient(180deg, rgba(251, 252, 255, 0.98) 0%, rgba(247, 249, 252, 0.94) 100%);
@@ -810,6 +816,8 @@ select:focus-visible {
   .preview-panel {
     position: relative;
     top: 0;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -819,7 +827,7 @@ select:focus-visible {
   }
 
   .brand-link img {
-    width: 226px;
+    width: 168px;
   }
 
   .header-actions {
