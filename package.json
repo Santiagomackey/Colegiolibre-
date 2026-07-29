@@ -1,0 +1,12 @@
+{
+  "name": "colegiolibre-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate-project.mjs && node scripts/audit-release.mjs && node scripts/validate-pwa.mjs",
+    "smoke:production": "node scripts/smoke-production.mjs",
+    "release:check": "npm run validate && npm test && npm run smoke:production"
+  }
+}

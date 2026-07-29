@@ -25,7 +25,7 @@
     <header class="admin-header">
       <div class="admin-shell admin-header__inner">
         <a class="admin-brand" href="./index.html" aria-label="Volver al inicio de ColegioLibre">
-          <img src="images/Logo Colegiolibre horizontal.png" alt="ColegioLibre" />
+          <img src="images/logo-horizontal.webp" alt="ColegioLibre" />
           <span>Administrador</span>
         </a>
 
@@ -83,6 +83,11 @@
             <span>Publicaciones</span>
             <strong id="metric-products">0</strong>
             <small>Productos registrados</small>
+          </article>
+          <article class="metric-card metric-card--red">
+            <span>Errores técnicos</span>
+            <strong id="metric-errors">0</strong>
+            <small>Últimos 7 días</small>
           </article>
         </section>
 
@@ -226,13 +231,40 @@
             </div>
           </section>
         </section>
+
+        <section class="technical-panel" aria-labelledby="technical-errors-title">
+          <div class="panel-heading panel-heading--list">
+            <div>
+              <p class="admin-kicker">Salud de la plataforma</p>
+              <h2 id="technical-errors-title">Errores técnicos recientes</h2>
+              <p class="technical-panel__copy">
+                Registros automáticos sin contraseñas, mensajes ni contenido de formularios.
+              </p>
+            </div>
+            <button
+              class="text-button"
+              id="clear-error-view"
+              type="button"
+              aria-controls="technical-errors-list"
+              aria-expanded="true"
+            >
+              Ocultar lista
+            </button>
+          </div>
+
+          <div class="technical-errors" id="technical-errors-list"></div>
+          <div class="schools-empty" id="technical-errors-empty" hidden>
+            No se registraron errores técnicos recientes.
+          </div>
+        </section>
       </div>
     </main>
 
     <div class="admin-toast" id="admin-toast" role="status" aria-live="polite" hidden></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
-    <script src="./supabase.js"></script>
-    <script src="./admin.js?v=20260724-admin1"></script>
+    <script src="./supabase.js?v=20260729-stable1"></script>
+    <script src="./telemetry.js?v=20260729-1"></script>
+    <script src="./admin.js?v=20260729-health1"></script>
   </body>
 </html>

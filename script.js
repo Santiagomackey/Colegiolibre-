@@ -298,6 +298,7 @@ const state = {
   activeSubcategory: null,
   activeYear: null,
   favorites: new Set(),
+  loadError: null,
   loading: true,
   products: [],
   profile: null,
@@ -510,7 +511,7 @@ function showToast(message) {
 
 function hydrateLogos() {
   elements.logoImages.forEach((image) => {
-    image.src = "images/Logo Colegiolibre horizontal.png";
+    image.src = "images/logo-horizontal.webp";
     image.alt = "ColegioLibre";
   });
 }
@@ -898,7 +899,13 @@ function bindEvents() {
   }
 
   if (elements.clearFilters) {
-    elements.clearFilters.addEventListener("click", clearFilters);
+    elements.clearFilters.addEventListener("click", () => {
+      if (state.loadError) {
+        loadProducts();
+        return;
+      }
+      clearFilters();
+    });
   }
 
   if (elements.popularCategories) {
@@ -1445,10 +1452,14 @@ async function refreshAccountButton(force = false) {
 }
 
 async function loadProducts() {
-  const staticProducts = getStaticProducts()
+  const isDemoEnvironment =
+    ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname) ||
+    new URLSearchParams(window.location.search).get("demo") === "1";
+  const staticProducts = (isDemoEnvironment ? getStaticProducts() : [])
     .map(normalizeProductRecord)
     .filter((product) => product.user_id && product.status === "available");
 
+  state.loadError = null;
   if (staticProducts.length) {
     state.products = staticProducts;
     refreshRandomOrder();
@@ -1482,12 +1493,10 @@ async function loadProducts() {
 
   let sourceProducts = Array.isArray(data) ? data : [];
 
-  if (error || !sourceProducts.length) {
-    if (error) {
-      console.warn("Se cargaron productos locales porque falló Supabase:", error);
-    }
-
-    sourceProducts = staticProducts.length ? staticProducts : getStaticProducts();
+  if (error) {
+    console.warn("No se pudieron cargar los productos reales:", error);
+    state.loadError = "No pudimos conectarnos con las publicaciones.";
+    sourceProducts = staticProducts;
   }
 
   state.products = sourceProducts
@@ -1886,10 +1895,23 @@ function renderProductGrid(products, total, productLimit = getCurrentProductLimi
   if (!products.length) {
     elements.productGrid.innerHTML = "";
     elements.emptyState.hidden = false;
-    elements.filterSummary.textContent = buildSummary(0, productLimit);
+    const title = elements.emptyState.querySelector("h3");
+    const copy = elements.emptyState.querySelector("p");
+    if (state.loadError) {
+      if (title) title.textContent = "No pudimos cargar las publicaciones.";
+      if (copy) copy.textContent = "Revisá tu conexión y volvé a intentarlo.";
+      if (elements.clearFilters) elements.clearFilters.textContent = "Reintentar";
+      elements.filterSummary.textContent = "Error de conexión";
+    } else {
+      if (title) title.textContent = "No encontramos productos para esa búsqueda.";
+      if (copy) copy.textContent = "Probá con otro término, otro estado o volvé a ver todos los destacados.";
+      if (elements.clearFilters) elements.clearFilters.textContent = "Limpiar filtros";
+      elements.filterSummary.textContent = buildSummary(0, productLimit);
+    }
     return;
   }
 
+  if (elements.clearFilters) elements.clearFilters.textContent = "Limpiar filtros";
   elements.emptyState.hidden = true;
   elements.filterSummary.textContent = buildSummary(total, productLimit);
   elements.productGrid.innerHTML = products.map((product) => productCard(product)).join("");

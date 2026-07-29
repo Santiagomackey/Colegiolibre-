@@ -667,6 +667,76 @@ img {
   text-align: center;
 }
 
+.metric-card--red {
+  border-color: rgba(220, 79, 106, 0.22);
+}
+
+.metric-card--red strong {
+  color: #c6344e;
+}
+
+.technical-panel {
+  margin-top: 1.5rem;
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.technical-panel__copy {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.technical-errors {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.technical-error {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.technical-error strong,
+.technical-error p {
+  overflow-wrap: anywhere;
+}
+
+.technical-error p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.technical-error > span {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(11, 46, 107, 0.08);
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.technical-error--setup {
+  border-color: rgba(255, 199, 44, 0.4);
+}
+
+@media (max-width: 680px) {
+  .technical-error {
+    flex-direction: column;
+  }
+}
+
 .admin-toast {
   position: fixed;
   right: 1.2rem;

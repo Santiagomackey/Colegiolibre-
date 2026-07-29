@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v18";
+const CACHE_VERSION = "colegiolibre-pwa-v20";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -13,8 +13,9 @@ const APP_SHELL = [
   "/native-bridge.js",
   "/pwa.js",
   "/preferences.js",
+  "/telemetry.js",
   "/products.js",
-  "/images/Logo Colegiolibre horizontal.png",
+  "/images/logo-horizontal.webp",
   "/images/materiales.webp",
   "/images/icon-192.png",
   "/images/icon-512.png",

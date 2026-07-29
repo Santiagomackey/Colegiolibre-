@@ -174,6 +174,11 @@ function getStaticProductById(productIdValue) {
 }
 
 function getStaticProductList() {
+  const isDemoEnvironment =
+    ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname) ||
+    new URLSearchParams(window.location.search).get("demo") === "1";
+  if (!isDemoEnvironment) return [];
+
   if (typeof window.getColegioLibreStaticProducts === "function") {
     return window.getColegioLibreStaticProducts();
   }

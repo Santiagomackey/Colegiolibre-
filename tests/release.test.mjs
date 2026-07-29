@@ -1,0 +1,96 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import test from "node:test";
+
+const root = path.resolve(import.meta.dirname, "..");
+const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
+
+test("los productos demo están restringidos al entorno local", () => {
+  for (const file of ["script.js", "producto.js"]) {
+    const source = read(file);
+    assert.match(source, /localhost/);
+    assert.match(source, /127\.0\.0\.1/);
+    assert.match(source, /demo/);
+  }
+});
+
+test("las páginas privadas no se indexan", () => {
+  const robots = read("robots.txt");
+  for (const route of ["/admin.html", "/moderacion.html", "/mensajes.html", "/perfil.html", "/publicar.html"]) {
+    assert.ok(robots.includes(`Disallow: ${route}`), `Falta proteger ${route}`);
+  }
+});
+
+test("Vercel aplica encabezados mínimos de seguridad", () => {
+  const config = read("vercel.json");
+  for (const header of [
+    "Content-Security-Policy",
+    "Strict-Transport-Security",
+    "X-Content-Type-Options",
+    "Referrer-Policy",
+    "Permissions-Policy"
+  ]) {
+    assert.ok(config.includes(header), `Falta ${header}`);
+  }
+});
+
+test("los recursos visuales principales permanecen debajo de 750 KB", () => {
+  for (const file of [
+    "images/materiales.webp",
+    "images/logo-horizontal.webp",
+    "images/caja-colegiolibre.webp"
+  ]) {
+    const bytes = fs.statSync(path.join(root, file)).size;
+    assert.ok(bytes < 750_000, `${file} pesa ${bytes} bytes`);
+  }
+});
+
+test("el modo oscuro cubre componentes que antes tuvieron fallos de contraste", () => {
+  const css = read("preferences.css");
+  for (const selector of [
+    ".category-drawer",
+    ".drawer-section a",
+    ".condition-selector label",
+    ".upload-tile",
+    ".similar-section",
+    ".similar-card__title",
+    ".profile-sidebar",
+    ".publication-card"
+  ]) {
+    assert.ok(css.includes(selector), `Falta cobertura oscura para ${selector}`);
+  }
+});
+
+test("el formulario de publicación permite edición y varias imágenes", () => {
+  const html = read("publicar.html");
+  const js = read("publicar.js");
+  assert.match(html, /multiple/);
+  assert.match(js, /isEditMode/);
+  assert.match(js, /\.update\(/);
+  assert.match(js, /imageSlots/);
+});
+
+test("el monitoreo técnico protege datos personales y requiere autenticación", () => {
+  const telemetry = read("telemetry.js");
+  const sql = read("sql/10_CONFIGURAR_MONITOREO_ERRORES.sql");
+
+  assert.match(telemetry, /\[email\]/);
+  assert.match(telemetry, /auth\.getUser/);
+  assert.match(telemetry, /if \(!user\) return/);
+  assert.match(sql, /enable row level security/i);
+  assert.match(sql, /auth\.uid\(\) = user_id/);
+});
+
+test("el administrador muestra la salud técnica de la plataforma", () => {
+  const html = read("admin.html");
+  const js = read("admin.js");
+  const css = read("preferences.css");
+
+  assert.match(html, /id="metric-errors"/);
+  assert.match(html, /id="technical-errors-list"/);
+  assert.match(js, /from\("client_errors"\)/);
+  assert.match(js, /renderTechnicalErrors/);
+  assert.match(css, /\.technical-panel/);
+  assert.match(css, /\.technical-error/);
+});

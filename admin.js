@@ -23,6 +23,7 @@
     adminGateTitle: document.querySelector("#admin-gate-title"),
     cancelEdit: document.querySelector("#cancel-edit"),
     city: document.querySelector("#school-city"),
+    clearErrorView: document.querySelector("#clear-error-view"),
     codePreview: document.querySelector("#school-code-preview"),
     form: document.querySelector("#school-form"),
     formTitle: document.querySelector("#school-form-title"),
@@ -30,6 +31,7 @@
     logo: document.querySelector("#school-logo"),
     logout: document.querySelector("#admin-logout"),
     metricActive: document.querySelector("#metric-active"),
+    metricErrors: document.querySelector("#metric-errors"),
     metricProducts: document.querySelector("#metric-products"),
     metricSchools: document.querySelector("#metric-schools"),
     metricStudents: document.querySelector("#metric-students"),
@@ -44,6 +46,8 @@
     statusFilter: document.querySelector("#school-status-filter"),
     tableBody: document.querySelector("#schools-table-body"),
     tableEmpty: document.querySelector("#schools-empty"),
+    technicalErrorsEmpty: document.querySelector("#technical-errors-empty"),
+    technicalErrorsList: document.querySelector("#technical-errors-list"),
     toast: document.querySelector("#admin-toast"),
     zone: document.querySelector("#school-zone")
   };
@@ -54,7 +58,8 @@
     editingSchoolId: null,
     formBusy: false,
     loading: false,
-    schools: []
+    schools: [],
+    technicalErrors: []
   };
 
   init();
@@ -108,6 +113,13 @@
         : "Se generará automáticamente";
     });
     elements.logout.addEventListener("click", handleLogout);
+    elements.clearErrorView?.addEventListener("click", () => {
+      const isHidden = elements.technicalErrorsList.hidden;
+      elements.technicalErrorsList.hidden = !isHidden;
+      elements.technicalErrorsEmpty.hidden = !isHidden || state.technicalErrors.length > 0;
+      elements.clearErrorView.textContent = isHidden ? "Ocultar lista" : "Mostrar lista";
+      elements.clearErrorView.setAttribute("aria-expanded", String(isHidden));
+    });
   }
 
   function denyAccess(title, message) {
@@ -126,20 +138,32 @@
     elements.refresh.textContent = "Actualizando...";
 
     try {
-      const [schools, statsResult] = await Promise.all([
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const [schools, statsResult, errorsResult] = await Promise.all([
         fetchSchools({ includeInactive: true }),
-        client.rpc("admin_school_stats")
+        client.rpc("admin_school_stats"),
+        client
+          .from("client_errors")
+          .select("id,page_path,error_source,error_message,app_version,created_at")
+          .gte("created_at", weekAgo)
+          .order("created_at", { ascending: false })
+          .limit(50)
       ]);
 
       state.schools = schools;
       state.countsBySchool = buildSchoolCounts(statsResult.data || []);
+      state.technicalErrors = errorsResult.error ? [] : errorsResult.data || [];
 
       if (statsResult.error) {
         console.warn("No se pudieron cargar las métricas por colegio:", statsResult.error);
       }
+      if (errorsResult.error && !String(errorsResult.error.message || "").includes("client_errors")) {
+        console.warn("No se pudieron cargar los errores técnicos:", errorsResult.error);
+      }
 
       renderMetrics();
       renderSchools();
+      renderTechnicalErrors(errorsResult.error);
     } catch (error) {
       console.error("Error cargando el administrador:", error);
       showToast("No se pudieron cargar los datos administrativos.");
@@ -178,6 +202,46 @@
     );
     elements.metricStudents.textContent = String(totals.students);
     elements.metricProducts.textContent = String(totals.products);
+    if (elements.metricErrors) {
+      elements.metricErrors.textContent = String(state.technicalErrors.length);
+    }
+  }
+
+  function renderTechnicalErrors(loadError = null) {
+    if (!elements.technicalErrorsList || !elements.technicalErrorsEmpty) return;
+
+    if (loadError) {
+      elements.technicalErrorsList.innerHTML = `
+        <article class="technical-error technical-error--setup">
+          <strong>Monitoreo todavía no configurado</strong>
+          <p>Ejecutá el archivo <code>sql/10_CONFIGURAR_MONITOREO_ERRORES.sql</code> en Supabase.</p>
+        </article>
+      `;
+      elements.technicalErrorsEmpty.hidden = true;
+      return;
+    }
+
+    elements.technicalErrorsEmpty.hidden = state.technicalErrors.length > 0;
+    elements.technicalErrorsList.innerHTML = state.technicalErrors
+      .map((item) => `
+        <article class="technical-error">
+          <div>
+            <strong>${escapeHtml(item.error_message || "Error sin descripción")}</strong>
+            <p>${escapeHtml(item.page_path || "/")} · ${escapeHtml(formatTechnicalDate(item.created_at))}</p>
+          </div>
+          <span>${escapeHtml(item.app_version || "web")}</span>
+        </article>
+      `)
+      .join("");
+  }
+
+  function formatTechnicalDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Fecha desconocida";
+    return new Intl.DateTimeFormat("es-AR", {
+      dateStyle: "short",
+      timeStyle: "short"
+    }).format(date);
   }
 
   function getFilteredSchools() {

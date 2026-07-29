@@ -203,6 +203,8 @@ html[data-theme="dark"] :is(
   .form-section,
   .table-shell,
   .admin-tabs,
+  .technical-panel,
+  .technical-error,
   .moderation-hero,
   .category-drawer,
   .mobile-menu,
@@ -212,6 +214,15 @@ html[data-theme="dark"] :is(
   background-color: var(--cl-surface) !important;
   border-color: var(--cl-border) !important;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16);
+}
+
+html[data-theme="dark"] .technical-error > span {
+  background: rgba(126, 173, 255, 0.14);
+  color: #a9c8ff;
+}
+
+html[data-theme="dark"] .technical-error--setup {
+  border-color: rgba(255, 199, 44, 0.48) !important;
 }
 
 html[data-theme="dark"] :is(

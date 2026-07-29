@@ -866,12 +866,44 @@ async function searchSchools(query, limit = 18) {
     p_query: normalizedQuery
   });
 
-  if (error) {
-    console.error("Error buscando colegios:", error);
+  if (!error) {
+    return (data || []).map(safeSchoolRecord);
+  }
+
+  console.warn("La búsqueda avanzada de colegios no respondió; se usa búsqueda directa.", error);
+
+  const safeTerm = normalizedQuery
+    .replace(/[%_(),]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 100);
+
+  if (!safeTerm) return [];
+
+  const pattern = `%${safeTerm}%`;
+  const fallbackResponse = await client
+    .from("schools")
+    .select("*")
+    .eq("is_active", true)
+    .or(
+      [
+        `name.ilike.${pattern}`,
+        `display_name.ilike.${pattern}`,
+        `aliases.ilike.${pattern}`,
+        `address.ilike.${pattern}`,
+        `city.ilike.${pattern}`,
+        `code.ilike.${pattern}`,
+        `cue.ilike.${pattern}`
+      ].join(",")
+    )
+    .limit(safeLimit);
+
+  if (fallbackResponse.error) {
+    console.error("Error buscando colegios:", fallbackResponse.error);
     return [];
   }
 
-  return (data || []).map(safeSchoolRecord);
+  return (fallbackResponse.data || []).map(safeSchoolRecord);
 }
 
 async function fetchSchools({ includeInactive = false } = {}) {
