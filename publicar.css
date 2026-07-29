@@ -626,10 +626,6 @@ img {
 .preview-panel {
   position: sticky;
   top: 116px;
-  max-height: calc(100vh - 136px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
   padding: 1.45rem 1.45rem 1.55rem;
   border-radius: var(--radius-xl);
   background: linear-gradient(180deg, rgba(251, 252, 255, 0.98) 0%, rgba(247, 249, 252, 0.94) 100%);
@@ -816,8 +812,6 @@ select:focus-visible {
   .preview-panel {
     position: relative;
     top: 0;
-    max-height: none;
-    overflow: visible;
   }
 }
 
