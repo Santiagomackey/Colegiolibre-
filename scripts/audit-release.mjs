@@ -105,6 +105,22 @@ check(
     read("publicar.js").includes(".update(")
 );
 check(
+  "Publicar usa la ubicación real del colegio",
+  read("publicar.js").includes("getSchoolByCode(profile.school_code)") &&
+    read("publicar.js").includes("school?.zone_code") &&
+    !read("publicar.html").includes("<option>Caballito, CABA</option>")
+);
+check(
+  "Modo oscuro cubre formularios, publicaciones y conversaciones",
+  [
+    ".publish-form",
+    ".publication-card",
+    ".message:not(.is-mine)",
+    ".legal-document",
+    ".cl-notification-panel"
+  ].every((selector) => read("preferences.css").includes(selector))
+);
+check(
   "Perfil permite administrar estados",
   ["paused", "available", "sold"].every((status) =>
     read("perfil.js").includes(status)

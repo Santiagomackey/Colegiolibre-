@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20260728-11"></script>
+    <script src="./preferences.js?v=20260729-12"></script>
     <title>ColegioLibre | Publicá tu producto</title>
     <link rel="icon" type="image/png" href="images/Logo Colegiolibre horizontal.png">
     <meta
@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="./publicar.css?v=20260728-professional1" />
     <link rel="stylesheet" href="./notifications.css?v=20260727-1" />
     <link rel="stylesheet" href="./polish.css?v=20260728-7" />
-    <link rel="stylesheet" href="./preferences.css?v=20260728-11" />
+    <link rel="stylesheet" href="./preferences.css?v=20260729-12" />
     <link rel="stylesheet" href="./mobile.css?v=20260728-1" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
@@ -255,25 +255,15 @@
                 <label for="ubicacion">Ubicación</label>
                 <div class="select-wrap">
                   <select id="ubicacion" name="ubicacion">
-  <option value="">Seleccioná tu zona</option>
-  <option>Caballito, CABA</option>
-  <option>Belgrano, CABA</option>
-  <option>Palermo, CABA</option>
-  <option>Flores, CABA</option>
-  <option>Almagro, CABA</option>
-  <option>Villa Urquiza, CABA</option>
-  <option>Vicente López</option>
-  <option>Olivos</option>
-  <option>San Isidro</option>
-  <option>La Plata</option>
-  <option value="otro">Otro</option>
+  <option value="">Cargando la zona de tu colegio…</option>
+  <option value="otro">Otra ubicación</option>
 </select>
 
 <input
   id="ubicacion-otro"
   name="ubicacion_otro"
   type="text"
-  placeholder="Otro"
+  placeholder="Escribí la localidad o zona"
   hidden
 />
                   <svg class="icon"><use href="#icon-chevron"></use></svg>
@@ -371,7 +361,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
 <script src="./supabase.js?v=20260728-verification1"></script>
-<script src="./publicar.js?v=20260728-final1"></script>
+<script src="./publicar.js?v=20260729-location1"></script>
 <script src="./native-bridge.js?v=20260728-1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
     

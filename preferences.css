@@ -734,3 +734,153 @@ html[data-theme="dark"] .preference-controls {
     display: none !important;
   }
 }
+
+/* Contraste transversal: publicar, detalle, chat, acceso y administración. */
+html[data-theme="dark"] :is(
+  .publish-form, .preview-panel, .preview-card, .dynamic-product-fields,
+  .upload-tile, .camera-button, .gallery-wrap, .details-column, .seller-card,
+  .attribute-card, .similar-card, .similar-empty, .availability-notice,
+  .inbox-panel, .chat-panel, .conversation-item, .conversation-product,
+  .product-panel, .product-card, .message-form, .message-composer,
+  .trust-status-card, .safety-modal__dialog, .review-form, .school-hero,
+  .school-filters, .school-products-panel, .community-card, .publisher-panel,
+  .publisher-card, .school-product-card, .auth-card, .auth-panel,
+  .settings-panel, .settings-field, .profile-empty-card, .publication-card,
+  .transaction-card, .utility-panel, .utility-panel__card, .verification-card,
+  .verification-action-card, .publication-menu__dropdown, .legal-document,
+  .legal-aside, .legal-note, .moderation-toolbar, .report-metrics article,
+  .report-card, .admin-card, .audit-card, .admin-form, .generated-code,
+  .cl-notification-panel, .cl-notification-item
+) {
+  background: var(--cl-surface) !important;
+  border-color: var(--cl-border) !important;
+  color: var(--cl-text) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] :is(
+  .search-bar, .conversation-search, .filter-search, .message-composer,
+  .currency-input, .select-wrap, .input-control, .verification-code-form,
+  .admin-form input, .admin-form select, .admin-form textarea,
+  .moderation-toolbar input, .moderation-toolbar select
+) {
+  background: var(--cl-surface-2) !important;
+  border-color: var(--cl-border) !important;
+  color: var(--cl-text) !important;
+}
+
+html[data-theme="dark"] :is(
+  .page-intro h1, .preview-panel h2, .preview-card h3,
+  .dynamic-product-fields__title, .field-head label, .product-head h1,
+  .section-head h2, .description-section h2, .attributes-section h2,
+  .seller-profile__copy strong, .similar-card__title, .inbox-title-row h1,
+  .conversation-title, .chat-header__copy h2, .product-card h3,
+  .school-hero h1, .school-products-head h2, .community-card h2,
+  .publisher-panel h2, .school-product-card__title, .auth-heading h1,
+  .settings-panel h2, .publication-card__title, .transaction-card h3,
+  .utility-panel h2, .verification-card h2, .legal-document h2,
+  .legal-document h3, .legal-aside strong, .moderation-hero h1,
+  .section-heading h2, .report-card h3, .admin-card h3, .audit-card h3,
+  .cl-notification-panel__title, .cl-notification-item__title
+) {
+  color: var(--cl-text) !important;
+}
+
+html[data-theme="dark"] :is(
+  .page-intro p, .field-help, .field-counter, .upload-help, .preview-location,
+  .preview-details, .description-copy, .product-meta, .product-school-row,
+  .seller-profile__copy p, .seller-feature, .similar-card__meta,
+  .conversation-last, .conversation-school, .conversation-time,
+  .chat-header__copy p, .composer-meta, .product-card__meta,
+  .school-description, .school-location, .school-official-name,
+  .school-stat__label, .school-product-card__location,
+  .school-product-card__seller, .auth-switch-copy, .auth-legal,
+  .settings-panel__head p, .publication-card__subline,
+  .publication-card__meta, .publication-card__time, .transaction-card p,
+  .utility-panel__copy, .verification-card p, .legal-document p,
+  .legal-document li, .legal-aside a, .section-heading span,
+  .report-card__meta, .admin-card__meta, .admin-card__note, .audit-card p,
+  .cl-notification-panel__subtitle, .cl-notification-item__body,
+  .cl-notification-item__time
+) {
+  color: var(--cl-muted) !important;
+}
+
+html[data-theme="dark"] .messages-list {
+  background:
+    radial-gradient(circle at top right, rgba(103, 194, 58, 0.06), transparent 25%),
+    #090c10 !important;
+}
+
+html[data-theme="dark"] .message:not(.is-mine) {
+  background: #171b22 !important;
+  color: #f4f7fb !important;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"] .message.is-mine,
+html[data-theme="dark"] .message.is-mine :is(.message__body, .message__time, .message__status) {
+  color: #071109 !important;
+}
+
+html[data-theme="dark"] :is(
+  .action-button--ghost, .secondary-action, .report-action,
+  .owner-edit-action, .product-status-action, .mobile-back, .account-toggle,
+  .ghost-button--profile, .verification-secondary-action, .camera-button
+) {
+  background: #151a22 !important;
+  border-color: var(--cl-border) !important;
+  color: #c7d8f5 !important;
+}
+
+html[data-theme="dark"] :is(
+  .action-button--primary, .primary-action, .publish-button, .auth-submit,
+  .verification-primary-action
+) {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] :is(
+  .condition-selector input:checked + label, .cta-button--green,
+  .publish-button--green
+) {
+  color: #071109 !important;
+}
+
+html[data-theme="dark"] :is(
+  .header-cta, .product-status-action--primary, .cta-button--amber
+) {
+  color: #0a1d3d !important;
+}
+
+html[data-theme="dark"] :is(
+  .legal-document a, .legal-aside a:hover, .breadcrumbs a, .seller-link,
+  .seller-school-link, .back-home, .inline-back, .back-link
+) {
+  color: #8fb8ff !important;
+}
+
+html[data-theme="dark"] :is(
+  .legal-header, .legal-footer, .moderation-header,
+  .cl-notification-panel__header, .message-form, .chat-header
+) {
+  background: #0a0d11 !important;
+  border-color: var(--cl-border) !important;
+}
+
+html[data-theme="dark"] .auth-message[data-state="error"],
+html[data-theme="dark"] :is(.verification-card--danger, .product-status-action--danger) {
+  background: #31151b !important;
+  border-color: rgba(255, 112, 134, 0.28) !important;
+  color: #ffb1bd !important;
+}
+
+html[data-theme="dark"] :is(.legal-note--safe, .verification-card--success) {
+  background: #122719 !important;
+  border-color: rgba(139, 221, 97, 0.24) !important;
+  color: #b9efa0 !important;
+}
+
+html[data-theme="dark"] .cl-notification-item.is-unread {
+  background: #12223d !important;
+}

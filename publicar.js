@@ -2,7 +2,7 @@
 
 const defaultContent = {
   condition: "Usado",
-  location: "Caballito, CABA",
+  location: "Zona de tu colegio",
   price: 15000,
   title: "Matemática 3 - Santillana"
 };
@@ -119,6 +119,8 @@ const requestedSchoolCode = (
   .toUpperCase();
 const publishState = {
   currentProfile: null,
+  currentSchool: null,
+  defaultLocation: "",
   currentUser: null,
   editingProduct: null,
   hasCompleted: false,
@@ -294,9 +296,68 @@ async function ensurePublishAccess() {
 
   publishState.currentUser = user;
   publishState.currentProfile = profile;
+  publishState.currentSchool =
+    await window.colegioLibreApi.getSchoolByCode(profile.school_code);
+  configureLocationOptions(profile, publishState.currentSchool);
   pageSubtitle.textContent =
     `La publicación aparecerá en ${profile.school_name || "tu colegio"} y también podrá encontrarse por zona.`;
   return true;
+}
+
+function configureLocationOptions(profile, school) {
+  const isEnglish =
+    document.documentElement.dataset.language === "en" ||
+    window.colegioLibrePreferences?.language === "en";
+  const values = [];
+  const addLocation = (value, label) => {
+    const cleanValue = String(value || "").trim();
+    if (
+      !cleanValue ||
+      /^(zona no especificada|sin ubicación)$/i.test(cleanValue) ||
+      values.some((item) => item.value.toLowerCase() === cleanValue.toLowerCase())
+    ) {
+      return;
+    }
+    values.push({ value: cleanValue, label });
+  };
+
+  addLocation(
+    school?.zone_code || profile?.zone_code,
+    `${isEnglish ? "Your school area" : "Zona de tu colegio"}: ${school?.zone_code || profile?.zone_code || ""}`
+  );
+  addLocation(
+    school?.city,
+    `${isEnglish ? "Town or city" : "Localidad"}: ${school?.city || ""}`
+  );
+  addLocation(
+    school?.province,
+    `${isEnglish ? "Province" : "Provincia"}: ${school?.province || ""}`
+  );
+
+  if (!values.length) {
+    addLocation(
+      profile?.school_name,
+      `${isEnglish ? "Near" : "Cerca de"} ${profile?.school_name || (isEnglish ? "your school" : "tu colegio")}`
+    );
+  }
+
+  locationSelect.innerHTML = "";
+  values.forEach(({ value, label }) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    locationSelect.appendChild(option);
+  });
+
+  const customOption = document.createElement("option");
+  customOption.value = "otro";
+  customOption.textContent = isEnglish ? "Another location" : "Otra ubicación";
+  locationSelect.appendChild(customOption);
+
+  publishState.defaultLocation = values[0]?.value || "";
+  locationSelect.value = publishState.defaultLocation || "otro";
+  otherLocationInput.hidden = locationSelect.value !== "otro";
+  updatePreview();
 }
 
 function applyRequestedCategory() {
@@ -656,7 +717,7 @@ function getFinalLocation() {
     return otherLocationInput.value.trim() || "Ubicación personalizada";
   }
 
-  return locationSelect.value || defaultContent.location;
+  return locationSelect.value || publishState.defaultLocation || "Zona de tu colegio";
 }
 
 function updatePreview() {
@@ -821,7 +882,7 @@ function resetFormState() {
   priceInput.value = "";
   categorySelect.value = "";
   updateCategoryFields();
-  locationSelect.value = "";
+  locationSelect.value = publishState.defaultLocation || "otro";
   otherLocationInput.hidden = true;
   otherLocationInput.value = "";
   descriptionInput.value = "";

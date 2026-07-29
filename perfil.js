@@ -1192,7 +1192,7 @@ async function handleSettingsSubmit(event) {
     schoolCode = school.code;
     schoolName = school.name;
     if (!zoneCode) {
-      zoneCode = school.zone || null;
+      zoneCode = school.zone_code || school.city || school.province || null;
     }
   }
 
