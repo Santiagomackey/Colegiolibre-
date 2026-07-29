@@ -884,3 +884,156 @@ html[data-theme="dark"] :is(.legal-note--safe, .verification-card--success) {
 html[data-theme="dark"] .cl-notification-item.is-unread {
   background: #12223d !important;
 }
+
+/* Category drawer: preserve readable contrast in dark mode. */
+html[data-theme="dark"] .category-drawer {
+  color-scheme: dark;
+  background: #0a0d11 !important;
+  border-right: 1px solid #252c37;
+  scrollbar-color: #3d4b60 #0a0d11;
+}
+
+html[data-theme="dark"] .drawer-section {
+  border-bottom-color: #252c37 !important;
+}
+
+html[data-theme="dark"] .drawer-section h3 {
+  color: #f7f9fc !important;
+}
+
+html[data-theme="dark"] .drawer-section a {
+  color: #dbe5f5 !important;
+  border-radius: 10px;
+  padding-inline: 0.65rem;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+html[data-theme="dark"] .drawer-section a span {
+  color: #8fb8ff !important;
+}
+
+html[data-theme="dark"] .drawer-section a:is(:hover, :focus-visible) {
+  color: #ffffff !important;
+  background: rgba(143, 184, 255, 0.1);
+  transform: translateX(2px);
+  outline: none;
+}
+
+html[data-theme="dark"] .drawer-section a:is(:hover, :focus-visible) span {
+  color: #9be66f !important;
+}
+
+/* Publicar: estados, carga de fotos y acciones con contraste real. */
+html[data-theme="dark"] .condition-selector label {
+  background: #15181d !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  color: #e6edf7 !important;
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .condition-selector label:hover {
+  background: #1b2028 !important;
+  border-color: rgba(143, 184, 255, 0.48) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .condition-selector input:checked + label {
+  background: #67c23a !important;
+  border-color: #67c23a !important;
+  color: #071109 !important;
+  box-shadow: 0 12px 28px rgba(103, 194, 58, 0.2);
+}
+
+html[data-theme="dark"] :is(
+  .field-group label,
+  .field-group legend,
+  .upload-tile--hero span
+) {
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] .upload-tile {
+  background: #111419 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #dbe5f5 !important;
+}
+
+html[data-theme="dark"] .upload-tile--mini {
+  color: #dbe5f5 !important;
+}
+
+html[data-theme="dark"] .upload-tile:is(:hover, :focus-visible, .is-dragover) {
+  background: #171c23 !important;
+  border-color: rgba(139, 221, 97, 0.7) !important;
+}
+
+html[data-theme="dark"] .upload-help {
+  color: #b7c0ce !important;
+}
+
+html[data-theme="dark"] .action-button--ghost {
+  background: #171b22 !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  color: #c7d8f5 !important;
+}
+
+/* Detalle: el contenedor de similares no puede quedar blanco con títulos blancos. */
+html[data-theme="dark"] .similar-section {
+  background: #0d0f12 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme="dark"] .similar-section .section-head h2 {
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] .similar-section .section-head a {
+  color: #8fb8ff !important;
+}
+
+html[data-theme="dark"] .similar-card {
+  background: #111419 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-theme="dark"] .similar-card__body {
+  background: #111419 !important;
+}
+
+html[data-theme="dark"] .similar-card__title,
+html[data-theme="dark"] .similar-card__price {
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] .similar-card__meta {
+  color: #aeb7c5 !important;
+}
+
+html[data-theme="dark"] .similar-card__favorite {
+  background: #f7f9fc !important;
+  color: #17458e !important;
+}
+
+html[data-theme="dark"] .similar-card__favorite.is-active {
+  background: #fff1f1 !important;
+  color: #dc4f6a !important;
+}
+
+@media (max-width: 1220px) {
+  .publish-layout,
+  .publish-main,
+  .publish-form {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .preview-panel {
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+}
