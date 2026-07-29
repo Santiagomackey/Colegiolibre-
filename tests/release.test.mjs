@@ -127,7 +127,7 @@ test("los logos oscuros están acotados por página y publicar conserva su vista
   const publishCss = read("publicar.css");
   const publishHtml = read("publicar.html");
 
-  assert.match(publishHtml, /class="publish-body"/);
+  assert.match(publishHtml, /class="[^"]*\bpublish-body\b[^"]*"/);
   assert.match(preferences, /\.publish-body/);
   assert.doesNotMatch(preferences, /:is\(\.brand-link,\s*\.legal-brand\)/);
   assert.match(publishCss, /\.preview-panel\s*\{[\s\S]*?position: sticky/);
@@ -151,4 +151,21 @@ test("el desplazamiento evita repintados costosos", () => {
   assert.match(css, /\.site-header,[\s\S]*?backdrop-filter:\s*none !important/);
   assert.match(css, /\.product-card,[\s\S]*?content-visibility:\s*auto/);
   assert.match(css, /contain-intrinsic-size:\s*auto 420px/);
+});
+
+test("la interfaz móvil usa un único header y navegación compacta", () => {
+  const css = read("mobile.css");
+  const publish = read("publicar.html");
+  const messages = read("mensajes.html");
+  const profile = read("perfil.html");
+  const favorites = read("favoritos.html");
+
+  assert.match(css, /--mobile-nav-height:\s*62px/);
+  assert.match(css, /\.mobile-subpage \.site-header \.search-bar,[\s\S]*?display:\s*none !important/);
+  assert.match(css, /\.search-bar--desktop\s*\{[\s\S]*?display:\s*none !important/);
+  assert.match(css, /\.search-bar--mobile\s*\{[\s\S]*?flex-direction:\s*row/);
+  assert.match(publish, /class="publish-body mobile-subpage"/);
+  assert.match(messages, /class="mobile-subpage mobile-messages"/);
+  assert.match(profile, /class="mobile-subpage mobile-profile"/);
+  assert.match(favorites, /class="mobile-subpage mobile-favorites"/);
 });

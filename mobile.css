@@ -141,7 +141,7 @@ html {
     display: none !important;
   }
 
-  body[data-mobile-nav="true"] .preference-controls {
+  .mobile-subpage[data-mobile-nav="true"] .preference-controls {
     right: 12px;
     bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 16px);
   }
@@ -244,3 +244,342 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   color: #f2f7ff;
 }
 
+/* --------------------------------------------------------------------------
+   ColegioLibre · interfaz móvil de aplicación
+   Estas reglas reemplazan el header de escritorio únicamente en subpáginas.
+   -------------------------------------------------------------------------- */
+@media (max-width: 760px) {
+  :root {
+    --mobile-nav-height: 62px;
+  }
+
+  body[data-mobile-nav="true"] {
+    padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 10px);
+  }
+
+  .cl-mobile-nav {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-height: var(--mobile-nav-height);
+    padding: 4px 8px max(4px, var(--mobile-safe-bottom));
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 28px rgba(7, 25, 58, 0.14);
+  }
+
+  .cl-mobile-nav__item {
+    min-height: 48px;
+    padding: 4px 2px;
+    border-radius: 13px;
+  }
+
+  .cl-mobile-nav__item--publish {
+    width: 50px;
+    height: 50px;
+    min-height: 50px;
+    margin-top: -10px;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(103, 194, 58, 0.25);
+  }
+
+  .cl-mobile-nav__item span,
+  .cl-mobile-nav__item--publish span {
+    font-size: 0.58rem;
+  }
+
+  body[data-mobile-nav="true"] .preference-controls {
+    top: 10px;
+    right: 10px;
+    bottom: auto;
+    z-index: 125;
+    padding: 3px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(7, 25, 58, 0.14);
+  }
+
+  .mobile-subpage[data-mobile-nav="true"] .preference-controls__button {
+    width: 34px;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 0;
+  }
+
+  /* Encabezado compacto y uniforme de las pantallas internas. */
+  .mobile-subpage .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 110;
+    min-height: 64px;
+    box-shadow: 0 1px 0 rgba(128, 145, 168, 0.18);
+  }
+
+  .mobile-subpage .site-header__row {
+    display: flex !important;
+    width: 100%;
+    min-height: 64px !important;
+    padding: 8px 76px 8px 14px !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .mobile-subpage .site-header .brand-link {
+    display: inline-flex;
+    width: auto;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-subpage .site-header .brand-link img {
+    width: 142px !important;
+    height: auto !important;
+    max-height: 46px !important;
+    object-fit: contain;
+  }
+
+  .mobile-subpage .site-header .search-bar,
+  .mobile-subpage .site-header .header-actions {
+    display: none !important;
+  }
+
+  .mobile-profile .site-header__brand-row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-profile .account-toggle {
+    display: inline-flex;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+    border-radius: 13px;
+  }
+
+  .publish-body .publish-page,
+  .product-detail-body .product-page,
+  .mobile-messages .messages-page,
+  .mobile-profile .page-layout,
+  .mobile-favorites .favorites-main {
+    padding-top: 20px !important;
+  }
+
+  .publish-body .page-intro h1,
+  .mobile-profile .content-header h1,
+  .mobile-favorites .favorites-hero h1 {
+    font-size: clamp(2rem, 9vw, 2.55rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.045em;
+  }
+
+  .publish-body .page-intro p,
+  .mobile-profile .content-header p,
+  .mobile-favorites .favorites-hero p {
+    font-size: 1rem !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Favoritos usa un header propio: se convierte en la misma app bar. */
+  .mobile-favorites .favorites-header {
+    position: sticky;
+    top: 0;
+    z-index: 110;
+    min-height: 64px;
+    box-shadow: 0 1px 0 rgba(128, 145, 168, 0.18);
+  }
+
+  .mobile-favorites .favorites-header__inner {
+    width: 100%;
+    min-height: 64px;
+    padding: 8px 76px 8px 14px;
+    align-items: center;
+  }
+
+  .mobile-favorites .favorites-brand {
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-favorites .favorites-brand img {
+    display: block;
+    width: 142px !important;
+    max-height: 46px;
+    object-fit: contain;
+  }
+
+  .mobile-favorites .favorites-nav {
+    display: none !important;
+  }
+
+  .mobile-favorites .favorites-hero {
+    gap: 18px;
+  }
+
+  .mobile-favorites .favorites-total {
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 20px;
+  }
+
+  /* Publicar: controles cómodos, sin preview de escritorio arriba del form. */
+  .publish-body .publish-layout {
+    gap: 24px;
+  }
+
+  .publish-body .field-row {
+    flex-direction: column;
+  }
+
+  .publish-body .field-group--compact {
+    width: 100%;
+  }
+
+  .publish-body .preview-panel {
+    position: static;
+    order: 2;
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .publish-body .condition-selector {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .publish-body .condition-selector label {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  /* Mensajes: lista limpia y sin marco gigante vacío. */
+  .mobile-messages .messages-page {
+    width: 100%;
+    padding-inline: 10px;
+  }
+
+  .mobile-messages .messages-app {
+    min-height: calc(100dvh - 146px);
+    border: 0;
+    border-radius: 22px 22px 0 0;
+    box-shadow: none;
+  }
+
+  .mobile-messages .inbox-header {
+    padding: 18px 16px;
+  }
+
+  .mobile-messages .inbox-header h1 {
+    font-size: 2rem;
+    line-height: 1.05;
+  }
+
+  /* Perfil: evita los bloques desproporcionados de la captura. */
+  .mobile-profile .page-layout {
+    width: min(100% - 24px, var(--site-width));
+  }
+
+  .mobile-profile .content-header {
+    gap: 16px;
+  }
+
+  .mobile-profile .dashboard-overview {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .mobile-profile .dashboard-overview__head,
+  .mobile-profile .dashboard-metrics,
+  .mobile-profile .dashboard-profile-card__grid {
+    gap: 12px;
+  }
+
+  /* Producto: galería proporcionada para una pantalla angosta. */
+  .product-detail-body .breadcrumbs {
+    margin-bottom: 14px;
+  }
+
+  .product-detail-body .gallery-stage,
+  .product-detail-body .gallery-stage__media {
+    min-height: min(88vw, 390px) !important;
+  }
+
+  .product-detail-body .gallery-stage {
+    border-radius: 22px;
+  }
+
+  /* Home: una sola búsqueda. Antes convivían la versión desktop y mobile. */
+  body:not(.mobile-subpage) .site-header .search-bar--desktop {
+    display: none !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-top {
+    display: block;
+    padding: 10px 0 8px;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-actions-wrap {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile {
+    display: inline-flex;
+    max-width: 150px;
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile img {
+    width: 142px;
+    max-height: 46px;
+    object-fit: contain;
+  }
+
+  body:not(.mobile-subpage) .site-header .search-bar--mobile {
+    display: flex;
+    min-height: 52px;
+    margin-bottom: 10px;
+    padding: 4px 4px 4px 14px;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  body:not(.mobile-subpage) .site-header .search-bar--mobile input {
+    min-width: 0;
+  }
+
+  body:not(.mobile-subpage) .site-header .search-bar--mobile .search-submit {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-actions--mobile {
+    margin-left: auto;
+  }
+
+  body:not(.mobile-subpage) .site-header #mobile-publish-link {
+    display: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .mobile-subpage .site-header .brand-link img,
+  .mobile-favorites .favorites-brand img {
+    width: 126px !important;
+  }
+
+  .publish-body .page-intro h1,
+  .mobile-profile .content-header h1,
+  .mobile-favorites .favorites-hero h1 {
+    font-size: 2rem !important;
+  }
+}
