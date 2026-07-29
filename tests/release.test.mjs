@@ -94,3 +94,30 @@ test("el administrador muestra la salud técnica de la plataforma", () => {
   assert.match(css, /\.technical-panel/);
   assert.match(css, /\.technical-error/);
 });
+
+test("publicar mantiene un único fondo oscuro sin cortes rectangulares", () => {
+  const css = read("preferences.css");
+
+  assert.match(css, /html\[data-theme="dark"\] \.publish-form\s*\{/);
+  assert.match(css, /background: transparent !important/);
+  assert.match(css, /html\[data-theme="dark"\] \.preview-panel\s*\{/);
+});
+
+test("el modo oscuro conserva contraste en todas las páginas públicas", () => {
+  const css = read("preferences.css");
+
+  for (const selector of [
+    ".product-school-link",
+    ".home-category-title",
+    ".forgot-link",
+    ".auth-switch-copy button",
+    ".product-taxonomy",
+    ".attributes-grid dd",
+    ".school-hero__copy",
+    ".footer-contact-btn",
+    ".legal-nav__primary",
+    ".legal-cta"
+  ]) {
+    assert.ok(css.includes(selector), `Falta contraste oscuro para ${selector}`);
+  }
+});
