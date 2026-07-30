@@ -224,3 +224,25 @@ test("la versión nacional protege catálogo, imágenes y API", () => {
   assert.match(vercel, /Cross-Origin-Opener-Policy/);
   assert.match(vercel, /"source": "\/api\/\(\.\*\)"/);
 });
+
+test("el inicio traduce las descripciones institucionales y de categorías", () => {
+  const preferences = read("preferences.js");
+  const home = read("index.html");
+  const script = read("script.js");
+
+  assert.match(
+    preferences,
+    /"Diseñado para que comprar, vender y cambiar materiales sea rápido, confiable y accesible en todo el país\.":\s*"Designed to make buying, selling and exchanging school supplies quick, reliable and accessible nationwide\."/
+  );
+  assert.match(
+    preferences,
+    /"Manuales, novelas, diccionarios y libros para todas las materias\.":\s*"Textbooks, novels, dictionaries and books for every subject\."/
+  );
+  assert.match(
+    preferences,
+    /"Remeras, buzos, pantalones y prendas escolares filtradas por talle\.":\s*"School shirts, sweatshirts, trousers and uniforms filtered by size\."/
+  );
+  assert.match(preferences, /\.trim\(\)\.replace\(\/\\s\+\/g,\s*" "\)/);
+  assert.match(home, /preferences\.js\?v=20260730-15/);
+  assert.match(script, /refresh\?\.\(elements\.categoryShelves\)/);
+});

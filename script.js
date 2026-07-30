@@ -1760,6 +1760,8 @@ function renderCategoryShelves() {
       `;
     })
     .join("");
+
+  window.colegioLibrePreferences?.refresh?.(elements.categoryShelves);
 }
 
 function updateCategoryLinks() {

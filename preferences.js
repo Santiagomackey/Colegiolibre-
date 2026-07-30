@@ -487,6 +487,14 @@
     "Cada estantería muestra una selección breve. Entrá en “Ver todos” para explorar la categoría completa.": "Each section shows a short selection. Choose “View all” to browse the full category.",
     "Una forma simple de circular materiales escolares": "A simple way to give school supplies a second life",
     "Diseñado para que comprar, vender y cambiar materiales sea rápido, confiable y accesible en todo el país.": "Designed to make buying, selling and exchanging school supplies quick, reliable and accessible nationwide.",
+    "Manuales, novelas, diccionarios y libros para todas las materias.": "Textbooks, novels, dictionaries and books for every subject.",
+    "Resúmenes, guías, modelos de examen y material de estudio por materia.": "Summaries, study guides, practice tests and subject-specific study materials.",
+    "Cuadernos nuevos o con pocas hojas usadas, carpetas y repuestos.": "New or lightly used notebooks, binders and refill paper.",
+    "Cartucheras, reglas, compases, calculadoras y materiales de clase.": "Pencil cases, rulers, compasses, calculators and classroom supplies.",
+    "Mochilas, bolsos y accesorios escolares listos para seguir usándose.": "Backpacks, bags and school accessories ready for continued use.",
+    "Calculadoras, tablets, accesorios y tecnología para estudiar.": "Calculators, tablets, accessories and technology for studying.",
+    "Remeras, buzos, pantalones y prendas escolares filtradas por talle.": "School shirts, sweatshirts, trousers and uniforms filtered by size.",
+    "Todo lo demás que puede servirle a otro estudiante.": "Everything else that could be useful to another student.",
     "Buscá por materia o categoría": "Search by subject or category",
     "Filtrá por estado, categoría, precio y colegio para encontrar exactamente lo que necesitás.": "Filter by condition, category, price and school to find exactly what you need.",
     "Conectate con estudiantes reales": "Connect with real students",
@@ -937,7 +945,7 @@
   }));
 
   function translateString(value) {
-    const clean = String(value || "").trim();
+    const clean = String(value || "").trim().replace(/\s+/g, " ");
     if (!clean) return value;
     if (translations.has(clean)) return translations.get(clean);
 
