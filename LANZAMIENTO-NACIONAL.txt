@@ -1,0 +1,109 @@
+COLEGIOLIBRE · LANZAMIENTO NACIONAL V28
+======================================
+
+EL CÓDIGO YA INCLUYE
+--------------------
+- Catálogo público limitado a productos disponibles y aprobados.
+- Imágenes de hasta 6 MB y solo JPG, PNG o WebP.
+- Cada usuario solo puede modificar los archivos de su propia carpeta.
+- Moderación con validación de sesión, producto, UUID y tiempo máximo.
+- Límites contra spam en productos, mensajes, conversaciones, favoritos,
+  reportes y diagnósticos.
+- Bloqueos, reportes, sanciones, auditoría administrativa y monitoreo.
+- Limpieza de errores después de 30 días y avisos después de 180 días.
+- Encabezados de seguridad, API sin caché y PWA v28.
+
+PASO 1 · SUPABASE
+-----------------
+Abrí SQL Editor > New query, pegá TODO el contenido de:
+
+sql/11_PREPARAR_LANZAMIENTO_NACIONAL.sql
+
+Tocá Run. El resultado debe mostrar cuatro columnas en true:
+
+- imagenes_configuradas
+- catalogo_protegido
+- limites_nacionales_configurados
+- limpieza_configurada
+
+No ejecutes nuevamente los SQL 1 a 10 si ya funcionan.
+
+PASO 2 · EMAILS DE PRODUCCIÓN (OBLIGATORIO)
+------------------------------------------
+El servicio de email incluido por Supabase permite solamente 2 emails por hora
+y no sirve para un lanzamiento público.
+
+En Supabase:
+
+Authentication > Emails > SMTP Settings
+
+Conectá un SMTP PERSONALIZADO (por ejemplo Resend, SendGrid, Mailgun, AWS SES o
+el proveedor que elijas). Después revisá:
+
+Authentication > Rate Limits
+
+Elegí un límite acorde a la cantidad de registros esperados. Desactivá el
+seguimiento de enlaces del proveedor SMTP porque puede romper los enlaces de
+confirmación y recuperación.
+
+En Authentication > Email Templates podés copiar:
+
+- supabase-email-templates/confirm-signup.html
+- supabase-email-templates/reset-password.html
+
+PASO 3 · URLS DE AUTENTICACIÓN
+------------------------------
+En Supabase > Authentication > URL Configuration:
+
+Site URL:
+https://colegiolibre.vercel.app
+
+Redirect URLs:
+https://colegiolibre.vercel.app/login.html
+https://colegiolibre.vercel.app/login.html?mode=recovery
+
+Si más adelante usás un dominio propio, agregá también esas dos rutas.
+
+PASO 4 · VERCEL
+---------------
+En Settings > Environment Variables deben existir:
+
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+
+OPENAI_API_KEY es opcional. Sin esa clave, las reglas gratuitas siguen
+moderando productos.
+
+SUPABASE_SERVICE_ROLE_KEY nunca debe aparecer en GitHub ni en archivos JS del
+navegador.
+
+PASO 5 · PUBLICAR
+-----------------
+Reemplazá el proyecto oficial con esta carpeta, confirmá y sincronizá los
+cambios desde VS Code. Esperá a que Vercel muestre Ready.
+
+Ejecutá localmente:
+
+npm run release:national
+
+Después del deployment ejecutá:
+
+npm run smoke:production
+
+PASO 6 · OPERACIÓN SEMANAL
+--------------------------
+- Revisá Administración > Reportes y Revisión automática.
+- Revisá Administración > errores técnicos.
+- Ejecutá una vez por semana en SQL Editor:
+
+select public.cleanup_expired_operational_data();
+
+- Descargá una copia del padrón de colegios y de los datos importantes.
+- Nunca publiques conversaciones, emails, claves o datos personales.
+
+IMPORTANTE
+----------
+ColegioLibre no procesa pagos. Abrir la plataforma nacionalmente exige además
+tener una persona responsable de responder reportes y consultas. Ningún bot
+reemplaza esa responsabilidad.

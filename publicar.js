@@ -931,7 +931,11 @@ async function uploadImage(file) {
     ? "image/jpeg"
     : file.type || "application/octet-stream";
   const fileName = `${crypto.randomUUID()}.${fileExtension}`;
-  const filePath = `products/${fileName}`;
+  const ownerId = publishState.currentUser?.id;
+  if (!ownerId) {
+    throw new Error("Tenés que iniciar sesión para subir imágenes.");
+  }
+  const filePath = `${ownerId}/products/${fileName}`;
 
   const { error } = await window.colegioLibreSupabase.storage
     .from("product-images")

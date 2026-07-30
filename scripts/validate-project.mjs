@@ -76,6 +76,7 @@ for (const file of files.filter((item) => extname(item) === ".html")) {
     const reference = match[1].trim();
     if (
       !reference ||
+      reference.includes("{{") ||
       /^(?:https?:|mailto:|tel:|data:|blob:|\/\/)/i.test(reference)
     ) {
       continue;

@@ -11,6 +11,11 @@ const ALLOWED_CATEGORIES = new Set([
   "otros"
 ]);
 
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const SUPABASE_TIMEOUT_MS = 10_000;
+const PROVIDER_TIMEOUT_MS = 18_000;
+
 const CRITICAL_PATTERNS = [
   /\b(arma|armas|pistola|revolver|revólver|municion|munición|explosivo)\b/i,
   /\b(cocaina|cocaína|marihuana|droga|drogas|mdma|lsd)\b/i,
@@ -35,6 +40,20 @@ function sendJson(response, status, body) {
   response.setHeader("Content-Type", "application/json; charset=utf-8");
   response.setHeader("Cache-Control", "no-store");
   response.end(JSON.stringify(body));
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = SUPABASE_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 function normalize(value) {
@@ -124,7 +143,7 @@ async function supabaseRequest(path, options = {}, useServiceRole = false) {
     throw new Error("Faltan variables privadas de Supabase en Vercel.");
   }
 
-  const response = await fetch(`${baseUrl}${path}`, {
+  const response = await fetchWithTimeout(`${baseUrl}${path}`, {
     ...options,
     headers: {
       apikey: apiKey,
@@ -159,7 +178,7 @@ async function authenticateUser(accessToken) {
     throw new Error("Faltan SUPABASE_URL o SUPABASE_ANON_KEY.");
   }
 
-  const response = await fetch(`${baseUrl}/auth/v1/user`, {
+  const response = await fetchWithTimeout(`${baseUrl}/auth/v1/user`, {
     headers: {
       apikey: anonKey,
       Authorization: `Bearer ${accessToken}`
@@ -251,7 +270,7 @@ async function callOpenAIModeration(product, apiKey) {
   }
 
   async function request(moderationInput) {
-    const response = await fetch("https://api.openai.com/v1/moderations", {
+    const response = await fetchWithTimeout("https://api.openai.com/v1/moderations", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -261,7 +280,7 @@ async function callOpenAIModeration(product, apiKey) {
         model: "omni-moderation-latest",
         input: moderationInput
       })
-    });
+    }, PROVIDER_TIMEOUT_MS);
 
     if (!response.ok) {
       throw new Error(`OpenAI Moderation respondió ${response.status}.`);
@@ -317,7 +336,7 @@ function extractResponseText(data) {
 
 async function callOpenAIListingReview(product, apiKey) {
   const model = process.env.OPENAI_REVIEW_MODEL || "gpt-5.6-sol";
-  const response = await fetch("https://api.openai.com/v1/responses", {
+  const response = await fetchWithTimeout("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -361,7 +380,7 @@ async function callOpenAIListingReview(product, apiKey) {
         }
       }
     })
-  });
+  }, PROVIDER_TIMEOUT_MS);
 
   if (!response.ok) {
     throw new Error(`OpenAI Responses respondió ${response.status}.`);
@@ -433,6 +452,12 @@ module.exports = async function handler(request, response) {
     });
   }
 
+  if (accessToken.length > 4096 || !UUID_PATTERN.test(productId)) {
+    return sendJson(response, 400, {
+      error: "La solicitud de moderación no es válida."
+    });
+  }
+
   try {
     const user = await authenticateUser(accessToken);
     if (!user?.id) {
@@ -478,8 +503,7 @@ module.exports = async function handler(request, response) {
   } catch (error) {
     console.error("No se pudo moderar la publicación:", error);
     return sendJson(response, 500, {
-      error: "No pudimos revisar la publicación en este momento.",
-      details: error.message
+      error: "No pudimos revisar la publicación en este momento."
     });
   }
 };

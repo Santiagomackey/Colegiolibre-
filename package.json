@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "validate": "node scripts/validate-project.mjs && node scripts/audit-release.mjs && node scripts/validate-pwa.mjs",
+    "validate:national": "node scripts/validate-national-launch.mjs",
     "smoke:production": "node scripts/smoke-production.mjs",
-    "release:check": "npm run validate && npm test && npm run smoke:production"
+    "release:check": "npm run validate && npm test && npm run smoke:production",
+    "release:national": "npm run validate && npm run validate:national && npm test"
   }
 }

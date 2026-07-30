@@ -39,7 +39,7 @@
         error_message: safeMessage,
         line_number: Number.isFinite(line) ? line : null,
         column_number: Number.isFinite(column) ? column : null,
-        app_version: "web-20260729"
+        app_version: "web-20260729-national-v28"
       });
     } catch (_error) {
       // El monitoreo nunca debe interrumpir la experiencia principal.

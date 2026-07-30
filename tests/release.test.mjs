@@ -203,3 +203,24 @@ test("los logos internos conservan contraste y tamaño en celular", () => {
     /\.mobile-subpage \.site-header \.brand-link img\s*\{[\s\S]*?width:\s*134px !important/
   );
 });
+
+test("la versión nacional protege catálogo, imágenes y API", () => {
+  const sql = read("sql/11_PREPARAR_LANZAMIENTO_NACIONAL.sql");
+  const publish = read("publicar.js");
+  const api = read("api/moderate-product.js");
+  const vercel = read("vercel.json");
+
+  assert.match(sql, /Public reads approved available products/);
+  assert.match(sql, /storage\.foldername\(name\)\)\[1\] = auth\.uid\(\)::text/);
+  assert.match(sql, /enforce_conversation_rate_limit/);
+  assert.match(sql, /cleanup_expired_operational_data/);
+  assert.match(publish, /\$\{ownerId\}\/products\/\$\{fileName\}/);
+  assert.match(api, /fetchWithTimeout/);
+  assert.match(api, /UUID_PATTERN\.test\(productId\)/);
+  assert.doesNotMatch(
+    api,
+    /error:\s*"No pudimos revisar la publicación en este momento\.",\s*details:/
+  );
+  assert.match(vercel, /Cross-Origin-Opener-Policy/);
+  assert.match(vercel, /"source": "\/api\/\(\.\*\)"/);
+});

@@ -48,6 +48,21 @@ Este archivo agrega:
 - Límites básicos contra spam.
 - Desactivación segura de cuenta.
 
+## Lanzamiento nacional
+
+La versión nacional agrega políticas de Storage por usuario, catálogo público
+solo para productos aprobados, validación de publicaciones, límites contra
+abuso, retención y plantillas de email. Seguí `LANZAMIENTO-NACIONAL.txt`,
+ejecutá `sql/11_PREPARAR_LANZAMIENTO_NACIONAL.sql` en Supabase y validá con:
+
+```bash
+npm run release:national
+```
+
+Para un lanzamiento público es obligatorio configurar un SMTP propio en
+Supabase: el servicio de email incluido es únicamente para pruebas y no soporta
+un volumen real de registros.
+
 ## Favoritos
 
 La página `favoritos.html` requiere una sesión iniciada. Lee únicamente los
