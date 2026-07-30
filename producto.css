@@ -738,15 +738,21 @@ img {
 
 .seller-avatar {
   display: inline-flex;
+  flex: 0 0 58px;
   align-items: center;
   justify-content: center;
   width: 58px;
   height: 58px;
+  min-width: 58px;
+  min-height: 58px;
+  aspect-ratio: 1;
+  overflow: hidden;
   border-radius: 50%;
   background: linear-gradient(180deg, #163f83 0%, #0b2e6b 100%);
   color: #fff;
   font-size: 2rem;
   font-weight: 800;
+  line-height: 1;
 }
 
 .seller-profile__copy h3 {

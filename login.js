@@ -77,7 +77,8 @@
     newPasswordError: document.querySelector("#new-password-error"),
     newPasswordConfirmError: document.querySelector("#new-password-confirm-error"),
     updateSubmit: document.querySelector("#password-update-submit"),
-    updateMessage: document.querySelector("#password-update-message")
+    updateMessage: document.querySelector("#password-update-message"),
+    oauthButtons: [...document.querySelectorAll("[data-oauth-provider]")]
   };
 
   let mode = "login";
@@ -149,6 +150,9 @@
     elements.confirmPassword.disabled = isBusy || mode !== "register";
     elements.tabs.forEach((tab) => {
       tab.disabled = isBusy;
+    });
+    elements.oauthButtons.forEach((button) => {
+      button.disabled = isBusy;
     });
     elements.switchButton.disabled = isBusy;
     elements.forgotButton.disabled = isBusy;
@@ -313,6 +317,39 @@
       redirectUrl.searchParams.set("next", nextPage);
     }
     return redirectUrl.href;
+  }
+
+  async function signInWithProvider(provider) {
+    if (busy || !["google", "apple"].includes(provider)) return;
+
+    setStandardBusy(true);
+    const providerName = provider === "apple" ? "Apple" : "Google";
+    setMessage(elements.message, `Abriendo ${providerName}…`, "loading");
+
+    try {
+      const { error } = await client.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: confirmationRedirectUrl()
+        }
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error(`Error al ingresar con ${providerName}:`, error);
+      const text = String(error?.message || "").toLowerCase();
+      const disabledProvider =
+        text.includes("provider is not enabled") ||
+        text.includes("unsupported provider");
+      setMessage(
+        elements.message,
+        disabledProvider
+          ? `${providerName} todavía no está habilitado en Supabase.`
+          : `No pudimos abrir ${providerName}. Intentá nuevamente.`,
+        "error"
+      );
+      setStandardBusy(false);
+    }
   }
 
   async function submitLogin() {
@@ -551,6 +588,12 @@
 
   elements.switchButton.addEventListener("click", () => {
     setMode(mode === "login" ? "register" : "login");
+  });
+
+  elements.oauthButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      signInWithProvider(button.dataset.oauthProvider);
+    });
   });
 
   elements.form.addEventListener("submit", (event) => {

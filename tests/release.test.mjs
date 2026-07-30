@@ -170,6 +170,37 @@ test("la interfaz móvil usa un único header y navegación compacta", () => {
   assert.match(favorites, /class="mobile-subpage mobile-favorites"/);
 });
 
+test("el home móvil oculta el logo de escritorio y conserva una sola marca", () => {
+  const css = read("mobile.css");
+
+  assert.match(
+    css,
+    /body:not\(\.mobile-subpage\) \.site-header \.brand--desktop\s*\{[\s\S]*?display:\s*none !important/
+  );
+  assert.match(
+    css,
+    /body:not\(\.mobile-subpage\) \.site-header \.brand--mobile\s*\{[\s\S]*?width:\s*148px !important/
+  );
+});
+
+test("login ofrece proveedores sociales mediante Supabase OAuth", () => {
+  const html = read("login.html");
+  const js = read("login.js");
+
+  assert.match(html, /data-oauth-provider="google"/);
+  assert.match(html, /data-oauth-provider="apple"/);
+  assert.match(js, /auth\.signInWithOAuth/);
+  assert.match(js, /provider,/);
+  assert.match(js, /redirectTo:\s*confirmationRedirectUrl\(\)/);
+});
+
+test("el avatar del vendedor no puede deformarse", () => {
+  const css = read("producto.css");
+
+  assert.match(css, /\.seller-avatar\s*\{[\s\S]*?flex:\s*0 0 58px/);
+  assert.match(css, /\.seller-avatar\s*\{[\s\S]*?aspect-ratio:\s*1/);
+});
+
 test("la interfaz móvil no estira preferencias ni paneles sobre el contenido", () => {
   const css = read("mobile.css");
 
@@ -243,7 +274,7 @@ test("el inicio traduce las descripciones institucionales y de categorías", () 
     /"Remeras, buzos, pantalones y prendas escolares filtradas por talle\.":\s*"School shirts, sweatshirts, trousers and uniforms filtered by size\."/
   );
   assert.match(preferences, /\.trim\(\)\.replace\(\/\\s\+\/g,\s*" "\)/);
-  assert.match(home, /preferences\.js\?v=20260730-16/);
+  assert.match(home, /preferences\.js\?v=20260730-31/);
   assert.match(script, /refresh\?\.\(elements\.categoryShelves\)/);
 });
 
@@ -273,6 +304,6 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
     /\.mobile-profile \.profile-sidebar\s*\{[\s\S]*?min-height:\s*0 !important/
   );
   assert.match(home, /images\/favicon\.svg/);
-  assert.match(profile, /preferences\.css\?v=20260730-20/);
-  assert.match(serviceWorker, /colegiolibre-pwa-v30/);
+  assert.match(profile, /preferences\.css\?v=20260730-31/);
+  assert.match(serviceWorker, /colegiolibre-pwa-v31/);
 });

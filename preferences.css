@@ -1164,6 +1164,20 @@ html[data-theme="dark"] :is(.forgot-link, .auth-switch-copy button) {
   color: #9fc2ff !important;
 }
 
+/* Publicar usa únicamente el scroll del documento; la vista previa no crea
+   una segunda barra que compita con el formulario. */
+@media (min-width: 1221px) {
+  .publish-body .preview-panel {
+    position: sticky !important;
+    top: calc(var(--cl-header-height, 94px) + 22px) !important;
+    align-self: start !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+  }
+}
+
 html[data-theme="dark"] :is(.forgot-link, .auth-switch-copy button):is(:hover, :focus-visible) {
   color: #9be66f !important;
 }

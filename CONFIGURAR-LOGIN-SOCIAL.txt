@@ -1,0 +1,45 @@
+COLEGIOLIBRE · ACTIVAR GOOGLE Y APPLE
+=====================================
+
+El código de los botones ya está incluido. Para que funcionen en producción
+tenés que habilitar cada proveedor en Supabase; nunca guardes sus secretos en
+los archivos del sitio.
+
+URL pública:
+https://colegiolibre.vercel.app
+
+Redirección usada por ColegioLibre:
+https://colegiolibre.vercel.app/login.html
+
+1. SUPABASE
+-----------
+Authentication > URL Configuration
+
+- Site URL: https://colegiolibre.vercel.app
+- Redirect URLs: agregá
+  https://colegiolibre.vercel.app/login.html
+  https://colegiolibre.vercel.app/**
+
+2. GOOGLE
+---------
+- Creá credenciales OAuth Web en Google Cloud.
+- En Supabase: Authentication > Providers > Google.
+- Copiá en Google Cloud la URL callback que Supabase muestra.
+- Pegá Client ID y Client Secret en Supabase y activá Google.
+
+3. APPLE
+--------
+- Requiere una cuenta activa de Apple Developer.
+- Creá el Service ID, la Key y configurá el dominio/callback que muestra
+  Supabase en Authentication > Providers > Apple.
+- Cargá Service ID, Team ID, Key ID y la clave en Supabase.
+- Guardá y activá Apple.
+- Programá la renovación del secret de Apple antes de los 6 meses.
+
+4. PRUEBA
+---------
+- Abrí una ventana de incógnito.
+- Entrá en https://colegiolibre.vercel.app/login.html
+- Probá Google y Apple.
+- Confirmá que al volver aparezca una sesión iniciada y que el usuario pueda
+  completar su perfil/colegio si es una cuenta nueva.

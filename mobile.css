@@ -239,6 +239,122 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   color: #f2f7ff;
 }
 
+/* V31 · app bar móvil compacta, inspirada en marketplaces.
+   Estas reglas son deliberadamente finales para impedir que estilos de
+   escritorio vuelvan a mostrar dos logos en el Home. */
+@media (max-width: 760px) {
+  body:not(.mobile-subpage) .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 110;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 1px 0 rgba(11, 46, 107, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  body:not(.mobile-subpage) .site-header .container {
+    width: min(calc(100% - 28px), var(--container));
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--desktop {
+    display: none !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-top {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 10px 0 8px !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-actions-wrap {
+    display: flex !important;
+    min-height: 50px !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile {
+    display: inline-flex !important;
+    flex: 0 0 148px !important;
+    width: 148px !important;
+    height: 50px !important;
+    min-width: 148px !important;
+    min-height: 50px !important;
+    padding: 7px 10px !important;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(11, 46, 107, 0.08);
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(7, 25, 58, 0.08);
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile img {
+    display: block !important;
+    width: 126px !important;
+    height: 36px !important;
+    max-width: 126px !important;
+    max-height: 36px !important;
+    object-fit: contain;
+  }
+
+  body:not(.mobile-subpage) .site-header .header-actions--mobile {
+    display: flex !important;
+    width: auto;
+    margin-left: auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  body:not(.mobile-subpage) .site-header .menu-toggle {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border: 1px solid rgba(11, 46, 107, 0.12);
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(7, 25, 58, 0.08);
+  }
+
+  body:not(.mobile-subpage) .site-header .search-bar--mobile {
+    display: flex !important;
+    min-height: 50px !important;
+    margin: 0 0 10px !important;
+    padding: 3px 4px 3px 14px !important;
+    border-radius: 15px !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .search-bar--mobile .search-submit {
+    flex: 0 0 43px;
+    width: 43px;
+    height: 43px;
+  }
+
+  body:not(.mobile-subpage) .site-header :is(
+    .search-bar--desktop,
+    .header-actions--desktop,
+    .mobile-shortcuts,
+    .header-nav
+  ) {
+    display: none !important;
+  }
+
+  html[data-theme="dark"] body:not(.mobile-subpage) .site-header {
+    background: rgba(7, 9, 12, 0.98);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  html[data-theme="dark"] body:not(.mobile-subpage) .site-header .menu-toggle {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: #141922;
+    color: #dce7f8;
+  }
+}
+
 /* --------------------------------------------------------------------------
    ColegioLibre · interfaz móvil de aplicación
    Estas reglas reemplazan el header de escritorio únicamente en subpáginas.
