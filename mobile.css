@@ -141,11 +141,6 @@ html {
     display: none !important;
   }
 
-  .mobile-subpage[data-mobile-nav="true"] .preference-controls {
-    right: 12px;
-    bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 16px);
-  }
-
   body[data-mobile-nav="true"] .notification-center,
   body[data-mobile-nav="true"] .toast,
   body[data-mobile-nav="true"] .profile-toast,
@@ -290,12 +285,29 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     font-size: 0.58rem;
   }
 
-  body[data-mobile-nav="true"] .preference-controls {
-    top: 10px;
-    right: 10px;
-    bottom: auto;
+  /*
+   * Preferencias móviles
+   * En la versión anterior convivían `top` y `bottom` por una diferencia de
+   * especificidad. Eso estiraba el control hasta convertirlo en la franja
+   * vertical que tapaba mensajes, perfil y producto.
+   */
+  .mobile-subpage[data-mobile-nav="true"] .preference-controls {
+    top: 12px !important;
+    right: 10px !important;
+    bottom: auto !important;
+    left: auto !important;
     z-index: 125;
-    padding: 3px;
+    display: flex !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 44px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 3px !important;
+    overflow: visible !important;
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(7, 25, 58, 0.14);
   }
@@ -303,8 +315,60 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   .mobile-subpage[data-mobile-nav="true"] .preference-controls__button {
     width: 34px;
     min-width: 34px;
+    height: 34px;
     min-height: 34px;
     padding: 0;
+  }
+
+  body:not(.mobile-subpage)[data-mobile-nav="true"] .preference-controls {
+    top: auto !important;
+    right: 10px !important;
+    bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 10px) !important;
+    left: auto !important;
+    z-index: 125;
+    display: flex !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 44px !important;
+    flex-direction: row !important;
+    gap: 2px !important;
+    padding: 3px !important;
+    border-radius: 14px;
+  }
+
+  body:not(.mobile-subpage)[data-mobile-nav="true"] .preference-controls__button {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+  }
+
+  /*
+   * El panel se ancla al viewport en celular. Las declaraciones importantes
+   * también neutralizan coordenadas inline creadas al abrirlo en desktop.
+   */
+  body[data-mobile-nav="true"] .cl-notification-panel {
+    top: 72px !important;
+    right: 10px !important;
+    bottom: auto !important;
+    left: 10px !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    max-height: calc(100dvh - 154px) !important;
+    overflow: hidden !important;
+    border-radius: 20px !important;
+  }
+
+  body[data-mobile-nav="true"] .cl-notification-panel[hidden] {
+    display: none !important;
+  }
+
+  body[data-mobile-nav="true"] .cl-notification-list {
+    max-height: calc(100dvh - 275px) !important;
+    overflow-y: auto !important;
   }
 
   /* Encabezado compacto y uniforme de las pantallas internas. */
@@ -320,7 +384,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     display: flex !important;
     width: 100%;
     min-height: 64px !important;
-    padding: 8px 76px 8px 14px !important;
+    padding: 8px 94px 8px 14px !important;
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
@@ -329,13 +393,16 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   .mobile-subpage .site-header .brand-link {
     display: inline-flex;
     width: auto;
-    padding: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    min-height: 46px;
+    align-items: center;
+    padding: 5px 8px !important;
+    border-radius: 12px;
+    background: #ffffff !important;
+    box-shadow: 0 5px 16px rgba(7, 25, 58, 0.12) !important;
   }
 
   .mobile-subpage .site-header .brand-link img {
-    width: 142px !important;
+    width: 134px !important;
     height: auto !important;
     max-height: 46px !important;
     object-fit: contain;
@@ -402,9 +469,11 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   }
 
   .mobile-favorites .favorites-brand {
-    padding: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    min-height: 46px;
+    padding: 5px 8px !important;
+    border-radius: 12px;
+    background: #ffffff !important;
+    box-shadow: 0 5px 16px rgba(7, 25, 58, 0.12) !important;
   }
 
   .mobile-favorites .favorites-brand img {
@@ -501,6 +570,19 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     gap: 12px;
   }
 
+  .mobile-profile .dashboard-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mobile-profile .dashboard-metric-card {
+    min-height: 104px;
+    padding: 14px;
+  }
+
+  .mobile-profile .dashboard-overview__head {
+    flex-direction: column;
+  }
+
   /* Producto: galería proporcionada para una pantalla angosta. */
   .product-detail-body .breadcrumbs {
     margin-bottom: 14px;
@@ -569,17 +651,33 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   body:not(.mobile-subpage) .site-header #mobile-publish-link {
     display: none !important;
   }
+
 }
 
 @media (max-width: 390px) {
   .mobile-subpage .site-header .brand-link img,
   .mobile-favorites .favorites-brand img {
-    width: 126px !important;
+    width: 124px !important;
   }
 
   .publish-body .page-intro h1,
   .mobile-profile .content-header h1,
   .mobile-favorites .favorites-hero h1 {
     font-size: 2rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-subpage .site-header__row {
+    padding-right: 88px !important;
+  }
+
+  .mobile-subpage .site-header .brand-link img,
+  .mobile-favorites .favorites-brand img {
+    width: 116px !important;
+  }
+
+  .mobile-profile .dashboard-metrics {
+    grid-template-columns: 1fr !important;
   }
 }

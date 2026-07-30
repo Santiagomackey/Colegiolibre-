@@ -169,3 +169,37 @@ test("la interfaz móvil usa un único header y navegación compacta", () => {
   assert.match(profile, /class="mobile-subpage mobile-profile"/);
   assert.match(favorites, /class="mobile-subpage mobile-favorites"/);
 });
+
+test("la interfaz móvil no estira preferencias ni paneles sobre el contenido", () => {
+  const css = read("mobile.css");
+
+  assert.match(
+    css,
+    /\.mobile-subpage\[data-mobile-nav="true"\] \.preference-controls\s*\{[\s\S]*?bottom:\s*auto !important/
+  );
+  assert.match(
+    css,
+    /\.mobile-subpage\[data-mobile-nav="true"\] \.preference-controls\s*\{[\s\S]*?height:\s*auto !important/
+  );
+  assert.match(
+    css,
+    /body\[data-mobile-nav="true"\] \.cl-notification-panel\s*\{[\s\S]*?left:\s*10px !important/
+  );
+  assert.match(
+    css,
+    /body\[data-mobile-nav="true"\] \.cl-notification-panel\s*\{[\s\S]*?width:\s*auto !important/
+  );
+});
+
+test("los logos internos conservan contraste y tamaño en celular", () => {
+  const css = read("mobile.css");
+
+  assert.match(
+    css,
+    /\.mobile-subpage \.site-header \.brand-link\s*\{[\s\S]*?background:\s*#ffffff !important/
+  );
+  assert.match(
+    css,
+    /\.mobile-subpage \.site-header \.brand-link img\s*\{[\s\S]*?width:\s*134px !important/
+  );
+});
