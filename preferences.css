@@ -1278,3 +1278,163 @@ html[data-theme="dark"] .cl-notification-system {
     max-height: 48px;
   }
 }
+
+/* =========================================================
+   V30: CONSISTENCIA VISUAL GLOBAL
+   Un mismo logo, una misma caja y una misma altura de header
+   en todas las páginas y en ambos temas.
+========================================================= */
+:root {
+  --cl-header-height: 94px;
+  --cl-brand-box-width: 190px;
+  --cl-brand-box-height: 64px;
+  --cl-brand-image-width: 160px;
+  --cl-brand-image-height: 46px;
+}
+
+.site-header :is(.brand--desktop, .brand-link) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  flex: 0 0 var(--cl-brand-box-width) !important;
+  width: var(--cl-brand-box-width) !important;
+  height: var(--cl-brand-box-height) !important;
+  min-width: var(--cl-brand-box-width) !important;
+  min-height: var(--cl-brand-box-height) !important;
+  padding: 9px 14px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden;
+  border: 1px solid rgba(11, 46, 107, 0.07) !important;
+  border-radius: 15px !important;
+  background: #ffffff !important;
+  box-shadow: 0 5px 16px rgba(7, 25, 58, 0.08) !important;
+}
+
+.site-header :is(.brand--desktop, .brand-link) img {
+  display: block !important;
+  width: var(--cl-brand-image-width) !important;
+  height: var(--cl-brand-image-height) !important;
+  max-width: var(--cl-brand-image-width) !important;
+  max-height: var(--cl-brand-image-height) !important;
+  object-fit: contain !important;
+}
+
+.site-header :is(.header-top, .site-header__row) {
+  min-height: var(--cl-header-height) !important;
+}
+
+.site-header .header-top {
+  box-sizing: border-box;
+  padding-block: 15px !important;
+}
+
+html[data-theme="dark"] .site-header :is(.brand--desktop, .brand-link) {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* El Home oscuro es una superficie negra continua, sin franjas claras. */
+html[data-theme="dark"] .page-shell,
+html[data-theme="dark"] .category-marketplace-section {
+  background: #07090c !important;
+  background-image: none !important;
+}
+
+html[data-theme="dark"] .page-glow {
+  display: none !important;
+}
+
+/* Contraste estable para el CTA de contacto. */
+html[data-theme="dark"] .footer-contact-btn,
+html[data-theme="dark"] .footer-contact-btn:visited {
+  color: #071109 !important;
+  -webkit-text-fill-color: #071109 !important;
+  background: #76d94d !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="dark"] .footer-contact-btn:is(:hover, :focus-visible) {
+  color: #050d07 !important;
+  -webkit-text-fill-color: #050d07 !important;
+  background: #8be368 !important;
+}
+
+/* El panel azul termina junto con sus opciones, sin columna infinita. */
+@media (min-width: 981px) {
+  .mobile-profile .page-layout {
+    align-items: start !important;
+  }
+
+  .mobile-profile .profile-sidebar {
+    position: relative !important;
+    top: auto !important;
+    align-self: start !important;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 28px 22px 22px !important;
+    overflow: visible !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    border-radius: 24px !important;
+    background: linear-gradient(165deg, #0b2e6b 0%, #082657 100%) !important;
+    box-shadow: 0 22px 52px rgba(6, 28, 67, 0.2) !important;
+  }
+
+  .mobile-profile .profile-sidebar .help-card {
+    margin-top: 4px !important;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --cl-header-height: 70px;
+    --cl-brand-box-width: 150px;
+    --cl-brand-box-height: 54px;
+    --cl-brand-image-width: 126px;
+    --cl-brand-image-height: 38px;
+  }
+
+  .mobile-subpage .site-header .brand-link {
+    flex-basis: var(--cl-brand-box-width) !important;
+    width: var(--cl-brand-box-width) !important;
+    min-width: var(--cl-brand-box-width) !important;
+    min-height: var(--cl-brand-box-height) !important;
+    height: var(--cl-brand-box-height) !important;
+    padding: 7px 11px !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile {
+    box-sizing: border-box !important;
+    flex: 0 0 var(--cl-brand-box-width) !important;
+    width: var(--cl-brand-box-width) !important;
+    height: var(--cl-brand-box-height) !important;
+    min-width: var(--cl-brand-box-width) !important;
+    min-height: var(--cl-brand-box-height) !important;
+    padding: 7px 11px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+    border: 1px solid rgba(11, 46, 107, 0.07) !important;
+    border-radius: 13px !important;
+    background: #ffffff !important;
+    box-shadow: 0 5px 16px rgba(7, 25, 58, 0.12) !important;
+  }
+
+  body:not(.mobile-subpage) .site-header .brand--mobile img {
+    width: var(--cl-brand-image-width) !important;
+    height: var(--cl-brand-image-height) !important;
+    max-width: var(--cl-brand-image-width) !important;
+    max-height: var(--cl-brand-image-height) !important;
+    object-fit: contain !important;
+  }
+
+  .mobile-subpage .site-header .brand-link img {
+    width: var(--cl-brand-image-width) !important;
+    height: var(--cl-brand-image-height) !important;
+    max-width: var(--cl-brand-image-width) !important;
+    max-height: var(--cl-brand-image-height) !important;
+  }
+}

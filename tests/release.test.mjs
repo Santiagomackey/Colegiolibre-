@@ -243,6 +243,36 @@ test("el inicio traduce las descripciones institucionales y de categorías", () 
     /"Remeras, buzos, pantalones y prendas escolares filtradas por talle\.":\s*"School shirts, sweatshirts, trousers and uniforms filtered by size\."/
   );
   assert.match(preferences, /\.trim\(\)\.replace\(\/\\s\+\/g,\s*" "\)/);
-  assert.match(home, /preferences\.js\?v=20260730-15/);
+  assert.match(home, /preferences\.js\?v=20260730-16/);
   assert.match(script, /refresh\?\.\(elements\.categoryShelves\)/);
+});
+
+test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", () => {
+  const preferences = read("preferences.css");
+  const translations = read("preferences.js");
+  const publishScript = read("publicar.js");
+  const publishPage = read("publicar.html");
+  const profile = read("perfil.html");
+  const home = read("index.html");
+  const serviceWorker = read("service-worker.js");
+
+  assert.match(translations, /\["La publicación aparecerá en ",\s*"Your listing will appear in "\]/);
+  assert.match(translations, /\[" y también podrá encontrarse por zona\.",\s*" and can also be found by area\."\]/);
+  assert.match(publishScript, /colegioLibrePreferences\.translate\(publicationContext\)/);
+  assert.match(publishPage, /publicar\.js\?v=20260730-i18n2/);
+  assert.match(preferences, /--cl-brand-box-width:\s*190px/);
+  assert.match(preferences, /--cl-brand-box-height:\s*64px/);
+  assert.match(preferences, /--cl-brand-image-width:\s*160px/);
+  assert.match(
+    preferences,
+    /html\[data-theme="dark"\] \.category-marketplace-section\s*\{[\s\S]*?background:\s*#07090c !important/
+  );
+  assert.match(preferences, /-webkit-text-fill-color:\s*#071109 !important/);
+  assert.match(
+    preferences,
+    /\.mobile-profile \.profile-sidebar\s*\{[\s\S]*?min-height:\s*0 !important/
+  );
+  assert.match(home, /images\/favicon\.svg/);
+  assert.match(profile, /preferences\.css\?v=20260730-20/);
+  assert.match(serviceWorker, /colegiolibre-pwa-v30/);
 });

@@ -841,6 +841,8 @@
   }));
 
   const phraseTranslations = [
+    ["La publicación aparecerá en ", "Your listing will appear in "],
+    [" y también podrá encontrarse por zona.", " and can also be found by area."],
     ["Cargando...", "Loading..."],
     ["Cargando métricas reales de tu actividad...", "Loading real activity metrics..."],
     ["No encontramos productos para esa búsqueda.", "We couldn't find products for that search."],

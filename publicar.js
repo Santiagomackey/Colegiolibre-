@@ -299,8 +299,12 @@ async function ensurePublishAccess() {
   publishState.currentSchool =
     await window.colegioLibreApi.getSchoolByCode(profile.school_code);
   configureLocationOptions(profile, publishState.currentSchool);
-  pageSubtitle.textContent =
+  const publicationContext =
     `La publicación aparecerá en ${profile.school_name || "tu colegio"} y también podrá encontrarse por zona.`;
+  pageSubtitle.textContent =
+    window.colegioLibrePreferences?.language === "en"
+      ? window.colegioLibrePreferences.translate(publicationContext)
+      : publicationContext;
   return true;
 }
 
