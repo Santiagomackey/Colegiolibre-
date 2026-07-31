@@ -14,6 +14,7 @@
   var requestList = document.getElementById("my-requests");
   var timer = null;
   var currentUser = null;
+  var requestedCodeEdited = false;
 
   init();
 
@@ -26,6 +27,9 @@
       return;
     }
     bind();
+    if (form.elements.contact_email && !form.elements.contact_email.value) {
+      form.elements.contact_email.value = currentUser.email || "";
+    }
     await renderRequests();
   }
 
@@ -45,6 +49,14 @@
         return;
       }
       timer = window.setTimeout(function () { void findSchools(query); }, 260);
+    });
+    form.elements.requested_code.addEventListener("input", function () {
+      requestedCodeEdited = true;
+    });
+    form.elements.short_name.addEventListener("input", function () {
+      if (!requestedCodeEdited) {
+        form.elements.requested_code.value = slugify(form.elements.short_name.value);
+      }
     });
     form.addEventListener("submit", submit);
   }
@@ -81,6 +93,7 @@
       [school.address, school.city, school.province].filter(Boolean).join(" · ");
     form.elements.short_name.value = name.replace(/^(instituto|colegio|escuela)\s+/i, "").slice(0, 50);
     form.elements.requested_code.value = slugify(form.elements.short_name.value);
+    requestedCodeEdited = false;
     results.replaceChildren();
   }
 
@@ -106,7 +119,10 @@
     status.textContent = "Enviando solicitud…";
     var result = await client.from("institution_requests").insert(record).select("id").single();
     if (result.error) {
-      status.textContent = "No pudimos enviarla: " + result.error.message;
+      status.textContent =
+        result.error.code === "23505"
+          ? "Ese colegio ya tiene una solicitud pendiente. ColegioLibre la revisará pronto."
+          : "No pudimos enviarla: " + result.error.message;
       return;
     }
     status.textContent = "Solicitud enviada. ColegioLibre la revisará antes de activar el portal.";
@@ -114,6 +130,10 @@
     selected.hidden = true;
     officialCode.value = "";
     officialName.value = "";
+    requestedCodeEdited = false;
+    if (form.elements.contact_email) {
+      form.elements.contact_email.value = currentUser.email || "";
+    }
     await renderRequests();
   }
 
@@ -126,12 +146,18 @@
       var item = document.createElement("article");
       item.className = "ib-request";
       item.dataset.status = request.status;
-      item.innerHTML = "<span><strong></strong><small></small></span><b></b>";
+      item.innerHTML = "<span><strong></strong><small></small></span><span class=\"ib-request__state\"><b></b></span>";
       item.querySelector("strong").textContent = request.official_school_name;
       item.querySelector("small").textContent = "/colegio/" + request.requested_code;
       item.querySelector("b").textContent =
         request.status === "pending" ? "Pendiente" :
         request.status === "approved" ? "Aprobada" : "Rechazada";
+      if (request.status === "approved") {
+        var link = document.createElement("a");
+        link.href = "/colegio/" + encodeURIComponent(request.requested_code);
+        link.textContent = "Abrir portal";
+        item.querySelector(".ib-request__state").appendChild(link);
+      }
       requestList.appendChild(item);
     });
     if (!requestList.children.length) requestList.innerHTML = "<p>Todavía no enviaste solicitudes.</p>";

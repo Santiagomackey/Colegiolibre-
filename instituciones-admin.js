@@ -49,6 +49,12 @@
   }
 
   async function reviewRequest(id, action) {
+    if (
+      action === "reject" &&
+      !window.confirm("¿Seguro que querés rechazar esta solicitud?")
+    ) return;
+    var buttons = requestsList.querySelectorAll("button");
+    buttons.forEach(function (button) { button.disabled = true; });
     requestStatus.textContent =
       action === "approve" ? "Activando portal…" : "Rechazando solicitud…";
     var rpcName = action === "approve"
@@ -57,11 +63,12 @@
     var result = await client.rpc(rpcName, { p_request_id: id });
     if (result.error) {
       requestStatus.textContent = "No se pudo completar: " + result.error.message;
+      buttons.forEach(function (button) { button.disabled = false; });
       return;
     }
     requestStatus.textContent =
       action === "approve"
-        ? "Portal activado y administrador asignado."
+        ? "Portal activado, administrador asignado y representante notificado."
         : "Solicitud rechazada.";
     await Promise.all([renderRequests(), renderSchools()]);
   }
@@ -78,7 +85,7 @@
     activeCount.textContent = String(active.length);
     list.replaceChildren();
 
-    schools.forEach(function (school) {
+    active.forEach(function (school) {
       var code = String(school.community_code || school.code || "");
       var name = school.display_name || school.name || code;
       var item = document.createElement("article");
@@ -98,5 +105,8 @@
         "/colegio/" + encodeURIComponent(code.toLowerCase());
       list.appendChild(item);
     });
+    if (!active.length) {
+      list.innerHTML = "<p>No hay portales institucionales activos todavía.</p>";
+    }
   }
 })();

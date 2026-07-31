@@ -24,6 +24,14 @@ personalizados para instituciones miembro.
 Subir el contenido completo al repositorio conectado con Vercel. El archivo
 `.vercelignore` evita publicar código móvil, documentación y SQL.
 
-No ejecutar nuevamente una migración que ya haya sido aplicada.
+Para instalar o actualizar el bot, ejecutar `database/03_institution_bot.sql`
+en Supabase. La migración es repetible y agrega:
 
-Para activar el bot, ejecutar una vez `database/03_institution_bot.sql`.
+- solicitudes institucionales verificables;
+- aprobación y rechazo desde el panel global;
+- asignación automática del administrador del colegio;
+- notificaciones gratuitas para administradores y representantes.
+
+Las notificaciones aparecen dentro de ColegioLibre y, si el usuario habilitó
+los permisos, también se muestran en el dispositivo mientras la aplicación
+está activa.

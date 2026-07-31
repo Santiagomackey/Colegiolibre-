@@ -28,6 +28,73 @@ create unique index if not exists institution_requests_one_pending_school_idx
 
 alter table public.institution_requests enable row level security;
 
+-- Escribe avisos en el sistema existente sin hacer depender el alta de un
+-- proveedor de correo o de una API paga.
+create or replace function public.create_institution_notification(
+  p_user_id uuid,
+  p_type text,
+  p_title text,
+  p_body text,
+  p_action_url text,
+  p_metadata jsonb default '{}'::jsonb
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if to_regclass('public.notifications') is null then
+    return;
+  end if;
+
+  execute $notification$
+    insert into public.notifications
+      (user_id, type, title, body, action_url, read, metadata)
+    values ($1, $2, $3, $4, $5, false, $6)
+  $notification$
+  using p_user_id, p_type, p_title, p_body, p_action_url, p_metadata;
+exception
+  when undefined_column or not_null_violation then
+    -- Mantiene compatible la migración si una instalación antigua usa otro
+    -- esquema de avisos. La solicitud igualmente se guarda y aparece al admin.
+    return;
+end;
+$$;
+
+revoke all on function public.create_institution_notification(uuid, text, text, text, text, jsonb) from public;
+
+create or replace function public.notify_admins_new_institution_request()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  admin_row record;
+begin
+  for admin_row in select user_id from public.admins loop
+    perform public.create_institution_notification(
+      admin_row.user_id,
+      'institution_request',
+      'Nuevo colegio quiere unirse',
+      new.official_school_name || ' envió una solicitud institucional.',
+      '/instituciones-admin.html',
+      jsonb_build_object(
+        'institution_request_id', new.id,
+        'official_school_code', new.official_school_code
+      )
+    );
+  end loop;
+  return new;
+end;
+$$;
+
+drop trigger if exists institution_request_notify_admins on public.institution_requests;
+create trigger institution_request_notify_admins
+after insert on public.institution_requests
+for each row execute function public.notify_admins_new_institution_request();
+
 drop policy if exists "applicants create institution requests" on public.institution_requests;
 create policy "applicants create institution requests"
 on public.institution_requests for insert
@@ -119,6 +186,18 @@ begin
   set status = 'approved', reviewed_by = auth.uid(), reviewed_at = now()
   where id = p_request_id;
 
+  perform public.create_institution_notification(
+    request_row.applicant_user_id,
+    'institution_approved',
+    'Tu portal institucional fue aprobado',
+    request_row.official_school_name || ' ya forma parte de ColegioLibre.',
+    '/colegio/' || lower(portal_code),
+    jsonb_build_object(
+      'institution_request_id', request_row.id,
+      'portal_code', lower(portal_code)
+    )
+  );
+
   return lower(portal_code);
 end;
 $$;
@@ -129,6 +208,8 @@ language plpgsql
 security definer
 set search_path = public, auth
 as $$
+declare
+  request_row public.institution_requests%rowtype;
 begin
   if not exists (
     select 1 from public.admins where admins.user_id = auth.uid()
@@ -136,9 +217,31 @@ begin
     raise exception 'Acceso administrativo requerido';
   end if;
 
+  select * into request_row
+  from public.institution_requests
+  where id = p_request_id
+  for update;
+
+  if request_row.id is null then
+    raise exception 'Solicitud inexistente';
+  end if;
+
+  if request_row.status <> 'pending' then
+    raise exception 'La solicitud ya fue revisada';
+  end if;
+
   update public.institution_requests
   set status = 'rejected', reviewed_by = auth.uid(), reviewed_at = now()
-  where id = p_request_id and status = 'pending';
+  where id = p_request_id;
+
+  perform public.create_institution_notification(
+    request_row.applicant_user_id,
+    'institution_rejected',
+    'Revisamos tu solicitud institucional',
+    'La solicitud de ' || request_row.official_school_name || ' no fue aprobada. Podés contactarnos desde Ayuda.',
+    '/instituciones.html',
+    jsonb_build_object('institution_request_id', request_row.id)
+  );
 end;
 $$;
 
