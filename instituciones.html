@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sumá tu colegio | ColegioLibre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./instituciones.css?v=1">
+</head>
+<body>
+  <header class="ib-topbar">
+    <a href="./index.html">ColegioLibre</a>
+    <span>Alta institucional automática</span>
+    <a href="./ayuda.html">Ayuda</a>
+  </header>
+
+  <main class="ib-shell">
+    <section class="ib-hero">
+      <span class="ib-kicker">GRATIS · SIN CONFIGURACIÓN TÉCNICA</span>
+      <h1>Tu comunidad escolar, lista en minutos.</h1>
+      <p>Buscá el colegio oficial, completá los datos y el bot prepara el portal. ColegioLibre revisa la solicitud antes de activarlo.</p>
+      <div class="ib-steps"><span><b>1</b> Buscá</span><span><b>2</b> Completá</span><span><b>3</b> Enviá</span></div>
+    </section>
+
+    <section class="ib-card" id="request-card">
+      <header><span>ASISTENTE DE ALTA</span><h2>Solicitar portal institucional</h2></header>
+      <div id="login-required" class="ib-login" hidden>
+        <p>Necesitás iniciar sesión para enviar una solicitud verificable.</p>
+        <a href="./login.html?next=instituciones.html">Iniciar sesión</a>
+      </div>
+
+      <form id="institution-request-form" hidden>
+        <label>Buscá el colegio oficial
+          <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE">
+        </label>
+        <div class="ib-results" id="school-results" role="listbox"></div>
+        <input id="official-code" name="official_code" type="hidden">
+        <input id="official-name" name="official_name" type="hidden">
+
+        <div class="ib-selected" id="selected-school" hidden>
+          <span>Colegio seleccionado</span><strong></strong><small></small>
+        </div>
+
+        <div class="ib-two">
+          <label>Nombre corto<input name="short_name" required maxlength="50" placeholder="Ej. ORT Almagro"></label>
+          <label>Código sugerido<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_-]+" placeholder="ort-almagro"></label>
+        </div>
+        <label>Email institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+        <div class="ib-colors">
+          <label>Principal<input name="primary_color" type="color" value="#0B2E6B"></label>
+          <label>Secundario<input name="secondary_color" type="color" value="#67C23A"></label>
+          <label>Acento<input name="accent_color" type="color" value="#FFC72C"></label>
+        </div>
+        <label class="ib-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
+        <button type="submit">Enviar solicitud gratuita</button>
+        <p id="request-status" class="ib-status" role="status"></p>
+      </form>
+    </section>
+
+    <section class="ib-card">
+      <header><span>MIS SOLICITUDES</span><h2>Seguimiento</h2></header>
+      <div id="my-requests" class="ib-request-list"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0"></script>
+  <script src="./supabase.js?v=20260729-stable1"></script>
+  <script src="./instituciones.js?v=1"></script>
+</body>
+</html>

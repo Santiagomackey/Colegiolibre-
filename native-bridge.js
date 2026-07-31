@@ -66,6 +66,14 @@
       if (canGoBack) window.history.back();
       else app.minimizeApp?.();
     });
+
+    try {
+      await capacitor.Plugins?.ScreenOrientation?.lock?.({
+        orientation: "portrait"
+      });
+    } catch (_error) {
+      // La web sigue funcionando si el dispositivo no admite este bloqueo.
+    }
   }
 
   window.colegioLibreNative = {

@@ -29,7 +29,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
-</head>
+    <link rel="stylesheet" href="./institution-theme.css?v=20260730-1" />
+    <script defer src="./institution-theme.js?v=20260730-1"></script>
+  </head>
 
 <body>
   <main class="auth-shell">
@@ -117,37 +119,6 @@
               >
                 Crear cuenta
               </button>
-            </div>
-
-            <div class="social-auth" aria-label="Acceso rápido">
-              <button
-                class="social-auth__button"
-                type="button"
-                data-oauth-provider="google"
-              >
-                <svg class="social-auth__icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.4a4.6 4.6 0 0 1-2 3v2.5h3.3c1.9-1.8 2.9-4.4 2.9-7.4Z"/>
-                  <path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.4l-3.3-2.5c-.9.6-2 1-3.4 1a5.9 5.9 0 0 1-5.5-4.1H3.1v2.6A10 10 0 0 0 12 22Z"/>
-                  <path fill="#FBBC05" d="M6.5 14a6 6 0 0 1 0-3.9V7.4H3.1a10 10 0 0 0 0 9.2L6.5 14Z"/>
-                  <path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.9 1.5l2.9-2.8A9.8 9.8 0 0 0 3.1 7.4l3.4 2.7A5.9 5.9 0 0 1 12 5.9Z"/>
-                </svg>
-                <span>Continuar con Google</span>
-              </button>
-
-              <button
-                class="social-auth__button social-auth__button--apple"
-                type="button"
-                data-oauth-provider="apple"
-              >
-                <svg class="social-auth__icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M17.1 12.6c0-2.6 2.2-3.9 2.3-4a5 5 0 0 0-3.9-2.1c-1.7-.2-3.2 1-4.1 1-.9 0-2.2-1-3.6-1A5.3 5.3 0 0 0 3.3 9c-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.4 2.6 1.3 0 1.9-.8 3.6-.8 1.7 0 2.2.8 3.6.8 1.5 0 2.5-1.3 3.4-2.6a11.5 11.5 0 0 0 1.5-3.1 4.5 4.5 0 0 1-3-3.9ZM14.4 4.8A4.6 4.6 0 0 0 15.5 1a4.7 4.7 0 0 0-3.2 1.6A4.4 4.4 0 0 0 11.2 6a3.9 3.9 0 0 0 3.2-1.2Z"/>
-                </svg>
-                <span>Continuar con Apple</span>
-              </button>
-            </div>
-
-            <div class="auth-divider" role="separator">
-              <span>o continuá con email</span>
             </div>
 
             <form id="auth-form" class="auth-form" novalidate>
@@ -462,9 +433,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
   <script src="./supabase.js?v=20260729-stable1"></script>
-<script src="./telemetry.js?v=20260729-1"></script>
-  <script src="./login.js?v=20260730-oauth1"></script>
-    <script src="./native-bridge.js?v=20260728-1"></script>
-    <script src="./pwa.js?v=20260728-1"></script>
+  <script src="./telemetry.js?v=20260729-1"></script>
+  <script src="./native-bridge.js?v=20260730-auth2"></script>
+  <script src="./login.js?v=20260730-oauth2"></script>
+  <script src="./pwa.js?v=20260728-1"></script>
 </body>
 </html>

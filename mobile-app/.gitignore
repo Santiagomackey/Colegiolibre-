@@ -1,7 +1,11 @@
 node_modules/
+www/
 android/.gradle/
-android/local.properties
 android/app/build/
+android/build/
 ios/App/Pods/
-ios/App/DerivedData/
-*.xcuserstate
+ios/App/build/
+*.jks
+*.keystore
+GoogleService-Info.plist
+google-services.json

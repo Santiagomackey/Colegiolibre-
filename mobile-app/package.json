@@ -2,25 +2,28 @@
   "name": "colegiolibre-mobile",
   "version": "1.0.0",
   "private": true,
-  "description": "Aplicación móvil oficial de ColegioLibre con Capacitor.",
+  "description": "Aplicación móvil oficial de ColegioLibre",
   "scripts": {
-    "sync": "npx cap sync",
-    "open:android": "npx cap open android",
-    "open:ios": "npx cap open ios",
-    "run:android": "npx cap run android",
-    "run:ios": "npx cap run ios",
-    "doctor": "npx cap doctor"
+    "prepare:web": "node scripts/sync-web.mjs",
+    "sync": "npm run prepare:web && npx cap sync && npm run configure:native",
+    "configure:native": "node scripts/configure-native.mjs",
+    "android": "npm run sync && npx cap open android",
+    "ios": "npm run sync && npx cap open ios",
+    "assets": "npx capacitor-assets generate --iconBackgroundColor '#0B2E6B' --iconBackgroundColorDark '#0B2E6B' --splashBackgroundColor '#0B2E6B' --splashBackgroundColorDark '#0B2E6B'"
   },
   "dependencies": {
-    "@capacitor/android": "8.4.2",
-    "@capacitor/app": "8.1.1",
-    "@capacitor/camera": "8.2.1",
-    "@capacitor/core": "8.4.2",
-    "@capacitor/ios": "8.4.2",
-    "@capacitor/local-notifications": "8.2.1",
-    "@capacitor/push-notifications": "8.1.2"
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/camera": "^7.0.2",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "@capacitor/local-notifications": "^7.0.3",
+    "@capacitor/push-notifications": "^7.0.3",
+    "@capacitor/screen-orientation": "^7.0.2",
+    "@capacitor/splash-screen": "^7.0.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "8.4.2"
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.4.3"
   }
 }

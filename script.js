@@ -1,5 +1,12 @@
 (function () {
 
+const INSTITUTION_PORTAL = window.ColegioLibreInstitution || {
+  enabled: false,
+  schoolCode: "",
+  schoolName: "",
+  schoolMatch: ""
+};
+
 function createLocalApiFallback() {
   const localFallbackImage = "images/materiales.webp";
   const statusLabels = {
@@ -445,9 +452,11 @@ async function init() {
   const canUseRequestedScope =
     state.requestedScope === "country" ||
     (state.requestedScope === "zone" && state.profile?.zone_code);
-  state.activeScope = canUseRequestedScope
-    ? state.requestedScope
-    : "country";
+  state.activeScope = INSTITUTION_PORTAL.enabled
+    ? "school"
+    : canUseRequestedScope
+      ? state.requestedScope
+      : "country";
 
   await loadProducts();
   await refreshFavorites();
@@ -1526,6 +1535,15 @@ async function refreshFavorites() {
 }
 
 function matchesActiveScope(product) {
+  if (INSTITUTION_PORTAL.enabled) {
+    const productCode = String(product.school_code || "").trim().toUpperCase();
+    if (INSTITUTION_PORTAL.schoolCode && productCode) {
+      return productCode === INSTITUTION_PORTAL.schoolCode;
+    }
+    return normalizeText(product.school_name || product.school)
+      .includes(normalizeText(INSTITUTION_PORTAL.schoolMatch));
+  }
+
   if (state.activeScope === "school") {
     return (
       Boolean(state.profile && state.profile.school_code) &&
@@ -1791,6 +1809,12 @@ function updateScopeSummary() {
     return;
   }
 
+  if (INSTITUTION_PORTAL.enabled) {
+    elements.scopeSummaryLabel.textContent =
+      `Solo publicaciones de ${INSTITUTION_PORTAL.schoolName}`;
+    return;
+  }
+
   if (state.activeScope === "school" && state.profile && state.profile.school_name) {
     elements.scopeSummaryLabel.textContent = `Viendo productos de ${state.profile.school_name}`;
     return;
@@ -1822,6 +1846,12 @@ function updateProductsHeading() {
   if (state.searchTerm.trim()) {
     elements.productsKicker.textContent = "Resultados";
     elements.productsTitle.textContent = "Resultados de búsqueda";
+    return;
+  }
+
+  if (INSTITUTION_PORTAL.enabled) {
+    elements.productsKicker.textContent = "Comunidad Eccleston";
+    elements.productsTitle.textContent = "Publicado por familias del colegio";
     return;
   }
 

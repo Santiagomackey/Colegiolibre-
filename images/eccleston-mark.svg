@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Instituto Sara Chamberlain de Eccleston</title>
+  <desc id="desc">Escudo institucional azul y dorado con un libro abierto.</desc>
+  <circle cx="80" cy="80" r="76" fill="#f4c430"/>
+  <circle cx="80" cy="80" r="68" fill="#ffffff"/>
+  <circle cx="80" cy="80" r="61" fill="#0b2e6b"/>
+  <path d="M46 48c13 0 24 4 34 12 10-8 21-12 34-12v58c-13 0-24 4-34 12-10-8-21-12-34-12V48Z" fill="#fff"/>
+  <path d="M80 61v55M52 57c10 1 19 4 28 10M108 57c-10 1-19 4-28 10" fill="none" stroke="#f4c430" stroke-width="5" stroke-linecap="round"/>
+  <path d="M59 78h13M59 90h13M88 78h13M88 90h13" stroke="#0b2e6b" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="80" cy="34" r="8" fill="#f4c430"/>
+</svg>

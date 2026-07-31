@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instituciones | Administración ColegioLibre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./instituciones-admin.css?v=1">
+</head>
+<body>
+  <header class="ia-topbar">
+    <a href="./index.html">ColegioLibre</a>
+    <span>Administración de instituciones</span>
+    <a href="./admin.html">Volver al panel general</a>
+  </header>
+
+  <main class="ia-shell">
+    <section class="ia-hero">
+      <div>
+        <span class="ia-kicker">COLEGIOLIBRE INSTITUCIONES</span>
+        <h1>Un colegio nuevo, sin copiar una sola página.</h1>
+        <p>El bot prepara cada alta y vos decidís qué instituciones se activan.</p>
+      </div>
+      <div class="ia-metric"><strong id="active-count">0</strong><span>portales activos</span></div>
+    </section>
+
+    <section class="ia-layout" id="admin-content" hidden>
+      <section class="ia-card ia-request-card">
+        <header><span>BOT DE ALTAS</span><h2>Solicitudes pendientes</h2></header>
+        <p class="ia-intro">El colegio completa el formulario; el bot valida el registro oficial, prepara el código y espera tu aprobación.</p>
+        <a class="ia-share" href="./instituciones.html" target="_blank" rel="noopener">Abrir formulario para colegios ↗</a>
+        <div class="ia-list ia-request-list" id="requests-list"></div>
+        <p class="ia-status" id="request-status" role="status"></p>
+      </section>
+
+      <section class="ia-card ia-list-card">
+        <header><span>RED ACTUAL</span><h2>Instituciones</h2></header>
+        <div class="ia-list" id="schools-list"></div>
+      </section>
+    </section>
+
+    <section class="ia-blocked" id="admin-blocked">
+      <h2>Acceso administrativo requerido</h2>
+      <p>Iniciá sesión con una cuenta administradora de ColegioLibre para gestionar instituciones.</p>
+      <a href="./login.html?next=instituciones-admin.html">Iniciar sesión</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0"></script>
+  <script src="./supabase.js?v=20260729-stable1"></script>
+  <script src="./instituciones-admin.js?v=2"></script>
+</body>
+</html>
