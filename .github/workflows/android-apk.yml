@@ -1,0 +1,65 @@
+name: Crear APK Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mobile-app/**"
+      - ".github/workflows/android-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Compilar APK instalable
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Preparar proyecto Android limpio
+        working-directory: mobile-app
+        shell: bash
+        run: |
+          cp android/app/google-services.json /tmp/google-services.json
+          rm -rf android
+          rm -f capacitor.config.ts
+          npm pkg delete dependencies.@capacitor/local-notifications
+          npm install
+          npm run prepare:web
+          npx cap add android
+          cp /tmp/google-services.json android/app/google-services.json
+          npm run assets
+          npm run configure:native
+          npx cap sync android
+
+      - name: Compilar APK
+        working-directory: mobile-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Guardar APK descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ColegioLibre-Android
+          path: mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
