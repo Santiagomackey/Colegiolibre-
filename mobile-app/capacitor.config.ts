@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
   webDir: "www",
   bundledWebRuntime: false,
   plugins: {
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert", "banner", "list"]
+    },
     LocalNotifications: {
       smallIcon: "ic_stat_colegiolibre",
       iconColor: "#67C23A"

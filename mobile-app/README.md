@@ -28,6 +28,10 @@ npm run ios
 ```
 
 La aplicación usa la misma web y Supabase que Vercel. Incluye cámara,
-notificaciones locales, preparación para push, OAuth mediante navegador
-seguro y bloqueo vertical. Las credenciales de Firebase, APNs, Google y Apple
-no se guardan en el repositorio.
+notificaciones locales y push mediante Firebase, OAuth mediante navegador
+seguro y bloqueo vertical.
+
+Android ya incluye `firebase/google-services.json`. Para activar el registro de
+dispositivos, ejecutar `database/04_push_notifications.sql` en Supabase.
+Las credenciales privadas de la cuenta de servicio Firebase y de Supabase se
+guardan únicamente como variables de entorno de Vercel.

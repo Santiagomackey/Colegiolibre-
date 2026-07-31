@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,6 +19,23 @@ const androidManifest = resolve(
   mobileRoot,
   "android/app/src/main/AndroidManifest.xml"
 );
+
+const firebaseAndroidSource = resolve(
+  mobileRoot,
+  "firebase/google-services.json"
+);
+const firebaseAndroidDestination = resolve(
+  mobileRoot,
+  "android/app/google-services.json"
+);
+
+try {
+  await mkdir(resolve(mobileRoot, "android/app"), { recursive: true });
+  await copyFile(firebaseAndroidSource, firebaseAndroidDestination);
+  console.log("Firebase Android configurado.");
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
 
 await patchFile(androidManifest, (source) => {
   let next = source;
