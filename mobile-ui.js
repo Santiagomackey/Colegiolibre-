@@ -87,6 +87,25 @@
 
     document.body.appendChild(nav);
     document.body.dataset.mobileNav = "true";
+
+    hydrateAccountNavigation(nav);
+  }
+
+  async function hydrateAccountNavigation(nav) {
+    const profileLink = nav.querySelector('.cl-mobile-nav__item[href="perfil.html"]');
+    if (!profileLink) return;
+
+    try {
+      const user = await window.colegioLibreApi?.getCurrentUser?.();
+      if (user) return;
+      profileLink.href = "login.html";
+      profileLink.setAttribute("aria-label", language === "en" ? "Sign in" : "Iniciar sesión");
+      const label = profileLink.querySelector("span");
+      if (label) label.textContent = language === "en" ? "Sign in" : "Ingresar";
+    } catch (_error) {
+      // Si la sesión todavía no está disponible, el enlace protegido mantiene
+      // el comportamiento de redirección existente.
+    }
   }
 
   if (document.readyState === "loading") {
