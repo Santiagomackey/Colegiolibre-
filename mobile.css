@@ -46,6 +46,80 @@ html {
     -webkit-tap-highlight-color: transparent;
   }
 
+  body:not(.mobile-subpage) .header-actions--mobile {
+    align-items: center;
+    gap: 10px;
+  }
+
+  body:not(.mobile-subpage) .header-actions--mobile .cl-notification-trigger,
+  body:not(.mobile-subpage) .header-actions--mobile .menu-toggle {
+    box-sizing: border-box;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    padding: 0;
+    border: 1px solid rgba(214, 224, 238, 0.9);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 6px 18px rgba(7, 25, 58, 0.1);
+  }
+
+  body:not(.mobile-subpage) .header-actions--mobile .cl-notification-trigger {
+    gap: 0;
+  }
+
+  body:not(.mobile-subpage) .header-actions--mobile .cl-notification-trigger__icon {
+    width: 23px;
+    height: 23px;
+  }
+
+  body:not(.mobile-subpage) .header-actions--mobile .cl-notification-trigger__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  body:not(.mobile-subpage) .header-actions--mobile .cl-notification-badge {
+    top: -5px;
+    right: -5px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-width: 2px;
+    font-size: 10px;
+    box-shadow: 0 4px 12px rgba(196, 43, 73, 0.28);
+  }
+
+  .mobile-login-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(214, 224, 238, 0.9);
+    border-radius: 16px;
+    background: #ffffff;
+    color: #0b2e6b;
+    box-shadow: 0 6px 18px rgba(7, 25, 58, 0.1);
+    font-size: 0.78rem;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .mobile-login-action[hidden] {
+    display: none !important;
+  }
+
+  .mobile-login-action .icon {
+    width: 20px;
+    height: 20px;
+  }
+
   button,
   [role="button"],
   input[type="button"],
