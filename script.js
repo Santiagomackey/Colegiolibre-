@@ -347,6 +347,7 @@ const elements = {
   mobileMenu: document.getElementById("mobile-menu"),
   mobileMessagesLink: document.getElementById("mobile-messages-link"),
   mobileLogoutButton: document.getElementById("mobile-logout-button"),
+  mobileLoginLink: document.getElementById("mobile-login-link"),
   mobilePublishLink: document.getElementById("mobile-publish-link"),
   mobileSearchForm: document.getElementById("search-form-mobile"),
   mobileSearchInput: document.getElementById("mobile-search"),
@@ -1447,6 +1448,11 @@ async function refreshAccountButton(force = false) {
     if (mobileText) {
       mobileText.textContent = user ? accountLabel : "Iniciar sesión";
     }
+  }
+
+  if (elements.mobileLoginLink) {
+    elements.mobileLoginLink.hidden = Boolean(user);
+    elements.mobileLoginLink.setAttribute("href", "login.html");
   }
 
   if (elements.headerLogoutButton) {
