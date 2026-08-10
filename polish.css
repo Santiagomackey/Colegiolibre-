@@ -170,7 +170,9 @@ textarea {
 }
 
 .auth-panel {
-  overflow-y: auto;
+  /* El documento completo debe desplazarse. Un scroll interno hacía que la
+     rueda solo respondiera al estar sobre el formulario derecho. */
+  overflow: visible;
 }
 
 .message-composer {

@@ -3,12 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    try {
+      if (window.Capacitor?.isNativePlatform?.()) {
+        document.documentElement.dataset.nativeApp =
+          window.Capacitor.getPlatform?.() || "true";
+      }
+      const hasStoredSession = Object.keys(localStorage).some(
+        (key) => key.startsWith("sb-") && key.endsWith("-auth-token")
+      );
+      if (hasStoredSession) document.documentElement.classList.add("auth-session-probe");
+    } catch (_error) {}
+  </script>
   <script src="./preferences.js?v=20260730-31"></script>
   <meta
     name="description"
     content="Iniciá sesión o creá tu cuenta en ColegioLibre."
   />
-  <meta name="theme-color" content="#0B2E6B" />
+  <meta name="theme-color" content="#080A0D" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Ingresar | ColegioLibre</title>
     <link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
@@ -20,8 +32,8 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="./login.css?v=20260730-oauth1" />
-  <link rel="stylesheet" href="./polish.css?v=20260729-8" />
+  <link rel="stylesheet" href="./login.css?v=20260810-42" />
+  <link rel="stylesheet" href="./polish.css?v=20260810-42" />
   <link rel="stylesheet" href="./preferences.css?v=20260730-31" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
@@ -431,11 +443,11 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
-  <script src="./supabase.js?v=20260729-stable1"></script>
+  <script src="./vendor/supabase.js?v=2.111.0"></script>
+  <script src="./supabase.js?v=20260806-37"></script>
   <script src="./telemetry.js?v=20260729-1"></script>
   <script src="./native-bridge.js?v=20260730-auth2"></script>
-  <script src="./login.js?v=20260730-oauth2"></script>
+  <script src="./login.js?v=20260808-41"></script>
   <script src="./pwa.js?v=20260728-1"></script>
 </body>
 </html>
