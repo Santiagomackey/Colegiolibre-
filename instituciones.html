@@ -8,32 +8,55 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./instituciones.css?v=2">
+  <link rel="stylesheet" href="./instituciones.css?v=20260810-43">
 </head>
 <body>
   <header class="ib-topbar">
-    <a href="./index.html">ColegioLibre</a>
-    <span>Alta institucional automática</span>
-    <a href="./ayuda.html">Ayuda</a>
+    <a class="ib-brand" href="./index.html" aria-label="Volver a ColegioLibre">
+      <img src="./images/logo-horizontal.webp" alt="ColegioLibre">
+    </a>
+    <span class="ib-topbar-label">Portales para instituciones</span>
+    <nav><a href="./index.html">Volver al marketplace</a><a href="./ayuda.html">Ayuda</a></nav>
   </header>
 
   <main class="ib-shell">
     <section class="ib-hero">
-      <span class="ib-kicker">GRATIS · SIN CONFIGURACIÓN TÉCNICA</span>
-      <h1>Tu comunidad escolar, lista en minutos.</h1>
-      <p>Buscá el colegio oficial, completá los datos y el bot prepara el portal. ColegioLibre revisa la solicitud antes de activarlo.</p>
-      <div class="ib-steps"><span><b>1</b> Buscá</span><span><b>2</b> Completá</span><span><b>3</b> Enviá</span></div>
+      <div class="ib-hero-copy">
+        <span class="ib-kicker">COLEGIOLIBRE PARA INSTITUCIONES</span>
+        <h1>El marketplace oficial de tu comunidad escolar.</h1>
+        <p>Un espacio propio para que las familias de tu colegio compren, vendan y reutilicen materiales de forma simple y segura.</p>
+        <div class="ib-benefits">
+          <span><b>✓</b> Portal gratuito</span>
+          <span><b>✓</b> Identidad personalizada</span>
+          <span><b>✓</b> Sin trabajo técnico</span>
+        </div>
+      </div>
+      <aside class="ib-preview" aria-label="Vista previa del portal institucional">
+        <div class="ib-preview-top"><i></i><i></i><i></i><span>colegiolibre.com/colegio/tu-colegio</span></div>
+        <div class="ib-preview-body">
+          <div class="ib-preview-brand"><span>TC</span><div><b>Tu Colegio</b><small>Comunidad oficial</small></div></div>
+          <div class="ib-preview-title"></div>
+          <div class="ib-preview-products"><i></i><i></i><i></i></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="ib-process" aria-label="Cómo solicitar el portal">
+      <article><b>01</b><div><strong>Buscá tu colegio</strong><span>Usamos el padrón oficial argentino.</span></div></article>
+      <article><b>02</b><div><strong>Personalizalo</strong><span>Elegí su nombre, código y colores.</span></div></article>
+      <article><b>03</b><div><strong>Enviá la solicitud</strong><span>La revisamos antes de activarla.</span></div></article>
     </section>
 
     <section class="ib-card" id="request-card">
-      <header><span>ASISTENTE DE ALTA</span><h2>Solicitar portal institucional</h2></header>
+      <header class="ib-card-heading"><div><span>SOLICITUD INSTITUCIONAL</span><h2>Creá el portal de tu colegio</h2><p>Completá los datos. Podrás revisar todo antes de enviarlo.</p></div><b>Gratis</b></header>
       <div id="login-required" class="ib-login" hidden>
         <p>Necesitás iniciar sesión para enviar una solicitud verificable.</p>
         <a href="./login.html?next=instituciones.html">Iniciar sesión</a>
       </div>
 
       <form id="institution-request-form" hidden>
-        <label>Buscá el colegio oficial
+        <div class="ib-form-section"><span>1</span><div><strong>Institución oficial</strong><small>Encontrala por nombre, dirección o CUE.</small></div></div>
+        <label>Buscá el colegio
           <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE">
         </label>
         <div class="ib-results" id="school-results" role="listbox"></div>
@@ -44,30 +67,32 @@
           <span>Colegio seleccionado</span><strong></strong><small></small>
         </div>
 
+        <div class="ib-form-section"><span>2</span><div><strong>Identidad del portal</strong><small>Así se verá y encontrará tu comunidad.</small></div></div>
         <div class="ib-two">
           <label>Nombre corto<input name="short_name" required maxlength="50" placeholder="Ej. ORT Almagro"></label>
           <label>Código sugerido<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_-]+" placeholder="ort-almagro"></label>
         </div>
-        <label>Email institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+        <label>Email de contacto institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+        <div class="ib-form-section"><span>3</span><div><strong>Colores institucionales</strong><small>Personalizá el portal con la identidad del colegio.</small></div></div>
         <div class="ib-colors">
           <label>Principal<input name="primary_color" type="color" value="#0B2E6B"></label>
           <label>Secundario<input name="secondary_color" type="color" value="#67C23A"></label>
           <label>Acento<input name="accent_color" type="color" value="#FFC72C"></label>
         </div>
         <label class="ib-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
-        <button type="submit">Enviar solicitud gratuita</button>
+        <button class="ib-submit" type="submit"><span>Enviar solicitud gratuita</span><b aria-hidden="true">→</b></button>
         <p id="request-status" class="ib-status" role="status"></p>
       </form>
     </section>
 
-    <section class="ib-card">
-      <header><span>MIS SOLICITUDES</span><h2>Seguimiento</h2></header>
+    <section class="ib-card ib-tracking">
+      <header class="ib-card-heading"><div><span>MIS SOLICITUDES</span><h2>Seguimiento</h2><p>Consultá el estado de los portales que solicitaste.</p></div></header>
       <div id="my-requests" class="ib-request-list"></div>
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0"></script>
+  <script src="./vendor/supabase.js?v=2.111.0"></script>
   <script src="./supabase.js?v=20260729-stable1"></script>
-  <script src="./instituciones.js?v=2"></script>
+  <script src="./instituciones.js?v=20260810-43"></script>
 </body>
 </html>
