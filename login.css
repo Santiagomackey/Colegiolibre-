@@ -70,7 +70,8 @@ a {
 .auth-showcase {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  /* `hidden` creaba un contenedor que interceptaba la rueda del mouse. */
+  overflow: clip;
   display: flex;
   flex-direction: column;
   padding: clamp(34px, 5vw, 68px);
@@ -82,12 +83,6 @@ a {
 }
 
 @media (min-width: 781px) {
-  .auth-showcase {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-  }
-
   .auth-panel {
     align-self: start;
     overflow: visible;
