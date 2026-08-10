@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="notifications.css?v=20260727-1" />
     <link rel="stylesheet" href="polish.css?v=20260729-8" />
     <link rel="stylesheet" href="./preferences.css?v=20260730-31" />
-    <link rel="stylesheet" href="./mobile.css?v=20260730-31" />
+    <link rel="stylesheet" href="./mobile.css?v=20260808-41" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
     <link rel="stylesheet" href="./pwa.css?v=20260728-1" />
@@ -285,8 +285,8 @@
 
               <div class="header-actions header-actions--mobile">
                 <a
-                  class="mobile-login-action"
-                  id="mobile-login-link"
+                  class="mobile-session-button"
+                  id="mobile-session-button"
                   href="login.html"
                   aria-label="Iniciar sesión"
                 >
@@ -756,7 +756,7 @@
     <p class="school-card-eyebrow">Padrón oficial argentino</p>
     <h2 id="school-search-title">Buscar tu colegio</h2>
     <p class="school-card-copy">
-      Escribí el nombre conocido o las siglas. Si no aparece, probá con su dirección.
+      Escribí el nombre del colegio. La ciudad y el barrio aparecen debajo para que elijas la sede correcta.
     </p>
 
     <label class="school-search-box" for="school-search-input">
@@ -765,7 +765,7 @@
         id="school-search-input"
         class="school-search-input"
         type="search"
-        placeholder="Ej: Florida Day, FDS o Urquiza 2151…"
+        placeholder="Ej: La Salle, Florida Day o FDS…"
         autocomplete="off"
       />
     </label>
@@ -783,16 +783,16 @@
   </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
-<script src="./supabase.js?v=20260729-stable1"></script>
+<script src="./vendor/supabase.js?v=2.111.0"></script>
+<script src="./supabase.js?v=20260809-42"></script>
 <script src="./telemetry.js?v=20260729-1"></script>
 <script src="./products.js"></script>
-<script src="./jsonboarding.js?v=20260728-professional1"></script>
-<script src="./script.js?v=20260730-i18n1"></script>
+<script src="./jsonboarding.js?v=20260809-42"></script>
+<script src="./script.js?v=20260807-38"></script>
 <script src="./native-bridge.js?v=20260728-1"></script>
 <script src="./notifications.js?v=20260727-1"></script>
     
-    <script src="./mobile-ui.js?v=20260728-1"></script>
+    <script src="./mobile-ui.js?v=20260808-40"></script>
     <script src="./pwa.js?v=20260728-1"></script>
   </body>
 </html>

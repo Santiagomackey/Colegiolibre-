@@ -250,26 +250,18 @@
 
     setSchoolSearchState("loading", "Buscando en el padrón oficial…");
 
-    const { data, error } = await window.colegioLibreSupabase.rpc(
-      "search_schools",
-      {
-        p_query: query,
-        p_limit: MAX_RESULTS
-      }
-    );
+    try {
+      const schools = await window.colegioLibreApi.searchSchools(query, MAX_RESULTS);
 
-    if (requestId !== searchRequestId) return;
-
-    if (error) {
+      if (requestId !== searchRequestId) return;
+      renderSchoolResults(schools);
+    } catch (error) {
       console.error("No se pudieron buscar colegios:", error);
       setSchoolSearchState(
         "error",
         "No pudimos buscar colegios en este momento. Probá nuevamente."
       );
-      return;
     }
-
-    renderSchoolResults(Array.isArray(data) ? data : []);
   }
 
   function renderSchoolResults(schools) {
@@ -296,7 +288,7 @@
       button.type = "button";
       button.dataset.schoolId = school.school_id || "";
 
-      title.textContent = school.display_name || school.name || "Colegio sin nombre";
+      title.textContent = school.name || school.display_name || "Colegio sin nombre";
       location.textContent = formatSchoolLocation(school);
       details.textContent = formatSchoolDetails(school);
 
@@ -313,8 +305,8 @@
       id: school.school_id || school.id,
       code: school.code,
       cue: school.cue || null,
-      name: school.display_name || school.name,
-      official_name: school.name || "",
+      name: school.name || school.display_name,
+      official_name: school.official_name || school.name || "",
       province: school.province || "",
       city: school.city || "",
       zone_code: school.zone_code || school.city || school.province || "",

@@ -10,6 +10,11 @@ const PRODUCT_STATUS = {
   sold: "Vendido"
 };
 
+window.colegioLibreConfig = Object.freeze({
+  supabaseUrl: SUPABASE_URL,
+  supabaseKey: SUPABASE_KEY
+});
+
 function createUnavailableError() {
   return new Error("Supabase no está disponible en esta página.");
 }
@@ -407,8 +412,8 @@ function escapeHtml(value) {
 async function getCurrentUser(force = false) {
   if (!currentUserPromise || force) {
     currentUserPromise = client.auth
-      .getUser()
-      .then(({ data }) => data.user || null)
+      .getSession()
+      .then(({ data }) => data?.session?.user || null)
       .catch(() => null);
   }
 
@@ -874,8 +879,35 @@ async function searchSchools(query, limit = 18) {
     p_query: normalizedQuery
   });
 
+  function schoolSearchScore(school) {
+    const needle = normalizeText(normalizedQuery);
+    const name = normalizeText(school.display_name || school.name);
+    const aliases = normalizeText(school.aliases);
+    const address = normalizeText(school.address);
+    const city = normalizeText(school.city);
+
+    if (name === needle) return 0;
+    if (name.startsWith(needle)) return 1;
+    if (name.includes(` ${needle}`) || name.includes(needle)) return 2;
+    if (aliases === needle || aliases.startsWith(needle)) return 3;
+    if (aliases.includes(needle)) return 4;
+    if (city.includes(needle)) return 5;
+    if (address.includes(needle)) return 6;
+    return 7;
+  }
+
+  function rankSchools(records) {
+    return records
+      .map(safeSchoolRecord)
+      .sort((left, right) => {
+        const scoreDifference = schoolSearchScore(left) - schoolSearchScore(right);
+        if (scoreDifference) return scoreDifference;
+        return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
+      });
+  }
+
   if (!error) {
-    return (data || []).map(safeSchoolRecord);
+    return rankSchools(data || []);
   }
 
   console.warn("La búsqueda avanzada de colegios no respondió; se usa búsqueda directa.", error);
@@ -911,7 +943,7 @@ async function searchSchools(query, limit = 18) {
     return [];
   }
 
-  return (fallbackResponse.data || []).map(safeSchoolRecord);
+  return rankSchools(fallbackResponse.data || []);
 }
 
 async function fetchSchools({ includeInactive = false } = {}) {

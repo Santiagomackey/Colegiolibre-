@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v31";
+const CACHE_VERSION = "colegiolibre-pwa-v42";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -15,6 +15,7 @@ const APP_SHELL = [
   "/preferences.js",
   "/telemetry.js",
   "/products.js",
+  "/vendor/supabase.js",
   "/images/logo-horizontal.webp",
   "/images/materiales.webp",
   "/images/icon-192.png",
