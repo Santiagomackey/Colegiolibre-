@@ -469,6 +469,10 @@ img {
   color: var(--color-primary);
 }
 
+.mobile-profile-actions {
+  display: none;
+}
+
 .section-kicker {
   margin: 0 0 0.45rem;
   color: var(--color-accent-green);

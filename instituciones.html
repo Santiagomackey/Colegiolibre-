@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./instituciones.css?v=20260810-43">
+  <link rel="stylesheet" href="./instituciones.css?v=20260811-47">
 </head>
 <body>
   <header class="ib-topbar">
@@ -25,8 +25,12 @@
         <span class="ib-kicker">COLEGIOLIBRE PARA INSTITUCIONES</span>
         <h1>El marketplace oficial de tu comunidad escolar.</h1>
         <p>Un espacio propio para que las familias de tu colegio compren, vendan y reutilicen materiales de forma simple y segura.</p>
+        <div class="ib-hero-actions">
+          <a id="view-plans-button" href="#planes">Ver planes <span aria-hidden="true">→</span></a>
+          <small>Empezá gratis y mejorá el portal cuando tu comunidad crezca</small>
+        </div>
         <div class="ib-benefits">
-          <span><b>✓</b> Portal gratuito</span>
+          <span><b>✓</b> Plan inicial gratuito</span>
           <span><b>✓</b> Identidad personalizada</span>
           <span><b>✓</b> Sin trabajo técnico</span>
         </div>
@@ -35,10 +39,21 @@
         <div class="ib-preview-top"><i></i><i></i><i></i><span>colegiolibre.com/colegio/tu-colegio</span></div>
         <div class="ib-preview-body">
           <div class="ib-preview-brand"><span>TC</span><div><b>Tu Colegio</b><small>Comunidad oficial</small></div></div>
-          <div class="ib-preview-title"></div>
-          <div class="ib-preview-products"><i></i><i></i><i></i></div>
+          <div class="ib-preview-heading"><b>Materiales de tu comunidad</b><span>Ver todos</span></div>
+          <div class="ib-preview-products">
+            <article><i></i><b>Matemática IGCSE</b><span>$18.000</span></article>
+            <article><i></i><b>Uniforme escolar</b><span>$24.500</span></article>
+            <article><i></i><b>Mochila azul</b><span>$16.900</span></article>
+          </div>
         </div>
       </aside>
+    </section>
+
+    <section class="ib-proof" aria-label="Características del servicio">
+      <div><strong>Desde $0</strong><span>Un plan para cada etapa del colegio</span></div>
+      <div><strong>Padrón oficial</strong><span>Instituciones argentinas verificadas</span></div>
+      <div><strong>Administración simple</strong><span>Sin conocimientos técnicos</span></div>
+      <div><strong>Identidad propia</strong><span>Logo, colores y dirección exclusiva</span></div>
     </section>
 
     <section class="ib-process" aria-label="Cómo solicitar el portal">
@@ -47,14 +62,95 @@
       <article><b>03</b><div><strong>Enviá la solicitud</strong><span>La revisamos antes de activarla.</span></div></article>
     </section>
 
+    <section class="ib-pricing" id="planes" aria-labelledby="pricing-title">
+      <header class="ib-pricing-heading">
+        <div>
+          <span class="ib-kicker-dark">PLANES PARA INSTITUCIONES</span>
+          <h2 id="pricing-title" tabindex="-1">Una solución que crece con tu comunidad.</h2>
+          <p>Todos los planes incluyen un portal seguro, acceso para las familias y acompañamiento de ColegioLibre.</p>
+        </div>
+        <div class="ib-billing" role="group" aria-label="Modalidad de facturación">
+          <button class="is-active" type="button" data-billing="monthly">Mensual</button>
+          <button type="button" data-billing="annual">Anual <span>2 meses gratis</span></button>
+        </div>
+      </header>
+
+      <div class="ib-plan-grid">
+        <article class="ib-plan" data-plan="Comunidad">
+          <div class="ib-plan-top">
+            <span class="ib-plan-icon" aria-hidden="true">C</span>
+            <div><small>PARA EMPEZAR</small><h3>Comunidad</h3></div>
+          </div>
+          <p class="ib-plan-description">La forma más simple de abrir un espacio oficial para las familias del colegio.</p>
+          <div class="ib-price"><strong>$0</strong><span>para siempre</span></div>
+          <small class="ib-price-note">Sin tarjeta ni compromiso de permanencia.</small>
+          <button class="ib-plan-cta" type="button" data-select-plan="Comunidad">Crear portal gratis</button>
+          <div class="ib-plan-divider"></div>
+          <strong class="ib-includes">Incluye:</strong>
+          <ul>
+            <li>Portal exclusivo del colegio</li>
+            <li>Publicaciones y búsquedas ilimitadas</li>
+            <li>Logo y nombre institucional</li>
+            <li>Soporte por email</li>
+            <li class="is-muted">Panel de métricas avanzadas</li>
+          </ul>
+        </article>
+
+        <article class="ib-plan ib-plan-featured" data-plan="Institucional">
+          <span class="ib-popular">MÁS ELEGIDO</span>
+          <div class="ib-plan-top">
+            <span class="ib-plan-icon" aria-hidden="true">I</span>
+            <div><small>PARA COLEGIOS ACTIVOS</small><h3>Institucional</h3></div>
+          </div>
+          <p class="ib-plan-description">Más control, identidad y herramientas para convertir el portal en un servicio del colegio.</p>
+          <div class="ib-price" data-monthly="24.900" data-annual="20.750"><span class="ib-currency">ARS</span><strong>$24.900</strong><span>/mes</span></div>
+          <small class="ib-price-note" data-monthly-note="Facturación mensual. Cancelá cuando quieras." data-annual-note="ARS $249.000 al año. Ahorrás dos meses.">Facturación mensual. Cancelá cuando quieras.</small>
+          <button class="ib-plan-cta" type="button" data-select-plan="Institucional">Elegir Institucional</button>
+          <div class="ib-plan-divider"></div>
+          <strong class="ib-includes">Todo lo de Comunidad, más:</strong>
+          <ul>
+            <li>Colores y portada personalizados</li>
+            <li>Panel de métricas del colegio</li>
+            <li>Moderación y usuarios responsables</li>
+            <li>Comunicaciones destacadas</li>
+            <li>Soporte prioritario</li>
+          </ul>
+        </article>
+
+        <article class="ib-plan" data-plan="Red Escolar">
+          <div class="ib-plan-top">
+            <span class="ib-plan-icon" aria-hidden="true">R</span>
+            <div><small>PARA GRUPOS EDUCATIVOS</small><h3>Red Escolar</h3></div>
+          </div>
+          <p class="ib-plan-description">Una administración central para instituciones con varias sedes o comunidades.</p>
+          <div class="ib-price" data-monthly="59.900" data-annual="49.917"><span class="ib-currency">ARS</span><strong>$59.900</strong><span>/mes</span></div>
+          <small class="ib-price-note" data-monthly-note="Facturación mensual por red educativa." data-annual-note="ARS $599.000 al año. Ahorrás dos meses.">Facturación mensual por red educativa.</small>
+          <button class="ib-plan-cta" type="button" data-select-plan="Red Escolar">Hablar con el equipo</button>
+          <div class="ib-plan-divider"></div>
+          <strong class="ib-includes">Todo lo de Institucional, más:</strong>
+          <ul>
+            <li>Hasta 5 sedes conectadas</li>
+            <li>Panel general y métricas por sede</li>
+            <li>Administradores por institución</li>
+            <li>Implementación acompañada</li>
+            <li>Soporte directo y seguimiento</li>
+          </ul>
+        </article>
+      </div>
+      <p class="ib-pricing-footnote">Los precios se expresan en pesos argentinos y no incluyen impuestos. Las familias usan ColegioLibre sin costo.</p>
+    </section>
+
+    <div class="ib-workspace">
     <section class="ib-card" id="request-card">
-      <header class="ib-card-heading"><div><span>SOLICITUD INSTITUCIONAL</span><h2>Creá el portal de tu colegio</h2><p>Completá los datos. Podrás revisar todo antes de enviarlo.</p></div><b>Gratis</b></header>
+      <header class="ib-card-heading"><div><span>SOLICITUD INSTITUCIONAL</span><h2>Creá el portal de tu colegio</h2><p>Completá los datos. Podrás revisar todo antes de enviarlo.</p></div><b id="selected-plan-badge">Plan Comunidad</b></header>
       <div id="login-required" class="ib-login" hidden>
         <p>Necesitás iniciar sesión para enviar una solicitud verificable.</p>
         <a href="./login.html?next=instituciones.html">Iniciar sesión</a>
       </div>
 
       <form id="institution-request-form" hidden>
+        <input id="requested-plan" name="requested_plan" type="hidden" value="Comunidad">
+        <input id="billing-cycle" name="billing_cycle" type="hidden" value="monthly">
         <div class="ib-form-section"><span>1</span><div><strong>Institución oficial</strong><small>Encontrala por nombre, dirección o CUE.</small></div></div>
         <label>Buscá el colegio
           <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE">
@@ -80,19 +176,38 @@
           <label>Acento<input name="accent_color" type="color" value="#FFC72C"></label>
         </div>
         <label class="ib-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
-        <button class="ib-submit" type="submit"><span>Enviar solicitud gratuita</span><b aria-hidden="true">→</b></button>
+        <button class="ib-submit" type="submit"><span>Enviar solicitud</span><b aria-hidden="true">→</b></button>
         <p id="request-status" class="ib-status" role="status"></p>
       </form>
     </section>
+
+    <aside class="ib-assurance">
+      <span class="ib-assurance-kicker">PROCESO DE ACTIVACIÓN</span>
+      <h2>Nos ocupamos de que el portal quede listo.</h2>
+      <p>Una vez enviada la solicitud, ColegioLibre verifica los datos antes de habilitar la comunidad.</p>
+      <ol>
+        <li><span>1</span><div><strong>Revisión institucional</strong><small>Validamos el colegio y el contacto responsable.</small></div></li>
+        <li><span>2</span><div><strong>Configuración del portal</strong><small>Aplicamos el nombre, la dirección y los colores.</small></div></li>
+        <li><span>3</span><div><strong>Activación</strong><small>Recibís el acceso para compartirlo con las familias.</small></div></li>
+      </ol>
+      <div class="ib-assurance-note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4.5 6v5.4c0 4.7 3.1 8 7.5 9.6 4.4-1.6 7.5-4.9 7.5-9.6V6L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 12 2.1 2.1 4.6-4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><strong>Solicitud segura y verificable</strong><span>Nunca publicamos un portal sin revisar sus datos.</span></div>
+      </div>
+      <a class="ib-help-link" href="mailto:ayudacolegiolibre@gmail.com?subject=Consulta%20institucional">¿Tenés dudas? Hablá con nosotros →</a>
+    </aside>
+    </div>
 
     <section class="ib-card ib-tracking">
       <header class="ib-card-heading"><div><span>MIS SOLICITUDES</span><h2>Seguimiento</h2><p>Consultá el estado de los portales que solicitaste.</p></div></header>
       <div id="my-requests" class="ib-request-list"></div>
     </section>
+
+    <footer class="ib-footer"><span>© 2026 ColegioLibre</span><span>Hecho por estudiantes para comunidades escolares.</span></footer>
   </main>
 
   <script src="./vendor/supabase.js?v=2.111.0"></script>
   <script src="./supabase.js?v=20260729-stable1"></script>
-  <script src="./instituciones.js?v=20260810-43"></script>
+  <script src="./instituciones.js?v=20260811-47"></script>
 </body>
 </html>

@@ -34,7 +34,12 @@
       item.querySelector("strong").textContent = request.official_school_name;
       item.querySelector("small").textContent =
         request.contact_email + " · /colegio/" + request.requested_code;
-      item.querySelector("em").textContent = "Nombre corto: " + request.short_name;
+      item.querySelector("em").textContent =
+        "Nombre corto: " + request.short_name +
+        " · Plan: " + (request.requested_plan || "Comunidad") +
+        (request.requested_plan && request.requested_plan !== "Comunidad"
+          ? " (" + (request.billing_cycle === "annual" ? "anual" : "mensual") + ")"
+          : "");
       item.querySelector('[data-action="approve"]').addEventListener("click", function () {
         void reviewRequest(request.id, "approve");
       });

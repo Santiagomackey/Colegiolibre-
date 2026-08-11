@@ -139,6 +139,32 @@
     await pushNotifications.register();
   }
 
+  let pushRefreshPending = false;
+  function refreshPushRegistration() {
+    if (pushRefreshPending) return;
+    pushRefreshPending = true;
+    window.setTimeout(async () => {
+      pushRefreshPending = false;
+      await initializePushNotifications();
+    }, 250);
+  }
+
+  const authSubscription = window.colegioLibreSupabase?.auth?.onAuthStateChange?.(
+    (event) => {
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        refreshPushRegistration();
+      }
+    }
+  );
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshPushRegistration();
+  });
+
+  window.addEventListener("pagehide", () => {
+    authSubscription?.data?.subscription?.unsubscribe?.();
+  }, { once: true });
+
   window.colegioLibreNative = {
     isNative,
     platform: isNative ? capacitor.getPlatform?.() : "web",

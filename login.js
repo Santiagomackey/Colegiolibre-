@@ -206,6 +206,7 @@
 
   function mapAuthError(error, context = "login") {
     const text = String(error?.message || error || "").toLowerCase();
+    const code = String(error?.code || error?.error_code || "").toLowerCase();
 
     if (text.includes("invalid login credentials")) {
       return "El email o la contraseña no son correctos.";
@@ -215,9 +216,22 @@
     }
     if (
       text.includes("user already registered") ||
-      text.includes("already been registered")
+      text.includes("already been registered") ||
+      text.includes("already exists") ||
+      code === "user_already_exists"
     ) {
-      return "Ese email ya tiene una cuenta. Probá iniciar sesión.";
+      return "Ese email ya tiene una cuenta. Probá iniciar sesión o recuperar tu contraseña.";
+    }
+    if (code === "email_address_invalid" || text.includes("valid email")) {
+      return "Ese email no fue aceptado. Revisalo o probá con otra dirección.";
+    }
+    if (
+      code === "weak_password" ||
+      text.includes("weak password") ||
+      text.includes("password is known") ||
+      text.includes("easy to guess")
+    ) {
+      return "Esa contraseña fue rechazada por seguridad. Usá una nueva con mayúsculas, minúsculas, números y un símbolo.";
     }
     if (text.includes("password") && text.includes("at least")) {
       return "La contraseña debe tener al menos 8 caracteres.";
@@ -236,7 +250,10 @@
       return "No pudimos conectarnos. Revisá tu internet e intentá nuevamente.";
     }
     if (context === "register") {
-      return "No pudimos crear la cuenta. Revisá los datos e intentá nuevamente.";
+      const detail = String(error?.message || "").trim();
+      return detail
+        ? `No pudimos crear la cuenta: ${detail}`
+        : "No pudimos crear la cuenta. Revisá los datos e intentá nuevamente.";
     }
     if (context === "recovery") {
       return "No pudimos completar la recuperación. Intentá nuevamente.";
@@ -337,10 +354,7 @@
     try {
       const { data, error } = await client.auth.signUp({
         email: elements.email.value.trim(),
-        password: elements.password.value,
-        options: {
-          emailRedirectTo: confirmationRedirectUrl()
-        }
+        password: elements.password.value
       });
 
       if (error) throw error;
@@ -513,20 +527,20 @@
   }
 
   async function checkExistingSession() {
-    if (recoveryRequested) return;
+    if (recoveryRequested) {
+      document.documentElement.classList.remove("auth-session-probe");
+      return false;
+    }
 
     try {
-      const { data } = await client.auth.getUser();
-      if (!data?.user) return;
+      const { data } = await client.auth.getSession();
+      if (!data?.session?.user) {
+        document.documentElement.classList.remove("auth-session-probe");
+        return false;
+      }
 
-      setMessage(
-        elements.message,
-        `Ya iniciaste sesión como ${data.user.email}. Abriendo tu cuenta…`,
-        "info"
-      );
-      window.setTimeout(() => {
-        window.location.assign(nextPage);
-      }, 700);
+      window.location.replace(nextPage);
+      return true;
     } catch (error) {
       const missingSession =
         error?.name === "AuthSessionMissingError" ||
@@ -534,6 +548,8 @@
       if (!missingSession) {
         console.error("No se pudo comprobar la sesión:", error);
       }
+      document.documentElement.classList.remove("auth-session-probe");
+      return false;
     }
   }
 

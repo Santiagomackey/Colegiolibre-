@@ -347,10 +347,10 @@ const elements = {
   mobileMenu: document.getElementById("mobile-menu"),
   mobileMessagesLink: document.getElementById("mobile-messages-link"),
   mobileLogoutButton: document.getElementById("mobile-logout-button"),
-  mobileLoginLink: document.getElementById("mobile-login-link"),
   mobilePublishLink: document.getElementById("mobile-publish-link"),
   mobileSearchForm: document.getElementById("search-form-mobile"),
   mobileSearchInput: document.getElementById("mobile-search"),
+  mobileSessionButton: document.getElementById("mobile-session-button"),
   openCategories: document.getElementById("open-categories"),
   popularCategories: document.getElementById("popular-categories"),
   productGrid: document.getElementById("product-grid"),
@@ -459,9 +459,11 @@ async function init() {
       ? state.requestedScope
       : "country";
 
+  // La cuenta se refleja antes de consultar el catálogo: nunca mostramos
+  // "Ingresar" durante una sesión válida por una carga lenta de productos.
+  await refreshAccountButton();
   await loadProducts();
   await refreshFavorites();
-  await refreshAccountButton();
 
   if (elements.currentYear) {
     elements.currentYear.textContent = String(new Date().getFullYear());
@@ -1017,6 +1019,13 @@ function bindEvents() {
     elements.accountButton.addEventListener("click", handleAccountNavigation);
   }
 
+  if (elements.mobileSessionButton) {
+    elements.mobileSessionButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.assign(state.user ? "perfil.html" : "login.html");
+    });
+  }
+
   [elements.headerLogoutButton, elements.mobileLogoutButton].forEach((button) => {
     button?.addEventListener("click", handleLogout);
   });
@@ -1423,7 +1432,9 @@ function setupReveal() {
 async function refreshAccountButton(force = false) {
   if (!elements.accountText) return;
 
-  const user = await getCurrentUser(force);
+  // El onboarding puede conocer la sesión antes de que termine de recuperarse
+  // el cliente. Reutilizar ese estado evita volver a mostrar “Ingresar”.
+  const user = state.user || await getCurrentUser(force);
   const profile = user ? await getCurrentProfile(force) : null;
   const firstName = String(profile?.name || "")
     .trim()
@@ -1450,9 +1461,14 @@ async function refreshAccountButton(force = false) {
     }
   }
 
-  if (elements.mobileLoginLink) {
-    elements.mobileLoginLink.hidden = Boolean(user);
-    elements.mobileLoginLink.setAttribute("href", "login.html");
+  if (elements.mobileSessionButton) {
+    elements.mobileSessionButton.setAttribute("href", user ? "perfil.html" : "login.html");
+    elements.mobileSessionButton.setAttribute(
+      "aria-label",
+      user ? `Abrir el perfil de ${accountLabel}` : "Iniciar sesión"
+    );
+    const sessionText = elements.mobileSessionButton.querySelector("span");
+    if (sessionText) sessionText.textContent = user ? "Mi perfil" : "Ingresar";
   }
 
   if (elements.headerLogoutButton) {
@@ -1467,12 +1483,25 @@ async function refreshAccountButton(force = false) {
 }
 
 async function loadProducts() {
+  const PRODUCT_CACHE_KEY = "colegiolibre-home-products-v1";
+  const QUERY_TIMEOUT_MS = 12000;
   const isDemoEnvironment =
     ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname) ||
     new URLSearchParams(window.location.search).get("demo") === "1";
-  const staticProducts = (isDemoEnvironment ? getStaticProducts() : [])
+  let cachedProducts = [];
+  try {
+    cachedProducts = JSON.parse(localStorage.getItem(PRODUCT_CACHE_KEY) || "[]");
+  } catch (_cacheError) {
+    cachedProducts = [];
+  }
+
+  const staticProducts = (isDemoEnvironment ? getStaticProducts() : cachedProducts)
     .map(normalizeProductRecord)
-    .filter((product) => product.user_id && product.status === "available");
+    .filter(
+      (product) =>
+        product.id &&
+        !["sold", "paused"].includes(String(product.status || "available").toLowerCase())
+    );
 
   state.loadError = null;
   if (staticProducts.length) {
@@ -1489,14 +1518,34 @@ async function loadProducts() {
   let error = null;
 
   try {
-    if (window.colegioLibreSupabase && typeof window.colegioLibreSupabase.from === "function") {
+    const config = window.colegioLibreConfig;
+    if (config?.supabaseUrl && config?.supabaseKey) {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+      const endpoint = new URL(`${config.supabaseUrl}/rest/v1/products`);
+      endpoint.searchParams.set("select", "*");
+      endpoint.searchParams.set("order", "created_at.desc");
+      endpoint.searchParams.set("limit", String(HOME_QUERY_LIMIT));
+
+      try {
+        const response = await fetch(endpoint, {
+          headers: {
+            apikey: config.supabaseKey,
+            Authorization: `Bearer ${config.supabaseKey}`
+          },
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(`Catálogo HTTP ${response.status}`);
+        data = await response.json();
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    } else if (window.colegioLibreSupabase && typeof window.colegioLibreSupabase.from === "function") {
       const response = await window.colegioLibreSupabase
         .from("products")
         .select("*")
-        .not("user_id", "is", null)
         .order("created_at", { ascending: false })
         .limit(HOME_QUERY_LIMIT);
-
       data = response.data || [];
       error = response.error || null;
     } else {
@@ -1512,11 +1561,21 @@ async function loadProducts() {
     console.warn("No se pudieron cargar los productos reales:", error);
     state.loadError = "No pudimos conectarnos con las publicaciones.";
     sourceProducts = staticProducts;
+  } else if (sourceProducts.length) {
+    try {
+      localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(sourceProducts));
+    } catch (_cacheError) {
+      // La aplicación sigue funcionando aunque el dispositivo no permita cachear.
+    }
   }
 
   state.products = sourceProducts
     .map(normalizeProductRecord)
-    .filter((product) => product.user_id && product.status === "available");
+    .filter(
+      (product) =>
+        product.id &&
+        !["sold", "paused"].includes(String(product.status || "available").toLowerCase())
+    );
 
   refreshRandomOrder();
   state.loading = false;

@@ -15,8 +15,55 @@
   var timer = null;
   var currentUser = null;
   var requestedCodeEdited = false;
+  var selectedPlan = "Comunidad";
+  var selectedBilling = "monthly";
 
   init();
+
+  bindPricing();
+
+  function bindPricing() {
+    var viewPlansButton = document.getElementById("view-plans-button");
+    var pricingSection = document.getElementById("planes");
+    var billingButtons = document.querySelectorAll("[data-billing]");
+    var prices = document.querySelectorAll(".ib-price[data-monthly]");
+    if (viewPlansButton && pricingSection) {
+      viewPlansButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        var top = pricingSection.getBoundingClientRect().top + window.scrollY - 86;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        window.setTimeout(function () { pricingSection.querySelector("h2")?.focus?.(); }, 450);
+      });
+    }
+    billingButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var billing = button.dataset.billing;
+        selectedBilling = billing;
+        var billingInput = document.getElementById("billing-cycle");
+        if (billingInput) billingInput.value = billing;
+        billingButtons.forEach(function (item) { item.classList.toggle("is-active", item === button); });
+        prices.forEach(function (price) {
+          price.querySelector("strong").textContent = "$" + price.dataset[billing];
+          var note = price.parentElement.querySelector(".ib-price-note");
+          if (note) note.textContent = note.dataset[billing + "Note"];
+        });
+      });
+    });
+
+    document.querySelectorAll("[data-select-plan]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        selectedPlan = button.dataset.selectPlan || "Comunidad";
+        var input = document.getElementById("requested-plan");
+        var badge = document.getElementById("selected-plan-badge");
+        if (input) input.value = selectedPlan;
+        if (badge) badge.textContent = "Plan " + selectedPlan;
+        document.querySelectorAll(".ib-plan").forEach(function (plan) {
+          plan.classList.toggle("is-selected", plan.dataset.plan === selectedPlan);
+        });
+        document.getElementById("request-card").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }
 
   async function init() {
     currentUser = await api.getCurrentUser();
@@ -114,10 +161,18 @@
       primary_color: data.get("primary_color"),
       secondary_color: data.get("secondary_color"),
       accent_color: data.get("accent_color"),
+      requested_plan: String(data.get("requested_plan") || selectedPlan),
+      billing_cycle: String(data.get("billing_cycle") || selectedBilling),
       status: "pending"
     };
     status.textContent = "Enviando solicitud…";
     var result = await client.from("institution_requests").insert(record).select("id").single();
+    if (result.error && (result.error.code === "PGRST204" || /requested_plan|billing_cycle/i.test(result.error.message || ""))) {
+      var compatibleRecord = Object.assign({}, record);
+      delete compatibleRecord.requested_plan;
+      delete compatibleRecord.billing_cycle;
+      result = await client.from("institution_requests").insert(compatibleRecord).select("id").single();
+    }
     if (result.error) {
       status.textContent =
         result.error.code === "23505"
@@ -131,6 +186,8 @@
     officialCode.value = "";
     officialName.value = "";
     requestedCodeEdited = false;
+    form.elements.requested_plan.value = selectedPlan;
+    form.elements.billing_cycle.value = selectedBilling;
     if (form.elements.contact_email) {
       form.elements.contact_email.value = currentUser.email || "";
     }
