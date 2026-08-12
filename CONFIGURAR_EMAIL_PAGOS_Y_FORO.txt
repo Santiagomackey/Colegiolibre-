@@ -1,0 +1,57 @@
+COLEGIOLIBRE — ACTIVACIÓN DE EMAIL, PAGOS Y AVISOS
+==================================================
+
+1. BASE DE DATOS Y FORO
+En Supabase > SQL Editor, ejecutar completo:
+database/05_growth_payments_forum.sql
+
+Ese archivo crea los pedidos “Busco un material”, las suscripciones y el
+trigger que genera una notificación cuando aparece un producto coincidente.
+
+2. VERIFICACIÓN PROFESIONAL DE EMAIL
+En Supabase > Authentication > Providers > Email:
+- Activar “Confirm email”.
+
+En Authentication > URL Configuration:
+- Site URL: https://colegiolibre.vercel.app
+- Redirect URL permitida: https://colegiolibre.vercel.app/login.html
+
+En Authentication > Email Templates > Confirm signup:
+- Copiar el contenido de supabase-email-templates/confirm-signup.html
+- Guardar.
+
+Para producción conviene configurar un SMTP propio en Supabase para mejorar
+la entrega y que el remitente use el dominio de ColegioLibre.
+
+3. MERCADO PAGO
+En Vercel > Project > Settings > Environment Variables, agregar:
+- MERCADOPAGO_ACCESS_TOKEN = token privado de producción
+- SUPABASE_URL = URL del proyecto Supabase
+- SUPABASE_ANON_KEY = clave pública de Supabase
+- SUPABASE_SERVICE_ROLE_KEY = clave privada service_role
+- PUBLIC_SITE_URL = https://colegiolibre.vercel.app
+
+No subir ninguno de esos secretos a GitHub.
+
+En Mercado Pago Developers > Webhooks, configurar:
+https://colegiolibre.vercel.app/api/mercadopago-webhook
+Evento: Suscripciones / Preapproval.
+
+Después de guardar variables, hacer un nuevo deployment de Vercel.
+
+4. PUSH EN EL CELULAR
+El foro inserta la notificación en la tabla notifications. Para convertirla
+en push, mantener activo el Database Webhook existente que llama a:
+https://colegiolibre.vercel.app/api/push-notification
+
+También deben seguir configuradas en Vercel las variables FIREBASE_* y
+PUSH_WEBHOOK_SECRET usadas por el endpoint de notificaciones.
+
+5. PRUEBA COMPLETA
+- Crear una cuenta nueva y confirmar el correo recibido.
+- Completar colegio y zona en Mi perfil.
+- Publicar un pedido desde busco.html.
+- Con otra cuenta, publicar un producto cuyo título contenga la búsqueda.
+- Comprobar el aviso dentro de ColegioLibre y la notificación del teléfono.
+- Aprobar una solicitud institucional y tocar “Contratar plan”.
+

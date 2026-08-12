@@ -111,3 +111,5 @@ html{scroll-behavior:smooth}.ib-pricing h2:focus{outline:none}
   border-color:#b7ff85;
   background:#b7ff85;
 }
+
+.ib-request__state .ib-pay-button{min-height:34px;padding:7px 12px;border-radius:8px;color:#092551;background:#ffc72c;font-size:10px;font-weight:900}.ib-request__state .ib-pay-button:disabled{opacity:.65;cursor:wait}

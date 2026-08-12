@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Busco un material | ColegioLibre</title>
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="busco.css">
+</head>
+<body class="wanted-page">
+  <header class="wanted-header"><a href="index.html"><img src="images/logo.png" alt="ColegioLibre"></a><a class="wanted-back" href="index.html">← Volver al inicio</a></header>
+  <main class="wanted-shell">
+    <section class="wanted-hero"><span>COMUNIDAD COLEGIOLIBRE</span><h1>¿Buscás un libro o uniforme?</h1><p>Publicá lo que necesitás. Te avisamos cuando alguien publique una coincidencia en tu colegio, tu zona o todo el país.</p></section>
+    <section class="wanted-layout">
+      <form id="wanted-form" class="wanted-card">
+        <div><span class="eyebrow">NUEVO PEDIDO</span><h2>Contanos qué estás buscando</h2></div>
+        <label>Material<input name="title" maxlength="120" required placeholder="Ej. Biology IGCSE Coursebook"></label>
+        <label>Categoría<select name="category"><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Otro</option></select></label>
+        <label>Detalles opcionales<textarea name="description" rows="3" placeholder="Edición, talle, color o cualquier dato útil"></textarea></label>
+        <fieldset><legend>¿Dónde querés buscar?</legend><div class="scope-grid">
+          <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b><small>La comunidad más cercana</small></label>
+          <label><input type="radio" name="scope" value="zone"><b>Mi zona</b><small>Colegios próximos</small></label>
+          <label><input type="radio" name="scope" value="country"><b>Argentina</b><small>Alcance nacional</small></label>
+        </div></fieldset>
+        <button type="submit">Publicar búsqueda</button><p id="wanted-status" role="status"></p>
+      </form>
+      <section class="wanted-feed"><div class="feed-head"><div><span class="eyebrow">PEDIDOS ACTIVOS</span><h2>Lo que busca la comunidad</h2></div><select id="wanted-filter" aria-label="Filtrar pedidos"><option value="all">Todos</option><option value="school">Colegio</option><option value="zone">Zona</option><option value="country">Argentina</option><option value="mine">Mis pedidos</option></select></div><div id="wanted-list" class="wanted-list"><p>Cargando pedidos…</p></div></section>
+    </section>
+  </main>
+  <script src="vendor/supabase.js?v=2.111.0"></script><script src="supabase.js?v=20260811-49"></script><script src="busco.js?v=20260811-49"></script><script src="preferences.js"></script><script src="mobile-ui.js?v=20260811-49"></script>
+</body></html>
+

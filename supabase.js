@@ -145,6 +145,25 @@ if (!hasSupabaseFactory) {
 
 let currentUserPromise = null;
 let currentProfilePromise = null;
+let authStateReady = false;
+let resolveAuthStateReady;
+const authStateReadyPromise = new Promise((resolve) => {
+  resolveAuthStateReady = resolve;
+});
+
+client.auth.onAuthStateChange((event, session) => {
+  currentUserPromise = Promise.resolve(session?.user || null);
+  currentProfilePromise = null;
+  if (!authStateReady) {
+    authStateReady = true;
+    resolveAuthStateReady();
+  }
+  window.dispatchEvent(
+    new CustomEvent("colegiolibre:auth-state", {
+      detail: { event, user: session?.user || null }
+    })
+  );
+});
 
 window.colegioLibreSupabase = client;
 
@@ -411,10 +430,20 @@ function escapeHtml(value) {
 
 async function getCurrentUser(force = false) {
   if (!currentUserPromise || force) {
-    currentUserPromise = client.auth
-      .getSession()
-      .then(({ data }) => data?.session?.user || null)
-      .catch(() => null);
+    currentUserPromise = (async () => {
+      await Promise.race([
+        authStateReadyPromise,
+        new Promise((resolve) => window.setTimeout(resolve, 900))
+      ]);
+      const sessionResult = await client.auth.getSession();
+      const sessionUser = sessionResult?.data?.session?.user || null;
+      if (sessionUser) return sessionUser;
+
+      // getUser valida el token con Supabase y evita mostrar un falso estado
+      // deslogueado mientras el almacenamiento local termina de restaurarse.
+      const userResult = await client.auth.getUser().catch(() => null);
+      return userResult?.data?.user || null;
+    })().catch(() => null);
   }
 
   return currentUserPromise;

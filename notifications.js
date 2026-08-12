@@ -480,6 +480,7 @@
     const titles = {
       favorite: "Guardaron tu producto",
       message: "Nuevo mensaje",
+      wanted_match: "Encontramos lo que buscabas",
       reservation_cancelled: "Reserva cancelada",
       review_requested: "Calificá la operación",
       reserved: "Producto reservado",

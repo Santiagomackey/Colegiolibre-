@@ -118,7 +118,7 @@ async function initPerfil() {
   hydrateViewState();
   bindEvents();
 
-  state.currentUser = await getCurrentUser();
+  state.currentUser = await getCurrentUser(true);
 
   if (!state.currentUser) {
     window.location.replace(

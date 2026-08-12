@@ -9,7 +9,8 @@
     "favoritos.html",
     "mensajes.html",
     "colegio.html",
-    "perfil-publico.html"
+    "perfil-publico.html",
+    "busco.html"
   ]);
 
   const icons = {
@@ -47,7 +48,8 @@
     "favoritos.html": "favorites",
     "publicar.html": "publish",
     "mensajes.html": "messages",
-    "perfil.html": "profile"
+    "perfil.html": "profile",
+    "busco.html": "home"
   };
 
   const links = [

@@ -16,7 +16,8 @@
     "publicar.html",
     "favoritos.html",
     "mensajes.html",
-    "colegio.html"
+    "colegio.html",
+    "busco.html"
   ]);
   const params = new URLSearchParams(window.location.search);
 
@@ -354,7 +355,14 @@
     try {
       const { data, error } = await client.auth.signUp({
         email: elements.email.value.trim(),
-        password: elements.password.value
+        password: elements.password.value,
+        options: {
+          emailRedirectTo: new URL(
+            `login.html?verified=1&next=${encodeURIComponent(nextPage)}`,
+            window.location.href
+          ).href,
+          data: { source: "colegiolibre" }
+        }
       });
 
       if (error) throw error;

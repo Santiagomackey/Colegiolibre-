@@ -214,9 +214,38 @@
         link.href = "/colegio/" + encodeURIComponent(request.requested_code);
         link.textContent = "Abrir portal";
         item.querySelector(".ib-request__state").appendChild(link);
+        if (request.requested_plan && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized") {
+          var pay = document.createElement("button");
+          pay.type = "button";
+          pay.className = "ib-pay-button";
+          pay.textContent = request.subscription_status === "pending" ? "Continuar pago" : "Contratar plan";
+          pay.addEventListener("click", function () { void startPayment(request.id, pay); });
+          item.querySelector(".ib-request__state").appendChild(pay);
+        }
       }
       requestList.appendChild(item);
     });
     if (!requestList.children.length) requestList.innerHTML = "<p>Todavía no enviaste solicitudes.</p>";
+  }
+
+  async function startPayment(requestId, button) {
+    button.disabled = true;
+    button.textContent = "Abriendo Mercado Pago…";
+    try {
+      var session = await client.auth.getSession();
+      var token = session.data?.session?.access_token;
+      var response = await fetch("/api/mercadopago-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ request_id: requestId })
+      });
+      var result = await response.json();
+      if (!response.ok || !result.init_point) throw new Error(result.error || "No pudimos abrir el pago.");
+      window.location.href = result.init_point;
+    } catch (error) {
+      status.textContent = error.message;
+      button.disabled = false;
+      button.textContent = "Reintentar pago";
+    }
   }
 })();
