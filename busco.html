@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="mobile.css?v=20260812-50">
   <link rel="stylesheet" href="busco.css?v=20260812-50">
   <link rel="stylesheet" href="busco-v50.css?v=20260812-50">
+  <link rel="stylesheet" href="busco-v51.css?v=20260812-51">
 </head>
 <body class="wanted-page">
   <header class="wanted-header">
@@ -45,7 +46,7 @@
       <form id="wanted-form" class="wanted-card wanted-create">
         <header class="wanted-section-head"><span class="eyebrow">CREAR ALERTA</span><h2>¿Qué estás buscando?</h2><p>Cuanto más claro sea el pedido, mejores serán las coincidencias.</p></header>
         <label>Nombre del material<input name="title" maxlength="120" required placeholder="Ej. Biology IGCSE Coursebook"></label>
-        <div class="wanted-two"><label>Categoría<select name="category"><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Otro</option></select></label><label>Tipo de búsqueda<select aria-label="Tipo de búsqueda"><option>Quiero comprar</option><option>Acepto intercambio</option></select></label></div>
+        <div class="wanted-two"><label>Categoría<select name="category"><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Otro</option></select></label><label>Tipo de búsqueda<select name="transaction_type" aria-label="Tipo de búsqueda"><option value="buy">Quiero comprar</option><option value="exchange">Acepto intercambio</option><option value="either">Compra o intercambio</option></select></label></div>
         <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
         <fieldset><legend>¿Dónde querés que busquemos?</legend><div class="scope-grid">
           <label><input type="radio" name="scope" value="school" checked><span class="scope-icon">⌂</span><b>Mi colegio</b><small>Solo tu comunidad</small></label>
@@ -57,14 +58,15 @@
       </form>
 
       <section class="wanted-card wanted-feed">
-        <header class="feed-head"><div><span class="eyebrow">EN TIEMPO REAL</span><h2>Lo que busca la comunidad</h2><p>Pedidos recientes publicados por estudiantes y familias.</p></div><select id="wanted-filter" aria-label="Filtrar pedidos"><option value="all">Todos</option><option value="school">Mi colegio</option><option value="zone">Mi zona</option><option value="country">Argentina</option><option value="mine">Mis pedidos</option></select></header>
+        <header class="feed-head"><div><span class="eyebrow">EN TIEMPO REAL</span><h2>Lo que busca la comunidad</h2><p><b id="wanted-result-count">0</b> pedidos activos publicados por estudiantes y familias.</p></div><select id="wanted-filter" aria-label="Filtrar pedidos"><option value="all">Todos</option><option value="school">Mi colegio</option><option value="zone">Mi zona</option><option value="country">Argentina</option><option value="mine">Mis pedidos</option></select></header>
+        <div class="wanted-feed-search"><span>⌕</span><input id="wanted-search" type="search" placeholder="Buscar entre los pedidos" autocomplete="off"></div>
         <div id="wanted-list" class="wanted-list"><div class="wanted-loading"><i></i><i></i><i></i><span>Cargando pedidos…</span></div></div>
       </section>
     </section>
   </main>
   <script src="vendor/supabase.js?v=2.111.0"></script>
   <script src="supabase.js?v=20260812-50"></script>
-  <script src="busco.js?v=20260812-50"></script>
+  <script src="busco.js?v=20260812-51"></script>
   <script src="mobile-ui.js?v=20260812-50"></script>
 </body>
 </html>

@@ -5,6 +5,8 @@
   const form = document.getElementById("wanted-form");
   const list = document.getElementById("wanted-list");
   const filter = document.getElementById("wanted-filter");
+  const search = document.getElementById("wanted-search");
+  const resultCount = document.getElementById("wanted-result-count");
   const status = document.getElementById("wanted-status");
   let user = null;
   let profile = null;
@@ -16,6 +18,7 @@
     profile = user ? await api.getCurrentProfile(true) : null;
     form.addEventListener("submit", submit);
     filter.addEventListener("change", render);
+    search?.addEventListener("input", render);
     await load();
   }
 
@@ -35,16 +38,27 @@
 
   function render() {
     const mode = filter.value;
-    const visible = posts.filter((post) => mode === "all" || post.scope === mode || (mode === "mine" && user && post.user_id === user.id));
+    const query = String(search?.value || "").trim().toLowerCase();
+    const visible = posts.filter((post) => {
+      const matchesScope = mode === "all" || post.scope === mode || (mode === "mine" && user && post.user_id === user.id);
+      const searchable = `${post.title || ""} ${post.description || ""} ${post.category || ""}`.toLowerCase();
+      return matchesScope && (!query || searchable.includes(query));
+    });
+    if (resultCount) resultCount.textContent = String(visible.length);
     list.replaceChildren();
     visible.forEach((post) => {
       const item = document.createElement("article");
       item.className = "wanted-item";
-      item.innerHTML = '<div class="wanted-item__top"><h3></h3><span class="wanted-chip"></span></div><p class="wanted-description"></p><p class="wanted-place"></p>';
+      item.innerHTML = '<div class="wanted-item__top"><h3></h3><span class="wanted-chip"></span></div><div class="wanted-item__meta"><span data-category></span><span data-transaction></span><span data-place></span></div><p class="wanted-description"></p><div class="wanted-item__actions"><span class="wanted-time"></span><a class="wanted-have">Tengo este material</a></div>';
       item.querySelector("h3").textContent = post.title;
       item.querySelector(".wanted-chip").textContent = post.scope === "school" ? "Colegio" : post.scope === "zone" ? "Zona" : "Argentina";
       item.querySelector(".wanted-description").textContent = post.description || post.category || "Material escolar";
-      item.querySelector(".wanted-place").textContent = post.scope === "school" ? (post.school_name || "Su colegio") : post.scope === "zone" ? (post.zone_code || "Su zona") : "Toda Argentina";
+      item.querySelector("[data-category]").textContent = post.category || "Material";
+      item.querySelector("[data-transaction]").textContent = post.transaction_type === "exchange" ? "Intercambio" : post.transaction_type === "either" ? "Compra o intercambio" : "Compra";
+      item.querySelector("[data-place]").textContent = post.scope === "school" ? (post.school_name || "Su colegio") : post.scope === "zone" ? (post.zone_code || "Su zona") : "Toda Argentina";
+      item.querySelector(".wanted-time").textContent = relativeTime(post.created_at);
+      const haveLink = item.querySelector(".wanted-have");
+      haveLink.href = `publicar.html?wanted=${encodeURIComponent(post.id)}&title=${encodeURIComponent(post.title)}`;
       if (user && post.user_id === user.id) {
         const close = document.createElement("button");
         close.className = "wanted-close";
@@ -53,11 +67,20 @@
           await client.from("wanted_posts").update({ status: "closed", updated_at: new Date().toISOString() }).eq("id", post.id).eq("user_id", user.id);
           await load();
         };
-        item.appendChild(close);
+        item.querySelector(".wanted-item__actions").appendChild(close);
       }
       list.appendChild(item);
     });
     if (!visible.length) list.innerHTML = '<div class="wanted-empty"><b>Todavía no hay pedidos acá</b><p>Sé la primera persona en crear una alerta para este alcance.</p></div>';
+  }
+
+  function relativeTime(value) {
+    const milliseconds = Date.now() - new Date(value || Date.now()).getTime();
+    const hours = Math.max(0, Math.floor(milliseconds / 3600000));
+    if (hours < 1) return "Publicado hace unos minutos";
+    if (hours < 24) return `Publicado hace ${hours} h`;
+    const days = Math.floor(hours / 24);
+    return `Publicado hace ${days} ${days === 1 ? "día" : "días"}`;
   }
 
   async function submit(event) {
@@ -67,7 +90,7 @@
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();
     status.textContent = "Creando tu alerta…";
-    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina" };
+    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina" };
     if (scope === "school" && !record.school_code) { status.textContent = "Primero elegí tu colegio desde Mi perfil."; return; }
     if (scope === "zone" && !record.zone_code) { status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
     const result = await client.from("wanted_posts").insert(record);
