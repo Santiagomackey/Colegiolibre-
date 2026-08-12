@@ -27,6 +27,7 @@
     var pricingSection = document.getElementById("planes");
     var billingButtons = document.querySelectorAll("[data-billing]");
     var prices = document.querySelectorAll(".ib-price[data-monthly]");
+    var changePlanButton = document.getElementById("change-plan-button");
     if (viewPlansButton && pricingSection) {
       viewPlansButton.addEventListener("click", function (event) {
         event.preventDefault();
@@ -47,6 +48,7 @@
           var note = price.parentElement.querySelector(".ib-price-note");
           if (note) note.textContent = note.dataset[billing + "Note"];
         });
+        renderSelectedPlan();
       });
     });
 
@@ -60,13 +62,39 @@
         document.querySelectorAll(".ib-plan").forEach(function (plan) {
           plan.classList.toggle("is-selected", plan.dataset.plan === selectedPlan);
         });
+        renderSelectedPlan();
         document.getElementById("request-card").scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
+    if (changePlanButton) changePlanButton.addEventListener("click", function () {
+      document.getElementById("planes").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function renderSelectedPlan() {
+    var summary = document.getElementById("selected-plan-summary");
+    var name = document.getElementById("selected-plan-name");
+    var icon = document.getElementById("selected-plan-icon");
+    var copy = document.getElementById("selected-plan-copy");
+    var explanation = document.getElementById("payment-explanation");
+    var submitLabel = document.getElementById("request-submit-label");
+    var paid = selectedPlan !== "Comunidad";
+    if (summary) summary.dataset.plan = selectedPlan;
+    if (name) name.textContent = selectedPlan;
+    if (icon) icon.textContent = selectedPlan.charAt(0);
+    if (copy) copy.textContent = paid
+      ? (selectedBilling === "annual" ? "Facturación anual mediante Mercado Pago." : "Facturación mensual mediante Mercado Pago.")
+      : "Gratis para siempre. No requiere medio de pago.";
+    if (explanation) explanation.textContent = paid
+      ? "Primero verificamos que representes al colegio. Cuando la solicitud sea aprobada, en Seguimiento aparecerá el botón para pagar con Mercado Pago. No se cobra nada antes de la aprobación."
+      : "El plan Comunidad no requiere tarjeta. Se activa cuando aprobamos los datos del colegio.";
+    if (submitLabel) submitLabel.textContent = paid
+      ? "Enviar solicitud del plan " + selectedPlan
+      : "Solicitar portal gratuito";
   }
 
   async function init() {
-    currentUser = await api.getCurrentUser();
+    currentUser = await api.getCurrentUser(true);
     loginRequired.hidden = Boolean(currentUser);
     form.hidden = !currentUser;
     if (!currentUser) {
@@ -208,12 +236,15 @@
       item.querySelector("small").textContent = "/colegio/" + request.requested_code;
       item.querySelector("b").textContent =
         request.status === "pending" ? "Pendiente" :
+        request.status === "approved" && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized" ? "Aprobada · falta pago" :
         request.status === "approved" ? "Aprobada" : "Rechazada";
       if (request.status === "approved") {
-        var link = document.createElement("a");
-        link.href = "/colegio/" + encodeURIComponent(request.requested_code);
-        link.textContent = "Abrir portal";
-        item.querySelector(".ib-request__state").appendChild(link);
+        if (!request.requested_plan || request.requested_plan === "Comunidad" || request.subscription_status === "authorized") {
+          var link = document.createElement("a");
+          link.href = "/colegio/" + encodeURIComponent(request.requested_code);
+          link.textContent = "Abrir portal";
+          item.querySelector(".ib-request__state").appendChild(link);
+        }
         if (request.requested_plan && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized") {
           var pay = document.createElement("button");
           pay.type = "button";

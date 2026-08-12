@@ -55,3 +55,10 @@ PUSH_WEBHOOK_SECRET usadas por el endpoint de notificaciones.
 - Comprobar el aviso dentro de ColegioLibre y la notificación del teléfono.
 - Aprobar una solicitud institucional y tocar “Contratar plan”.
 
+IMPORTANTE SOBRE LOS PLANES
+El botón de Mercado Pago aparece en “Seguimiento” únicamente después de que
+la solicitud institucional cambie a estado approved. Esto evita cobrarle a
+alguien que no represente realmente al colegio. Para una prueba controlada,
+cambiá el estado de una solicitud propia a approved desde Supabase y volvé a
+abrir instituciones.html. Si faltan las variables de Vercel, el checkout no
+puede abrirse: nunca deben ponerse los tokens privados dentro del HTML o APK.
