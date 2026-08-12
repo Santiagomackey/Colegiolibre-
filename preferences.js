@@ -106,7 +106,7 @@
     "Libros": "Books",
     "Apuntes": "Notes",
     "Cuadernos": "Notebooks",
-    "Útiles": "School supplies",
+    "Útiles": "Supplies",
     "Mochilas": "Backpacks",
     "Tecnología": "Technology",
     "Uniformes": "Uniforms",

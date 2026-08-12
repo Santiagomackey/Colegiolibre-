@@ -8,24 +8,53 @@
 @media (max-width: 760px) {
   body:not(.mobile-subpage) .category-drawer {
     color-scheme: dark;
-    background: #0a0d11 !important;
+    width: min(88vw, 360px);
+    background: #080b10 !important;
     border-right: 1px solid #252c37 !important;
+    scrollbar-color: #334155 #080b10;
+  }
+
+  body:not(.mobile-subpage) .category-drawer .drawer-header {
+    min-height: calc(78px + var(--mobile-safe-top));
+    padding-top: calc(1rem + var(--mobile-safe-top));
+    background: linear-gradient(135deg, #071d41, #0b3675) !important;
   }
 
   body:not(.mobile-subpage) .category-drawer .drawer-section {
+    padding: 1.15rem 1rem;
     border-bottom-color: #252c37 !important;
   }
 
   body:not(.mobile-subpage) .category-drawer .drawer-section h3 {
-    color: #f7f9fc !important;
+    margin: 0 0 0.6rem;
+    padding-inline: 0.7rem;
+    color: #ffc72c !important;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   body:not(.mobile-subpage) .category-drawer .drawer-section a {
+    min-height: 48px;
+    margin-block: 3px;
+    padding: 0.72rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
     color: #dbe5f5 !important;
+    font-size: 0.84rem;
+    font-weight: 750;
+  }
+
+  body:not(.mobile-subpage) .category-drawer .drawer-section a:is(:hover, :focus-visible, :active) {
+    border-color: rgba(143, 184, 255, 0.15);
+    background: #121823 !important;
+    color: #ffffff !important;
+    outline: none;
   }
 
   body:not(.mobile-subpage) .category-drawer .drawer-section a span {
     color: #8fb8ff !important;
+    font-size: 1.15rem;
   }
 }
 
