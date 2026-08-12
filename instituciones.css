@@ -45,3 +45,69 @@ html{scroll-behavior:smooth}.ib-pricing h2:focus{outline:none}
   .ib-popular{font-size:7px}
   .ib-pricing-footnote{font-size:8px;line-height:1.45}
 }
+
+/* V48 · jerarquía visual de planes y scrolling unificado */
+.ib-assurance{
+  position:static;
+  top:auto;
+}
+
+.ib-plan-network{
+  overflow:hidden;
+  border-color:#197466;
+  color:#fff;
+  background:
+    radial-gradient(circle at 100% 0,rgba(255,199,44,.18),transparent 30%),
+    radial-gradient(circle at 0 100%,rgba(103,194,58,.2),transparent 36%),
+    linear-gradient(150deg,#073b43 0%,#0b5b59 58%,#176b4f 100%);
+  box-shadow:0 25px 58px rgba(6,65,61,.18);
+}
+
+.ib-plan-network:hover{
+  border-color:#2d9a78;
+  box-shadow:0 29px 65px rgba(6,65,61,.24);
+}
+
+.ib-plan-network .ib-plan-icon{
+  color:#fff;
+  background:rgba(255,255,255,.13);
+}
+
+.ib-plan-network .ib-plan-top small,
+.ib-plan-network .ib-plan-description,
+.ib-plan-network .ib-price>span,
+.ib-plan-network .ib-price .ib-currency,
+.ib-plan-network .ib-price-note{
+  color:rgba(236,255,250,.75);
+}
+
+.ib-plan-network h3,
+.ib-plan-network .ib-price,
+.ib-plan-network .ib-price strong,
+.ib-plan-network .ib-includes{
+  color:#fff;
+}
+
+.ib-plan-network .ib-plan-divider{
+  background:rgba(255,255,255,.16);
+}
+
+.ib-plan-network li{
+  color:rgba(239,255,250,.88);
+}
+
+.ib-plan-network li::before{
+  color:#a4f26f;
+}
+
+.ib-plan-network .ib-plan-cta{
+  border-color:#9ee76f;
+  color:#073c39;
+  background:#a4f26f;
+  box-shadow:0 12px 25px rgba(0,0,0,.15);
+}
+
+.ib-plan-network .ib-plan-cta:hover{
+  border-color:#b7ff85;
+  background:#b7ff85;
+}
