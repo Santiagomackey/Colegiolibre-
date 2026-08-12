@@ -56,6 +56,7 @@
         body: options.body || "",
         schedule: { at: new Date(Date.now() + 150) },
         extra: { url: options.data?.url || "index.html" },
+        smallIcon: "ic_stat_colegiolibre",
         iconColor: "#67C23A"
       }]
     });
@@ -71,6 +72,32 @@
     });
 
     const app = capacitor.Plugins?.App;
+    const openAuthUrl = async (rawUrl) => {
+      if (!rawUrl || !String(rawUrl).startsWith("colegiolibre://auth/callback")) return;
+      try {
+        const url = new URL(rawUrl);
+        const values = new URLSearchParams((url.hash || "").replace(/^#/, ""));
+        const accessToken = values.get("access_token");
+        const refreshToken = values.get("refresh_token");
+        const next = url.searchParams.get("next") || "index.html";
+        if (accessToken && refreshToken && window.colegioLibreSupabase?.auth?.setSession) {
+          const { error } = await window.colegioLibreSupabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          if (error) throw error;
+        }
+        window.location.href = next;
+      } catch (error) {
+        console.error("No se pudo completar la verificación en la app:", error);
+        window.location.href = "login.html?verified=1";
+      }
+    };
+
+    await app?.addListener?.("appUrlOpen", ({ url }) => void openAuthUrl(url));
+    const launch = await app?.getLaunchUrl?.();
+    if (launch?.url) await openAuthUrl(launch.url);
+
     await app?.addListener?.("backButton", ({ canGoBack }) => {
       if (canGoBack) window.history.back();
       else app.minimizeApp?.();

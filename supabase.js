@@ -12,7 +12,8 @@ const PRODUCT_STATUS = {
 
 window.colegioLibreConfig = Object.freeze({
   supabaseUrl: SUPABASE_URL,
-  supabaseKey: SUPABASE_KEY
+  supabaseKey: SUPABASE_KEY,
+  publicSiteUrl: "https://colegiolibre.vercel.app"
 });
 
 function createUnavailableError() {

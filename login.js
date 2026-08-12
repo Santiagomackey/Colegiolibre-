@@ -353,14 +353,17 @@
     setMessage(elements.message, "Creando tu cuenta…", "loading");
 
     try {
+      const publicSiteUrl = String(
+        window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+      ).replace(/\/$/, "");
+      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      verificationUrl.searchParams.set("next", nextPage);
+
       const { data, error } = await client.auth.signUp({
         email: elements.email.value.trim(),
         password: elements.password.value,
         options: {
-          emailRedirectTo: new URL(
-            `login.html?verified=1&next=${encodeURIComponent(nextPage)}`,
-            window.location.href
-          ).href,
+          emailRedirectTo: verificationUrl.href,
           data: { source: "colegiolibre" }
         }
       });

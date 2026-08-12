@@ -1,0 +1,21 @@
+ACTIVAR VERIFICACIÓN DE EMAIL EN SUPABASE
+==========================================
+
+El código de ColegioLibre ya está preparado. Antes de publicar:
+
+1. Entrá al proyecto de Supabase.
+2. Abrí Authentication > URL Configuration.
+3. En Redirect URLs agregá exactamente:
+   https://colegiolibre.vercel.app/auth-callback.html
+4. Abrí Authentication > Providers > Email.
+5. Activá Confirm email y guardá.
+6. Volvé a desplegar la website en Vercel antes de probar el registro.
+
+Resultado:
+- En computadora, el enlace verifica la cuenta y continúa en la website.
+- En celular, intenta abrir la aplicación ColegioLibre.
+- Si la app no está instalada, permite seguir en la website.
+
+IMPORTANTE
+Si más adelante usás colegiolibre.com, cambiá publicSiteUrl en supabase.js y
+agregá también https://colegiolibre.com/auth-callback.html en Supabase.

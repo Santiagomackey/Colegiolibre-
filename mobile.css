@@ -6,6 +6,40 @@
 
 /* El marketplace móvil usa siempre una superficie oscura para este panel. */
 @media (max-width: 760px) {
+  /* El menú desplegable necesita colores propios: el header oscuro no debe
+     heredarlos sobre la tarjeta clara. */
+  html[data-theme="light"] .mobile-menu-panel {
+    color-scheme: light;
+    background: #ffffff !important;
+    border-color: #dbe4f0 !important;
+  }
+
+  html[data-theme="light"] .mobile-menu-panel a {
+    color: #102a52 !important;
+    background: #f4f7fb !important;
+    border: 1px solid #e5ebf3;
+  }
+
+  html[data-theme="light"] .mobile-menu-panel a::after {
+    color: #54749c !important;
+  }
+
+  html[data-theme="dark"] .mobile-menu-panel {
+    color-scheme: dark;
+    background: #080b10 !important;
+    border-color: #252c37 !important;
+  }
+
+  html[data-theme="dark"] .mobile-menu-panel a {
+    color: #e8eef8 !important;
+    background: #121823 !important;
+    border: 1px solid #222c3b;
+  }
+
+  html[data-theme="dark"] .mobile-menu-panel a::after {
+    color: #8fb8ff !important;
+  }
+
   body:not(.mobile-subpage) .category-drawer {
     color-scheme: dark;
     width: min(88vw, 360px);
