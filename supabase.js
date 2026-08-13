@@ -343,6 +343,18 @@ function safeProductRecord(product) {
 }
 
 function safeSchoolRecord(school) {
+  const schoolSearchableName = [
+    school && school.display_name,
+    school && school.name,
+    school && school.short_name,
+    school && school.aliases,
+    school && school.code,
+    school && school.address
+  ].join(" ").toLocaleLowerCase("es");
+  const preferredName = schoolSearchableName.includes("eccleston")
+    ? "Eccleston School"
+    : (school && (school.display_name || school.name)) || "Colegio sin nombre";
+
   return {
     accent_color: (school && school.accent_color) || "#FFC72C",
     address: (school && school.address) || "",
@@ -354,7 +366,7 @@ function safeSchoolRecord(school) {
     created_at: (school && school.created_at) || null,
     cue: (school && school.cue) || "",
     department: (school && school.department) || "",
-    display_name: (school && school.display_name) || "",
+    display_name: preferredName,
     education_levels: Array.isArray(school && school.education_levels)
       ? school.education_levels
       : [],
@@ -367,9 +379,7 @@ function safeSchoolRecord(school) {
     logo_scale: Number((school && school.logo_scale) || 145),
     logo_x: Number((school && school.logo_x) || 0),
     logo_y: Number((school && school.logo_y) || 0),
-    name:
-      (school && (school.display_name || school.name)) ||
-      "Colegio sin nombre",
+    name: preferredName,
     official_name: (school && school.name) || "",
     primary_color: (school && school.primary_color) || "#0B2E6B",
     short_name: (school && school.short_name) || "",

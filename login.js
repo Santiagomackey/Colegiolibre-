@@ -374,17 +374,19 @@
         throw new Error("User already registered");
       }
 
+      /* Una cuenta nueva nunca debe entrar al onboarding antes de verificar el
+         correo. Si Supabase devuelve una sesión, la cerramos igualmente. Esto
+         evita que una configuración temporal de auto-confirmación deje pasar
+         al usuario directamente a “¡Bienvenido!”. */
       if (data?.session) {
-        setMessage(elements.message, "Cuenta creada. Estamos abriendo ColegioLibre…", "success");
-        window.setTimeout(() => {
-          window.location.assign(nextPage);
-        }, 850);
-        return;
+        await client.auth.signOut();
       }
 
       setMessage(
         elements.message,
-        "Cuenta creada. Revisá tu email y tocá el enlace de confirmación para activarla.",
+        data?.session
+          ? "La cuenta fue creada, pero Supabase no exigió la confirmación. Cerramos la sesión por seguridad: revisá que Confirm email esté activado y volvé a registrarte con otro email."
+          : "Cuenta creada. Revisá tu email y tocá el enlace de confirmación para activarla.",
         "success"
       );
       elements.password.value = "";
@@ -616,6 +618,14 @@
 
   configurePasswordToggles();
   setMode(params.get("view") === "register" ? "register" : "login", false);
+
+  if (params.get("verification") === "required") {
+    setMessage(
+      elements.message,
+      "Primero verificá tu email desde el enlace que te enviamos. Después vas a poder completar tu perfil.",
+      "info"
+    );
+  }
 
   if (recoveryRequested) {
     showPasswordUpdate();

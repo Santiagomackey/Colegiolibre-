@@ -80,6 +80,15 @@
       return { required: false, user: null };
     }
 
+    /* Defensa adicional: jamás mostrar la configuración del perfil si el
+       proveedor todavía no confirmó el correo. */
+    if (!user.email_confirmed_at && !user.confirmed_at) {
+      await client.auth.signOut();
+      hideOnboarding();
+      window.location.replace("login.html?verification=required");
+      return { required: false, user: null };
+    }
+
     const { data: profile, error: profileError } = await client
       .from("profiles")
       .select("*")
@@ -288,7 +297,7 @@
       button.type = "button";
       button.dataset.schoolId = school.school_id || "";
 
-      title.textContent = school.name || school.display_name || "Colegio sin nombre";
+      title.textContent = preferredSchoolName(school);
       location.textContent = formatSchoolLocation(school);
       details.textContent = formatSchoolDetails(school);
 
@@ -305,7 +314,7 @@
       id: school.school_id || school.id,
       code: school.code,
       cue: school.cue || null,
-      name: school.name || school.display_name,
+      name: preferredSchoolName(school),
       official_name: school.official_name || school.name || "",
       province: school.province || "",
       city: school.city || "",
@@ -546,13 +555,29 @@
     return [...new Set(values)].join(" · ") || "Argentina";
   }
 
+  function preferredSchoolName(school) {
+    const searchable = [
+      school?.display_name,
+      school?.name,
+      school?.official_name,
+      school?.short_name,
+      school?.aliases,
+      school?.code,
+      school?.address
+    ].join(" ").toLocaleLowerCase("es");
+
+    if (searchable.includes("eccleston")) return "Eccleston School";
+    return school?.display_name || school?.name || "Colegio sin nombre";
+  }
+
   function formatSchoolDetails(school) {
     const address = String(school.address || "").trim();
+    const location = formatSchoolLocation(school);
     const levels = Array.isArray(school.education_levels)
       ? school.education_levels.join(" y ")
       : "";
     const code = school.code ? `Código ${school.code}` : "";
-    return [address, levels, code].filter(Boolean).join(" · ");
+    return [address, location, levels, code].filter(Boolean).join(" · ");
   }
 
   window.initOnboarding = initOnboarding;
