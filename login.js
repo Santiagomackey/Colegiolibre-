@@ -47,6 +47,7 @@
     standardView: document.querySelector("#standard-auth-view"),
     recoveryView: document.querySelector("#recovery-request-view"),
     updateView: document.querySelector("#password-update-view"),
+    verificationView: document.querySelector("#email-verification-view"),
     tabs: [...document.querySelectorAll(".auth-tab")],
     title: document.querySelector("#auth-title"),
     description: document.querySelector("#auth-description"),
@@ -78,7 +79,12 @@
     newPasswordError: document.querySelector("#new-password-error"),
     newPasswordConfirmError: document.querySelector("#new-password-confirm-error"),
     updateSubmit: document.querySelector("#password-update-submit"),
-    updateMessage: document.querySelector("#password-update-message")
+    updateMessage: document.querySelector("#password-update-message"),
+    verificationEmail: document.querySelector("#verification-email"),
+    verificationOpenEmail: document.querySelector("#verification-open-email"),
+    verificationResend: document.querySelector("#verification-resend"),
+    verificationChange: document.querySelector("#verification-change"),
+    verificationMessage: document.querySelector("#verification-message")
   };
 
   let mode = "login";
@@ -159,6 +165,40 @@
     elements.standardView.hidden = view !== "standard";
     elements.recoveryView.hidden = view !== "recovery";
     elements.updateView.hidden = view !== "update";
+    elements.verificationView.hidden = view !== "verification";
+  }
+
+  let pendingVerificationEmail = "";
+
+  function showVerificationView(email) {
+    pendingVerificationEmail = String(email || "").trim();
+    elements.verificationEmail.textContent = pendingVerificationEmail;
+    setMessage(elements.verificationMessage);
+    setVisibleView("verification");
+    window.sessionStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
+  }
+
+  async function resendVerificationEmail() {
+    if (!pendingVerificationEmail) return;
+    elements.verificationResend.disabled = true;
+    setMessage(elements.verificationMessage, "Enviando un enlace nuevo…", "loading");
+    try {
+      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app").replace(/\/$/, "");
+      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      verificationUrl.searchParams.set("next", nextPage);
+      const { error } = await client.auth.resend({
+        type: "signup",
+        email: pendingVerificationEmail,
+        options: { emailRedirectTo: verificationUrl.href }
+      });
+      if (error) throw error;
+      setMessage(elements.verificationMessage, "Listo. Enviamos un nuevo enlace de confirmación.", "success");
+    } catch (error) {
+      console.error("Error reenviando verificación:", error);
+      setMessage(elements.verificationMessage, mapAuthError(error, "register"), "error");
+    } finally {
+      window.setTimeout(() => { elements.verificationResend.disabled = false; }, 1500);
+    }
   }
 
   function setMode(nextMode, focus = true) {
@@ -383,13 +423,7 @@
         await client.auth.signOut();
       }
 
-      setMessage(
-        elements.message,
-        data?.session
-          ? "La cuenta fue creada, pero Supabase no exigió la confirmación. Cerramos la sesión por seguridad: revisá que Confirm email esté activado y volvé a registrarte con otro email."
-          : "Cuenta creada. Revisá tu email y tocá el enlace de confirmación para activarla.",
-        "success"
-      );
+      showVerificationView(elements.email.value.trim());
       elements.password.value = "";
       elements.confirmPassword.value = "";
       updatePasswordStrength();
@@ -616,6 +650,16 @@
   elements.recoveryBack.addEventListener("click", showStandardView);
   elements.recoveryForm.addEventListener("submit", submitRecoveryRequest);
   elements.updateForm.addEventListener("submit", submitPasswordUpdate);
+  elements.verificationResend.addEventListener("click", resendVerificationEmail);
+  elements.verificationOpenEmail.addEventListener("click", () => {
+    window.location.href = "mailto:";
+  });
+  elements.verificationChange.addEventListener("click", () => {
+    window.sessionStorage.removeItem("colegiolibre-pending-verification");
+    setVisibleView("standard");
+    setMode("register", false);
+    elements.email.focus();
+  });
 
   configurePasswordToggles();
   setMode(params.get("view") === "register" ? "register" : "login", false);
@@ -630,6 +674,9 @@
 
   if (recoveryRequested) {
     showPasswordUpdate();
+  } else {
+    const pendingEmail = window.sessionStorage.getItem("colegiolibre-pending-verification");
+    if (pendingEmail) showVerificationView(pendingEmail);
   }
 
   const authListener = client.auth.onAuthStateChange?.((event) => {

@@ -434,6 +434,35 @@
               ></div>
             </form>
           </div>
+
+          <div id="email-verification-view" hidden>
+            <div class="auth-heading verification-heading">
+              <div class="verification-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 6.5 12 13l9-6.5M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg>
+              </div>
+              <p class="auth-eyebrow">UN ÚLTIMO PASO</p>
+              <h2>Revisá tu email</h2>
+              <p>Te enviamos un enlace de confirmación a:</p>
+              <strong class="verification-email" id="verification-email"></strong>
+            </div>
+
+            <div class="verification-note">
+              <strong>Confirmá tu cuenta para continuar</strong>
+              <span>Después de verificarla vas a poder elegir tu colegio y completar tu perfil.</span>
+            </div>
+
+            <button class="auth-submit" id="verification-open-email" type="button">
+              <span class="button-label">Abrir mi correo</span>
+            </button>
+            <button class="verification-resend" id="verification-resend" type="button">
+              Reenviar email de verificación
+            </button>
+            <button class="verification-change" id="verification-change" type="button">
+              Usar otro email
+            </button>
+            <div class="auth-message" id="verification-message" role="status" aria-live="polite" hidden></div>
+            <p class="verification-help">Si no aparece en unos minutos, revisá Spam o Correo no deseado.</p>
+          </div>
         </div>
 
         <p class="auth-footer">
@@ -447,7 +476,7 @@
   <script src="./supabase.js?v=20260806-37"></script>
   <script src="./telemetry.js?v=20260729-1"></script>
   <script src="./native-bridge.js?v=20260730-auth2"></script>
-  <script src="./login.js?v=20260808-41"></script>
+  <script src="./login.js?v=20260813-56"></script>
   <script src="./pwa.js?v=20260728-1"></script>
 </body>
 </html>

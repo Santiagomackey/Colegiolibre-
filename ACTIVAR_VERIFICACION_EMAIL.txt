@@ -12,6 +12,17 @@ El código de ColegioLibre ya está preparado. Antes de publicar:
 5. Activá Confirm email y guardá.
 6. Volvé a desplegar la website en Vercel antes de probar el registro.
 
+COMPROBACIÓN IMPORTANTE
+La opción debe quedar activada también en producción. Probá siempre con un email
+que nunca haya sido registrado. Si la cuenta aparece confirmada inmediatamente
+en Authentication > Users, Supabase todavía está aceptando registros sin
+confirmación y no enviará el correo aunque la interfaz lo espere.
+
+En Authentication > Email Templates > Confirm signup verificá que la plantilla
+esté habilitada y conserve el enlace {{ .ConfirmationURL }}. Para un lanzamiento
+real conviene configurar SMTP propio; el correo incluido de Supabase tiene
+límites y puede demorarse o caer en Spam.
+
 Resultado:
 - En computadora, el enlace verifica la cuenta y continúa en la website.
 - En celular, intenta abrir la aplicación ColegioLibre.

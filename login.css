@@ -297,6 +297,21 @@ a {
   font-weight: 900;
 }
 
+.verification-heading { text-align:center; }
+.verification-icon{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 20px;border-radius:22px;color:#0b2e6b;background:linear-gradient(145deg,#eaf2ff,#f5faeb);box-shadow:inset 0 0 0 1px #d7e4f4}
+.verification-icon svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.verification-email{display:block;margin-top:8px;color:#0b2e6b;font-size:1rem;overflow-wrap:anywhere}
+.verification-note{display:grid;gap:7px;margin:28px 0 22px;padding:17px 18px;border:1px solid #dce5f1;border-radius:16px;background:#f7f9fc;color:#102a52}
+.verification-note span{color:#64748b;font-size:.9rem;line-height:1.5}
+.verification-resend,.verification-change{display:block;width:100%;border:0;background:transparent;color:#0b4a99;font:inherit;font-weight:750;cursor:pointer}
+.verification-resend{margin-top:18px}.verification-change{margin-top:13px;color:#667085;font-weight:650}
+.verification-resend:disabled{opacity:.55;cursor:wait}
+.verification-help{margin:22px 0 0;color:#7b8494;text-align:center;font-size:.82rem;line-height:1.45}
+html[data-theme="dark"] .verification-icon{color:#91c8ff;background:#111c2a;box-shadow:inset 0 0 0 1px #29384c}
+html[data-theme="dark"] .verification-email{color:#9ac8ff}
+html[data-theme="dark"] .verification-note{border-color:#283241;background:#11161e;color:#f4f7fb}
+html[data-theme="dark"] .verification-note span,html[data-theme="dark"] .verification-help{color:#9da7b6}
+
 .auth-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
