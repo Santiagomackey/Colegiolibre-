@@ -608,10 +608,16 @@ function renderUpdatedDate(product) {
 async function shareCurrentProduct() {
   if (!currentProduct) return;
 
+  const publicSiteUrl = String(
+    window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+  ).replace(/\/$/, "");
+  const productPath = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
+  const sharedUrl = `${publicSiteUrl}/open-app.html?path=${encodeURIComponent(productPath)}`;
+
   const shareData = {
     title: currentProduct.title,
     text: `${currentProduct.title} en ColegioLibre`,
-    url: window.location.href
+    url: sharedUrl
   };
 
   try {
@@ -620,7 +626,7 @@ async function shareCurrentProduct() {
       return;
     }
 
-    await navigator.clipboard.writeText(window.location.href);
+    await navigator.clipboard.writeText(sharedUrl);
     showToast("Enlace copiado.");
   } catch (error) {
     if (error?.name !== "AbortError") {

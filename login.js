@@ -316,12 +316,13 @@
   }
 
   function recoveryRedirectUrl() {
-    const redirectUrl = new URL("login.html", window.location.href);
-    redirectUrl.search = "?mode=recovery";
+    const publicSiteUrl = String(
+      window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+    ).replace(/\/$/, "");
+    const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback.html`);
     if (nextPage !== "index.html") {
       redirectUrl.searchParams.set("next", nextPage);
     }
-    redirectUrl.hash = "";
     return redirectUrl.href;
   }
 

@@ -57,7 +57,8 @@
         schedule: { at: new Date(Date.now() + 150) },
         extra: { url: options.data?.url || "index.html" },
         smallIcon: "ic_stat_colegiolibre",
-        iconColor: "#67C23A"
+        iconColor: "#67C23A",
+        channelId: "colegiolibre-general"
       }]
     });
     return true;
@@ -72,14 +73,33 @@
     });
 
     const app = capacitor.Plugins?.App;
-    const openAuthUrl = async (rawUrl) => {
-      if (!rawUrl || !String(rawUrl).startsWith("colegiolibre://auth/callback")) return;
+    const allowedPages = new Set([
+      "index.html", "producto.html", "mensajes.html", "favoritos.html",
+      "perfil.html", "publicar.html", "colegio.html", "busco.html", "login.html"
+    ]);
+    const safeDestination = (rawValue, fallback = "index.html") => {
+      try {
+        const url = new URL(rawValue || fallback, "https://app.colegiolibre.local/");
+        const page = url.pathname.split("/").filter(Boolean).pop() || "index.html";
+        return allowedPages.has(page) ? `${page}${url.search}` : fallback;
+      } catch (_error) {
+        return fallback;
+      }
+    };
+    const openAppUrl = async (rawUrl) => {
+      if (!rawUrl || !String(rawUrl).startsWith("colegiolibre://")) return;
       try {
         const url = new URL(rawUrl);
+        if (url.host === "open") {
+          window.location.href = safeDestination(url.searchParams.get("path"));
+          return;
+        }
+        if (url.host !== "auth" || url.pathname !== "/callback") return;
         const values = new URLSearchParams((url.hash || "").replace(/^#/, ""));
         const accessToken = values.get("access_token");
         const refreshToken = values.get("refresh_token");
-        const next = url.searchParams.get("next") || "index.html";
+        const next = safeDestination(url.searchParams.get("next"));
+        const authType = url.searchParams.get("type") || values.get("type") || "verification";
         if (accessToken && refreshToken && window.colegioLibreSupabase?.auth?.setSession) {
           const { error } = await window.colegioLibreSupabase.auth.setSession({
             access_token: accessToken,
@@ -87,16 +107,18 @@
           });
           if (error) throw error;
         }
-        window.location.href = next;
+        window.location.href = authType === "recovery"
+          ? `login.html?mode=recovery&next=${encodeURIComponent(next)}`
+          : next;
       } catch (error) {
         console.error("No se pudo completar la verificación en la app:", error);
         window.location.href = "login.html?verified=1";
       }
     };
 
-    await app?.addListener?.("appUrlOpen", ({ url }) => void openAuthUrl(url));
+    await app?.addListener?.("appUrlOpen", ({ url }) => void openAppUrl(url));
     const launch = await app?.getLaunchUrl?.();
-    if (launch?.url) await openAuthUrl(launch.url);
+    if (launch?.url) await openAppUrl(launch.url);
 
     await app?.addListener?.("backButton", ({ canGoBack }) => {
       if (canGoBack) window.history.back();
@@ -114,6 +136,7 @@
     await initializePushNotifications();
   }
 
+  let pushListenersReady = false;
   async function initializePushNotifications() {
     const pushNotifications = capacitor.Plugins?.PushNotifications;
     const client = window.colegioLibreSupabase;
@@ -123,29 +146,40 @@
     const user = await api.getCurrentUser();
     if (!user) return;
 
-    await pushNotifications.addListener("registration", async (token) => {
-      const value = String(token?.value || "").trim();
-      if (!value) return;
-      const platform = capacitor.getPlatform?.() === "ios" ? "ios" : "android";
-      const { error } = await client.rpc("register_push_token", {
-        p_token: value,
-        p_platform: platform
+    if (!pushListenersReady) {
+      pushListenersReady = true;
+      await pushNotifications.addListener("registration", async (token) => {
+        const value = String(token?.value || "").trim();
+        if (!value) return;
+        const platform = capacitor.getPlatform?.() === "ios" ? "ios" : "android";
+        const { error } = await client.rpc("register_push_token", {
+          p_token: value,
+          p_platform: platform
+        });
+        if (error) console.error("No se pudo registrar el dispositivo:", error);
       });
-      if (error) console.error("No se pudo registrar el dispositivo:", error);
-    });
 
-    await pushNotifications.addListener("registrationError", (error) => {
-      console.error("Firebase no pudo registrar las notificaciones:", error);
-    });
+      await pushNotifications.addListener("registrationError", (error) => {
+        console.error("Firebase no pudo registrar las notificaciones:", error);
+      });
 
-    await pushNotifications.addListener(
-      "pushNotificationActionPerformed",
-      (event) => {
-        const data = event?.notification?.data || {};
-        const destination = data.url || data.action_url;
-        if (destination) window.location.href = destination;
-      }
-    );
+      await pushNotifications.addListener("pushNotificationReceived", (notification) => {
+        const data = notification?.data || {};
+        void showNotification(notification?.title || "ColegioLibre", {
+          body: notification?.body || "Tenés un nuevo aviso.",
+          data: { url: data.url || data.action_url || "index.html" }
+        });
+      });
+
+      await pushNotifications.addListener(
+        "pushNotificationActionPerformed",
+        (event) => {
+          const data = event?.notification?.data || {};
+          const destination = data.url || data.action_url;
+          if (destination) window.location.href = destination;
+        }
+      );
+    }
 
     const granted = await requestNotificationPermission();
     if (!granted) return;

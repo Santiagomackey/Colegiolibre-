@@ -7,6 +7,7 @@ El código de ColegioLibre ya está preparado. Antes de publicar:
 2. Abrí Authentication > URL Configuration.
 3. En Redirect URLs agregá exactamente:
    https://colegiolibre.vercel.app/auth-callback.html
+   https://colegiolibre.vercel.app/recovery-callback.html
 4. Abrí Authentication > Providers > Email.
 5. Activá Confirm email y guardá.
 6. Volvé a desplegar la website en Vercel antes de probar el registro.
@@ -15,6 +16,8 @@ Resultado:
 - En computadora, el enlace verifica la cuenta y continúa en la website.
 - En celular, intenta abrir la aplicación ColegioLibre.
 - Si la app no está instalada, permite seguir en la website.
+- Los enlaces de recuperación abren directamente la pantalla para crear una
+  contraseña nueva; no redirigen al inicio de una sesión normal.
 
 IMPORTANTE
 Si más adelante usás colegiolibre.com, cambiá publicSiteUrl en supabase.js y

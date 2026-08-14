@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0B2E6B">
+  <title>Abrir publicación | ColegioLibre</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <style>html,body{min-height:100%;margin:0}body{display:grid;place-items:center;padding:24px;color:#102a52;background:#f4f7fb;font-family:Inter,system-ui,sans-serif}.card{width:min(100%,460px);box-sizing:border-box;padding:38px 30px;border:1px solid #dce5f1;border-radius:24px;background:#fff;box-shadow:0 24px 65px rgba(11,46,107,.13);text-align:center}.card img{width:210px;max-width:70%}.card h1{margin:26px 0 10px}.card p{color:#64748b;line-height:1.55}.actions{display:grid;gap:10px;margin-top:24px}.actions a{padding:14px 18px;border-radius:12px;font-weight:800;text-decoration:none}.app{color:#07111f;background:#67c23a}.web{color:#0b2e6b;border:1px solid #c8d6ea;background:#fff}@media(prefers-color-scheme:dark){body{color:#f7f9fc;background:#07090c}.card{border-color:#242b36;background:#0d1117}.card p{color:#a7b0bf}.web{color:#fff;border-color:#354052;background:#151b24}}</style>
+</head>
+<body>
+  <main class="card"><img src="images/logo-horizontal.webp" alt="ColegioLibre"><h1>Abrir publicación</h1><p>Si tenés la aplicación instalada, podés ver el producto directamente en ColegioLibre.</p><div class="actions"><a class="app" id="open-app" href="#">Abrir en la aplicación</a><a class="web" id="open-web" href="index.html">Continuar en la website</a></div></main>
+  <script>
+    (() => {
+      const allowed = new Set(["producto.html", "index.html", "busco.html"]);
+      const raw = new URLSearchParams(location.search).get("path") || "index.html";
+      let path = "index.html";
+      try { const url = new URL(raw, location.origin); const page = url.pathname.split("/").filter(Boolean).pop() || "index.html"; if (allowed.has(page)) path = page + url.search; } catch (_) {}
+      const deepLink = `colegiolibre://open?path=${encodeURIComponent(path)}`;
+      document.querySelector("#open-app").href = deepLink;
+      document.querySelector("#open-web").href = path;
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) location.href = deepLink;
+    })();
+  </script>
+</body>
+</html>

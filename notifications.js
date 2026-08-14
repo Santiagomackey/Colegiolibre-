@@ -404,7 +404,8 @@
     };
 
     if (window.colegioLibreNative?.isNative) {
-      await window.colegioLibreNative.showNotification(title, options);
+      // En la APK el listener FCM del puente nativo muestra el aviso. Evitamos
+      // programar un segundo aviso cuando Supabase Realtime recibe la misma fila.
       return;
     }
     if (!("Notification" in window) || Notification.permission !== "granted") return;
