@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = new URL("../", import.meta.url);
 const rootPath = fileURLToPath(root);
-const ignoredDirectories = new Set([".git", ".vercel", "node_modules"]);
+const ignoredDirectories = new Set([".git", ".vercel", "node_modules", "mobile-app"]);
 const files = [];
 const errors = [];
 

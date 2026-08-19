@@ -11,7 +11,8 @@ El script `npm run sync` copia automáticamente la configuración Android a
 ## Supabase
 
 Ejecutar `database/04_push_notifications.sql` para crear el registro seguro de
-dispositivos.
+dispositivos y `database/07_v55_mobile_links_and_push.sql` para asegurar un push
+nuevo por cada mensaje recibido.
 
 Crear un Database Webhook sobre `public.notifications`:
 
@@ -41,4 +42,3 @@ servicio de Firebase/Google Cloud. Nunca deben guardarse en GitHub.
 3. Una fila nueva en `notifications` dispara el webhook.
 4. Vercel firma una solicitud OAuth y envía el aviso mediante FCM HTTP v1.
 5. Al tocar el aviso, la app abre `action_url`.
-

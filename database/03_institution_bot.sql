@@ -9,6 +9,10 @@ create table if not exists public.institution_requests (
   requested_code text not null,
   short_name text not null,
   contact_email text not null,
+  requested_plan text not null default 'Comunidad'
+    check (requested_plan in ('Comunidad', 'Institucional', 'Red Escolar')),
+  billing_cycle text not null default 'monthly'
+    check (billing_cycle in ('monthly', 'annual')),
   primary_color text not null default '#0B2E6B',
   secondary_color text not null default '#67C23A',
   accent_color text not null default '#FFC72C',
@@ -18,6 +22,11 @@ create table if not exists public.institution_requests (
   reviewed_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table public.institution_requests
+  add column if not exists requested_plan text not null default 'Comunidad';
+alter table public.institution_requests
+  add column if not exists billing_cycle text not null default 'monthly';
 
 create index if not exists institution_requests_status_idx
   on public.institution_requests (status, created_at desc);
