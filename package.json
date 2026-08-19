@@ -1,6 +1,6 @@
 {
   "name": "colegiolibre-web",
-  "version": "1.0.0",
+  "version": "1.0.14",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,8 @@
     "validate:national": "node scripts/validate-national-launch.mjs",
     "smoke:production": "node scripts/smoke-production.mjs",
     "release:check": "npm run validate && npm test && npm run smoke:production",
-    "release:national": "npm run validate && npm run validate:national && npm test"
+    "release:national": "npm run validate && npm run validate:national && npm test",
+    "check:auth": "node scripts/check-auth-settings.mjs",
+    "prelaunch": "npm run release:national && npm run check:auth && npm run smoke:production"
   }
 }

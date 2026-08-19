@@ -1106,6 +1106,16 @@ async function ensureAccountReady(destination, options = {}) {
     return null;
   }
 
+  if (!user.email_confirmed_at && !user.confirmed_at) {
+    await window.colegioLibreSupabase.auth.signOut();
+    window.localStorage.setItem(
+      "colegiolibre-pending-verification",
+      String(user.email || "")
+    );
+    window.location.assign(`login.html?verification=required&next=${encodeURIComponent(safeDestination)}`);
+    return null;
+  }
+
   const profile = await getCurrentProfile(true);
   state.user = user;
   state.profile = profile;

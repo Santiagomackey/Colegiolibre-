@@ -108,7 +108,7 @@
           if (error) throw error;
         }
         if (authType !== "recovery") {
-          window.sessionStorage.removeItem("colegiolibre-pending-verification");
+          window.localStorage.removeItem("colegiolibre-pending-verification");
         }
         window.location.href = authType === "recovery"
           ? `login.html?mode=recovery&next=${encodeURIComponent(next)}`

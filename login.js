@@ -175,7 +175,30 @@
     elements.verificationEmail.textContent = pendingVerificationEmail;
     setMessage(elements.verificationMessage);
     setVisibleView("verification");
-    window.sessionStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
+    window.localStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
+  }
+
+  async function assertEmailConfirmationEnabled() {
+    const baseUrl = String(window.colegioLibreConfig?.supabaseUrl || "").replace(/\/$/, "");
+    const apiKey = String(window.colegioLibreConfig?.supabaseKey || "");
+    if (!baseUrl || !apiKey) return;
+    try {
+      const response = await fetch(`${baseUrl}/auth/v1/settings`, {
+        headers: { apikey: apiKey },
+        cache: "no-store"
+      });
+      if (!response.ok) return;
+      const settings = await response.json();
+      if (settings?.mailer_autoconfirm === true) {
+        const configurationError = new Error("EMAIL_CONFIRMATION_DISABLED");
+        configurationError.code = "email_confirmation_disabled";
+        throw configurationError;
+      }
+    } catch (error) {
+      if (error?.code === "email_confirmation_disabled") throw error;
+      // Si el diagnóstico público no responde, Supabase igualmente validará
+      // el registro. No bloqueamos a una persona por un chequeo auxiliar.
+    }
   }
 
   async function resendVerificationEmail() {
@@ -254,6 +277,9 @@
     }
     if (text.includes("email not confirmed")) {
       return "Primero confirmá tu email desde el enlace que recibiste.";
+    }
+    if (code === "email_confirmation_disabled" || text.includes("email_confirmation_disabled")) {
+      return "El registro está temporalmente pausado mientras terminamos de activar la verificación segura por email. Probá nuevamente en unos minutos.";
     }
     if (
       text.includes("user already registered") ||
@@ -394,6 +420,7 @@
     setMessage(elements.message, "Creando tu cuenta…", "loading");
 
     try {
+      await assertEmailConfirmationEnabled();
       const publicSiteUrl = String(
         window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
       ).replace(/\/$/, "");
@@ -421,6 +448,9 @@
          al usuario directamente a “¡Bienvenido!”. */
       if (data?.session) {
         await client.auth.signOut();
+        const configurationError = new Error("EMAIL_CONFIRMATION_DISABLED");
+        configurationError.code = "email_confirmation_disabled";
+        throw configurationError;
       }
 
       showVerificationView(elements.email.value.trim());
@@ -655,7 +685,7 @@
     window.location.href = "mailto:";
   });
   elements.verificationChange.addEventListener("click", () => {
-    window.sessionStorage.removeItem("colegiolibre-pending-verification");
+    window.localStorage.removeItem("colegiolibre-pending-verification");
     setVisibleView("standard");
     setMode("register", false);
     elements.email.focus();
@@ -675,7 +705,7 @@
   if (recoveryRequested) {
     showPasswordUpdate();
   } else {
-    const pendingEmail = window.sessionStorage.getItem("colegiolibre-pending-verification");
+    const pendingEmail = window.localStorage.getItem("colegiolibre-pending-verification");
     if (pendingEmail) showVerificationView(pendingEmail);
   }
 

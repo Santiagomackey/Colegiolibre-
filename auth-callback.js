@@ -21,7 +21,7 @@
       const { data, error } = await window.colegioLibreSupabase.auth.getSession();
       if (error) throw error;
       if (!data?.session && !hash.includes("access_token=")) throw new Error("missing session");
-      window.sessionStorage.removeItem("colegiolibre-pending-verification");
+      window.localStorage.removeItem("colegiolibre-pending-verification");
       if (mobile && hash.includes("access_token=")) {
         const deepLink = `colegiolibre://auth/callback?next=${encodeURIComponent(next)}${hash}`;
         title.textContent = "Email verificado";

@@ -1,0 +1,48 @@
+FINAL VERSION COLEGIOLIBRE — PRE-LAUNCH 1.0.14
+================================================
+
+ESTADO DEL CÓDIGO
+- 22/22 pruebas automáticas aprobadas.
+- 101/101 controles de lanzamiento aprobados.
+- PWA, seguridad de Vercel y preparación nacional aprobadas.
+- Website sincronizada dentro del proyecto Android.
+
+ÚNICO BLOQUEO EXTERNO DETECTADO EL 19/08/2026
+El proyecto de Supabase responde actualmente:
+mailer_autoconfirm = true
+
+Esto confirma automáticamente las cuentas y evita que Supabase envíe el email.
+Ningún cambio de HTML o APK puede obligar a Supabase a mandar ese correo mientras
+esa opción siga en true.
+
+CORRECCIÓN OBLIGATORIA EN SUPABASE
+1. Abrir el proyecto riqhwmszshleyyaxlwqu.
+2. Ir a Authentication > Providers > Email.
+3. En la configuración de Email, activar “Confirm email”.
+   Si la interfaz muestra “Auto Confirm Email”, debe quedar DESACTIVADO.
+4. Guardar los cambios.
+5. En Authentication > URL Configuration agregar:
+   https://colegiolibre.vercel.app/auth-callback.html
+   https://colegiolibre.vercel.app/recovery-callback.html
+6. En Authentication > Email Templates > Confirm signup comprobar que la
+   plantilla contenga {{ .ConfirmationURL }}.
+
+COMPROBACIÓN ANTES DE PUBLICAR
+Desde la raíz ColegioLibre ejecutar:
+node scripts/check-auth-settings.mjs
+
+Sólo continuar si muestra:
+“Auth listo: registro por email activo y confirmación obligatoria habilitada.”
+
+ORDEN FINAL
+1. Corregir Confirm email en Supabase.
+2. Ejecutar el chequeo anterior.
+3. Subir la carpeta ColegioLibre a GitHub.
+4. Esperar el deployment de Vercel.
+5. Probar una cuenta con un email que nunca haya sido registrado.
+6. Abrir ColegioLibre/mobile-app/android en Android Studio.
+7. Generar e instalar la APK 1.0.14.
+
+FLUJO ESPERADO
+Crear cuenta > Revisá tu email > Confirmar enlace > Abrir website o app >
+Elegir colegio > Completar perfil.

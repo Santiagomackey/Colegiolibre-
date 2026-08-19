@@ -1033,11 +1033,8 @@ async function handleFavoriteToggle(id) {
     return;
   }
 
-  if (result.active) {
-    favoriteIds.add(id);
-  } else {
-    favoriteIds.delete(id);
-  }
+  if (result.active) favoriteIds.add(id);
+  else favoriteIds.delete(id);
 
   setFavoriteState(Boolean(result.active));
   showToast(result.active ? "Producto guardado en favoritos." : "Producto quitado de favoritos.");
@@ -1045,20 +1042,16 @@ async function handleFavoriteToggle(id) {
 
 async function openProductReport() {
   if (!currentProduct) return;
-
   const user = currentUser || (await getCurrentUser());
   const destination = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
-
   if (!user) {
     window.location.href = `login.html?next=${encodeURIComponent(destination)}`;
     return;
   }
-
   if (user.id === currentProduct.user_id) {
     showToast("No podés reportar tu propia publicación.");
     return;
   }
-
   currentUser = user;
   elements.reportModal.hidden = false;
   document.body.style.overflow = "hidden";
@@ -1074,29 +1067,20 @@ function closeProductReport() {
 async function submitProductReport(event) {
   event.preventDefault();
   if (!currentProduct) return;
-
-  const submitButton = elements.reportForm.querySelector(
-    'button[type="submit"]'
-  );
+  const submitButton = elements.reportForm.querySelector('button[type="submit"]');
   submitButton.disabled = true;
-
-  const { error } = await window.colegioLibreSupabase.rpc(
-    "create_safety_report",
-    {
-      selected_target_type: "product",
-      selected_target_id: currentProduct.id,
-      selected_reason: elements.reportReason.value,
-      report_details: elements.reportDetails.value.trim() || null
-    }
-  );
-
+  const { error } = await window.colegioLibreSupabase.rpc("create_safety_report", {
+    selected_target_type: "product",
+    selected_target_id: currentProduct.id,
+    selected_reason: elements.reportReason.value,
+    report_details: elements.reportDetails.value.trim() || null
+  });
   submitButton.disabled = false;
   if (error) {
     console.error("Error enviando reporte:", error);
     showToast(error.message || "No se pudo enviar el reporte.");
     return;
   }
-
   closeProductReport();
   showToast("Reporte enviado. Gracias por cuidar la comunidad.");
 }
@@ -1106,50 +1090,38 @@ async function handleContactSeller() {
     showToast("Este producto no está disponible para contactar.");
     return;
   }
-
   const user = currentUser || (await getCurrentUser());
   const destination = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
-
   if (!user) {
     window.location.href = `login.html?next=${encodeURIComponent(destination)}`;
     return;
   }
-
   const profile = await getCurrentProfile(true);
   if (!profile?.school_code) {
-    window.location.href =
-      `index.html?onboarding=1&next=${encodeURIComponent(destination)}`;
+    window.location.href = `index.html?onboarding=1&next=${encodeURIComponent(destination)}`;
     return;
   }
-
   if (window.colegioLibreApi.isAccountRestricted(profile)) {
     showToast("Tu cuenta no está habilitada para iniciar conversaciones.");
-    window.setTimeout(() => {
-      window.location.href = "perfil.html";
-    }, 900);
+    window.setTimeout(() => { window.location.href = "perfil.html"; }, 900);
     return;
   }
-
   if (!currentProduct?.user_id) {
     showToast("Este producto no tiene vendedor disponible.");
     return;
   }
-
   if (user.id === currentProduct.user_id) {
     showToast("No podés contactarte con tu propio producto.");
     return;
   }
-
   elements.contactButton.disabled = true;
   elements.contactButton.classList.add("is-loading");
   elements.contactButton.textContent = "Abriendo conversación…";
-
   const { conversation, error } = await ensureConversation({
     buyerId: user.id,
     productId: currentProduct.id,
     sellerId: currentProduct.user_id
   });
-
   if (error || !conversation) {
     console.error("Error creando conversación:", error);
     showToast("No se pudo abrir la conversación.");
@@ -1158,7 +1130,6 @@ async function handleContactSeller() {
     elements.contactButton.textContent = "Contactar vendedor";
     return;
   }
-
   window.location.href = `mensajes.html?id=${encodeURIComponent(conversation.id)}`;
 }
 
