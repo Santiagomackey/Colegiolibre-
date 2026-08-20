@@ -41,7 +41,8 @@
   const nextPage = resolveNextPage(params.get("next"));
   const recoveryRequested =
     params.get("mode") === "recovery" ||
-    window.location.hash.includes("type=recovery");
+    window.location.hash.includes("type=recovery") ||
+    Boolean(window.sessionStorage.getItem("colegiolibre-password-recovery"));
 
   const elements = {
     standardView: document.querySelector("#standard-auth-view"),
@@ -619,6 +620,7 @@
         "Contraseña actualizada. Ya podés continuar con tu cuenta.",
         "success"
       );
+      window.sessionStorage.removeItem("colegiolibre-password-recovery");
       window.history.replaceState({}, document.title, "login.html");
       window.setTimeout(() => {
         window.location.assign(nextPage);

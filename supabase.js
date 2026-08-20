@@ -78,6 +78,10 @@ function createSupabaseFallbackClient() {
         data: null,
         error: createUnavailableError()
       }),
+      exchangeCodeForSession: async () => ({
+        data: { session: null },
+        error: createUnavailableError()
+      }),
       signInWithPassword: async () => ({
         data: null,
         error: createUnavailableError()
@@ -87,6 +91,10 @@ function createSupabaseFallbackClient() {
       }),
       signUp: async () => ({
         data: null,
+        error: createUnavailableError()
+      }),
+      setSession: async () => ({
+        data: { session: null },
         error: createUnavailableError()
       }),
       updateUser: async () => ({
