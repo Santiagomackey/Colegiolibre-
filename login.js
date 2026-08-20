@@ -170,6 +170,31 @@
   }
 
   let pendingVerificationEmail = "";
+  const resendCooldownMs = 60_000;
+  const resendCooldownKey = "colegiolibre-verification-resend-at";
+  let resendCountdownTimer = 0;
+
+  function resendRemainingSeconds() {
+    const lastSentAt = Number(window.localStorage.getItem(resendCooldownKey) || 0);
+    return Math.max(0, Math.ceil((lastSentAt + resendCooldownMs - Date.now()) / 1000));
+  }
+
+  function updateResendButton() {
+    window.clearTimeout(resendCountdownTimer);
+    const remaining = resendRemainingSeconds();
+    elements.verificationResend.disabled = remaining > 0;
+    elements.verificationResend.textContent = remaining > 0
+      ? `Reenviar email en ${remaining} s`
+      : "Reenviar email de verificación";
+    if (remaining > 0) {
+      resendCountdownTimer = window.setTimeout(updateResendButton, 1000);
+    }
+  }
+
+  function startResendCooldown() {
+    window.localStorage.setItem(resendCooldownKey, String(Date.now()));
+    updateResendButton();
+  }
 
   function showVerificationView(email) {
     pendingVerificationEmail = String(email || "").trim();
@@ -177,6 +202,7 @@
     setMessage(elements.verificationMessage);
     setVisibleView("verification");
     window.localStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
+    updateResendButton();
   }
 
   function emailInboxUrl(email) {
@@ -250,6 +276,16 @@
 
   async function resendVerificationEmail() {
     if (!pendingVerificationEmail) return;
+    const remaining = resendRemainingSeconds();
+    if (remaining > 0) {
+      setMessage(
+        elements.verificationMessage,
+        `Esperá ${remaining} segundos antes de pedir otro email.`,
+        "info"
+      );
+      updateResendButton();
+      return;
+    }
     elements.verificationResend.disabled = true;
     setMessage(elements.verificationMessage, "Enviando un enlace nuevo…", "loading");
     try {
@@ -262,12 +298,17 @@
         options: { emailRedirectTo: verificationUrl.href }
       });
       if (error) throw error;
+      startResendCooldown();
       setMessage(elements.verificationMessage, "Listo. Enviamos un nuevo enlace de confirmación.", "success");
     } catch (error) {
       console.error("Error reenviando verificación:", error);
+      const errorText = String(error?.message || "").toLowerCase();
+      if (errorText.includes("rate limit") || errorText.includes("too many")) {
+        startResendCooldown();
+      }
       setMessage(elements.verificationMessage, mapAuthError(error, "register"), "error");
     } finally {
-      window.setTimeout(() => { elements.verificationResend.disabled = false; }, 1500);
+      updateResendButton();
     }
   }
 
@@ -501,6 +542,7 @@
       }
 
       showVerificationView(elements.email.value.trim());
+      startResendCooldown();
       elements.password.value = "";
       elements.confirmPassword.value = "";
       updatePasswordStrength();
@@ -732,6 +774,8 @@
   elements.verificationOpenEmail.addEventListener("click", openEmailInbox);
   elements.verificationChange.addEventListener("click", () => {
     window.localStorage.removeItem("colegiolibre-pending-verification");
+    window.localStorage.removeItem(resendCooldownKey);
+    window.clearTimeout(resendCountdownTimer);
     setVisibleView("standard");
     setMode("register", false);
     elements.email.focus();
@@ -762,7 +806,10 @@
 
   window.addEventListener(
     "pagehide",
-    () => authListener?.data?.subscription?.unsubscribe?.(),
+    () => {
+      window.clearTimeout(resendCountdownTimer);
+      authListener?.data?.subscription?.unsubscribe?.();
+    },
     { once: true }
   );
 
