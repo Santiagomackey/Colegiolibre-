@@ -178,6 +178,52 @@
     window.localStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
   }
 
+  function emailInboxUrl(email) {
+    const domain = String(email || "").trim().toLowerCase().split("@").pop();
+    if (!domain || domain === email) return "";
+
+    if (domain === "gmail.com" || domain === "googlemail.com") {
+      return "https://mail.google.com/mail/u/0/#inbox";
+    }
+    if (["outlook.com", "hotmail.com", "live.com", "msn.com"].includes(domain)) {
+      return "https://outlook.live.com/mail/0/inbox";
+    }
+    if (domain === "yahoo.com" || domain.startsWith("yahoo.")) {
+      return "https://mail.yahoo.com/";
+    }
+    if (["icloud.com", "me.com", "mac.com"].includes(domain)) {
+      return "https://www.icloud.com/mail/";
+    }
+    if (["proton.me", "protonmail.com", "pm.me"].includes(domain)) {
+      return "https://mail.proton.me/u/0/inbox";
+    }
+    return "";
+  }
+
+  function openEmailInbox() {
+    const inboxUrl = emailInboxUrl(pendingVerificationEmail);
+
+    if (inboxUrl) {
+      const opened = window.open(inboxUrl, "_blank", "noopener,noreferrer");
+      if (!opened) window.location.assign(inboxUrl);
+      return;
+    }
+
+    /* Un destinatario explícito evita el mailto vacío, que no hace nada en
+       varios navegadores y WebViews de Android. */
+    const emailTarget = pendingVerificationEmail
+      ? `mailto:${encodeURIComponent(pendingVerificationEmail)}`
+      : "mailto:ayudacolegiolibre@gmail.com";
+    window.location.assign(emailTarget);
+    window.setTimeout(() => {
+      setMessage(
+        elements.verificationMessage,
+        "Si tu correo no se abrió, entrá manualmente a tu bandeja de entrada.",
+        "info"
+      );
+    }, 900);
+  }
+
   async function assertEmailConfirmationEnabled() {
     const baseUrl = String(window.colegioLibreConfig?.supabaseUrl || "").replace(/\/$/, "");
     const apiKey = String(window.colegioLibreConfig?.supabaseKey || "");
@@ -681,9 +727,7 @@
   elements.recoveryForm.addEventListener("submit", submitRecoveryRequest);
   elements.updateForm.addEventListener("submit", submitPasswordUpdate);
   elements.verificationResend.addEventListener("click", resendVerificationEmail);
-  elements.verificationOpenEmail.addEventListener("click", () => {
-    window.location.href = "mailto:";
-  });
+  elements.verificationOpenEmail.addEventListener("click", openEmailInbox);
   elements.verificationChange.addEventListener("click", () => {
     window.localStorage.removeItem("colegiolibre-pending-verification");
     setVisibleView("standard");
