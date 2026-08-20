@@ -206,16 +206,24 @@ begin
   from public.products
   where products.id = conversation_row.product_id;
 
-  perform public.upsert_grouped_notification(
-    recipient_uuid,
-    new.sender_id,
-    'message',
-    'Nuevo mensaje de ' || actor_name,
-    left(new.body, 140),
-    conversation_row.product_id,
-    new.conversation_id,
-    'mensajes.html?id=' || new.conversation_id::text
-  );
+  -- Cada mensaje crea una fila nueva. Esto es intencional: el Database Webhook
+  -- escucha INSERT y así también envía push si ya había otro mensaje sin leer.
+  if recipient_uuid is not null and recipient_uuid <> new.sender_id then
+    insert into public.notifications (
+      user_id, actor_id, type, title, body, product_id,
+      conversation_id, action_url, metadata
+    ) values (
+      recipient_uuid,
+      new.sender_id,
+      'message',
+      'Nuevo mensaje de ' || actor_name,
+      left(new.body, 140),
+      conversation_row.product_id,
+      new.conversation_id,
+      'mensajes.html?id=' || new.conversation_id::text,
+      jsonb_build_object('message_id', new.id)
+    );
+  end if;
 
   return new;
 end;

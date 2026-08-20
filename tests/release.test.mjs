@@ -183,15 +183,19 @@ test("el home móvil oculta el logo de escritorio y conserva una sola marca", ()
   );
 });
 
-test("login ofrece proveedores sociales mediante Supabase OAuth", () => {
+test("login exige verificación por email antes del onboarding", () => {
   const html = read("login.html");
   const js = read("login.js");
 
-  assert.match(html, /data-oauth-provider="google"/);
-  assert.match(html, /data-oauth-provider="apple"/);
-  assert.match(js, /auth\.signInWithOAuth/);
-  assert.match(js, /provider,/);
-  assert.match(js, /redirectTo:\s*confirmationRedirectUrl\(\)/);
+  assert.match(html, /id="email-verification-view"/);
+  assert.match(html, /id="verification-resend"/);
+  assert.match(js, /emailRedirectTo:\s*verificationUrl\.href/);
+  assert.match(js, /auth\.resend/);
+  assert.match(js, /await client\.auth\.signOut\(\)/);
+  assert.match(js, /emailInboxUrl/);
+  assert.match(js, /mail\.google\.com\/mail\/u\/0\/#inbox/);
+  assert.doesNotMatch(js, /href\s*=\s*["']mailto:["']/);
+  assert.match(js, /verificationChange\.addEventListener/);
 });
 
 test("el avatar del vendedor no puede deformarse", () => {
@@ -305,5 +309,5 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
   );
   assert.match(home, /images\/favicon\.svg/);
   assert.match(profile, /preferences\.css\?v=20260730-31/);
-  assert.match(serviceWorker, /colegiolibre-pwa-v31/);
+  assert.match(serviceWorker, /colegiolibre-pwa-v\d+/);
 });

@@ -1,4 +1,4 @@
-FINAL VERSION COLEGIOLIBRE — PRE-LAUNCH 1.0.14
+FINAL VERSION COLEGIOLIBRE — PRE-LAUNCH 1.0.15
 ================================================
 
 ESTADO DEL CÓDIGO
@@ -41,7 +41,7 @@ ORDEN FINAL
 4. Esperar el deployment de Vercel.
 5. Probar una cuenta con un email que nunca haya sido registrado.
 6. Abrir ColegioLibre/mobile-app/android en Android Studio.
-7. Generar e instalar la APK 1.0.14.
+7. Generar e instalar la APK 1.0.15.
 
 FLUJO ESPERADO
 Crear cuenta > Revisá tu email > Confirmar enlace > Abrir website o app >
