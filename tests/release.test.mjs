@@ -196,6 +196,19 @@ test("login exige verificación por email antes del onboarding", () => {
   assert.match(js, /mail\.google\.com\/mail\/u\/0\/#inbox/);
   assert.doesNotMatch(js, /href\s*=\s*["']mailto:["']/);
   assert.match(js, /verificationChange\.addEventListener/);
+  assert.match(js, /Reenviar email en \$\{remaining\} s/);
+  assert.match(js, /resendCooldownMs\s*=\s*60_000/);
+});
+
+test("recuperar contraseña procesa PKCE y abre el formulario de cambio", () => {
+  const callback = read("recovery-callback.js");
+  const login = read("login.js");
+
+  assert.match(callback, /exchangeCodeForSession/);
+  assert.match(callback, /colegiolibre-password-recovery/);
+  assert.match(callback, /type=recovery/);
+  assert.match(login, /showPasswordUpdate\(\)/);
+  assert.match(login, /sessionStorage\.removeItem\("colegiolibre-password-recovery"\)/);
 });
 
 test("el avatar del vendedor no puede deformarse", () => {
