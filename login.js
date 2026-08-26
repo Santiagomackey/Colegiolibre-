@@ -172,18 +172,27 @@
   let pendingVerificationEmail = "";
   const resendCooldownMs = 60_000;
   const resendCooldownKey = "colegiolibre-verification-resend-at";
+  const emailRateLimitUntilKey = "colegiolibre-email-rate-limit-until";
+  const recoveryCooldownKey = "colegiolibre-recovery-sent-at";
   let resendCountdownTimer = 0;
 
   function resendRemainingSeconds() {
     const lastSentAt = Number(window.localStorage.getItem(resendCooldownKey) || 0);
-    return Math.max(0, Math.ceil((lastSentAt + resendCooldownMs - Date.now()) / 1000));
+    const rateLimitUntil = Number(window.localStorage.getItem(emailRateLimitUntilKey) || 0);
+    return Math.max(
+      0,
+      Math.ceil((lastSentAt + resendCooldownMs - Date.now()) / 1000),
+      Math.ceil((rateLimitUntil - Date.now()) / 1000)
+    );
   }
 
   function updateResendButton() {
     window.clearTimeout(resendCountdownTimer);
     const remaining = resendRemainingSeconds();
     elements.verificationResend.disabled = remaining > 0;
-    elements.verificationResend.textContent = remaining > 0
+    elements.verificationResend.textContent = remaining > 60
+      ? "Reenvío temporalmente limitado"
+      : remaining > 0
       ? `Reenviar email en ${remaining} s`
       : "Reenviar email de verificación";
     if (remaining > 0) {
@@ -202,6 +211,12 @@
     setMessage(elements.verificationMessage);
     setVisibleView("verification");
     window.localStorage.setItem("colegiolibre-pending-verification", pendingVerificationEmail);
+    const openEmailLabel = elements.verificationOpenEmail?.querySelector(".button-label");
+    if (openEmailLabel) {
+      openEmailLabel.textContent = /@(gmail|googlemail)\.com$/i.test(pendingVerificationEmail)
+        ? "Abrir Gmail"
+        : "Abrir mi correo";
+    }
     updateResendButton();
   }
 
@@ -227,8 +242,27 @@
     return "";
   }
 
-  function openEmailInbox() {
+  async function openEmailInbox() {
     const inboxUrl = emailInboxUrl(pendingVerificationEmail);
+
+    const capacitor = window.Capacitor;
+    const appLauncher = capacitor?.Plugins?.AppLauncher;
+    if (
+      capacitor?.isNativePlatform?.() &&
+      appLauncher &&
+      /@(gmail|googlemail)\.com$/i.test(pendingVerificationEmail)
+    ) {
+      try {
+        const gmailUrl = "googlegmail://";
+        const capability = await appLauncher.canOpenUrl({ url: gmailUrl });
+        if (capability?.value) {
+          await appLauncher.openUrl({ url: gmailUrl });
+          return;
+        }
+      } catch (error) {
+        console.warn("No se pudo abrir Gmail de forma nativa:", error);
+      }
+    }
 
     if (inboxUrl) {
       const opened = window.open(inboxUrl, "_blank", "noopener,noreferrer");
@@ -291,6 +325,10 @@
     try {
       const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app").replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      verificationUrl.searchParams.set(
+        "source",
+        window.Capacitor?.isNativePlatform?.() ? "app" : "web"
+      );
       verificationUrl.searchParams.set("next", nextPage);
       const { error } = await client.auth.resend({
         type: "signup",
@@ -303,8 +341,16 @@
     } catch (error) {
       console.error("Error reenviando verificación:", error);
       const errorText = String(error?.message || "").toLowerCase();
-      if (errorText.includes("rate limit") || errorText.includes("too many")) {
-        startResendCooldown();
+      if (
+        error?.status === 429 ||
+        error?.code === "over_email_send_rate_limit" ||
+        errorText.includes("rate limit") ||
+        errorText.includes("too many")
+      ) {
+        window.localStorage.setItem(
+          emailRateLimitUntilKey,
+          String(Date.now() + 60 * 60 * 1000)
+        );
       }
       setMessage(elements.verificationMessage, mapAuthError(error, "register"), "error");
     } finally {
@@ -394,8 +440,22 @@
     if (text.includes("same password")) {
       return "La contraseña nueva debe ser distinta de la anterior.";
     }
-    if (text.includes("rate limit") || text.includes("too many requests")) {
-      return "Hiciste varios intentos seguidos. Esperá unos minutos y probá de nuevo.";
+    if (
+      error?.status === 429 ||
+      code === "over_email_send_rate_limit" ||
+      text.includes("rate limit") ||
+      text.includes("too many requests") ||
+      text.includes("email rate limit exceeded")
+    ) {
+      return "El servicio de correo alcanzó su límite temporal. No es un problema de tu cuenta: esperá un rato antes de volver a intentarlo.";
+    }
+    if (
+      text.includes("smtp") ||
+      text.includes("error sending confirmation") ||
+      text.includes("error sending recovery") ||
+      text.includes("error sending email")
+    ) {
+      return "El servicio de correo no pudo enviar el mensaje. Revisá la configuración SMTP de ColegioLibre o intentá nuevamente en unos minutos.";
     }
     if (
       text.includes("failed to fetch") ||
@@ -474,6 +534,10 @@
       window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
     ).replace(/\/$/, "");
     const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback.html`);
+    redirectUrl.searchParams.set(
+      "source",
+      window.Capacitor?.isNativePlatform?.() ? "app" : "web"
+    );
     if (nextPage !== "index.html") {
       redirectUrl.searchParams.set("next", nextPage);
     }
@@ -513,6 +577,10 @@
         window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
       ).replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      verificationUrl.searchParams.set(
+        "source",
+        window.Capacitor?.isNativePlatform?.() ? "app" : "web"
+      );
       verificationUrl.searchParams.set("next", nextPage);
 
       const { data, error } = await client.auth.signUp({
@@ -592,6 +660,22 @@
       return;
     }
 
+    const lastRecoverySentAt = Number(
+      window.localStorage.getItem(recoveryCooldownKey) || 0
+    );
+    const recoveryRemaining = Math.max(
+      0,
+      Math.ceil((lastRecoverySentAt + resendCooldownMs - Date.now()) / 1000)
+    );
+    if (recoveryRemaining > 0) {
+      setMessage(
+        elements.recoveryMessage,
+        `Ya pediste un enlace. Esperá ${recoveryRemaining} segundos o revisá Spam.`,
+        "info"
+      );
+      return;
+    }
+
     setButtonBusy(elements.recoverySubmit, true);
     elements.recoveryEmail.disabled = true;
     setMessage(elements.recoveryMessage, "Enviando el enlace seguro…", "loading");
@@ -603,6 +687,8 @@
 
       if (error) throw error;
 
+      window.localStorage.setItem(recoveryCooldownKey, String(Date.now()));
+
       setMessage(
         elements.recoveryMessage,
         "Si existe una cuenta con ese email, vas a recibir un enlace para cambiar la contraseña. Revisá también Spam.",
@@ -610,6 +696,16 @@
       );
     } catch (error) {
       console.error("Error al recuperar la contraseña:", error);
+      if (
+        error?.status === 429 ||
+        error?.code === "over_email_send_rate_limit" ||
+        /rate limit|too many/i.test(String(error?.message || ""))
+      ) {
+        window.localStorage.setItem(
+          emailRateLimitUntilKey,
+          String(Date.now() + 60 * 60 * 1000)
+        );
+      }
       setMessage(elements.recoveryMessage, mapAuthError(error, "recovery"), "error");
     } finally {
       setButtonBusy(elements.recoverySubmit, false);

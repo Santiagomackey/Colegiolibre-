@@ -1,0 +1,44 @@
+COLEGIOLIBRE — SMTP OBLIGATORIO ANTES DEL LANZAMIENTO
+=====================================================
+
+PROBLEMA COMPROBADO
+-------------------
+La configuración de Supabase exige confirmación de email correctamente
+(mailer_autoconfirm=false), pero el proveedor de correo integrado de Supabase
+sólo permite 2 emails por hora para todo el proyecto. Registro, reenvío de
+confirmación y recuperación de contraseña comparten ese mismo límite.
+
+Por eso puede aparecer "demasiados intentos" aunque una persona haya probado
+pocas veces, o un correo puede no llegar durante las pruebas.
+
+SOLUCIÓN NECESARIA
+------------------
+Configurar un proveedor SMTP propio en:
+
+Supabase > Project Settings > Authentication > SMTP Settings
+
+Se puede usar Resend, SendGrid, AWS SES u otro proveedor SMTP. Se necesitan:
+
+- Host SMTP
+- Puerto
+- Usuario
+- Contraseña
+- Email remitente verificado
+- Nombre del remitente: ColegioLibre
+
+Después de guardarlo:
+
+1. Ir a Authentication > Rate Limits.
+2. Ajustar el límite de emails a un valor adecuado para la prueba o lanzamiento.
+3. Eliminar las cuentas de prueba pendientes.
+4. Esperar a que termine cualquier bloqueo anterior.
+5. Probar, con correos distintos:
+   a. Crear cuenta y confirmar email.
+   b. Reenviar confirmación después de 60 segundos.
+   c. Recuperar contraseña y crear una nueva.
+
+IMPORTANTE
+----------
+El frontend no puede eliminar un límite impuesto por el servidor de correo.
+La versión 1.0.18 evita solicitudes duplicadas, explica correctamente el error
+y protege las redirecciones, pero el envío confiable requiere SMTP propio.
