@@ -236,6 +236,7 @@
 
   async function checkVerificationStatus({ automatic = false } = {}) {
     if (verificationCheckBusy || !pendingVerificationEmail) return;
+
     if (!pendingVerificationPassword) {
       if (!automatic) {
         window.localStorage.removeItem("colegiolibre-pending-verification");
@@ -247,9 +248,13 @@
       }
       return;
     }
+
     verificationCheckBusy = true;
     setButtonBusy(elements.verificationCheck, true);
-    if (!automatic) setMessage(elements.verificationMessage, "Comprobando la confirmación…", "loading");
+    if (!automatic) {
+      setMessage(elements.verificationMessage, "Comprobando la confirmación…", "loading");
+    }
+
     try {
       const { data, error } = await client.auth.signInWithPassword({
         email: pendingVerificationEmail,
@@ -257,6 +262,7 @@
       });
       if (error) throw error;
       if (!data?.session?.user) throw new Error("No se pudo iniciar la sesión confirmada.");
+
       pendingVerificationPassword = "";
       window.localStorage.removeItem("colegiolibre-pending-verification");
       window.clearTimeout(verificationCheckTimer);
@@ -264,11 +270,16 @@
       window.setTimeout(() => window.location.assign(nextPage), 450);
     } catch (error) {
       const text = String(error?.message || "").toLowerCase();
-      const stillPending = error?.code === "email_not_confirmed" || text.includes("email not confirmed");
+      const stillPending =
+        error?.code === "email_not_confirmed" || text.includes("email not confirmed");
       if (!automatic) {
-        setMessage(elements.verificationMessage, stillPending
-          ? "Todavía no figura confirmado. Si ya tocaste el enlace, esperá unos segundos y probá otra vez."
-          : mapAuthError(error, "login"), stillPending ? "info" : "error");
+        setMessage(
+          elements.verificationMessage,
+          stillPending
+            ? "Todavía no figura confirmado. Si ya tocaste el enlace, esperá unos segundos y probá otra vez."
+            : mapAuthError(error, "login"),
+          stillPending ? "info" : "error"
+        );
       }
     } finally {
       verificationCheckBusy = false;

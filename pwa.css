@@ -105,12 +105,58 @@
   }
 
   .pwa-install-card {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    gap: 11px;
+    padding: 13px;
   }
 
   .pwa-install-card__actions {
-    grid-column: 1 / -1;
-    justify-content: flex-end;
+    grid-column: auto;
+    justify-content: initial;
+  }
+
+  .pwa-install-card__icon {
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba(202, 214, 231, 0.75);
+    border-radius: 15px;
+  }
+
+  .pwa-install-card strong {
+    font-size: 0.88rem;
+  }
+
+  .pwa-install-card p {
+    font-size: 0.74rem;
+  }
+
+  .pwa-install-card button {
+    min-height: 42px;
+  }
+
+  .pwa-install-card .pwa-install-card__dismiss {
+    width: 36px;
+  }
+}
+
+@media (max-width: 390px) {
+  .pwa-install-card {
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 11px;
+  }
+
+  .pwa-install-card__icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .pwa-install-card__copy p {
+    display: none;
+  }
+
+  .pwa-install-card button {
+    padding-inline: 10px;
   }
 }
 
