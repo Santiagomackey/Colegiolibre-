@@ -426,7 +426,7 @@
       id: onboardingUser.id,
       name: formValues.name,
       school_code: school.community_code || school.code,
-      school_name: school.display_name || school.name,
+      school_name: preferredSchoolName(school),
       zone_code: school.zone_code || school.city || school.province || null
     };
 

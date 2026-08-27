@@ -49,9 +49,11 @@
     if (
       !isMobileDevice ||
       !isHome ||
-      isStandalone ||
-      document.getElementById("pwa-install-card")
+      isStandalone
     ) return null;
+
+    const existingCard = document.getElementById("pwa-install-card");
+    if (existingCard) return existingCard;
 
     const text = copy();
     const card = document.createElement("aside");
