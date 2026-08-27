@@ -83,6 +83,7 @@
     updateMessage: document.querySelector("#password-update-message"),
     verificationEmail: document.querySelector("#verification-email"),
     verificationOpenEmail: document.querySelector("#verification-open-email"),
+    verificationCheck: document.querySelector("#verification-check"),
     verificationResend: document.querySelector("#verification-resend"),
     verificationChange: document.querySelector("#verification-change"),
     verificationMessage: document.querySelector("#verification-message")
@@ -170,6 +171,10 @@
   }
 
   let pendingVerificationEmail = "";
+  let pendingVerificationPassword = "";
+  let verificationCheckTimer = 0;
+  let verificationCheckBusy = false;
+  const verificationCheckIntervalMs = 20_000;
   const resendCooldownMs = 60_000;
   const resendCooldownKey = "colegiolibre-verification-resend-at";
   const emailRateLimitUntilKey = "colegiolibre-email-rate-limit-until";
@@ -218,6 +223,58 @@
         : "Abrir mi correo";
     }
     updateResendButton();
+    scheduleVerificationCheck();
+  }
+
+  function scheduleVerificationCheck() {
+    window.clearTimeout(verificationCheckTimer);
+    if (!pendingVerificationPassword || elements.verificationView.hidden) return;
+    verificationCheckTimer = window.setTimeout(() => {
+      checkVerificationStatus({ automatic: true });
+    }, verificationCheckIntervalMs);
+  }
+
+  async function checkVerificationStatus({ automatic = false } = {}) {
+    if (verificationCheckBusy || !pendingVerificationEmail) return;
+    if (!pendingVerificationPassword) {
+      if (!automatic) {
+        window.localStorage.removeItem("colegiolibre-pending-verification");
+        setVisibleView("standard");
+        setMode("login", false);
+        elements.email.value = pendingVerificationEmail;
+        setMessage(elements.message, "Tu email ya puede estar confirmado. Ingresá tu contraseña para continuar.", "info");
+        elements.password.focus();
+      }
+      return;
+    }
+    verificationCheckBusy = true;
+    setButtonBusy(elements.verificationCheck, true);
+    if (!automatic) setMessage(elements.verificationMessage, "Comprobando la confirmación…", "loading");
+    try {
+      const { data, error } = await client.auth.signInWithPassword({
+        email: pendingVerificationEmail,
+        password: pendingVerificationPassword
+      });
+      if (error) throw error;
+      if (!data?.session?.user) throw new Error("No se pudo iniciar la sesión confirmada.");
+      pendingVerificationPassword = "";
+      window.localStorage.removeItem("colegiolibre-pending-verification");
+      window.clearTimeout(verificationCheckTimer);
+      setMessage(elements.verificationMessage, "Email confirmado. Continuamos…", "success");
+      window.setTimeout(() => window.location.assign(nextPage), 450);
+    } catch (error) {
+      const text = String(error?.message || "").toLowerCase();
+      const stillPending = error?.code === "email_not_confirmed" || text.includes("email not confirmed");
+      if (!automatic) {
+        setMessage(elements.verificationMessage, stillPending
+          ? "Todavía no figura confirmado. Si ya tocaste el enlace, esperá unos segundos y probá otra vez."
+          : mapAuthError(error, "login"), stillPending ? "info" : "error");
+      }
+    } finally {
+      verificationCheckBusy = false;
+      setButtonBusy(elements.verificationCheck, false);
+      scheduleVerificationCheck();
+    }
   }
 
   function emailInboxUrl(email) {
@@ -609,6 +666,7 @@
         throw configurationError;
       }
 
+      pendingVerificationPassword = elements.password.value;
       showVerificationView(elements.email.value.trim());
       startResendCooldown();
       elements.password.value = "";
@@ -868,10 +926,13 @@
   elements.updateForm.addEventListener("submit", submitPasswordUpdate);
   elements.verificationResend.addEventListener("click", resendVerificationEmail);
   elements.verificationOpenEmail.addEventListener("click", openEmailInbox);
+  elements.verificationCheck.addEventListener("click", () => checkVerificationStatus());
   elements.verificationChange.addEventListener("click", () => {
     window.localStorage.removeItem("colegiolibre-pending-verification");
     window.localStorage.removeItem(resendCooldownKey);
     window.clearTimeout(resendCountdownTimer);
+    window.clearTimeout(verificationCheckTimer);
+    pendingVerificationPassword = "";
     setVisibleView("standard");
     setMode("register", false);
     elements.email.focus();
@@ -904,6 +965,8 @@
     "pagehide",
     () => {
       window.clearTimeout(resendCountdownTimer);
+      window.clearTimeout(verificationCheckTimer);
+      pendingVerificationPassword = "";
       authListener?.data?.subscription?.unsubscribe?.();
     },
     { once: true }
