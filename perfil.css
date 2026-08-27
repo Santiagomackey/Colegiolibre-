@@ -1352,14 +1352,21 @@ body[data-sidebar-open="true"] .layout-overlay {
 }
 
 .profile-avatar {
+  flex: 0 0 72px;
   width: 72px;
   height: 72px;
+  min-width: 72px;
+  min-height: 72px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: white;
   color: #0b2e6b;
-  font-size: 34px;
+  font-size: 30px;
+  line-height: 1;
+  white-space: nowrap;
   font-weight: 900;
 }
 
