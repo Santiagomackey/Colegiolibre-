@@ -291,7 +291,6 @@
       const button = document.createElement("button");
       const title = document.createElement("strong");
       const location = document.createElement("span");
-      const details = document.createElement("small");
 
       button.className = "school-result";
       button.type = "button";
@@ -299,9 +298,8 @@
 
       title.textContent = preferredSchoolName(school);
       location.textContent = formatSchoolLocation(school);
-      details.textContent = formatSchoolDetails(school);
 
-      button.append(title, location, details);
+      button.append(title, location);
       button.addEventListener("click", () => selectSchool(school));
       fragment.append(button);
     });
@@ -567,17 +565,22 @@
     ].join(" ").toLocaleLowerCase("es");
 
     if (searchable.includes("eccleston")) return "Eccleston School";
-    return school?.display_name || school?.name || "Colegio sin nombre";
-  }
 
-  function formatSchoolDetails(school) {
-    const address = String(school.address || "").trim();
-    const location = formatSchoolLocation(school);
-    const levels = Array.isArray(school.education_levels)
-      ? school.education_levels.join(" y ")
-      : "";
-    const code = school.code ? `Código ${school.code}` : "";
-    return [address, location, levels, code].filter(Boolean).join(" · ");
+    const locationNames = new Set(
+      [school?.city, school?.province, school?.zone_code]
+        .map((value) => String(value || "").trim().toLocaleLowerCase("es"))
+        .filter(Boolean)
+    );
+    const candidates = [
+      school?.display_name,
+      school?.name,
+      school?.official_name,
+      school?.short_name
+    ];
+    return candidates.find((candidate) => {
+      const value = String(candidate || "").trim();
+      return value && !locationNames.has(value.toLocaleLowerCase("es"));
+    }) || "Colegio sin nombre";
   }
 
   window.initOnboarding = initOnboarding;

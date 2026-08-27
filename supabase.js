@@ -359,9 +359,21 @@ function safeSchoolRecord(school) {
     school && school.code,
     school && school.address
   ].join(" ").toLocaleLowerCase("es");
+  const locationNames = new Set(
+    [school && school.city, school && school.province, school && school.zone_code]
+      .map((value) => String(value || "").trim().toLocaleLowerCase("es"))
+      .filter(Boolean)
+  );
   const preferredName = schoolSearchableName.includes("eccleston")
     ? "Eccleston School"
-    : (school && (school.display_name || school.name)) || "Colegio sin nombre";
+    : [
+        school && school.display_name,
+        school && school.name,
+        school && school.short_name
+      ].find((candidate) => {
+        const value = String(candidate || "").trim();
+        return value && !locationNames.has(value.toLocaleLowerCase("es"));
+      }) || "Colegio sin nombre";
 
   return {
     accent_color: (school && school.accent_color) || "#FFC72C",

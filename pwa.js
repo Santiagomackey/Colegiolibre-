@@ -6,6 +6,9 @@
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
   const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+  const isMobileDevice =
+    window.navigator.userAgentData?.mobile === true ||
+    /iphone|ipod|android.+mobile|windows phone/i.test(window.navigator.userAgent);
   const isHome = ["", "/", "/index.html"].includes(window.location.pathname);
   let installPrompt = null;
   let refreshing = false;
@@ -43,7 +46,12 @@
   }
 
   function createInstallCard() {
-    if (!isHome || isStandalone || document.getElementById("pwa-install-card")) return null;
+    if (
+      !isMobileDevice ||
+      !isHome ||
+      isStandalone ||
+      document.getElementById("pwa-install-card")
+    ) return null;
 
     const text = copy();
     const card = document.createElement("aside");
