@@ -2,15 +2,18 @@
   "use strict";
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
+  const APK_URL = "./downloads/ColegioLibre-1.0.22.apk";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
-  const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+  const isAndroid = /android/i.test(window.navigator.userAgent);
+  const isNativeApp =
+    window.Capacitor?.isNativePlatform?.() === true ||
+    window.location.protocol === "capacitor:";
   const isMobileDevice =
     window.navigator.userAgentData?.mobile === true ||
     /iphone|ipod|android.+mobile|windows phone/i.test(window.navigator.userAgent);
   const isHome = ["", "/", "/index.html"].includes(window.location.pathname);
-  let installPrompt = null;
   let refreshing = false;
 
   if (isStandalone) document.documentElement.dataset.displayMode = "standalone";
@@ -22,10 +25,9 @@
   function copy() {
     return language() === "en"
       ? {
-          installTitle: "Install ColegioLibre",
-          installText: "Use it like an app from your home screen.",
-          iosText: "In Safari, tap Share and then “Add to Home Screen”.",
-          install: "Install",
+          installTitle: "Download ColegioLibre",
+          installText: "Android version 1.0.22 · 9.5 MB",
+          install: "Download APK",
           close: "Not now",
           updateTitle: "A new version is ready",
           updateText: "Update to get the latest improvements.",
@@ -33,10 +35,9 @@
           later: "Later"
         }
       : {
-          installTitle: "Instalá ColegioLibre",
-          installText: "Usala como una app desde tu pantalla de inicio.",
-          iosText: "En Safari, tocá Compartir y después “Agregar a inicio”.",
-          install: "Instalar",
+          installTitle: "Descargá ColegioLibre",
+          installText: "Versión Android 1.0.22 · 9,5 MB",
+          install: "Descargar APK",
           close: "Ahora no",
           updateTitle: "Hay una nueva versión",
           updateText: "Actualizá para recibir las últimas mejoras.",
@@ -48,6 +49,8 @@
   function createInstallCard() {
     if (
       !isMobileDevice ||
+      !isAndroid ||
+      isNativeApp ||
       !isHome ||
       isStandalone
     ) return null;
@@ -65,7 +68,7 @@
       <img class="pwa-install-card__icon" src="./images/icon-192.png" alt="" />
       <div class="pwa-install-card__copy">
         <strong>${text.installTitle}</strong>
-        <p>${isIOS ? text.iosText : text.installText}</p>
+        <p>${text.installText}</p>
       </div>
       <div class="pwa-install-card__actions">
         <button id="pwa-install-button" type="button">${text.install}</button>
@@ -79,12 +82,8 @@
       card.hidden = true;
     });
 
-    card.querySelector("#pwa-install-button").addEventListener("click", async () => {
-      if (!installPrompt) return;
-      installPrompt.prompt();
-      await installPrompt.userChoice;
-      installPrompt = null;
-      card.hidden = true;
+    card.querySelector("#pwa-install-button").addEventListener("click", () => {
+      window.location.assign(APK_URL);
     });
 
     return card;
@@ -94,9 +93,7 @@
     if (sessionStorage.getItem(DISMISS_KEY) === "true") return;
     const card = createInstallCard();
     if (!card) return;
-    const installButton = card.querySelector("#pwa-install-button");
-    installButton.hidden = isIOS || !installPrompt;
-    card.hidden = !(installPrompt || isIOS);
+    card.hidden = false;
   }
 
   function showUpdate(registration) {
@@ -126,12 +123,10 @@
 
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
-    installPrompt = event;
     showInstallCard();
   });
 
   window.addEventListener("appinstalled", () => {
-    installPrompt = null;
     document.getElementById("pwa-install-card")?.remove();
   });
 
