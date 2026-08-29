@@ -5,6 +5,32 @@
   const isNative = Boolean(capacitor?.isNativePlatform?.());
   if (isNative) document.documentElement.dataset.nativeApp = capacitor.getPlatform?.() || "true";
 
+  // Capacitor serves bundled HTML/JS from a local app origin. Relative `/api/...`
+  // requests would otherwise stay inside the WebView and never reach Vercel.
+  // Route all ColegioLibre backend calls through the production web origin.
+  if (isNative && !window.__colegioLibreNativeFetchPatched) {
+    window.__colegioLibreNativeFetchPatched = true;
+    const originalFetch = window.fetch.bind(window);
+    window.fetch = (input, init) => {
+      let nextInput = input;
+
+      if (typeof input === "string" && input.startsWith("/api/")) {
+        nextInput = `https://colegiolibre.com${input}`;
+      } else if (input instanceof Request) {
+        try {
+          const url = new URL(input.url);
+          if ((url.hostname === "localhost" || url.hostname.endsWith(".localhost")) && url.pathname.startsWith("/api/")) {
+            nextInput = new Request(`https://colegiolibre.com${url.pathname}${url.search}`, input);
+          }
+        } catch (_error) {
+          // Keep the original request if it cannot be normalized.
+        }
+      }
+
+      return originalFetch(nextInput, init);
+    };
+  }
+
   async function takePhoto() {
     if (!isNative || !capacitor.Plugins?.Camera) return null;
     try {
