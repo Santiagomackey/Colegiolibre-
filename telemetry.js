@@ -13,27 +13,10 @@
 
   window.dataLayer = window.dataLayer || [];
 
+  // Keep the official gtag dataLayer shape. Google expects the Arguments object,
+  // not a converted Array; converting it can prevent collect requests entirely.
   window.gtag = function () {
-    const args = Array.from(arguments);
-
-    if (args[0] === "event") {
-      const eventName = String(args[1] || "");
-      const parameters = args[2] && typeof args[2] === "object" ? args[2] : {};
-      const fingerprint = `${eventName}:${JSON.stringify(parameters)}`;
-      const now = Date.now();
-      const previous = recentEvents.get(fingerprint) || 0;
-
-      if (now - previous < DEDUPE_MS) return;
-      recentEvents.set(fingerprint, now);
-
-      if (recentEvents.size > 80) {
-        for (const [key, timestamp] of recentEvents) {
-          if (now - timestamp > 15000) recentEvents.delete(key);
-        }
-      }
-    }
-
-    window.dataLayer.push(args);
+    window.dataLayer.push(arguments);
   };
 
   window.gtag("js", new Date());
@@ -43,6 +26,19 @@
 
   window.trackColegioLibreEvent = function (eventName, parameters = {}) {
     if (!eventName || typeof window.gtag !== "function") return;
+
+    const fingerprint = `${eventName}:${JSON.stringify(parameters)}`;
+    const now = Date.now();
+    const previous = recentEvents.get(fingerprint) || 0;
+    if (now - previous < DEDUPE_MS) return;
+
+    recentEvents.set(fingerprint, now);
+    if (recentEvents.size > 80) {
+      for (const [key, timestamp] of recentEvents) {
+        if (now - timestamp > 15000) recentEvents.delete(key);
+      }
+    }
+
     window.gtag("event", eventName, parameters);
   };
 
@@ -327,7 +323,7 @@
         error_message: safeMessage,
         line_number: Number.isFinite(line) ? line : null,
         column_number: Number.isFinite(column) ? column : null,
-        app_version: "web-20260829-ga4-events"
+        app_version: "web-20260829-ga4-events-fix"
       });
     } catch (_error) {}
   }
