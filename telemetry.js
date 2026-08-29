@@ -6,6 +6,8 @@
   const DEDUPE_MS = 2000;
   const recentEvents = new Map();
   const PENDING_LOGIN_KEY = "colegiolibre-ga-pending-login";
+  const PUBLISH_DRAFT_KEY = "colegiolibre-ga-publish-draft";
+  const PENDING_PUBLISH_KEY = "colegiolibre-ga-pending-publish";
 
   const script = document.createElement("script");
   script.async = true;
@@ -90,8 +92,6 @@
             );
           } catch (_error) {}
 
-          // Send immediately on the login page as well. transport_type=beacon
-          // makes the request resilient to the redirect that follows auth.
           window.gtag("event", "login", {
             method: "email",
             transport_type: "beacon"
@@ -126,34 +126,94 @@
   }
 
   function restorePendingPublish() {
-    const key = "colegiolibre-ga-pending-publish";
-    const raw = window.sessionStorage.getItem(key);
+    const raw = window.sessionStorage.getItem(PENDING_PUBLISH_KEY);
     if (!raw) return;
 
-    window.sessionStorage.removeItem(key);
     try {
       const pending = JSON.parse(raw);
-      if (!pending?.at || Date.now() - Number(pending.at) > 20000) return;
+      if (!pending?.at || Date.now() - Number(pending.at) > 30000) {
+        window.sessionStorage.removeItem(PENDING_PUBLISH_KEY);
+        return;
+      }
       if (pageName() === "publicar.html") return;
+
+      window.sessionStorage.removeItem(PENDING_PUBLISH_KEY);
       window.trackColegioLibreEvent("publish_product", {
         category: String(pending.category || "unknown").slice(0, 60),
         condition: String(pending.condition || "unknown").slice(0, 40),
         price_range: String(pending.price_range || "unknown")
       });
-    } catch (_error) {}
+    } catch (_error) {
+      window.sessionStorage.removeItem(PENDING_PUBLISH_KEY);
+    }
   }
 
   function bindPublishTracking() {
     const form = document.getElementById("publish-form");
+    const toast = document.getElementById("toast");
     if (!form) return;
+
+    const existingDraft = window.sessionStorage.getItem(PUBLISH_DRAFT_KEY);
+    if (existingDraft) {
+      try {
+        const parsed = JSON.parse(existingDraft);
+        if (!parsed?.at || Date.now() - Number(parsed.at) > 60000) {
+          window.sessionStorage.removeItem(PUBLISH_DRAFT_KEY);
+        }
+      } catch (_error) {
+        window.sessionStorage.removeItem(PUBLISH_DRAFT_KEY);
+      }
+    }
+
     form.addEventListener("submit", () => {
       const category = form.querySelector("#categoria")?.value || "unknown";
       const condition = form.querySelector('input[name="estado"]:checked')?.value || "unknown";
       const price = form.querySelector("#precio")?.value;
+
       window.sessionStorage.setItem(
-        "colegiolibre-ga-pending-publish",
-        JSON.stringify({ at: Date.now(), category, condition, price_range: priceRange(price) })
+        PUBLISH_DRAFT_KEY,
+        JSON.stringify({
+          at: Date.now(),
+          category,
+          condition,
+          price_range: priceRange(price)
+        })
       );
+    });
+
+    if (!toast) return;
+
+    const confirmSuccessfulPublish = () => {
+      const message = String(toast.textContent || "").toLowerCase();
+      if (!message.includes("producto recibido")) return;
+
+      const rawDraft = window.sessionStorage.getItem(PUBLISH_DRAFT_KEY);
+      if (!rawDraft) return;
+
+      try {
+        const draft = JSON.parse(rawDraft);
+        if (!draft?.at || Date.now() - Number(draft.at) > 60000) return;
+
+        window.sessionStorage.setItem(
+          PENDING_PUBLISH_KEY,
+          JSON.stringify({
+            at: Date.now(),
+            category: draft.category || "unknown",
+            condition: draft.condition || "unknown",
+            price_range: draft.price_range || "unknown"
+          })
+        );
+        window.sessionStorage.removeItem(PUBLISH_DRAFT_KEY);
+      } catch (_error) {}
+    };
+
+    const observer = new MutationObserver(confirmSuccessfulPublish);
+    observer.observe(toast, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["hidden"]
     });
   }
 
@@ -306,7 +366,7 @@
         error_message: safeMessage,
         line_number: Number.isFinite(line) ? line : null,
         column_number: Number.isFinite(column) ? column : null,
-        app_version: "web-20260829-ga4-auth-beacon"
+        app_version: "web-20260829-ga4-marketplace-events"
       });
     } catch (_error) {}
   }
