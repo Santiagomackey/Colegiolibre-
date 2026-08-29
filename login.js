@@ -342,7 +342,7 @@
        varios navegadores y WebViews de Android. */
     const emailTarget = pendingVerificationEmail
       ? `mailto:${encodeURIComponent(pendingVerificationEmail)}`
-      : "mailto:ayudacolegiolibre@gmail.com";
+      : "mailto:ayuda@colegiolibre.com";
     window.location.assign(emailTarget);
     window.setTimeout(() => {
       setMessage(
