@@ -313,13 +313,10 @@
     const seen = new Set();
 
     return (Array.isArray(schools) ? schools : []).filter((school) => {
-      const cue = normalizeSchoolKey(school?.cue);
       const name = normalizeSchoolKey(preferredSchoolName(school));
       const city = normalizeSchoolKey(school?.city || school?.zone_code);
-      const address = normalizeSchoolKey(school?.address);
-      const key = cue
-        ? `cue:${cue}`
-        : `place:${name}|${city}|${address}`;
+      const province = normalizeSchoolKey(school?.province);
+      const key = `school:${name}|${city}|${province}`;
 
       if (seen.has(key)) return false;
       seen.add(key);
