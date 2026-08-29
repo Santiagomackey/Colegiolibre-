@@ -623,7 +623,11 @@
       });
 
       if (error) throw error;
-
+      if (typeof window.gtag === "function") {
+  window.gtag("event", "login", {
+    method: "email"
+  });
+}
       setMessage(elements.message, "Listo. Estamos abriendo tu cuenta…", "success");
       window.setTimeout(() => {
         window.location.assign(nextPage);
@@ -676,7 +680,11 @@
         configurationError.code = "email_confirmation_disabled";
         throw configurationError;
       }
-
+if (typeof window.gtag === "function") {
+  window.gtag("event", "sign_up", {
+    method: "email"
+  });
+}
       pendingVerificationPassword = elements.password.value;
       showVerificationView(elements.email.value.trim());
       startResendCooldown();
