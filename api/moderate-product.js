@@ -482,14 +482,11 @@ module.exports = async function handler(request, response) {
     try {
       decision = await decide(product);
     } catch (error) {
-      console.error("Fallo el proveedor de moderación:", error);
-      decision = {
-        decision: "manual_review",
-        reason: "No pudimos completar la revisión automática. Un administrador la revisará.",
-        severity: "low",
-        source: "fallback",
-        confidence: 0.5,
-        details: { provider_error: error.message }
+      console.error("Fallo el proveedor de moderación; usando reglas locales seguras:", error);
+      decision = localDecision(product);
+      decision.details = {
+        ...(decision.details || {}),
+        provider_error: String(error?.message || error || "unknown").slice(0, 300)
       };
     }
 
