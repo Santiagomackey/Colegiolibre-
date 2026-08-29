@@ -17,6 +17,15 @@
   window.gtag("config", GA_MEASUREMENT_ID, {
     anonymize_ip: true
   });
+
+  window.trackColegioLibreEvent = function (eventName, parameters = {}) {
+    if (typeof window.gtag !== "function") {
+      console.warn("[Analytics] gtag todavía no está disponible:", eventName);
+      return;
+    }
+
+    window.gtag("event", eventName, parameters);
+  };
 })();
 (() => {
   "use strict";
