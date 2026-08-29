@@ -89,6 +89,13 @@
               JSON.stringify({ at: Date.now(), method: "email" })
             );
           } catch (_error) {}
+
+          // Send immediately on the login page as well. transport_type=beacon
+          // makes the request resilient to the redirect that follows auth.
+          window.gtag("event", "login", {
+            method: "email",
+            transport_type: "beacon"
+          });
         }
       });
     }
@@ -299,7 +306,7 @@
         error_message: safeMessage,
         line_number: Number.isFinite(line) ? line : null,
         column_number: Number.isFinite(column) ? column : null,
-        app_version: "web-20260829-ga4-auth-redirect"
+        app_version: "web-20260829-ga4-auth-beacon"
       });
     } catch (_error) {}
   }
