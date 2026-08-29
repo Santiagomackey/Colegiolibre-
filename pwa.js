@@ -2,18 +2,22 @@
   "use strict";
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
-  const APK_URL = "./downloads/ColegioLibre-1.0.22.apk";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
+  const isIOS =
+    /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+    (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
   const isAndroid = /android/i.test(window.navigator.userAgent);
+  const isMobileDevice =
+    window.navigator.userAgentData?.mobile === true ||
+    isIOS ||
+    isAndroid;
   const isNativeApp =
     window.Capacitor?.isNativePlatform?.() === true ||
     window.location.protocol === "capacitor:";
-  const isMobileDevice =
-    window.navigator.userAgentData?.mobile === true ||
-    /iphone|ipod|android.+mobile|windows phone/i.test(window.navigator.userAgent);
   const isHome = ["", "/", "/index.html"].includes(window.location.pathname);
+  let installPrompt = null;
   let refreshing = false;
 
   if (isStandalone) document.documentElement.dataset.displayMode = "standalone";
@@ -25,9 +29,16 @@
   function copy() {
     return language() === "en"
       ? {
-          installTitle: "Download ColegioLibre",
-          installText: "Android version 1.0.22 · 9.5 MB",
-          install: "Download APK",
+          installTitle: "Install ColegioLibre",
+          installText: "Use it like an app from your home screen.",
+          iosText: "Install the iPhone version from Safari.",
+          install: "Install",
+          iosInstall: "View steps",
+          iosGuideTitle: "Install ColegioLibre on iPhone",
+          iosStepOne: "Open this page in Safari.",
+          iosStepTwo: "Tap the Share button at the bottom of the screen.",
+          iosStepThree: "Choose “Add to Home Screen”, enable “Open as Web App” and tap Add.",
+          understood: "Got it",
           close: "Not now",
           updateTitle: "A new version is ready",
           updateText: "Update to get the latest improvements.",
@@ -35,9 +46,16 @@
           later: "Later"
         }
       : {
-          installTitle: "Descargá ColegioLibre",
-          installText: "Versión Android 1.0.22 · 9,5 MB",
-          install: "Descargar APK",
+          installTitle: "Instalá ColegioLibre",
+          installText: "Usala como una app desde tu pantalla de inicio.",
+          iosText: "Instalá la versión para iPhone desde Safari.",
+          install: "Instalar",
+          iosInstall: "Ver pasos",
+          iosGuideTitle: "Instalar ColegioLibre en iPhone",
+          iosStepOne: "Abrí esta página desde Safari.",
+          iosStepTwo: "Tocá el botón Compartir que aparece abajo en la pantalla.",
+          iosStepThree: "Elegí “Agregar a pantalla de inicio”, activá “Abrir como app” y tocá Agregar.",
+          understood: "Entendido",
           close: "Ahora no",
           updateTitle: "Hay una nueva versión",
           updateText: "Actualizá para recibir las últimas mejoras.",
@@ -49,10 +67,9 @@
   function createInstallCard() {
     if (
       !isMobileDevice ||
-      !isAndroid ||
-      isNativeApp ||
       !isHome ||
-      isStandalone
+      isStandalone ||
+      isNativeApp
     ) return null;
 
     const existingCard = document.getElementById("pwa-install-card");
@@ -68,10 +85,10 @@
       <img class="pwa-install-card__icon" src="./images/icon-192.png" alt="" />
       <div class="pwa-install-card__copy">
         <strong>${text.installTitle}</strong>
-        <p>${text.installText}</p>
+        <p>${isIOS ? text.iosText : text.installText}</p>
       </div>
       <div class="pwa-install-card__actions">
-        <button id="pwa-install-button" type="button">${text.install}</button>
+        <button id="pwa-install-button" type="button">${isIOS ? text.iosInstall : text.install}</button>
         <button class="pwa-install-card__dismiss" id="pwa-install-dismiss" type="button" aria-label="${text.close}">×</button>
       </div>
     `;
@@ -82,18 +99,68 @@
       card.hidden = true;
     });
 
-    card.querySelector("#pwa-install-button").addEventListener("click", () => {
-      window.location.assign(APK_URL);
+    card.querySelector("#pwa-install-button").addEventListener("click", async () => {
+      if (isIOS) {
+        showIOSInstallGuide();
+        return;
+      }
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      card.hidden = true;
     });
 
     return card;
+  }
+
+  function showIOSInstallGuide() {
+    const existingGuide = document.getElementById("pwa-ios-guide");
+    if (existingGuide) {
+      existingGuide.hidden = false;
+      return;
+    }
+
+    const text = copy();
+    const guide = document.createElement("div");
+    guide.className = "pwa-ios-guide";
+    guide.id = "pwa-ios-guide";
+    guide.setAttribute("role", "dialog");
+    guide.setAttribute("aria-modal", "true");
+    guide.setAttribute("aria-labelledby", "pwa-ios-guide-title");
+    guide.innerHTML = `
+      <section class="pwa-ios-guide__card">
+        <img src="./images/icon-192.png" alt="" />
+        <div>
+          <strong id="pwa-ios-guide-title">${text.iosGuideTitle}</strong>
+          <ol>
+            <li>${text.iosStepOne}</li>
+            <li>${text.iosStepTwo}</li>
+            <li>${text.iosStepThree}</li>
+          </ol>
+        </div>
+        <button id="pwa-ios-guide-close" type="button">${text.understood}</button>
+      </section>
+    `;
+    document.body.appendChild(guide);
+
+    const closeGuide = () => {
+      guide.hidden = true;
+      document.getElementById("pwa-install-button")?.focus();
+    };
+    guide.addEventListener("click", (event) => {
+      if (event.target === guide) closeGuide();
+    });
+    guide.querySelector("#pwa-ios-guide-close").addEventListener("click", closeGuide);
   }
 
   function showInstallCard() {
     if (sessionStorage.getItem(DISMISS_KEY) === "true") return;
     const card = createInstallCard();
     if (!card) return;
-    card.hidden = false;
+    const installButton = card.querySelector("#pwa-install-button");
+    installButton.hidden = !isIOS && !installPrompt;
+    card.hidden = !(installPrompt || isIOS);
   }
 
   function showUpdate(registration) {
@@ -123,10 +190,12 @@
 
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
+    installPrompt = event;
     showInstallCard();
   });
 
   window.addEventListener("appinstalled", () => {
+    installPrompt = null;
     document.getElementById("pwa-install-card")?.remove();
   });
 
