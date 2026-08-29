@@ -277,7 +277,9 @@
     const results = byId("school-results");
     results.replaceChildren();
 
-    if (!schools.length) {
+    const uniqueSchools = deduplicateSchools(schools);
+
+    if (!uniqueSchools.length) {
       setSchoolSearchState(
         "empty",
         "No lo encontramos con ese nombre. Probá con la dirección del colegio y su localidad."
@@ -287,7 +289,7 @@
 
     const fragment = document.createDocumentFragment();
 
-    schools.forEach((school) => {
+    uniqueSchools.forEach((school) => {
       const button = document.createElement("button");
       const title = document.createElement("strong");
       const location = document.createElement("span");
@@ -305,6 +307,33 @@
     });
 
     results.append(fragment);
+  }
+
+  function deduplicateSchools(schools) {
+    const seen = new Set();
+
+    return (Array.isArray(schools) ? schools : []).filter((school) => {
+      const cue = normalizeSchoolKey(school?.cue);
+      const name = normalizeSchoolKey(preferredSchoolName(school));
+      const city = normalizeSchoolKey(school?.city || school?.zone_code);
+      const address = normalizeSchoolKey(school?.address);
+      const key = cue
+        ? `cue:${cue}`
+        : `place:${name}|${city}|${address}`;
+
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function normalizeSchoolKey(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("es")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
   }
 
   function selectSchool(school) {

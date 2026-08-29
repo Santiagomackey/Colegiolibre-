@@ -243,6 +243,27 @@ html[data-theme="dark"] :is(input, textarea)::placeholder {
   opacity: 1;
 }
 
+/* School results intentionally stay light inside the dark modal. Keep their
+   text contrast explicit so the global dark-theme heading rule cannot hide it. */
+html[data-theme="dark"] .school-result {
+  background-color: #f8fafc !important;
+  border-color: rgba(11, 46, 107, 0.12) !important;
+}
+
+html[data-theme="dark"] .school-result strong {
+  color: #0b2e6b !important;
+}
+
+html[data-theme="dark"] .school-result span {
+  color: #526987 !important;
+}
+
+html[data-theme="dark"] .school-result:hover,
+html[data-theme="dark"] .school-result:focus-visible {
+  background-color: #edf4ff !important;
+  border-color: rgba(11, 46, 107, 0.28) !important;
+}
+
 html[data-theme="dark"] :is(
   h1,
   h2,
