@@ -43,11 +43,7 @@
 
   window.trackColegioLibreEvent = function (eventName, parameters = {}) {
     if (!eventName || typeof window.gtag !== "function") return;
-
-    window.gtag("event", eventName, {
-      transport_type: "beacon",
-      ...parameters
-    });
+    window.gtag("event", eventName, parameters);
   };
 
   function pageName() {
@@ -148,9 +144,7 @@
         condition: String(pending.condition || "unknown").slice(0, 40),
         price_range: String(pending.price_range || "unknown")
       });
-    } catch (_error) {
-      // Ignore malformed session state.
-    }
+    } catch (_error) {}
   }
 
   function bindPublishTracking() {
@@ -164,12 +158,7 @@
 
       window.sessionStorage.setItem(
         "colegiolibre-ga-pending-publish",
-        JSON.stringify({
-          at: Date.now(),
-          category,
-          condition,
-          price_range: priceRange(price)
-        })
+        JSON.stringify({ at: Date.now(), category, condition, price_range: priceRange(price) })
       );
     });
   }
@@ -207,16 +196,12 @@
         const before = favoriteState(button);
         window.setTimeout(() => {
           const after = favoriteState(button);
+          const itemId = safeProductId() || String(button.getAttribute("data-favorite-button") || "").slice(0, 120);
+
           if (after === true && before !== true) {
-            window.trackColegioLibreEvent("add_to_favorites", {
-              item_id: safeProductId() || String(button.getAttribute("data-favorite-button") || "").slice(0, 120),
-              page: pageName()
-            });
+            window.trackColegioLibreEvent("add_to_favorites", { item_id: itemId, page: pageName() });
           } else if (after === false && before === true) {
-            window.trackColegioLibreEvent("remove_from_favorites", {
-              item_id: safeProductId() || String(button.getAttribute("data-favorite-button") || "").slice(0, 120),
-              page: pageName()
-            });
+            window.trackColegioLibreEvent("remove_from_favorites", { item_id: itemId, page: pageName() });
           }
         }, 900);
       },
@@ -230,14 +215,11 @@
     if (!form || !input) return;
 
     form.addEventListener("submit", () => {
-      const hadMessage = Boolean(String(input.value || "").trim());
-      if (!hadMessage) return;
+      if (!String(input.value || "").trim()) return;
 
       window.setTimeout(() => {
         if (!String(input.value || "").trim()) {
-          window.trackColegioLibreEvent("message_sent", {
-            page: "mensajes.html"
-          });
+          window.trackColegioLibreEvent("message_sent", { page: "mensajes.html" });
         }
       }, 1200);
     });
@@ -271,17 +253,13 @@
         ).toLowerCase();
 
         if (!/vendid|sold/.test(action)) return;
-        if (!/marcar|mark|vendid|sold/.test(action)) return;
 
         window.setTimeout(() => {
           const card = target.closest("[data-product-id], .publication-card");
           const itemId = String(card?.getAttribute("data-product-id") || "").slice(0, 120);
           const statusText = String(card?.textContent || target.textContent || "").toLowerCase();
           if (/vendid|sold/.test(statusText)) {
-            window.trackColegioLibreEvent("product_sold", {
-              item_id: itemId,
-              page: pageName()
-            });
+            window.trackColegioLibreEvent("product_sold", { item_id: itemId, page: pageName() });
           }
         }, 1200);
       },
@@ -351,9 +329,7 @@
         column_number: Number.isFinite(column) ? column : null,
         app_version: "web-20260829-ga4-events"
       });
-    } catch (_error) {
-      // El monitoreo nunca debe interrumpir la experiencia principal.
-    }
+    } catch (_error) {}
   }
 
   window.addEventListener("error", (event) => {
