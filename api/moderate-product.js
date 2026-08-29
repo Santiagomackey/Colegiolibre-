@@ -14,7 +14,6 @@ const ALLOWED_CATEGORIES = new Set([
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SUPABASE_TIMEOUT_MS = 10_000;
-const PROVIDER_TIMEOUT_MS = 18_000;
 
 const CRITICAL_PATTERNS = [
   /\b(arma|armas|pistola|revolver|revólver|municion|munición|explosivo)\b/i,
@@ -26,10 +25,7 @@ const BLOCK_PATTERNS = [
   /\b(vape|vaper|cigarrillo|tabaco|alcohol|cerveza|vodka)\b/i,
   /\b(dni falso|certificado falso|documento falso|entrada falsa)\b/i,
   /\b(medicamento|pastillas|receta médica)\b/i,
-  /\b(robado|robada|sin número de serie)\b/i
-];
-
-const REVIEW_PATTERNS = [
+  /\b(robado|robada|sin número de serie)\b/i,
   /\b(transferime|transferencia antes|seña por fuera|pago por fuera)\b/i,
   /\b(whatsapp|telegram)\b/i,
   /https?:\/\//i
@@ -45,12 +41,8 @@ function sendJson(response, status, body) {
 async function fetchWithTimeout(url, options = {}, timeoutMs = SUPABASE_TIMEOUT_MS) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
   try {
-    return await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
+    return await fetch(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timeoutId);
   }
@@ -66,17 +58,16 @@ function normalize(value) {
 
 function productText(product) {
   return [
-    `Título: ${product.title || ""}`,
-    `Categoría: ${product.category || ""}`,
-    `Descripción: ${product.description || ""}`,
-    `Estado: ${product.condition || ""}`,
-    `Precio ARS: ${product.price || ""}`,
-    `Nivel: ${product.school_level || ""}`,
-    `Año: ${product.school_year || ""}`,
-    `Materia: ${product.subject || ""}`,
-    `Subcategoría: ${product.subcategory || ""}`,
-    `Talle: ${product.size || ""}`
-  ].join("\n");
+    product.title,
+    product.category,
+    product.description,
+    product.condition,
+    product.subject,
+    product.subcategory,
+    product.size
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function localDecision(product) {
@@ -88,39 +79,25 @@ function localDecision(product) {
       decision: "rejected",
       reason: "El contenido parece incluir un artículo peligroso o prohibido.",
       severity: "critical",
-      source: "fallback",
-      confidence: 0.98
+      source: "local"
     };
   }
 
   if (BLOCK_PATTERNS.some((pattern) => pattern.test(text))) {
     return {
       decision: "rejected",
-      reason: "El producto no está permitido en un marketplace escolar.",
+      reason: "La publicación contiene contenido o datos que no están permitidos en ColegioLibre.",
       severity: "high",
-      source: "fallback",
-      confidence: 0.94
-    };
-  }
-
-  if (REVIEW_PATTERNS.some((pattern) => pattern.test(text))) {
-    return {
-      decision: "rejected",
-      reason:
-        "No compartas datos de contacto, enlaces ni propuestas de pago por fuera de ColegioLibre.",
-      severity: "medium",
-      source: "fallback",
-      confidence: 0.96
+      source: "local"
     };
   }
 
   if (!ALLOWED_CATEGORIES.has(category)) {
     return {
-      decision: "manual_review",
-      reason: "La categoría no pudo identificarse con suficiente seguridad.",
-      severity: "low",
-      source: "fallback",
-      confidence: 0.62
+      decision: "rejected",
+      reason: "La categoría no está permitida en ColegioLibre.",
+      severity: "medium",
+      source: "local"
     };
   }
 
@@ -128,68 +105,34 @@ function localDecision(product) {
     decision: "approved",
     reason: "Publicación escolar aprobada automáticamente.",
     severity: "low",
-    source: "fallback",
-    confidence: 0.88
+    source: "local"
   };
 }
 
-async function supabaseRequest(path, options = {}, useServiceRole = false) {
+function env() {
   const baseUrl = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const anonKey = process.env.SUPABASE_ANON_KEY;
-  const apiKey = useServiceRole ? serviceRoleKey : anonKey;
-
-  if (!baseUrl || !apiKey) {
+  if (!baseUrl || !serviceRoleKey || !anonKey) {
     throw new Error("Faltan variables privadas de Supabase en Vercel.");
   }
-
-  const response = await fetchWithTimeout(`${baseUrl}${path}`, {
-    ...options,
-    headers: {
-      apikey: apiKey,
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  });
-
-  const raw = await response.text();
-  let data = null;
-
-  try {
-    data = raw ? JSON.parse(raw) : null;
-  } catch {
-    data = raw;
-  }
-
-  if (!response.ok) {
-    const message = data?.message || data?.msg || data?.error_description || raw;
-    throw new Error(message || `Supabase respondió ${response.status}.`);
-  }
-
-  return data;
+  return { baseUrl, serviceRoleKey, anonKey };
 }
 
 async function authenticateUser(accessToken) {
-  const baseUrl = process.env.SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
-
-  if (!baseUrl || !anonKey) {
-    throw new Error("Faltan SUPABASE_URL o SUPABASE_ANON_KEY.");
-  }
-
+  const { baseUrl, anonKey } = env();
   const response = await fetchWithTimeout(`${baseUrl}/auth/v1/user`, {
     headers: {
       apikey: anonKey,
       Authorization: `Bearer ${accessToken}`
     }
   });
-
   if (!response.ok) return null;
   return response.json();
 }
 
 async function loadProduct(productId) {
+  const { baseUrl, serviceRoleKey } = env();
   const fields = [
     "id",
     "user_id",
@@ -198,240 +141,72 @@ async function loadProduct(productId) {
     "condition",
     "price",
     "description",
-    "image_url",
     "school_level",
     "school_year",
     "subject",
     "subcategory",
     "size",
+    "status",
     "moderation_status"
   ].join(",");
 
-  const rows = await supabaseRequest(
-    `/rest/v1/products?id=eq.${encodeURIComponent(productId)}&select=${fields}&limit=1`,
-    {},
-    true
+  const response = await fetchWithTimeout(
+    `${baseUrl}/rest/v1/products?id=eq.${encodeURIComponent(productId)}&select=${fields}&limit=1`,
+    {
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`
+      }
+    }
   );
 
+  if (!response.ok) {
+    throw new Error(`No se pudo leer la publicación (${response.status}).`);
+  }
+
+  const rows = await response.json();
   return Array.isArray(rows) ? rows[0] || null : null;
 }
 
-async function matchDatabaseRules(product) {
-  const rules = await supabaseRequest(
-    "/rest/v1/prohibited_product_rules?is_active=eq.true&select=field,match_type,pattern,severity,reason,adds_strike",
-    {},
-    true
-  );
-
-  const values = {
-    title: normalize(product.title),
-    description: normalize(product.description),
-    category: normalize(product.category)
-  };
-  values.all = `${values.title} ${values.description} ${values.category}`.trim();
-
-  for (const rule of rules || []) {
-    const field = values[rule.field] === undefined ? "all" : rule.field;
-    const expected = normalize(rule.pattern);
-    const actual = values[field];
-    const matches =
-      rule.match_type === "exact"
-        ? actual === expected
-        : expected.length >= 2 && actual.includes(expected);
-
-    if (!matches) continue;
-
-    return {
-      decision: rule.severity === "block" ? "rejected" : "manual_review",
-      reason: rule.reason,
-      severity:
-        rule.severity === "block" && rule.adds_strike ? "high" : "medium",
-      source: "rules",
-      confidence: 1,
-      details: {
-        matched_rule: rule.pattern,
-        field: rule.field,
-        adds_strike: Boolean(rule.adds_strike)
-      }
-    };
-  }
-
-  return null;
-}
-
-async function callOpenAIModeration(product, apiKey) {
-  const input = [{ type: "text", text: productText(product) }];
-
-  if (/^https:\/\//i.test(String(product.image_url || ""))) {
-    input.push({
-      type: "image_url",
-      image_url: { url: product.image_url }
-    });
-  }
-
-  async function request(moderationInput) {
-    const response = await fetchWithTimeout("https://api.openai.com/v1/moderations", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "omni-moderation-latest",
-        input: moderationInput
-      })
-    }, PROVIDER_TIMEOUT_MS);
-
-    if (!response.ok) {
-      throw new Error(`OpenAI Moderation respondió ${response.status}.`);
-    }
-
-    return response.json();
-  }
-
-  let data;
-  try {
-    data = await request(input);
-  } catch (error) {
-    if (input.length === 1) throw error;
-    data = await request(input.slice(0, 1));
-  }
-
-  const result = data?.results?.[0];
-  if (!result?.flagged) return null;
-
-  const activeCategories = Object.entries(result.categories || {})
-    .filter(([, active]) => active)
-    .map(([name]) => name);
-  const critical = activeCategories.some((name) =>
-    /sexual\/minors|self-harm\/intent|self-harm\/instructions/i.test(name)
-  );
-
-  return {
-    decision: "rejected",
-    reason: critical
-      ? "El sistema detectó contenido crítico que no puede publicarse."
-      : "El sistema detectó contenido inseguro o no permitido.",
-    severity: critical ? "critical" : "high",
-    source: "openai",
-    confidence: Math.max(
-      0,
-      ...Object.values(result.category_scores || {}).map(Number)
-    ),
-    details: { categories: activeCategories }
-  };
-}
-
-function extractResponseText(data) {
-  if (typeof data?.output_text === "string") return data.output_text;
-
-  for (const item of data?.output || []) {
-    for (const content of item?.content || []) {
-      if (typeof content?.text === "string") return content.text;
-    }
-  }
-
-  return "";
-}
-
-async function callOpenAIListingReview(product, apiKey) {
-  const model = process.env.OPENAI_REVIEW_MODEL || "gpt-5.6-sol";
-  const response = await fetchWithTimeout("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model,
-      input: [
-        {
-          role: "system",
-          content:
-            "Sos el revisor de ColegioLibre, un marketplace argentino de materiales escolares que también usan menores. Aprobá únicamente bienes escolares legales y apropiados: libros, apuntes, cuadernos, útiles, mochilas, tecnología educativa, uniformes y artículos directamente relacionados. Rechazá armas, drogas, alcohol, tabaco/vapeo, medicamentos, material sexual, documentos falsos, artículos robados y servicios peligrosos. Rechazá con severidad medium los datos de contacto, enlaces o pedidos de pago externo. Usá manual_review únicamente cuando el producto sea realmente ambiguo. No inventes datos."
-        },
-        {
-          role: "user",
-          content: productText(product)
-        }
-      ],
-      text: {
-        format: {
-          type: "json_schema",
-          name: "colegiolibre_listing_review",
-          strict: true,
-          schema: {
-            type: "object",
-            additionalProperties: false,
-            properties: {
-              decision: {
-                type: "string",
-                enum: ["approved", "rejected", "manual_review"]
-              },
-              severity: {
-                type: "string",
-                enum: ["low", "medium", "high", "critical"]
-              },
-              reason: { type: "string" },
-              confidence: { type: "number", minimum: 0, maximum: 1 }
-            },
-            required: ["decision", "severity", "reason", "confidence"]
-          }
-        }
-      }
-    })
-  }, PROVIDER_TIMEOUT_MS);
-
-  if (!response.ok) {
-    throw new Error(`OpenAI Responses respondió ${response.status}.`);
-  }
-
-  const data = await response.json();
-  const parsed = JSON.parse(extractResponseText(data));
-
-  return {
-    ...parsed,
-    source: "openai",
-    details: {
-      response_id: data.id || null,
-      model: data.model || model
-    }
-  };
-}
-
-async function decide(product) {
-  const databaseRule = await matchDatabaseRules(product);
-  if (databaseRule) return databaseRule;
-
-  const firstPass = localDecision(product);
-  if (firstPass.decision === "rejected") return firstPass;
-
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return firstPass;
-
-  const unsafe = await callOpenAIModeration(product, apiKey);
-  if (unsafe) return unsafe;
-
-  return callOpenAIListingReview(product, apiKey);
-}
-
 async function applyDecision(productId, decision) {
-  return supabaseRequest(
-    "/rest/v1/rpc/apply_automated_moderation_decision",
+  const { baseUrl, serviceRoleKey } = env();
+  const approved = decision.decision === "approved";
+  const now = new Date().toISOString();
+
+  const body = {
+    status: approved ? "available" : "paused",
+    moderation_status: approved ? "approved" : "rejected",
+    moderation_reason: decision.reason,
+    moderation_source: decision.source,
+    moderation_confidence: approved ? 1 : 0.99,
+    moderated_at: now,
+    updated_at: now
+  };
+
+  const response = await fetchWithTimeout(
+    `${baseUrl}/rest/v1/products?id=eq.${encodeURIComponent(productId)}`,
     {
-      method: "POST",
-      body: JSON.stringify({
-        target_product_id: productId,
-        next_decision: decision.decision,
-        decision_reason: decision.reason,
-        decision_severity: decision.severity,
-        decision_source: decision.source,
-        decision_confidence: decision.confidence,
-        decision_details: decision.details || {}
-      })
-    },
-    true
+      method: "PATCH",
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
+      },
+      body: JSON.stringify(body)
+    }
   );
+
+  const raw = await response.text();
+  if (!response.ok) {
+    throw new Error(raw || `No se pudo actualizar la publicación (${response.status}).`);
+  }
+
+  try {
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return raw;
+  }
 }
 
 module.exports = async function handler(request, response) {
@@ -474,23 +249,14 @@ module.exports = async function handler(request, response) {
     if (product.moderation_status !== "pending") {
       return sendJson(response, 200, {
         decision: product.moderation_status,
+        status: product.status,
         alreadyProcessed: true
       });
     }
 
-    let decision;
-    try {
-      decision = await decide(product);
-    } catch (error) {
-      console.error("Fallo el proveedor de moderación; usando reglas locales seguras:", error);
-      decision = localDecision(product);
-      decision.details = {
-        ...(decision.details || {}),
-        provider_error: String(error?.message || error || "unknown").slice(0, 300)
-      };
-    }
-
+    const decision = localDecision(product);
     const applied = await applyDecision(product.id, decision);
+
     return sendJson(response, 200, {
       decision: decision.decision,
       reason: decision.reason,
@@ -500,7 +266,8 @@ module.exports = async function handler(request, response) {
   } catch (error) {
     console.error("No se pudo moderar la publicación:", error);
     return sendJson(response, 500, {
-      error: "No pudimos revisar la publicación en este momento."
+      error: "No pudimos revisar la publicación en este momento.",
+      detail: String(error?.message || error || "unknown").slice(0, 300)
     });
   }
 };
