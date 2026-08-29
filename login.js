@@ -338,8 +338,6 @@
       return;
     }
 
-    /* Un destinatario explícito evita el mailto vacío, que no hace nada en
-       varios navegadores y WebViews de Android. */
     const emailTarget = pendingVerificationEmail
       ? `mailto:${encodeURIComponent(pendingVerificationEmail)}`
       : "mailto:ayuda@colegiolibre.com";
@@ -371,8 +369,6 @@
       }
     } catch (error) {
       if (error?.code === "email_confirmation_disabled") throw error;
-      // Si el diagnóstico público no responde, Supabase igualmente validará
-      // el registro. No bloqueamos a una persona por un chequeo auxiliar.
     }
   }
 
@@ -617,21 +613,34 @@
     setMessage(elements.message, "Verificando tus datos…", "loading");
 
     try {
-      const { error } = await client.auth.signInWithPassword({
+      const { data, error } = await client.auth.signInWithPassword({
         email: elements.email.value.trim(),
         password: elements.password.value
       });
 
       if (error) throw error;
-      if (typeof window.gtag === "function") {
-  window.gtag("event", "login", {
-    method: "email"
-  });
-}
+      if (!data?.session?.user) throw new Error("No se pudo iniciar la sesión.");
+
       setMessage(elements.message, "Listo. Estamos abriendo tu cuenta…", "success");
-      window.setTimeout(() => {
+
+      let redirected = false;
+      const redirect = () => {
+        if (redirected) return;
+        redirected = true;
         window.location.assign(nextPage);
-      }, 650);
+      };
+
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "login", {
+          method: "email",
+          transport_type: "beacon",
+          event_callback: redirect,
+          event_timeout: 1200
+        });
+        window.setTimeout(redirect, 1400);
+      } else {
+        window.setTimeout(redirect, 250);
+      }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       setMessage(elements.message, mapAuthError(error, "login"), "error");
@@ -670,21 +679,19 @@
         throw new Error("User already registered");
       }
 
-      /* Una cuenta nueva nunca debe entrar al onboarding antes de verificar el
-         correo. Si Supabase devuelve una sesión, la cerramos igualmente. Esto
-         evita que una configuración temporal de auto-confirmación deje pasar
-         al usuario directamente a “¡Bienvenido!”. */
       if (data?.session) {
         await client.auth.signOut();
         const configurationError = new Error("EMAIL_CONFIRMATION_DISABLED");
         configurationError.code = "email_confirmation_disabled";
         throw configurationError;
       }
-if (typeof window.gtag === "function") {
-  window.gtag("event", "sign_up", {
-    method: "email"
-  });
-}
+
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "sign_up", {
+          method: "email"
+        });
+      }
+
       pendingVerificationPassword = elements.password.value;
       showVerificationView(elements.email.value.trim());
       startResendCooldown();
@@ -978,7 +985,6 @@ if (typeof window.gtag === "function") {
   const authListener = client.auth.onAuthStateChange?.((event) => {
     if (event === "PASSWORD_RECOVERY") showPasswordUpdate();
   });
-
 
   window.addEventListener(
     "pagehide",
