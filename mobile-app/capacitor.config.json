@@ -3,11 +3,12 @@
   "appName": "ColegioLibre",
   "webDir": "www",
   "server": {
-    "url": "https://colegiolibre.vercel.app",
+    "url": "https://colegiolibre.com",
     "cleartext": false,
     "androidScheme": "https",
     "allowNavigation": [
-      "colegiolibre.vercel.app",
+      "colegiolibre.com",
+      "www.colegiolibre.com",
       "*.supabase.co"
     ]
   },
