@@ -209,7 +209,7 @@ async function applyDecision(productId, decision) {
   }
 }
 
-module.exports = async function handler(request, response) {
+export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     return sendJson(response, 405, { error: "Método no permitido." });
@@ -270,4 +270,4 @@ module.exports = async function handler(request, response) {
       detail: String(error?.message || error || "unknown").slice(0, 300)
     });
   }
-};
+}
