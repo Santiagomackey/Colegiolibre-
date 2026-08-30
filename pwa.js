@@ -2,6 +2,7 @@
   "use strict";
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
+  const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
@@ -20,7 +21,12 @@
   let installPrompt = null;
   let refreshing = false;
 
-  if (isStandalone) document.documentElement.dataset.displayMode = "standalone";
+  if (isStandalone) {
+    document.documentElement.dataset.displayMode = "standalone";
+    try {
+      localStorage.setItem(INSTALLED_KEY, "true");
+    } catch (_error) {}
+  }
 
   function language() {
     return document.documentElement.dataset.language === "en" ? "en" : "es";
@@ -64,12 +70,50 @@
         };
   }
 
+  function rememberInstalled() {
+    try {
+      localStorage.setItem(INSTALLED_KEY, "true");
+      sessionStorage.removeItem(DISMISS_KEY);
+    } catch (_error) {}
+    document.getElementById("pwa-install-card")?.remove();
+  }
+
+  function wasInstalledFromThisBrowser() {
+    try {
+      return localStorage.getItem(INSTALLED_KEY) === "true";
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  async function detectInstalledApp() {
+    if (isStandalone || isNativeApp || wasInstalledFromThisBrowser()) {
+      rememberInstalled();
+      return true;
+    }
+
+    if (typeof navigator.getInstalledRelatedApps === "function") {
+      try {
+        const apps = await navigator.getInstalledRelatedApps();
+        if (Array.isArray(apps) && apps.length > 0) {
+          rememberInstalled();
+          return true;
+        }
+      } catch (_error) {
+        // Algunos navegadores exponen la API pero no permiten consultarla.
+      }
+    }
+
+    return false;
+  }
+
   function createInstallCard() {
     if (
       !isMobileDevice ||
       !isHome ||
       isStandalone ||
-      isNativeApp
+      isNativeApp ||
+      wasInstalledFromThisBrowser()
     ) return null;
 
     const existingCard = document.getElementById("pwa-install-card");
@@ -105,9 +149,16 @@
         return;
       }
       if (!installPrompt) return;
+
       installPrompt.prompt();
-      await installPrompt.userChoice;
+      const choice = await installPrompt.userChoice;
       installPrompt = null;
+
+      if (choice?.outcome === "accepted") {
+        rememberInstalled();
+        return;
+      }
+
       card.hidden = true;
     });
 
@@ -154,8 +205,10 @@
     guide.querySelector("#pwa-ios-guide-close").addEventListener("click", closeGuide);
   }
 
-  function showInstallCard() {
+  async function showInstallCard() {
     if (sessionStorage.getItem(DISMISS_KEY) === "true") return;
+    if (await detectInstalledApp()) return;
+
     const card = createInstallCard();
     if (!card) return;
     const installButton = card.querySelector("#pwa-install-button");
@@ -191,12 +244,12 @@
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     installPrompt = event;
-    showInstallCard();
+    void showInstallCard();
   });
 
   window.addEventListener("appinstalled", () => {
     installPrompt = null;
-    document.getElementById("pwa-install-card")?.remove();
+    rememberInstalled();
   });
 
   if ("serviceWorker" in navigator && /^https?:$/.test(window.location.protocol)) {
@@ -231,8 +284,8 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", showInstallCard, { once: true });
+    document.addEventListener("DOMContentLoaded", () => void showInstallCard(), { once: true });
   } else {
-    showInstallCard();
+    void showInstallCard();
   }
 })();
