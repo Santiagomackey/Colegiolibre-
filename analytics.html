@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics | ColegioLibre</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./analytics.css?v=20260901-1" />
+  </head>
+  <body>
+    <header class="analytics-header">
+      <div class="analytics-shell analytics-header__inner">
+        <a class="analytics-brand" href="./index.html">
+          <img src="./images/logo-horizontal.webp" alt="ColegioLibre" />
+          <span>Analytics</span>
+        </a>
+        <nav class="analytics-nav">
+          <a href="./admin.html">Administrador</a>
+          <a href="./index.html">Ver sitio</a>
+          <button id="analytics-logout" type="button">Cerrar sesión</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="analytics-shell analytics-page">
+      <section class="analytics-gate" id="analytics-gate">
+        <div class="loader"></div>
+        <h1>Preparando Analytics…</h1>
+        <p>Estamos verificando tu sesión administrativa y cargando los datos reales de ColegioLibre.</p>
+      </section>
+
+      <div id="analytics-dashboard" hidden>
+        <section class="analytics-hero">
+          <div>
+            <p class="eyebrow">Panel privado</p>
+            <h1>Analytics de ColegioLibre</h1>
+            <p class="hero-copy">Tráfico en Google Analytics y datos reales del marketplace, separados para que todo sea claro y confiable.</p>
+          </div>
+          <div class="hero-actions">
+            <span id="analytics-updated">Actualizando…</span>
+            <button id="analytics-refresh" type="button">Actualizar datos</button>
+          </div>
+        </section>
+
+        <section class="info-banner">
+          <strong>Google Analytics mide comportamiento.</strong>
+          <span>Los usuarios registrados, productos y vendedores se leen directamente desde Supabase; no mandamos emails ni nombres a Google Analytics.</span>
+        </section>
+
+        <section class="metric-grid" aria-label="Resumen general">
+          <article class="metric-card metric-card--primary">
+            <span>Usuarios registrados</span>
+            <strong id="metric-registered">0</strong>
+            <small>Cuentas de Supabase Auth</small>
+          </article>
+          <article class="metric-card metric-card--green">
+            <span>Inicio de sesión 24 h</span>
+            <strong id="metric-login24">0</strong>
+            <small>Usuarios que iniciaron sesión recientemente</small>
+          </article>
+          <article class="metric-card">
+            <span>Inicio de sesión 7 días</span>
+            <strong id="metric-login7">0</strong>
+            <small>Actividad de acceso semanal</small>
+          </article>
+          <article class="metric-card metric-card--yellow">
+            <span>Nuevos usuarios 7 días</span>
+            <strong id="metric-new7">0</strong>
+            <small>Altas recientes</small>
+          </article>
+          <article class="metric-card metric-card--blue">
+            <span>Productos totales</span>
+            <strong id="metric-products">0</strong>
+            <small>Publicaciones registradas</small>
+          </article>
+          <article class="metric-card metric-card--green">
+            <span>Productos activos</span>
+            <strong id="metric-active-products">0</strong>
+            <small>Disponibles o reservados</small>
+          </article>
+          <article class="metric-card">
+            <span>Productos vendidos</span>
+            <strong id="metric-sold-products">0</strong>
+            <small>Ventas cerradas</small>
+          </article>
+          <article class="metric-card metric-card--purple">
+            <span>Vendedores</span>
+            <strong id="metric-publishers">0</strong>
+            <small>Usuarios que publicaron al menos una vez</small>
+          </article>
+        </section>
+
+        <section class="analytics-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Actividad</p>
+                <h2>Usuarios</h2>
+              </div>
+              <input id="users-search" type="search" placeholder="Buscar nombre, email o colegio" />
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Colegio</th>
+                    <th>Último acceso</th>
+                    <th>Productos</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel panel--side">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Marketplace</p>
+                <h2>Vendedores principales</h2>
+              </div>
+            </div>
+            <div id="top-publishers" class="publisher-list"></div>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Publicaciones</p>
+              <h2>Productos recientes</h2>
+            </div>
+            <input id="products-search" type="search" placeholder="Buscar producto o vendedor" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Publicado por</th>
+                  <th>Colegio</th>
+                  <th>Estado</th>
+                  <th>Vistas</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="products-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="ga-panel">
+          <div>
+            <p class="eyebrow">Google Analytics 4</p>
+            <h2>Qué conviene mirar en GA</h2>
+            <p>Usá GA para sesiones, usuarios activos, páginas más vistas y el embudo de acciones. Para inventario y cuentas, este panel es la fuente correcta.</p>
+          </div>
+          <div class="ga-tags">
+            <span>login</span>
+            <span>sign_up</span>
+            <span>view_item</span>
+            <span>publish_product</span>
+            <span>add_to_favorites</span>
+            <span>message_sent</span>
+            <span>product_sold</span>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="analytics-toast" class="analytics-toast" hidden></div>
+
+    <script src="./vendor/supabase.js?v=2.111.0"></script>
+    <script src="./supabase.js?v=20260827-school-name"></script>
+    <script src="./analytics.js?v=20260901-1"></script>
+  </body>
+</html>
