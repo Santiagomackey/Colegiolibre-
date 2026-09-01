@@ -1,4 +1,4 @@
-// Google Analytics 4 + ColegioLibre product analytics
+// Google Analytics 4 + ColegioLibre marketplace analytics
 (function () {
   "use strict";
 
@@ -8,6 +8,7 @@
   const PENDING_LOGIN_KEY = "colegiolibre-ga-pending-login";
   const PUBLISH_DRAFT_KEY = "colegiolibre-ga-publish-draft";
   const PENDING_PUBLISH_KEY = "colegiolibre-ga-pending-publish";
+  const CONTEXT_SENT_KEY = "colegiolibre-ga-context-sent";
 
   const script = document.createElement("script");
   script.async = true;
@@ -19,24 +20,13 @@
     window.dataLayer.push(arguments);
   };
 
-  window.gtag("js", new Date());
-  window.gtag("config", GA_MEASUREMENT_ID, { anonymize_ip: true });
-
-  window.trackColegioLibreEvent = function (eventName, parameters = {}) {
-    if (!eventName || typeof window.gtag !== "function") return;
-
-    const fingerprint = `${eventName}:${JSON.stringify(parameters)}`;
-    const now = Date.now();
-    const previous = recentEvents.get(fingerprint) || 0;
-    if (now - previous < DEDUPE_MS) return;
-
-    recentEvents.set(fingerprint, now);
-    for (const [key, timestamp] of recentEvents) {
-      if (now - timestamp > 15000) recentEvents.delete(key);
-    }
-
-    window.gtag("event", eventName, parameters);
-  };
+  function appSurface() {
+    try {
+      if (window.Capacitor?.isNativePlatform?.()) return "android_app";
+      if (window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true) return "pwa";
+    } catch (_error) {}
+    return "web";
+  }
 
   function pageName() {
     return (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
@@ -57,6 +47,93 @@
     return "100k_plus";
   }
 
+  window.gtag("js", new Date());
+  window.gtag("config", GA_MEASUREMENT_ID, {
+    anonymize_ip: true,
+    app_surface: appSurface()
+  });
+
+  window.trackColegioLibreEvent = function (eventName, parameters = {}) {
+    if (!eventName || typeof window.gtag !== "function") return;
+
+    const payload = {
+      app_surface: appSurface(),
+      ...parameters
+    };
+    const fingerprint = `${eventName}:${JSON.stringify(payload)}`;
+    const now = Date.now();
+    const previous = recentEvents.get(fingerprint) || 0;
+    if (now - previous < DEDUPE_MS) return;
+
+    recentEvents.set(fingerprint, now);
+    for (const [key, timestamp] of recentEvents) {
+      if (now - timestamp > 15000) recentEvents.delete(key);
+    }
+
+    window.gtag("event", eventName, payload);
+  };
+
+  function setAnalyticsIdentity(user, profile = null) {
+    const userId = user?.id ? String(user.id).slice(0, 128) : null;
+    const schoolLevel = String(profile?.school_level || "unknown").slice(0, 40);
+    const hasSchool = Boolean(profile?.school_code || profile?.school_name);
+
+    window.gtag("config", GA_MEASUREMENT_ID, {
+      user_id: userId || undefined,
+      anonymize_ip: true
+    });
+
+    window.gtag("set", "user_properties", {
+      auth_state: userId ? "signed_in" : "signed_out",
+      app_surface: appSurface(),
+      has_school: hasSchool ? "yes" : "no",
+      school_level: schoolLevel
+    });
+  }
+
+  async function hydrateAnalyticsIdentity() {
+    const client = window.colegioLibreSupabase;
+    if (!client?.auth) {
+      setAnalyticsIdentity(null);
+      return;
+    }
+
+    try {
+      const { data } = await client.auth.getUser();
+      const user = data?.user || null;
+      if (!user) {
+        setAnalyticsIdentity(null);
+        return;
+      }
+
+      let profile = null;
+      if (typeof client.from === "function") {
+        try {
+          const result = await client
+            .from("profiles")
+            .select("school_code,school_name,school_level")
+            .eq("id", user.id)
+            .maybeSingle();
+          profile = result?.data || null;
+        } catch (_error) {}
+      }
+
+      setAnalyticsIdentity(user, profile);
+
+      try {
+        if (!window.sessionStorage.getItem(CONTEXT_SENT_KEY)) {
+          window.sessionStorage.setItem(CONTEXT_SENT_KEY, "1");
+          window.trackColegioLibreEvent("signed_in_session", {
+            has_school: Boolean(profile?.school_code || profile?.school_name),
+            school_level: String(profile?.school_level || "unknown").slice(0, 40)
+          });
+        }
+      } catch (_error) {}
+    } catch (_error) {
+      setAnalyticsIdentity(null);
+    }
+  }
+
   function restorePendingLogin() {
     let pending = null;
     try {
@@ -72,7 +149,8 @@
 
     window.sessionStorage.removeItem(PENDING_LOGIN_KEY);
     window.setTimeout(() => {
-      window.trackColegioLibreEvent("login", { method: "email" });
+      window.trackColegioLibreEvent("login", { method: pending.method || "email" });
+      hydrateAnalyticsIdentity();
     }, 250);
   }
 
@@ -82,7 +160,14 @@
 
     if (typeof auth.onAuthStateChange === "function") {
       auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_OUT") {
+          try { window.sessionStorage.removeItem(CONTEXT_SENT_KEY); } catch (_error) {}
+          setAnalyticsIdentity(null);
+          return;
+        }
         if (event !== "SIGNED_IN" || !session?.user) return;
+
+        setAnalyticsIdentity(session.user);
 
         if (pageName() === "login.html") {
           try {
@@ -94,9 +179,12 @@
 
           window.gtag("event", "login", {
             method: "email",
+            app_surface: appSurface(),
             transport_type: "beacon"
           });
         }
+
+        window.setTimeout(hydrateAnalyticsIdentity, 300);
       });
     }
 
@@ -108,6 +196,7 @@
         const user = result?.data?.user;
         const identities = Array.isArray(user?.identities) ? user.identities : null;
         if (!result?.error && user && (!identities || identities.length > 0)) {
+          setAnalyticsIdentity(user);
           window.trackColegioLibreEvent("sign_up", { method: "email" });
         }
         return result;
@@ -139,6 +228,7 @@
 
       window.sessionStorage.removeItem(PENDING_PUBLISH_KEY);
       window.trackColegioLibreEvent("publish_product", {
+        item_id: String(pending.item_id || "").slice(0, 120),
         category: String(pending.category || "unknown").slice(0, 60),
         condition: String(pending.condition || "unknown").slice(0, 40),
         price_range: String(pending.price_range || "unknown")
@@ -194,10 +284,12 @@
         const draft = JSON.parse(rawDraft);
         if (!draft?.at || Date.now() - Number(draft.at) > 60000) return;
 
+        const params = new URLSearchParams(window.location.search);
         window.sessionStorage.setItem(
           PENDING_PUBLISH_KEY,
           JSON.stringify({
             at: Date.now(),
+            item_id: params.get("id") || "",
             category: draft.category || "unknown",
             condition: draft.condition || "unknown",
             price_range: draft.price_range || "unknown"
@@ -278,37 +370,44 @@
   function bindSchoolTracking() {
     window.addEventListener("colegiolibre:profile-ready", (event) => {
       const profile = event?.detail?.profile;
-      if (!profile?.school_code) return;
+      if (!profile) return;
+      const hasSchool = Boolean(profile.school_code || profile.school_name);
+      setAnalyticsIdentity(event?.detail?.user || null, profile);
       window.trackColegioLibreEvent("school_selected", {
-        has_school: true,
+        has_school: hasSchool,
         school_level: String(profile.school_level || "unknown").slice(0, 40)
       });
     });
   }
 
-  function bindSoldTracking() {
+  function bindProductStatusTracking() {
     document.addEventListener("click", (event) => {
       const target = event.target.closest("button, [role='button'], a");
       if (!target) return;
-      const action = String(
+      const rawAction = String(
         target.getAttribute("data-action") ||
         target.getAttribute("data-product-action") ||
+        target.getAttribute("data-status-action") ||
         target.getAttribute("data-status") ||
         target.textContent || ""
       ).toLowerCase();
-      if (!/vendid|sold/.test(action)) return;
+
+      let eventName = "";
+      if (/vendid|sold/.test(rawAction)) eventName = "product_sold";
+      else if (/pausar|paused|pause/.test(rawAction)) eventName = "product_paused";
+      else if (/reactivar|available|reactivate/.test(rawAction)) eventName = "product_reactivated";
+      if (!eventName) return;
+
+      const card = target.closest("[data-product-id], .publication-card");
+      const itemId = String(card?.getAttribute("data-product-id") || safeProductId() || "").slice(0, 120);
       window.setTimeout(() => {
-        const card = target.closest("[data-product-id], .publication-card");
-        const itemId = String(card?.getAttribute("data-product-id") || "").slice(0, 120);
-        const statusText = String(card?.textContent || target.textContent || "").toLowerCase();
-        if (/vendid|sold/.test(statusText)) {
-          window.trackColegioLibreEvent("product_sold", { item_id: itemId, page: pageName() });
-        }
-      }, 1200);
+        window.trackColegioLibreEvent(eventName, { item_id: itemId, page: pageName() });
+      }, 1000);
     }, true);
   }
 
   function initAnalyticsEvents() {
+    hydrateAnalyticsIdentity();
     bindAuthTracking();
     restorePendingLogin();
     trackProductView();
@@ -318,7 +417,7 @@
     bindFavoriteTracking();
     bindMessageTracking();
     bindSchoolTracking();
-    bindSoldTracking();
+    bindProductStatusTracking();
   }
 
   if (document.readyState === "loading") {
@@ -366,7 +465,7 @@
         error_message: safeMessage,
         line_number: Number.isFinite(line) ? line : null,
         column_number: Number.isFinite(column) ? column : null,
-        app_version: "web-20260829-ga4-marketplace-events"
+        app_version: "web-20260901-ga4-user-marketplace"
       });
     } catch (_error) {}
   }
