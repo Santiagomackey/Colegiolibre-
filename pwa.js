@@ -2,6 +2,8 @@
   "use strict";
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
+  const APK_DISMISS_KEY = "colegiolibre-apk-dismissed-at";
+  const APK_URL = "./downloads/ColegioLibre-1.0.22.apk";
   const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -37,6 +39,9 @@
       ? {
           installTitle: "Install ColegioLibre",
           installText: "Use it like an app from your home screen.",
+          apkTitle: "ColegioLibre for Android",
+          apkText: "Get the Android app for a faster, app-like experience.",
+          apkInstall: "Download APK",
           iosText: "Install the iPhone version from Safari.",
           install: "Install",
           iosInstall: "View steps",
@@ -54,6 +59,9 @@
       : {
           installTitle: "Instalá ColegioLibre",
           installText: "Usala como una app desde tu pantalla de inicio.",
+          apkTitle: "ColegioLibre para Android",
+          apkText: "Descargá la app para usar ColegioLibre más cómodo desde tu celular.",
+          apkInstall: "Descargar APK",
           iosText: "Instalá la versión para iPhone desde Safari.",
           install: "Instalar",
           iosInstall: "Ver pasos",
@@ -107,13 +115,23 @@
     return false;
   }
 
+  function apkPromptWasDismissedRecently() {
+    try {
+      const dismissedAt = Number(localStorage.getItem(APK_DISMISS_KEY) || 0);
+      return dismissedAt > 0 && Date.now() - dismissedAt < 7 * 24 * 60 * 60 * 1000;
+    } catch (_error) {
+      return false;
+    }
+  }
+
   function createInstallCard() {
     if (
       !isMobileDevice ||
       !isHome ||
-      isStandalone ||
+      (!isAndroid && isStandalone) ||
       isNativeApp ||
-      wasInstalledFromThisBrowser()
+      (!isAndroid && wasInstalledFromThisBrowser()) ||
+      (isAndroid && apkPromptWasDismissedRecently())
     ) return null;
 
     const existingCard = document.getElementById("pwa-install-card");
@@ -128,22 +146,36 @@
     card.innerHTML = `
       <img class="pwa-install-card__icon" src="./images/icon-192.png" alt="" />
       <div class="pwa-install-card__copy">
-        <strong>${text.installTitle}</strong>
-        <p>${isIOS ? text.iosText : text.installText}</p>
+        <strong>${isAndroid ? text.apkTitle : text.installTitle}</strong>
+        <p>${isAndroid ? text.apkText : (isIOS ? text.iosText : text.installText)}</p>
       </div>
       <div class="pwa-install-card__actions">
-        <button id="pwa-install-button" type="button">${isIOS ? text.iosInstall : text.install}</button>
+        <button id="pwa-install-button" type="button">${isAndroid ? text.apkInstall : (isIOS ? text.iosInstall : text.install)}</button>
         <button class="pwa-install-card__dismiss" id="pwa-install-dismiss" type="button" aria-label="${text.close}">×</button>
       </div>
     `;
     document.body.appendChild(card);
 
     card.querySelector("#pwa-install-dismiss").addEventListener("click", () => {
-      sessionStorage.setItem(DISMISS_KEY, "true");
+      if (isAndroid) {
+        try { localStorage.setItem(APK_DISMISS_KEY, String(Date.now())); } catch (_error) {}
+      } else {
+        sessionStorage.setItem(DISMISS_KEY, "true");
+      }
       card.hidden = true;
     });
 
     card.querySelector("#pwa-install-button").addEventListener("click", async () => {
+      if (isAndroid) {
+        const link = document.createElement("a");
+        link.href = APK_URL;
+        link.download = "ColegioLibre.apk";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        card.hidden = true;
+        return;
+      }
       if (isIOS) {
         showIOSInstallGuide();
         return;
@@ -206,14 +238,18 @@
   }
 
   async function showInstallCard() {
-    if (sessionStorage.getItem(DISMISS_KEY) === "true") return;
-    if (await detectInstalledApp()) return;
+    if (!isAndroid && sessionStorage.getItem(DISMISS_KEY) === "true") return;
+    if (!isAndroid && await detectInstalledApp()) return;
 
     const card = createInstallCard();
     if (!card) return;
     const installButton = card.querySelector("#pwa-install-button");
-    installButton.hidden = !isIOS && !installPrompt;
-    card.hidden = !(installPrompt || isIOS);
+    installButton.hidden = !isAndroid && !isIOS && !installPrompt;
+    if (isAndroid) {
+      window.setTimeout(() => { card.hidden = false; }, 900);
+    } else {
+      card.hidden = !(installPrompt || isIOS);
+    }
   }
 
   function showUpdate(registration) {
