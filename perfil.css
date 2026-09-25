@@ -29,3 +29,37 @@
 @media(max-width:1160px){.page-layout{grid-template-columns:1fr}.profile-sidebar{position:relative;min-height:auto}.dashboard-metrics,.dashboard-profile-card__grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:980px){.site-shell{width:min(calc(100% - 22px),var(--site-width))}.site-header__row{grid-template-columns:1fr;gap:1rem;padding:1rem 0}.account-toggle{display:inline-flex}.header-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.profile-sidebar{position:fixed;left:0;top:0;z-index:30;width:min(90vw,340px);height:100dvh;overflow-y:auto;transform:translateX(-104%);transition:transform var(--transition-fast)}body[data-sidebar-open="true"] .profile-sidebar{transform:translateX(0)}.page-layout{width:min(calc(100% - 22px),var(--site-width));display:block}.content-header,.dashboard-overview__head{flex-direction:column;align-items:stretch}.dashboard-metrics,.dashboard-profile-card__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.publish-button--green{width:100%}.publication-card{padding:1.15rem}.publication-card__left{grid-template-columns:108px minmax(0,1fr)}.publication-thumb{width:108px;height:108px}.publication-card__stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}.publication-stat{border-left:0;padding:0}.publication-card__time{grid-column:1/-1;padding:.9rem 0 0;border-left:0;border-top:1px solid var(--color-border)}.publication-menu{position:absolute;right:1rem;top:1rem}.publication-card__copy{padding-right:3rem}.security-banner{grid-template-columns:1fr}}
 @media(max-width:640px){.header-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.content-header h1{font-size:1.9rem}.dashboard-metrics,.dashboard-profile-card__grid{grid-template-columns:1fr}.publication-card__left{grid-template-columns:88px minmax(0,1fr)}.publication-thumb{width:88px;height:104px}.publication-card__stats{grid-template-columns:repeat(3,minmax(0,1fr))}.publication-card__meta{gap:.6rem}.publication-stat__label,.publication-card__time{font-size:.78rem}.publication-menu__dropdown{position:fixed;left:16px;right:16px;top:auto;bottom:18px;min-width:0;z-index:130}.settings-grid{grid-template-columns:1fr}.settings-field--wide{grid-column:auto}.settings-actions{display:grid}.settings-danger-actions{align-items:stretch;flex-direction:column}.transaction-card{grid-template-columns:64px 1fr}.transaction-card__actions{grid-column:1/-1}}
+
+/* 2026-09 mobile account drawer polish */
+@media (max-width: 980px) {
+  .profile-sidebar {
+    z-index: 165;
+    width: min(88vw, 360px);
+    height: 100dvh;
+    min-height: 0;
+    padding: max(22px, env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+    gap: 16px;
+    border-radius: 0 24px 24px 0;
+    box-shadow: 24px 0 60px rgba(2, 14, 38, .28);
+    overscroll-behavior: contain;
+  }
+  .layout-overlay { z-index: 160; background: rgba(3, 12, 28, .58); }
+  body[data-sidebar-open="true"] { overflow: hidden; touch-action: none; }
+  body[data-sidebar-open="true"] .profile-sidebar { touch-action: pan-y; }
+  body[data-sidebar-open="true"] .cl-mobile-nav { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(110%); }
+  .profile-card { min-height: 72px; gap: 14px; }
+  .profile-avatar { flex-basis: 60px; width: 60px; height: 60px; font-size: 24px; }
+  .profile-copy { min-width: 0; }
+  .profile-copy h2 { font-size: 1.08rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile-copy a { display: -webkit-box; font-size: .88rem; line-height: 1.35; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .profile-nav { gap: 5px; overflow: visible; }
+  .profile-nav__item { min-height: 50px; padding: 11px 13px; border-radius: 14px; font-size: .98rem; }
+  .profile-sidebar__divider { margin: 2px 0; }
+  .help-card { margin-top: 2px; padding: 14px; border-radius: 16px; }
+  .help-card h3 { margin: 0 0 3px; font-size: 1rem; }
+  .help-card p { margin: 0; font-size: .84rem; }
+}
+
+@media (max-width: 430px) {
+  .profile-sidebar { width: min(90vw, 344px); }
+}

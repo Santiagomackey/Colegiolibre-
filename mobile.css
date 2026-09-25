@@ -1210,3 +1210,20 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     padding: 16px 18px 20px;
   }
 }
+
+/* Keep the floating app navigation clear of the phone/browser safe area. */
+@media (max-width: 760px) {
+  .cl-mobile-nav {
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    left: 10px;
+    padding: 5px 8px;
+    border: 1px solid rgba(214, 224, 238, .92);
+    border-radius: 22px;
+    box-shadow: 0 14px 36px rgba(7, 25, 58, .20);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  }
+  body[data-mobile-nav="true"] {
+    padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 24px);
+  }
+}
