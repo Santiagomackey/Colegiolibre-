@@ -40,8 +40,8 @@
           installTitle: "Install ColegioLibre",
           installText: "Use it like an app from your home screen.",
           apkTitle: "ColegioLibre for Android",
-          apkText: "Get the Android app for a faster, app-like experience.",
-          apkInstall: "Download APK",
+          apkText: "Install ColegioLibre directly on your home screen.",
+          apkInstall: "Install app",
           iosText: "Install the iPhone version from Safari.",
           install: "Install",
           iosInstall: "View steps",
@@ -60,8 +60,8 @@
           installTitle: "Instalá ColegioLibre",
           installText: "Usala como una app desde tu pantalla de inicio.",
           apkTitle: "ColegioLibre para Android",
-          apkText: "Descargá la app para usar ColegioLibre más cómodo desde tu celular.",
-          apkInstall: "Descargar APK",
+          apkText: "Instalá ColegioLibre directamente en tu pantalla de inicio.",
+          apkInstall: "Instalar app",
           iosText: "Instalá la versión para iPhone desde Safari.",
           install: "Instalar",
           iosInstall: "Ver pasos",
@@ -167,12 +167,23 @@
 
     card.querySelector("#pwa-install-button").addEventListener("click", async () => {
       if (isAndroid) {
-        const link = document.createElement("a");
-        link.href = APK_URL;
-        link.download = "ColegioLibre.apk";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        // Prefer the browser's native PWA install flow. This installs ColegioLibre
+        // directly and places it on the home screen without downloading an APK first.
+        if (installPrompt) {
+          installPrompt.prompt();
+          const choice = await installPrompt.userChoice;
+          installPrompt = null;
+          if (choice?.outcome === "accepted") {
+            rememberInstalled();
+          } else {
+            card.hidden = true;
+          }
+          return;
+        }
+
+        // Fallback for Android browsers that do not expose the install prompt:
+        // download the APK directly from ColegioLibre (same origin), not via Drive.
+        window.location.assign(APK_URL);
         card.hidden = true;
         return;
       }
