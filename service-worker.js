@@ -1,7 +1,7 @@
 const CACHE_VERSION = "colegiolibre-pwa-v57";
 const APP_SHELL = [
   "/",
-  "/index.html",
+  "/",
   "/404.html",
   "/styles.css",
   "/mobile.css",
@@ -55,7 +55,7 @@ self.addEventListener("message", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const destination = new URL(
-    event.notification.data?.url || "/index.html",
+    event.notification.data?.url || "/",
     self.location.origin
   ).href;
 
@@ -90,7 +90,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(async () => {
           const cachedPage = await caches.match(request);
-          return cachedPage || caches.match("/index.html");
+          return cachedPage || caches.match("/");
         })
     );
     return;

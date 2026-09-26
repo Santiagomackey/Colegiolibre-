@@ -78,7 +78,7 @@
     state.currentUser = await getCurrentUser(true);
 
     if (!state.currentUser) {
-      window.location.href = "login.html?next=admin.html";
+      window.location.href = "/login?next=/admin";
       return;
     }
 
@@ -544,7 +544,7 @@
 
   async function handleLogout() {
     await client.auth.signOut();
-    window.location.href = "login.html";
+    window.location.href = "/login";
   }
 
   function showToast(message) {

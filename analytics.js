@@ -30,7 +30,7 @@
 
     const user = await api.getCurrentUser(true);
     if (!user) {
-      window.location.href = "login.html?next=analytics.html";
+      window.location.href = "/login?next=/analytics";
       return;
     }
 
@@ -49,12 +49,12 @@
     productsSearch?.addEventListener("input", renderProducts);
     logoutButton?.addEventListener("click", async () => {
       await client.auth.signOut();
-      window.location.href = "index.html";
+      window.location.href = "/";
     });
   }
 
   function deny(message) {
-    gate.innerHTML = `<h1>Acceso restringido</h1><p>${escapeHtml(message)}</p><a href="./index.html">Volver al inicio</a>`;
+    gate.innerHTML = `<h1>Acceso restringido</h1><p>${escapeHtml(message)}</p><a href="/">Volver al inicio</a>`;
   }
 
   async function loadData() {

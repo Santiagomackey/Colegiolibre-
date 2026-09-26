@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const params = new URLSearchParams(location.search);
-  const next = params.get("next") || "index.html";
+  const next = params.get("next") || "/";
   const recoveryCode = params.get("code") || "";
   const hash = location.hash || "";
   const title = document.querySelector("#callback-title");
@@ -14,7 +14,7 @@
     title.textContent = "El enlace no está disponible";
     message.textContent = "Puede haber vencido o ya haber sido utilizado. Pedí un enlace nuevo desde Iniciar sesión.";
     loader.hidden = true;
-    action.href = "login.html";
+    action.href = "/login";
     action.textContent = "Volver a iniciar sesión";
     action.hidden = false;
   }
@@ -80,7 +80,7 @@
         action.hidden = false;
         location.href = deepLink;
         window.setTimeout(() => {
-          const webTarget = `login.html?mode=recovery&next=${encodeURIComponent(next)}`;
+          const webTarget = `/login?mode=recovery&next=${encodeURIComponent(next)}`;
           message.textContent = "Si la aplicación no se abrió, continuá de forma segura en la website.";
           action.href = webTarget;
           action.textContent = "Cambiar contraseña en la website";
@@ -88,7 +88,7 @@
         return;
       }
 
-      location.replace(`login.html?mode=recovery&next=${encodeURIComponent(next)}`);
+      location.replace(`/login?mode=recovery&next=${encodeURIComponent(next)}`);
     } catch (error) {
       console.error("Error preparando la recuperación:", error);
       showError();

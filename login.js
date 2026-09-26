@@ -9,32 +9,32 @@
   }
 
   const allowedNextPages = new Set([
-    "index.html",
-    "admin.html",
-    "perfil.html",
-    "producto.html",
-    "publicar.html",
-    "favoritos.html",
-    "mensajes.html",
-    "colegio.html",
-    "busco.html"
+    "/",
+    "/admin",
+    "/perfil",
+    "/producto",
+    "/publicar",
+    "/favoritos",
+    "/mensajes",
+    "/colegio",
+    "/busco"
   ]);
   const params = new URLSearchParams(window.location.search);
 
   function resolveNextPage(rawValue) {
-    if (!rawValue) return "index.html";
+    if (!rawValue) return "/";
 
     try {
       const url = new URL(rawValue, window.location.href);
       if (window.location.origin !== "null" && url.origin !== window.location.origin) {
-        return "index.html";
+        return "/";
       }
 
-      const page = url.pathname.split("/").filter(Boolean).pop() || "index.html";
-      if (!allowedNextPages.has(page)) return "index.html";
+      const page = url.pathname === "/" ? "/" : `/${url.pathname.split("/").filter(Boolean).pop()}`;
+      if (!allowedNextPages.has(page)) return "/";
       return `${page}${url.search}`;
     } catch (_error) {
-      return "index.html";
+      return "/";
     }
   }
 
@@ -387,8 +387,8 @@
     elements.verificationResend.disabled = true;
     setMessage(elements.verificationMessage, "Enviando un enlace nuevo…", "loading");
     try {
-      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app").replace(/\/$/, "");
-      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app").replace(/\/$/, "");
+      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(
         "source",
         window.Capacitor?.isNativePlatform?.() ? "app" : "web"
@@ -595,14 +595,14 @@
 
   function recoveryRedirectUrl() {
     const publicSiteUrl = String(
-      window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+      window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
     ).replace(/\/$/, "");
-    const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback.html`);
+    const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback`);
     redirectUrl.searchParams.set(
       "source",
       window.Capacitor?.isNativePlatform?.() ? "app" : "web"
     );
-    if (nextPage !== "index.html") {
+    if (nextPage !== "/") {
       redirectUrl.searchParams.set("next", nextPage);
     }
     return redirectUrl.href;
@@ -655,9 +655,9 @@
     try {
       await assertEmailConfirmationEnabled();
       const publicSiteUrl = String(
-        window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+        window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
       ).replace(/\/$/, "");
-      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback.html`);
+      const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(
         "source",
         window.Capacitor?.isNativePlatform?.() ? "app" : "web"
@@ -843,7 +843,7 @@
         "success"
       );
       window.sessionStorage.removeItem("colegiolibre-password-recovery");
-      window.history.replaceState({}, document.title, "login.html");
+      window.history.replaceState({}, document.title, "/login");
       window.setTimeout(() => {
         window.location.assign(nextPage);
       }, 950);

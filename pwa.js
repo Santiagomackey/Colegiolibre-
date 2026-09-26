@@ -19,7 +19,7 @@
   const isNativeApp =
     window.Capacitor?.isNativePlatform?.() === true ||
     window.location.protocol === "capacitor:";
-  const isHome = ["", "/", "/index.html"].includes(window.location.pathname);
+  const isHome = ["", "/", "/"].includes(window.location.pathname);
   let installPrompt = null;
   let refreshing = false;
 

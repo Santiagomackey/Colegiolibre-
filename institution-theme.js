@@ -324,7 +324,7 @@
     var secondaryCta = document.querySelector(".hero-cta-row .text-link");
     if (primaryCta) primaryCta.textContent = "Explorar " + (config.shortName || config.name);
     if (secondaryCta) {
-      secondaryCta.href = "publicar.html";
+      secondaryCta.href = "/publicar";
       secondaryCta.childNodes[0].nodeValue = "Publicar un producto ";
     }
 

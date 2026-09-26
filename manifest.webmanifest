@@ -5,7 +5,7 @@
   "description": "Marketplace de materiales escolares usados para estudiantes y comunidades educativas de Argentina.",
   "lang": "es-AR",
   "dir": "ltr",
-  "start_url": "/index.html?source=pwa",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
@@ -38,7 +38,7 @@
       "name": "Publicar producto",
       "short_name": "Publicar",
       "description": "Crear una nueva publicación",
-      "url": "/publicar.html?source=shortcut",
+      "url": "/publicar?source=shortcut",
       "icons": [
         {
           "src": "/images/icon-192.png",
@@ -50,7 +50,7 @@
       "name": "Mis mensajes",
       "short_name": "Mensajes",
       "description": "Abrir las conversaciones",
-      "url": "/mensajes.html?source=shortcut",
+      "url": "/mensajes?source=shortcut",
       "icons": [
         {
           "src": "/images/icon-192.png",
@@ -62,7 +62,7 @@
       "name": "Mis favoritos",
       "short_name": "Favoritos",
       "description": "Ver productos guardados",
-      "url": "/favoritos.html?source=shortcut",
+      "url": "/favoritos?source=shortcut",
       "icons": [
         {
           "src": "/images/icon-192.png",

@@ -39,11 +39,11 @@
   async function initialize() {
     const user = await getCurrentUser(true);
     if (!user) {
-      window.location.replace(`login.html?next=${encodeURIComponent("beta-admin.html")}`);
+      window.location.replace(`/login?next=${encodeURIComponent("/beta-admin")}`);
       return;
     }
     if (!(await isAdminUser())) {
-      window.location.replace("index.html");
+      window.location.replace("/");
       return;
     }
     await loadReports();

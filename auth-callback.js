@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const params = new URLSearchParams(location.search);
-  const next = params.get("next") || "index.html";
+  const next = params.get("next") || "/";
   const source = params.get("source") === "app" ? "app" : "web";
   const confirmationCode = params.get("code") || "";
   const hash = location.hash || "";
@@ -14,7 +14,7 @@
     title.textContent = "No pudimos verificar el enlace";
     message.textContent = "El enlace puede haber vencido o ya fue utilizado. Podés volver a iniciar sesión.";
     loader.hidden = true;
-    action.href = "login.html";
+    action.href = "/login";
     action.textContent = "Volver a iniciar sesión";
     action.hidden = false;
   }

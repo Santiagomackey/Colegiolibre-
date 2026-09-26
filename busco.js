@@ -58,7 +58,7 @@
       item.querySelector("[data-place]").textContent = post.scope === "school" ? (post.school_name || "Su colegio") : post.scope === "zone" ? (post.zone_code || "Su zona") : "Toda Argentina";
       item.querySelector(".wanted-time").textContent = relativeTime(post.created_at);
       const haveLink = item.querySelector(".wanted-have");
-      haveLink.href = `publicar.html?wanted=${encodeURIComponent(post.id)}&title=${encodeURIComponent(post.title)}`;
+      haveLink.href = `/publicar?wanted=${encodeURIComponent(post.id)}&title=${encodeURIComponent(post.title)}`;
       if (user && post.user_id === user.id) {
         const close = document.createElement("button");
         close.className = "wanted-close";
@@ -85,7 +85,7 @@
 
   async function submit(event) {
     event.preventDefault();
-    if (!user) { window.location.href = "login.html?next=busco.html"; return; }
+    if (!user) { window.location.href = "/login?next=/busco"; return; }
     const data = new FormData(form);
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();

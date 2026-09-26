@@ -133,7 +133,7 @@ function bindMarketplaceTracking() {
     if (/vendid/.test(text)) track("product_sold", { item_id: itemId || "unknown", page: location.pathname });
     if (/pausar/.test(text)) track("product_paused", { item_id: itemId || "unknown", page: location.pathname });
     if (/reactivar/.test(text)) track("product_reactivated", { item_id: itemId || "unknown", page: location.pathname });
-    if (/enviar|mandar/.test(text) && /mensaje/.test(location.pathname + " " + document.title.toLowerCase())) track("message_sent", { page: "mensajes.html" });
+    if (/enviar|mandar/.test(text) && /mensaje/.test(location.pathname + " " + document.title.toLowerCase())) track("message_sent", { page: "/mensajes" });
   }, true);
 
   document.addEventListener("submit", (event) => {

@@ -50,7 +50,7 @@ export default async function handler(request, response) {
     const amount = PRICES[plan]?.[billing];
     if (!amount) return sendJson(response, 400, { error: "Ese plan no requiere pago o no es válido." });
 
-    const backUrl = `${process.env.PUBLIC_SITE_URL || "https://colegiolibre.vercel.app"}/instituciones.html?payment=return`;
+    const backUrl = `${process.env.PUBLIC_SITE_URL || "https:/colegiolibre.vercel.app"}/instituciones?payment=return`;
     const mpResponse = await fetch("https://api.mercadopago.com/preapproval", {
       method: "POST",
       headers: {

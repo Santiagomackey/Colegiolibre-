@@ -13,7 +13,7 @@ const PRODUCT_STATUS = {
 window.colegioLibreConfig = Object.freeze({
   supabaseUrl: SUPABASE_URL,
   supabaseKey: SUPABASE_KEY,
-  publicSiteUrl: "https://colegiolibre.vercel.app"
+  publicSiteUrl: "https:/colegiolibre.vercel.app"
 });
 
 function createUnavailableError() {
@@ -505,7 +505,7 @@ async function getCurrentProfile(force = false) {
   return currentProfilePromise;
 }
 
-async function requireAuthRedirect(target = "login.html") {
+async function requireAuthRedirect(target = "/login") {
   const user = await getCurrentUser();
 
   if (!user) {

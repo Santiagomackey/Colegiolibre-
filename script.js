@@ -418,16 +418,16 @@ async function init() {
   hydrateUrlState();
 
   if (state.showOnlyFavorites) {
-    window.location.replace("favoritos.html");
+    window.location.replace("/favoritos");
     return;
   }
 
   let onboardingResult = null;
   if (typeof initOnboarding === "function") {
     const onboardingDestination = state.showOnlyFavorites
-      ? "favoritos.html"
+      ? "/favoritos"
       : state.requestedScope === "school"
-        ? "colegio.html"
+        ? "/colegio"
         : "";
 
     onboardingResult = await initOnboarding({
@@ -441,7 +441,7 @@ async function init() {
     (state.user ? await getCurrentProfile(true) : null);
 
   if (state.showOnlyFavorites && !state.user) {
-    window.location.replace(buildLoginUrl("favoritos.html"));
+    window.location.replace(buildLoginUrl("/favoritos"));
     return;
   }
 
@@ -987,7 +987,7 @@ function bindEvents() {
       const nextScope = button.dataset.scope || "country";
 
       if (nextScope === "school") {
-        const access = await ensureAccountReady("colegio.html");
+        const access = await ensureAccountReady("/colegio");
         if (!access) return;
 
         window.location.assign(buildSchoolCommunityUrl(access.profile));
@@ -996,7 +996,7 @@ function bindEvents() {
 
       if (nextScope === "zone") {
         const access = await ensureAccountReady(
-          `index.html?scope=${encodeURIComponent(nextScope)}`,
+          `/?scope=${encodeURIComponent(nextScope)}`,
           { requireVerification: false }
         );
         if (!access) return;
@@ -1022,7 +1022,7 @@ function bindEvents() {
   if (elements.mobileSessionButton) {
     elements.mobileSessionButton.addEventListener("click", (event) => {
       event.preventDefault();
-      window.location.assign(state.user ? "perfil.html" : "login.html");
+      window.location.assign(state.user ? "/perfil" : "/login");
     });
   }
 
@@ -1053,44 +1053,44 @@ async function handleAccountNavigation(event) {
     event.preventDefault();
   }
 
-  const access = await ensureAccountReady("perfil.html");
+  const access = await ensureAccountReady("/perfil");
   if (access) {
-    window.location.assign("perfil.html");
+    window.location.assign("/perfil");
   }
 }
 
-function getSafeLocalDestination(rawValue = "index.html") {
+function getSafeLocalDestination(rawValue = "/") {
   const allowedPages = new Set([
-    "index.html",
-    "perfil.html",
-    "publicar.html",
-    "mensajes.html",
-    "favoritos.html",
-    "colegio.html"
+    "/",
+    "/perfil",
+    "/publicar",
+    "/mensajes",
+    "/favoritos",
+    "/colegio"
   ]);
 
   try {
     const url = new URL(rawValue, window.location.href);
     if (window.location.origin !== "null" && url.origin !== window.location.origin) {
-      return "index.html";
+      return "/";
     }
 
-    const page = url.pathname.split("/").filter(Boolean).pop() || "index.html";
-    if (!allowedPages.has(page)) return "index.html";
+    const page = url.pathname === "/" ? "/" : `/${url.pathname.split("/").filter(Boolean).pop()}`;
+    if (!allowedPages.has(page)) return "/";
     return `${page}${url.search}`;
   } catch (_error) {
-    return "index.html";
+    return "/";
   }
 }
 
 function buildLoginUrl(destination) {
   const safeDestination = getSafeLocalDestination(destination);
-  return `login.html?next=${encodeURIComponent(safeDestination)}`;
+  return `/login?next=${encodeURIComponent(safeDestination)}`;
 }
 
 function buildOnboardingUrl(destination) {
   const safeDestination = getSafeLocalDestination(destination);
-  return `index.html?onboarding=1&next=${encodeURIComponent(safeDestination)}`;
+  return `/?onboarding=1&next=${encodeURIComponent(safeDestination)}`;
 }
 
 async function ensureAccountReady(destination, options = {}) {
@@ -1098,7 +1098,7 @@ async function ensureAccountReady(destination, options = {}) {
   const page = safeDestination.split("?")[0];
   const requireActiveAccount =
     options.requireVerification ??
-    ["colegio.html", "mensajes.html", "publicar.html"].includes(page);
+    ["/colegio", "/mensajes", "/publicar"].includes(page);
   const user = await getCurrentUser(true);
 
   if (!user) {
@@ -1112,7 +1112,7 @@ async function ensureAccountReady(destination, options = {}) {
       "colegiolibre-pending-verification",
       String(user.email || "")
     );
-    window.location.assign(`login.html?verification=required&next=${encodeURIComponent(safeDestination)}`);
+    window.location.assign(`/login?verification=required&next=${encodeURIComponent(safeDestination)}`);
     return null;
   }
 
@@ -1139,7 +1139,7 @@ async function ensureAccountReady(destination, options = {}) {
         : "Tu cuenta está suspendida temporalmente."
     );
     window.setTimeout(() => {
-      window.location.assign("perfil.html");
+      window.location.assign("/perfil");
     }, 900);
     return null;
   }
@@ -1163,8 +1163,8 @@ async function handleProtectedLinkClick(event) {
 function buildSchoolCommunityUrl(profile = state.profile) {
   const schoolCode = String(profile?.school_code || "").trim();
   return schoolCode
-    ? `colegio.html?code=${encodeURIComponent(schoolCode)}`
-    : "colegio.html";
+    ? `/colegio?code=${encodeURIComponent(schoolCode)}`
+    : "/colegio";
 }
 
 async function handleLogout() {
@@ -1189,7 +1189,7 @@ async function handleLogout() {
   state.profile = null;
   state.favorites = new Set();
   showToast("Sesión cerrada.");
-  window.setTimeout(() => window.location.assign("index.html"), 350);
+  window.setTimeout(() => window.location.assign("/"), 350);
 }
 
 function handleSearchSubmit(event) {
@@ -1456,7 +1456,7 @@ async function refreshAccountButton(force = false) {
   elements.accountText.textContent = accountLabel;
 
   if (elements.accountButton) {
-    elements.accountButton.setAttribute("href", user ? "perfil.html" : "login.html");
+    elements.accountButton.setAttribute("href", user ? "/perfil" : "/login");
     elements.accountButton.setAttribute(
       "aria-label",
       user ? `Abrir el perfil de ${accountLabel}` : "Iniciar sesión"
@@ -1464,7 +1464,7 @@ async function refreshAccountButton(force = false) {
   }
 
   if (elements.mobileAccountLink) {
-    elements.mobileAccountLink.setAttribute("href", user ? "perfil.html" : "login.html");
+    elements.mobileAccountLink.setAttribute("href", user ? "/perfil" : "/login");
     const mobileText = elements.mobileAccountLink.querySelector("span");
     if (mobileText) {
       mobileText.textContent = user ? accountLabel : "Iniciar sesión";
@@ -1472,7 +1472,7 @@ async function refreshAccountButton(force = false) {
   }
 
   if (elements.mobileSessionButton) {
-    elements.mobileSessionButton.setAttribute("href", user ? "perfil.html" : "login.html");
+    elements.mobileSessionButton.setAttribute("href", user ? "/perfil" : "/login");
     elements.mobileSessionButton.setAttribute(
       "aria-label",
       user ? `Abrir el perfil de ${accountLabel}` : "Iniciar sesión"
@@ -1826,7 +1826,7 @@ function renderCategoryShelves() {
                 <span>Podés ser la primera persona en publicar algo en esta categoría.</span>
               </div>
               <a
-                href="publicar.html?category=${encodeURIComponent(category)}"
+                href="/publicar?category=${encodeURIComponent(category)}"
                 data-requires-auth
               >Publicar en ${escapeHtml(category)}</a>
             </div>
@@ -2026,7 +2026,7 @@ function renderProductGrid(products, total, productLimit = getCurrentProductLimi
 
 function productCard(product) {
   const isFavorite = state.favorites.has(product.id);
-  const productUrl = `producto.html?id=${encodeURIComponent(product.id)}`;
+  const productUrl = `/producto?id=${encodeURIComponent(product.id)}`;
   const isUniform = normalizeText(product.category) === normalizeText("Uniformes");
   const isBackpack = normalizeText(product.category) === normalizeText("Mochilas");
   const sizeLabel = product.size
@@ -2050,7 +2050,7 @@ function productCard(product) {
     ? `
       <a
         class="product-school-link"
-        href="colegio.html?code=${encodeURIComponent(product.school_code)}"
+        href="/colegio?code=${encodeURIComponent(product.school_code)}"
       >
         ${escapeHtml(product.school_name)}
       </a>
@@ -2157,7 +2157,7 @@ async function handleFavoriteClick(event) {
   if (result && result.requiresAuth) {
     showToast("Iniciá sesión para guardar favoritos.");
     window.setTimeout(() => {
-      window.location.href = buildLoginUrl("index.html");
+      window.location.href = buildLoginUrl("/");
     }, 500);
     return;
   }

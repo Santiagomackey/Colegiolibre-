@@ -122,7 +122,7 @@ async function initPerfil() {
 
   if (!state.currentUser) {
     window.location.replace(
-      `login.html?next=${encodeURIComponent(getCurrentProfileDestination())}`
+      `/login?next=${encodeURIComponent(getCurrentProfileDestination())}`
     );
     return;
   }
@@ -131,7 +131,7 @@ async function initPerfil() {
 
   if (!currentProfile?.school_code) {
     window.location.replace(
-      `index.html?onboarding=1&next=${encodeURIComponent(getCurrentProfileDestination())}`
+      `/?onboarding=1&next=${encodeURIComponent(getCurrentProfileDestination())}`
     );
     return;
   }
@@ -159,7 +159,7 @@ async function exposeAdminNavigation() {
   secondaryNav.insertAdjacentHTML(
     "afterbegin",
     `
-      <a class="profile-nav__item" href="moderacion.html" data-admin-moderation>
+      <a class="profile-nav__item" href="/moderacion" data-admin-moderation>
         <svg class="icon"><use href="#icon-shield"></use></svg>
         <span>Moderación</span>
       </a>
@@ -168,7 +168,7 @@ async function exposeAdminNavigation() {
 }
 
 function getCurrentProfileDestination() {
-  return `perfil.html${window.location.search}`;
+  return `/perfil${window.location.search}`;
 }
 
 function hydrateViewState() {
@@ -183,7 +183,7 @@ function hydrateViewState() {
   ]);
 
   if (rawView === "favorites") {
-    window.location.replace("favoritos.html");
+    window.location.replace("/favoritos");
     return;
   }
 
@@ -230,7 +230,7 @@ function hydrateProfileCard() {
   schoolLink.textContent = state.profile?.school_name || "Colegio no especificado";
 
   if (state.profile?.school_code) {
-    schoolLink.href = `colegio.html?code=${encodeURIComponent(state.profile.school_code)}`;
+    schoolLink.href = `/colegio?code=${encodeURIComponent(state.profile.school_code)}`;
   } else {
     schoolLink.removeAttribute("href");
   }
@@ -385,7 +385,7 @@ function renderCurrentSection() {
 
   if (state.currentSection === "messages") {
     renderUtilitySection({
-      actionHref: "mensajes.html",
+      actionHref: "/mensajes",
       actionLabel: "Abrir bandeja de mensajes",
       body:
         "Centralizá todas tus conversaciones con compradores y vendedores. Desde acá podés entrar al chat completo y responder rápido.",
@@ -514,7 +514,7 @@ function renderVerificationSection() {
                 <p class="section-kicker">Todo listo</p>
                 <h3>Tu acceso está habilitado</h3>
                 <p>La verificación pertenece a ${escapeHtml(profile.school_name || "tu colegio")}. Si cambiás de colegio, vas a tener que verificarlo nuevamente.</p>
-                <a class="verification-primary-action" href="colegio.html?code=${encodeURIComponent(profile.school_code || "")}">Ir a Mi colegio</a>
+                <a class="verification-primary-action" href="/colegio?code=${encodeURIComponent(profile.school_code || "")}">Ir a Mi colegio</a>
               </article>
             `
             : `
@@ -669,7 +669,7 @@ function renderUtilitySection(config) {
 function renderTransactionHistory(transactions) {
   if (!transactions.length) {
     renderUtilitySection({
-      actionHref: "index.html",
+      actionHref: "/",
       actionLabel: "Explorar productos",
       body:
         "Cuando reserves o compres un producto desde el chat, la operación aparecerá acá.",
@@ -723,7 +723,7 @@ function renderTransactionHistory(transactions) {
                 )}</p>
               </div>
               <div class="transaction-card__actions">
-                <a href="mensajes.html?id=${encodeURIComponent(
+                <a href="/mensajes?id=${encodeURIComponent(
                   transaction.conversation_id
                 )}">Abrir conversación</a>
                 ${
@@ -880,7 +880,7 @@ function buildPublicationCard(item) {
       return;
     }
 
-    window.location.href = `producto.html?id=${encodeURIComponent(item.id)}`;
+    window.location.href = `/producto?id=${encodeURIComponent(item.id)}`;
   });
 
   menuTrigger.addEventListener("click", (event) => {
@@ -905,7 +905,7 @@ function buildPublicationCard(item) {
 
   dropdown.querySelector("[data-edit-action]")?.addEventListener("click", (event) => {
     event.stopPropagation();
-    window.location.href = `publicar.html?edit=${encodeURIComponent(item.id)}`;
+    window.location.href = `/publicar?edit=${encodeURIComponent(item.id)}`;
   });
 
   return fragment;
@@ -1125,7 +1125,7 @@ function bindEvents() {
       event.preventDefault();
       const input = searchForm.querySelector('input[type="search"]');
       const term = input?.value.trim();
-      const url = term ? `index.html?search=${encodeURIComponent(term)}` : "index.html";
+      const url = term ? `/?search=${encodeURIComponent(term)}` : "/";
       window.location.href = url;
     });
   });
@@ -1240,7 +1240,7 @@ async function handleLogout() {
     return;
   }
 
-  window.location.href = "index.html";
+  window.location.href = "/";
 }
 
 async function handleAccountDeactivation() {
@@ -1276,7 +1276,7 @@ async function handleAccountDeactivation() {
   }
 
   await window.colegioLibreSupabase.auth.signOut();
-  window.location.replace("index.html");
+  window.location.replace("/");
 }
 
 })();

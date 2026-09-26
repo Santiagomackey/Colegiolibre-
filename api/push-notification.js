@@ -95,7 +95,7 @@ async function sendToDevice(accessToken, device, notification) {
     `https://fcm.googleapis.com/v1/projects/${encodeURIComponent(
       projectId
     )}/messages:send`;
-  const actionUrl = String(notification.action_url || "/index.html");
+  const actionUrl = String(notification.action_url || "/");
   const response = await fetch(url, {
     method: "POST",
     headers: {

@@ -224,7 +224,7 @@ function upsertMeta(selector, attributes, content) {
 }
 
 function updateProductSeo(product) {
-  const canonicalUrl = new URL(`producto.html?id=${encodeURIComponent(product.id)}`, window.location.origin).href;
+  const canonicalUrl = new URL(`/producto?id=${encodeURIComponent(product.id)}`, window.location.origin).href;
   const description = String(
     product.description ||
       `${product.title}, material escolar publicado en ColegioLibre.`
@@ -327,7 +327,7 @@ function bindEvents() {
       event.preventDefault();
       const input = form.querySelector('input[type="search"]');
       const term = input?.value.trim();
-      const url = term ? `index.html?search=${encodeURIComponent(term)}` : "index.html";
+      const url = term ? `/?search=${encodeURIComponent(term)}` : "/";
       window.location.href = url;
     });
   });
@@ -353,16 +353,16 @@ function bindEvents() {
 function bindHeaderNavigation() {
   const headerButtons = Array.from(document.querySelectorAll(".header-action"));
   headerButtons[0]?.addEventListener("click", () => {
-    window.location.href = "mensajes.html";
+    window.location.href = "/mensajes";
   });
   headerButtons[1]?.addEventListener("click", () => {
-    window.location.href = "favoritos.html";
+    window.location.href = "/favoritos";
   });
   headerButtons[2]?.addEventListener("click", () => {
-    window.location.href = "perfil.html";
+    window.location.href = "/perfil";
   });
   document.querySelector(".header-cta")?.addEventListener("click", () => {
-    window.location.href = "publicar.html";
+    window.location.href = "/publicar";
   });
 }
 
@@ -609,10 +609,10 @@ async function shareCurrentProduct() {
   if (!currentProduct) return;
 
   const publicSiteUrl = String(
-    window.colegioLibreConfig?.publicSiteUrl || "https://colegiolibre.vercel.app"
+    window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
   ).replace(/\/$/, "");
-  const productPath = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
-  const sharedUrl = `${publicSiteUrl}/open-app.html?path=${encodeURIComponent(productPath)}`;
+  const productPath = `/producto?id=${encodeURIComponent(currentProduct.id)}`;
+  const sharedUrl = `${publicSiteUrl}/open-app?path=${encodeURIComponent(productPath)}`;
 
   const shareData = {
     title: currentProduct.title,
@@ -640,11 +640,11 @@ function renderBreadcrumbs(product) {
   const items = [
     {
       label: "Inicio",
-      href: "./index.html"
+      href: "/"
     },
     {
       label: product.category || "Producto",
-      href: `./index.html?category=${encodeURIComponent(product.category || "Otros")}#productos`
+      href: `/?category=${encodeURIComponent(product.category || "Otros")}#productos`
     },
     classification && classification !== getStatusLabel(product.status)
       ? { label: classification }
@@ -803,7 +803,7 @@ function renderSchoolLinks(product) {
     return;
   }
 
-  const href = `colegio.html?code=${encodeURIComponent(product.school_code)}`;
+  const href = `/colegio?code=${encodeURIComponent(product.school_code)}`;
   const label = product.school_name || "Ver colegio";
 
   elements.productSchoolLink.href = href;
@@ -819,7 +819,7 @@ function renderSeller(product) {
   elements.sellerAvatar.textContent = getInitials(product.seller_name);
 
   if (product.user_id) {
-    elements.sellerProfileLink.href = `perfil-publico.html?id=${encodeURIComponent(product.user_id)}`;
+    elements.sellerProfileLink.href = `/perfil-publico?id=${encodeURIComponent(product.user_id)}`;
   } else {
     elements.sellerProfileLink.removeAttribute("href");
   }
@@ -865,7 +865,7 @@ function updateProductActions(product) {
   elements.contactButton.hidden = isOwner;
   elements.ownerEditButton.hidden = !isOwner;
   elements.ownerEditButton.href = isOwner
-    ? `publicar.html?edit=${encodeURIComponent(product.id)}`
+    ? `/publicar?edit=${encodeURIComponent(product.id)}`
     : "#";
   elements.saveButton.hidden = isOwner;
   elements.mainFavoriteButton.hidden = isOwner;
@@ -898,7 +898,7 @@ async function renderSimilarProducts(product) {
 
   if (elements.similarViewAll) {
     elements.similarViewAll.href =
-      `./index.html?category=${encodeURIComponent(product.category || "Otros")}#productos`;
+      `/?category=${encodeURIComponent(product.category || "Otros")}#productos`;
   }
 
   try {
@@ -987,7 +987,7 @@ async function renderSimilarProducts(product) {
       const result = await toggleFavorite(item.id);
 
       if (result?.requiresAuth) {
-        window.location.href = "login.html";
+        window.location.href = "/login";
         return;
       }
 
@@ -1003,7 +1003,7 @@ async function renderSimilarProducts(product) {
     });
 
     card.addEventListener("click", () => {
-      window.location.href = `producto.html?id=${encodeURIComponent(item.id)}`;
+      window.location.href = `/producto?id=${encodeURIComponent(item.id)}`;
     });
 
     elements.similarGrid.appendChild(fragment);
@@ -1023,7 +1023,7 @@ async function handleFavoriteToggle(id) {
   if (result?.requiresAuth) {
     showToast("Iniciá sesión para guardar favoritos.");
     window.setTimeout(() => {
-      window.location.href = "login.html";
+      window.location.href = "/login";
     }, 500);
     return;
   }
@@ -1043,9 +1043,9 @@ async function handleFavoriteToggle(id) {
 async function openProductReport() {
   if (!currentProduct) return;
   const user = currentUser || (await getCurrentUser());
-  const destination = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
+  const destination = `/producto?id=${encodeURIComponent(currentProduct.id)}`;
   if (!user) {
-    window.location.href = `login.html?next=${encodeURIComponent(destination)}`;
+    window.location.href = `/login?next=${encodeURIComponent(destination)}`;
     return;
   }
   if (user.id === currentProduct.user_id) {
@@ -1091,19 +1091,19 @@ async function handleContactSeller() {
     return;
   }
   const user = currentUser || (await getCurrentUser());
-  const destination = `producto.html?id=${encodeURIComponent(currentProduct.id)}`;
+  const destination = `/producto?id=${encodeURIComponent(currentProduct.id)}`;
   if (!user) {
-    window.location.href = `login.html?next=${encodeURIComponent(destination)}`;
+    window.location.href = `/login?next=${encodeURIComponent(destination)}`;
     return;
   }
   const profile = await getCurrentProfile(true);
   if (!profile?.school_code) {
-    window.location.href = `index.html?onboarding=1&next=${encodeURIComponent(destination)}`;
+    window.location.href = `/?onboarding=1&next=${encodeURIComponent(destination)}`;
     return;
   }
   if (window.colegioLibreApi.isAccountRestricted(profile)) {
     showToast("Tu cuenta no está habilitada para iniciar conversaciones.");
-    window.setTimeout(() => { window.location.href = "perfil.html"; }, 900);
+    window.setTimeout(() => { window.location.href = "/perfil"; }, 900);
     return;
   }
   if (!currentProduct?.user_id) {
@@ -1130,7 +1130,7 @@ async function handleContactSeller() {
     elements.contactButton.textContent = "Contactar vendedor";
     return;
   }
-  window.location.href = `mensajes.html?id=${encodeURIComponent(conversation.id)}`;
+  window.location.href = `/mensajes?id=${encodeURIComponent(conversation.id)}`;
 }
 
 })();

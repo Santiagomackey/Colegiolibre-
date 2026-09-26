@@ -31,7 +31,7 @@
     state.user = await getCurrentUser();
 
     if (!state.user) {
-      window.location.replace(buildLoginUrl("favoritos.html"));
+      window.location.replace(buildLoginUrl("/favoritos"));
       return;
     }
 
@@ -196,7 +196,7 @@
     card.innerHTML = `
       <a
         class="favorite-card__image"
-        href="./producto.html?id=${encodeURIComponent(product.id)}"
+        href="/producto?id=${encodeURIComponent(product.id)}"
         aria-label="Ver producto"
       >
         <img
@@ -218,7 +218,7 @@
       </button>
       <div class="favorite-card__body">
         <span class="favorite-card__status" data-status="${escapeHtml(status)}">${escapeHtml(statusLabel)}</span>
-        <a href="./producto.html?id=${encodeURIComponent(product.id)}">
+        <a href="/producto?id=${encodeURIComponent(product.id)}">
           <h2 data-product-title data-no-translate>${escapeHtml(product.title || "Producto")}</h2>
         </a>
         <p class="favorite-card__price">${formatPrice(product.price)}</p>
@@ -291,7 +291,7 @@
   }
 
   function buildLoginUrl(destination) {
-    return `login.html?next=${encodeURIComponent(destination)}`;
+    return `/login?next=${encodeURIComponent(destination)}`;
   }
 
   function normalizeText(value) {

@@ -153,12 +153,12 @@
   }
 
   async function markVisibleConversationNotifications() {
-    const page = window.location.pathname.split("/").pop() || "index.html";
+    const page = window.location.pathname === "/" ? "/" : `/${window.location.pathname.split("/").filter(Boolean).pop()}`;
     const activeConversationId = new URLSearchParams(window.location.search).get(
       "id"
     );
 
-    if (page !== "mensajes.html" || !activeConversationId) return;
+    if (page !== "/mensajes" || !activeConversationId) return;
 
     const matchingIds = state.notifications
       .filter(
@@ -288,10 +288,10 @@
     const destination =
       getSafeDestination(notification.action_url) ||
       (notification.conversation_id
-        ? `mensajes.html?id=${encodeURIComponent(notification.conversation_id)}`
+        ? `/mensajes?id=${encodeURIComponent(notification.conversation_id)}`
         : notification.product_id
-          ? `producto.html?id=${encodeURIComponent(notification.product_id)}`
-          : "index.html");
+          ? `/producto?id=${encodeURIComponent(notification.product_id)}`
+          : "/");
 
     window.location.href = destination;
   }
@@ -396,10 +396,10 @@
         url:
           getSafeDestination(notification.action_url) ||
           (notification.conversation_id
-            ? `mensajes.html?id=${encodeURIComponent(notification.conversation_id)}`
+            ? `/mensajes?id=${encodeURIComponent(notification.conversation_id)}`
             : notification.product_id
-              ? `producto.html?id=${encodeURIComponent(notification.product_id)}`
-              : "index.html")
+              ? `/producto?id=${encodeURIComponent(notification.product_id)}`
+              : "/")
       }
     };
 
@@ -471,7 +471,7 @@
       if (window.location.origin !== "null" && url.origin !== window.location.origin) {
         return "";
       }
-      return `${url.pathname.split("/").pop() || "index.html"}${url.search}`;
+      return `${url.pathname}${url.search}`;
     } catch (_error) {
       return "";
     }

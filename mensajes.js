@@ -70,11 +70,11 @@
     bindEvents();
 
     state.currentUser = await getCurrentUser(true);
-    const destination = `mensajes.html${window.location.search}`;
+    const destination = `/mensajes${window.location.search}`;
 
     if (!state.currentUser) {
       window.location.replace(
-        `login.html?next=${encodeURIComponent(destination)}`
+        `/login?next=${encodeURIComponent(destination)}`
       );
       return;
     }
@@ -82,17 +82,17 @@
     const profile = await getCurrentProfile(true);
     if (!profile?.school_code) {
       window.location.replace(
-        `index.html?onboarding=1&next=${encodeURIComponent(destination)}`
+        `/?onboarding=1&next=${encodeURIComponent(destination)}`
       );
       return;
     }
 
     if (window.colegioLibreApi.isAccountRestricted(profile)) {
-      window.location.replace("perfil.html");
+      window.location.replace("/perfil");
       return;
     }
 
-    elements.accountLink.href = "perfil.html";
+    elements.accountLink.href = "/perfil";
     await refreshConversations({ preserveSelection: false });
 
     if (requestedConversationId) {
@@ -110,8 +110,8 @@
       event.preventDefault();
       const term = elements.globalSearchInput?.value.trim();
       window.location.href = term
-        ? `index.html?search=${encodeURIComponent(term)}`
-        : "index.html";
+        ? `/?search=${encodeURIComponent(term)}`
+        : "/";
     });
 
     elements.conversationSearch?.addEventListener("input", (event) => {
@@ -501,7 +501,7 @@
       history.replaceState(
         null,
         "",
-        `mensajes.html?id=${encodeURIComponent(conversation.id)}`
+        `/mensajes?id=${encodeURIComponent(conversation.id)}`
       );
     }
 
@@ -569,7 +569,7 @@
         </div>
         <div class="product-card__actions">
           ${ownerActions}
-          <a class="view-product-link" href="producto.html?id=${encodeURIComponent(
+          <a class="view-product-link" href="/producto?id=${encodeURIComponent(
             product.id
           )}">
             <span>Ver producto</span>

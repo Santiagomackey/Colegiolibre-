@@ -15,12 +15,12 @@
       let nextInput = input;
 
       if (typeof input === "string" && input.startsWith("/api/")) {
-        nextInput = `https://colegiolibre.com${input}`;
+        nextInput = `https:/colegiolibre.com${input}`;
       } else if (input instanceof Request) {
         try {
           const url = new URL(input.url);
           if ((url.hostname === "localhost" || url.hostname.endsWith(".localhost")) && url.pathname.startsWith("/api/")) {
-            nextInput = new Request(`https://colegiolibre.com${url.pathname}${url.search}`, input);
+            nextInput = new Request(`https:/colegiolibre.com${url.pathname}${url.search}`, input);
           }
         } catch (_error) {
           // Keep the original request if it cannot be normalized.
@@ -81,7 +81,7 @@
         title,
         body: options.body || "",
         schedule: { at: new Date(Date.now() + 150) },
-        extra: { url: options.data?.url || "index.html" },
+        extra: { url: options.data?.url || "/" },
         smallIcon: "ic_stat_colegiolibre",
         iconColor: "#67C23A",
         channelId: "colegiolibre-general"
@@ -100,13 +100,13 @@
 
     const app = capacitor.Plugins?.App;
     const allowedPages = new Set([
-      "index.html", "producto.html", "mensajes.html", "favoritos.html",
-      "perfil.html", "publicar.html", "colegio.html", "busco.html", "login.html"
+      "/", "/producto", "/mensajes", "/favoritos",
+      "/perfil", "/publicar", "/colegio", "/busco", "/login"
     ]);
-    const safeDestination = (rawValue, fallback = "index.html") => {
+    const safeDestination = (rawValue, fallback = "/") => {
       try {
         const url = new URL(rawValue || fallback, "https://app.colegiolibre.local/");
-        const page = url.pathname.split("/").filter(Boolean).pop() || "index.html";
+        const page = url.pathname === "/" ? "/" : `/${url.pathname.split("/").filter(Boolean).pop()}`;
         return allowedPages.has(page) ? `${page}${url.search}` : fallback;
       } catch (_error) {
         return fallback;
@@ -137,11 +137,11 @@
           window.localStorage.removeItem("colegiolibre-pending-verification");
         }
         window.location.href = authType === "recovery"
-          ? `login.html?mode=recovery&next=${encodeURIComponent(next)}`
+          ? `/login?mode=recovery&next=${encodeURIComponent(next)}`
           : next;
       } catch (error) {
         console.error("No se pudo completar la verificación en la app:", error);
-        window.location.href = "login.html?verified=1";
+        window.location.href = "/login?verified=1";
       }
     };
 
@@ -196,7 +196,7 @@
         const data = notification?.data || {};
         void showNotification(notification?.title || "ColegioLibre", {
           body: notification?.body || "Tenés un nuevo aviso.",
-          data: { url: data.url || data.action_url || "index.html" }
+          data: { url: data.url || data.action_url || "/" }
         });
       });
 

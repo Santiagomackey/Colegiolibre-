@@ -5,12 +5,12 @@
   const MIN_SEARCH_LENGTH = 2;
   const MAX_RESULTS = 18;
   const SAFE_DESTINATIONS = new Set([
-    "index.html",
-    "perfil.html",
-    "publicar.html",
-    "mensajes.html",
-    "favoritos.html",
-    "colegio.html"
+    "/",
+    "/perfil",
+    "/publicar",
+    "/mensajes",
+    "/favoritos",
+    "/colegio"
   ]);
 
   let selectedOnboardingSchool = null;
@@ -32,7 +32,7 @@
 
       if (currentOrigin !== "null" && url.origin !== currentOrigin) return "";
 
-      const page = url.pathname.split("/").filter(Boolean).pop() || "index.html";
+      const page = url.pathname === "/" ? "/" : `/${url.pathname.split("/").filter(Boolean).pop()}`;
       if (!SAFE_DESTINATIONS.has(page)) return "";
 
       return `${page}${url.search}`;
@@ -85,7 +85,7 @@
     if (!user.email_confirmed_at && !user.confirmed_at) {
       await client.auth.signOut();
       hideOnboarding();
-      window.location.replace("login.html?verification=required");
+      window.location.replace("/login?verification=required");
       return { required: false, user: null };
     }
 
@@ -501,24 +501,24 @@
         completedProfile
       );
 
-      if (destination && destination !== "index.html") {
+      if (destination && destination !== "/") {
         window.location.assign(destination);
       } else {
-        window.location.assign("index.html");
+        window.location.assign("/");
       }
     }, 650);
   }
 
   function getPostOnboardingDestination(destination, profile) {
     const safeDestination = getSafeDestination(destination);
-    if (safeDestination?.startsWith("colegio.html")) {
+    if (safeDestination?.startsWith("/colegio")) {
       const schoolCode = String(profile?.school_code || "").trim();
       return schoolCode
-        ? `colegio.html?code=${encodeURIComponent(schoolCode)}`
-        : "index.html";
+        ? `/colegio?code=${encodeURIComponent(schoolCode)}`
+        : "/";
     }
 
-    return safeDestination || "index.html";
+    return safeDestination || "/";
   }
 
   function updateSelectedSchoolPreview(school) {

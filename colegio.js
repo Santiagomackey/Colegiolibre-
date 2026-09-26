@@ -50,7 +50,7 @@ const state = {
 
 function updateSchoolSeo(schoolName, schoolLocation) {
   const canonicalUrl = new URL(
-    `colegio.html?code=${encodeURIComponent(schoolCode)}`,
+    `/colegio?code=${encodeURIComponent(schoolCode)}`,
     window.location.origin
   ).href;
   const description = `Encontrá libros, uniformes y materiales escolares publicados por la comunidad de ${schoolName} en ${schoolLocation}.`;
@@ -109,8 +109,8 @@ async function ensureSchoolAccess() {
   const user = await getCurrentUser(true);
   if (!user) {
     window.location.replace(
-      `login.html?next=${encodeURIComponent(
-        `colegio.html?code=${schoolCode}`
+      `/login?next=${encodeURIComponent(
+        `/colegio?code=${schoolCode}`
       )}`
     );
     return false;
@@ -123,19 +123,19 @@ async function ensureSchoolAccess() {
 
   if (!profileSchoolCode) {
     window.location.replace(
-      `index.html?onboarding=1&next=${encodeURIComponent("colegio.html")}`
+      `/?onboarding=1&next=${encodeURIComponent("/colegio")}`
     );
     return false;
   }
 
   if (window.colegioLibreApi.isAccountRestricted(profile)) {
-    window.location.replace("perfil.html");
+    window.location.replace("/perfil");
     return false;
   }
 
   if (profileSchoolCode !== schoolCode) {
     window.location.replace(
-      `colegio.html?code=${encodeURIComponent(profileSchoolCode)}`
+      `/colegio?code=${encodeURIComponent(profileSchoolCode)}`
     );
     return false;
   }
@@ -148,7 +148,7 @@ async function resolveSchoolFromAccount() {
 
   if (!user) {
     window.location.replace(
-      `login.html?next=${encodeURIComponent("colegio.html")}`
+      `/login?next=${encodeURIComponent("/colegio")}`
     );
     return;
   }
@@ -158,18 +158,18 @@ async function resolveSchoolFromAccount() {
 
   if (!profileSchoolCode) {
     window.location.replace(
-      `index.html?onboarding=1&next=${encodeURIComponent("colegio.html")}`
+      `/?onboarding=1&next=${encodeURIComponent("/colegio")}`
     );
     return;
   }
 
   if (window.colegioLibreApi.isAccountRestricted(profile)) {
-    window.location.replace("perfil.html");
+    window.location.replace("/perfil");
     return;
   }
 
   window.location.replace(
-    `colegio.html?code=${encodeURIComponent(profileSchoolCode)}`
+    `/colegio?code=${encodeURIComponent(profileSchoolCode)}`
   );
 }
 
@@ -177,7 +177,7 @@ function bindEvents() {
   elements.globalSearchForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     const term = elements.globalSearchInput?.value.trim();
-    const url = term ? `index.html?search=${encodeURIComponent(term)}` : "index.html";
+    const url = term ? `/?search=${encodeURIComponent(term)}` : "/";
     window.location.href = url;
   });
 
@@ -245,7 +245,7 @@ function renderHero() {
   elements.categoriesCount.textContent = String(categories.size);
   elements.schoolCodeLabel.textContent = `Código ${schoolCode.toUpperCase()}`;
   elements.schoolPublishLink.href =
-    `publicar.html?school=${encodeURIComponent(schoolCode)}`;
+    `/publicar?school=${encodeURIComponent(schoolCode)}`;
 
   const officialName = state.school?.official_name || "";
   const shouldShowOfficialName =
@@ -277,7 +277,7 @@ function renderSchoolNotFound() {
     <span>Revisá el enlace o buscá nuevamente tu colegio.</span>
   `;
   elements.schoolCodeLabel.textContent = `Código ${schoolCode}`;
-  elements.schoolPublishLink.href = "index.html?onboarding=1";
+  elements.schoolPublishLink.href = "/?onboarding=1";
   elements.schoolPublishLink.textContent = "Buscar mi colegio";
   elements.grid.innerHTML = "";
   elements.emptyState.hidden = false;
@@ -410,13 +410,13 @@ function renderProducts() {
     });
 
     card.addEventListener("click", () => {
-      window.location.href = `producto.html?id=${encodeURIComponent(product.id)}`;
+      window.location.href = `/producto?id=${encodeURIComponent(product.id)}`;
     });
 
     card.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        window.location.href = `producto.html?id=${encodeURIComponent(product.id)}`;
+        window.location.href = `/producto?id=${encodeURIComponent(product.id)}`;
       }
     });
 
@@ -428,7 +428,7 @@ async function toggleFavoriteState(productId, button) {
   const result = await toggleFavorite(productId);
 
   if (result?.requiresAuth) {
-    window.location.href = "login.html";
+    window.location.href = "/login";
     return;
   }
 
@@ -472,7 +472,7 @@ function renderPublishers() {
         <h3>${escapeHtml(publisher.name)}</h3>
         <p>${escapeHtml(publisher.zone_code)}</p>
         <p>${escapeHtml(String(publisher.count))} publicaciones activas en esta comunidad</p>
-        <a class="publisher-card__link" href="perfil-publico.html?id=${encodeURIComponent(publisher.user_id)}">
+        <a class="publisher-card__link" href="/perfil-publico?id=${encodeURIComponent(publisher.user_id)}">
           <span>Ver perfil</span>
           <svg class="icon"><use href="#icon-chevron"></use></svg>
         </a>

@@ -2,15 +2,15 @@
   "use strict";
 
   const NAV_PAGES = new Set([
-    "index.html",
-    "producto.html",
-    "publicar.html",
-    "perfil.html",
-    "favoritos.html",
-    "mensajes.html",
-    "colegio.html",
-    "perfil-publico.html",
-    "busco.html"
+    "/",
+    "/producto",
+    "/publicar",
+    "/perfil",
+    "/favoritos",
+    "/mensajes",
+    "/colegio",
+    "/perfil-publico",
+    "/busco"
   ]);
 
   const icons = {
@@ -21,7 +21,7 @@
     user: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a8.5 8.5 0 0 1 15 0"/>'
   };
 
-  const currentFile = window.location.pathname.split("/").pop() || "index.html";
+  const currentFile = window.location.pathname === "/" ? "/" : `/${window.location.pathname.split("/").filter(Boolean).pop()}`;
   if (!NAV_PAGES.has(currentFile)) return;
 
   const language = document.documentElement.dataset.language === "en" ? "en" : "es";
@@ -44,20 +44,20 @@
       };
 
   const activeByPage = {
-    "index.html": "home",
-    "favoritos.html": "favorites",
-    "publicar.html": "publish",
-    "mensajes.html": "messages",
-    "perfil.html": "profile",
-    "busco.html": "home"
+    "/": "home",
+    "/favoritos": "favorites",
+    "/publicar": "publish",
+    "/mensajes": "messages",
+    "/perfil": "profile",
+    "/busco": "home"
   };
 
   const links = [
-    { href: "index.html", icon: "home", key: "home" },
-    { href: "favoritos.html", icon: "heart", key: "favorites", requiresAuth: true },
-    { href: "publicar.html", icon: "plus", key: "publish", primary: true, requiresAuth: true },
-    { href: "mensajes.html", icon: "message", key: "messages", requiresAuth: true },
-    { href: "perfil.html", icon: "user", key: "profile", requiresAuth: true }
+    { href: "/", icon: "home", key: "home" },
+    { href: "/favoritos", icon: "heart", key: "favorites", requiresAuth: true },
+    { href: "/publicar", icon: "plus", key: "publish", primary: true, requiresAuth: true },
+    { href: "/mensajes", icon: "message", key: "messages", requiresAuth: true },
+    { href: "/perfil", icon: "user", key: "profile", requiresAuth: true }
   ];
 
   function createNavigation() {

@@ -102,8 +102,8 @@
       event.preventDefault();
       const term = elements.searchInput.value.trim();
       window.location.href = term
-        ? `index.html?search=${encodeURIComponent(term)}`
-        : "index.html";
+        ? `/?search=${encodeURIComponent(term)}`
+        : "/";
     });
 
     elements.reportButton.addEventListener("click", openReport);
@@ -134,7 +134,7 @@
 
     document.title = `${profileName} | ColegioLibre`;
     const canonicalUrl = new URL(
-      `perfil-publico.html?id=${encodeURIComponent(profileId)}`,
+      `/perfil-publico?id=${encodeURIComponent(profileId)}`,
       window.location.origin
     ).href;
     const description = `Conocé la reputación y las publicaciones de ${profileName} en la comunidad de ${schoolName}.`;
@@ -176,7 +176,7 @@
     safeProducts.forEach((product) => {
       const link = document.createElement("a");
       link.className = "product-card";
-      link.href = `producto.html?id=${encodeURIComponent(product.id)}`;
+      link.href = `/producto?id=${encodeURIComponent(product.id)}`;
       link.innerHTML = `
         <img src="${escapeHtml(
           product.image_url || FALLBACK_PRODUCT_IMAGE
@@ -233,8 +233,8 @@
 
   async function requireLogin() {
     if (state.currentUser) return true;
-    window.location.href = `login.html?next=${encodeURIComponent(
-      `perfil-publico.html?id=${profileId}`
+    window.location.href = `/login?next=${encodeURIComponent(
+      `/perfil-publico?id=${profileId}`
     )}`;
     return false;
   }

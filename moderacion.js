@@ -72,13 +72,13 @@
     state.currentUser = await getCurrentUser(true);
     if (!state.currentUser) {
       window.location.replace(
-        `login.html?next=${encodeURIComponent("moderacion.html")}`
+        `/login?next=${encodeURIComponent("/moderacion")}`
       );
       return;
     }
 
     if (!(await isAdminUser())) {
-      window.location.replace("index.html");
+      window.location.replace("/");
       return;
     }
 
@@ -354,7 +354,7 @@
               </div>
               ${
                 product
-                  ? `<a href="producto.html?id=${encodeURIComponent(
+                  ? `<a href="/producto?id=${encodeURIComponent(
                       product.id
                     )}" target="_blank" rel="noopener">Ver publicación</a>`
                   : ""
@@ -504,8 +504,8 @@
         <p class="report-card__details">${escapeHtml(report.details || "Sin detalles adicionales.")}</p>
         ${renderEvidence(report)}
         <div class="report-card__links">
-          ${report.product_id ? `<a href="producto.html?id=${encodeURIComponent(report.product_id)}" target="_blank" rel="noopener">Ver producto</a>` : ""}
-          ${report.reported_user_id ? `<a href="perfil-publico.html?id=${encodeURIComponent(report.reported_user_id)}" target="_blank" rel="noopener">Ver perfil</a>` : ""}
+          ${report.product_id ? `<a href="/producto?id=${encodeURIComponent(report.product_id)}" target="_blank" rel="noopener">Ver producto</a>` : ""}
+          ${report.reported_user_id ? `<a href="/perfil-publico?id=${encodeURIComponent(report.reported_user_id)}" target="_blank" rel="noopener">Ver perfil</a>` : ""}
         </div>
         ${
           ["pending", "reviewing"].includes(report.status)

@@ -98,52 +98,52 @@
     {
       title: { es: "Instalá la aplicación", en: "Install the app" },
       description: { es: "Agregala a la pantalla de inicio y abrila desde el icono.", en: "Add it to your home screen and open it from the icon." },
-      href: "index.html"
+      href: "/"
     },
     {
       title: { es: "Creá una cuenta o iniciá sesión", en: "Create an account or sign in" },
       description: { es: "Comprobá que los mensajes y errores sean claros.", en: "Check that messages and errors are clear." },
-      href: "login.html"
+      href: "/login"
     },
     {
       title: { es: "Buscá y elegí tu colegio", en: "Find and choose your school" },
       description: { es: "Probá por nombre conocido y por dirección.", en: "Try its familiar name and its address." },
-      href: "index.html"
+      href: "/"
     },
     {
       title: { es: "Explorá productos y categorías", en: "Explore products and categories" },
       description: { es: "Usá búsqueda, condición, categoría y alcance.", en: "Use search, condition, category and scope." },
-      href: "index.html#productos"
+      href: "/#productos"
     },
     {
       title: { es: "Abrí el detalle de un producto", en: "Open a product detail" },
       description: { es: "Revisá fotos, datos, vendedor y botones.", en: "Review photos, details, seller and actions." },
-      href: "index.html#productos"
+      href: "/#productos"
     },
     {
       title: { es: "Guardá y eliminá un favorito", en: "Save and remove a favorite" },
       description: { es: "Confirmá que aparezca correctamente en Favoritos.", en: "Confirm it appears correctly under Saved." },
-      href: "favoritos.html"
+      href: "/favoritos"
     },
     {
       title: { es: "Publicá un producto de prueba", en: "Create a test listing" },
       description: { es: "Completá campos, fotos y vista previa.", en: "Complete fields, photos and preview." },
-      href: "publicar.html"
+      href: "/publicar"
     },
     {
       title: { es: "Editá, pausá y reactivá", en: "Edit, pause and reactivate" },
       description: { es: "Probá el menú de una publicación propia.", en: "Test the menu on one of your listings." },
-      href: "perfil.html"
+      href: "/perfil"
     },
     {
       title: { es: "Iniciá una conversación", en: "Start a conversation" },
       description: { es: "Mandá un mensaje desde otra cuenta si es posible.", en: "Send a message from another account if possible." },
-      href: "mensajes.html"
+      href: "/mensajes"
     },
     {
       title: { es: "Probá apariencia e idioma", en: "Test appearance and language" },
       description: { es: "Revisá modo claro, oscuro, español e inglés.", en: "Check light mode, dark mode, Spanish and English." },
-      href: "index.html"
+      href: "/"
     }
   ];
 
