@@ -6,4 +6,5 @@
   <url><loc>https:/colegiolibre.com/productos-prohibidos</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https:/colegiolibre.com/terminos</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https:/colegiolibre.com/privacidad</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://colegiolibre.com/explorar</loc></url>
 </urlset>

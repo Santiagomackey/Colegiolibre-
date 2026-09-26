@@ -21,13 +21,16 @@
     products: [],
     query: "",
     sort: "saved",
-    user: null
+    user: null,
+    collection: "all",
+    collections: JSON.parse(localStorage.getItem("cl-favorite-collections") || "{}")
   };
 
   document.addEventListener("DOMContentLoaded", init);
 
   async function init() {
     bindEvents();
+    renderCollections();
     state.user = await getCurrentUser();
 
     if (!state.user) {
@@ -50,6 +53,13 @@
     });
 
     elements.retry?.addEventListener("click", loadFavorites);
+    document.getElementById("new-collection")?.addEventListener("click", () => {
+      const name = prompt("Nombre de la nueva colección");
+      if (!name || !name.trim()) return;
+      const clean = name.trim().slice(0, 40);
+      if (!state.collections[clean]) state.collections[clean] = [];
+      saveCollections(); renderCollections();
+    });
   }
 
   async function loadFavorites() {
@@ -151,6 +161,7 @@
 
   function getVisibleProducts() {
     const filtered = state.products.filter((product) => {
+      if (state.collection !== "all" && !(state.collections[state.collection] || []).includes(String(product.id))) return false;
       if (!state.query) return true;
       return normalizeText(
         [
@@ -224,6 +235,10 @@
         <p class="favorite-card__price">${formatPrice(product.price)}</p>
         <p class="favorite-card__meta">${escapeHtml(product.location || "Ubicación no especificada")}</p>
         <p class="favorite-card__meta">${escapeHtml(product.school_name || "Sin colegio")}</p>
+        <select class="favorite-card__collection" data-collection-for="${escapeHtml(String(product.id))}" aria-label="Mover a colección">
+          <option value="">Sin colección</option>
+          ${Object.keys(state.collections).map(name => `<option value="${escapeHtml(name)}" ${(state.collections[name] || []).includes(String(product.id)) ? "selected" : ""}>${escapeHtml(name)}</option>`).join("")}
+        </select>
       </div>
     `;
 
@@ -235,6 +250,13 @@
     card
       .querySelector(".favorite-card__remove")
       .addEventListener("click", () => removeFavorite(product.id, card));
+
+    card.querySelector("[data-collection-for]")?.addEventListener("change", (event) => {
+      const id = String(product.id);
+      Object.keys(state.collections).forEach(name => { state.collections[name] = state.collections[name].filter(item => item !== id); });
+      if (event.target.value) state.collections[event.target.value].push(id);
+      saveCollections(); renderCollections();
+    });
 
     return card;
   }
@@ -322,4 +344,18 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
   }
+  function saveCollections() {
+    localStorage.setItem("cl-favorite-collections", JSON.stringify(state.collections));
+  }
+
+  function renderCollections() {
+    const root = document.getElementById("collection-tabs");
+    if (!root) return;
+    root.innerHTML = `<button type="button" data-collection="all" class="${state.collection === "all" ? "active" : ""}">Todos</button>` +
+      Object.keys(state.collections).map(name => `<button type="button" data-collection="${escapeHtml(name)}" class="${state.collection === name ? "active" : ""}">${escapeHtml(name)} <small>${state.collections[name].length}</small></button>`).join("");
+    root.querySelectorAll("[data-collection]").forEach(button => button.addEventListener("click", () => {
+      state.collection = button.dataset.collection; renderCollections(); renderFavorites();
+    }));
+  }
+
 })();

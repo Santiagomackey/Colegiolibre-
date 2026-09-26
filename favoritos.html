@@ -30,7 +30,8 @@
     <meta name="theme-color" content="#0B2E6B" />
       <link rel="stylesheet" href="./institution-theme.css?v=20260730-1" />
     <script defer src="./institution-theme.js?v=20260730-1"></script>
-  </head>
+    <link rel="stylesheet" href="/global-search.css?v=20260926-1">
+</head>
   <body class="mobile-subpage mobile-favorites">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
@@ -60,6 +61,12 @@
           <strong id="favorites-count">0</strong>
           <span id="favorites-count-label">productos guardados</span>
         </div>
+      </section>
+
+      <section class="favorites-collections" aria-label="Colecciones de favoritos">
+        <div><strong>Mis colecciones</strong><span>Organizá lo que guardás para encontrarlo después.</span></div>
+        <div id="collection-tabs" class="collection-tabs"></div>
+        <button id="new-collection" class="new-collection" type="button">+ Nueva colección</button>
       </section>
 
       <section class="favorites-toolbar" aria-label="Buscar y ordenar favoritos">
@@ -121,5 +128,6 @@
     <script src="./native-bridge.js?v=20260728-1"></script>
     <script src="./mobile-ui.js?v=20260808-40"></script>
     <script src="./pwa.js?v=20260827-mobile-only"></script>
-  </body>
+    <script src="/global-search.js?v=20260926-1"></script>
+</body>
 </html>
