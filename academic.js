@@ -1,0 +1,22 @@
+(function(){
+const params=new URLSearchParams(location.search);const mode=document.body.dataset.mode||'materia';
+const subjects=['Matemática','Lengua y Literatura','Inglés','Historia','Geografía','Biología','Física','Química','Economía','Francés'];
+const slugify=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const fromSlug=s=>subjects.find(x=>slugify(x)===slugify(s))||String(s||'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+const subject=fromSlug(params.get('materia')||params.get('slug')||'');const year=params.get('anio')||params.get('year')||'';const kind=params.get('tipo')||'';
+const titleEl=document.querySelector('#academic-title'),descEl=document.querySelector('#academic-description'),grid=document.querySelector('#academic-grid'),count=document.querySelector('#result-count');
+let heading='Material escolar';let description='Encontrá apuntes, libros, resúmenes, guías y material escolar publicado por la comunidad de ColegioLibre.';
+if(mode==='materia'&&subject){heading=`${subject}: apuntes y material escolar`;description=`Encontrá apuntes, libros, guías, resúmenes y material de ${subject} para estudiar, comprar o guardar en ColegioLibre.`}
+if(mode==='curso'&&year){heading=`Material de ${year}.º año`;description=`Apuntes, libros, exámenes, guías y material para ${year}.º año reunidos en ColegioLibre.`}
+if(mode==='apuntes'){heading='Apuntes, resúmenes y exámenes';description='Buscá apuntes, resúmenes, guías de estudio, exámenes y trabajos prácticos por materia y año.'}
+titleEl.textContent=heading;descEl.textContent=description;document.title=`${heading} | ColegioLibre`;
+const canonical=new URL(location.pathname,location.origin); if(subject)canonical.searchParams.set('materia',subject);if(year)canonical.searchParams.set('anio',year);document.querySelector('link[rel=canonical]').href=canonical.href;document.querySelector('meta[name=description]').content=description;
+const schema=document.createElement('script');schema.type='application/ld+json';schema.textContent=JSON.stringify({'@context':'https://schema.org','@type':'CollectionPage',name:heading,description,url:canonical.href,isPartOf:{'@type':'WebSite',name:'ColegioLibre',url:location.origin}});document.head.appendChild(schema);
+const links=document.querySelector('#quick-links'); if(links)links.innerHTML=subjects.map(s=>`<a href="/materia?materia=${encodeURIComponent(s)}">${s}</a>`).join('');
+const search=document.querySelector('#academic-search');search?.addEventListener('submit',e=>{e.preventDefault();const q=document.querySelector('#q').value.trim();location.href=`/explorar?q=${encodeURIComponent(q)}`});
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function matches(p){if(p.status&&p.status!=='available')return false;if(p.moderation_status&&p.moderation_status!=='approved')return false;if(mode==='materia'&&subject&&slugify(p.subject)!==slugify(subject))return false;if(mode==='curso'&&year&&String(p.school_year)!==String(year))return false;if(mode==='apuntes'&&String(p.category).toLowerCase()!=='apuntes')return false;if(kind&&slugify(p.subcategory)!==slugify(kind))return false;return true}
+function card(p){const img=p.image_url||(Array.isArray(p.image_urls)&&p.image_urls[0])||'images/materiales.webp';const meta=[p.subject,p.school_year?`${p.school_year}.º año`:null,p.subcategory].filter(Boolean).join(' · ');return `<a class="material-card" href="/producto?id=${encodeURIComponent(p.id)}"><img src="${esc(img)}" alt="${esc(p.title)}" loading="lazy"><div class="material-copy"><span class="tag">${esc(p.category||'Material')}</span><h3>${esc(p.title)}</h3><div class="meta">${esc(meta||p.school_name||'ColegioLibre')}</div></div></a>`}
+async function load(){let products=[];try{if(window.colegioLibreSupabase){const r=await window.colegioLibreSupabase.from('products').select('*').order('created_at',{ascending:false}).limit(80);if(!r.error)products=r.data||[]}}catch(e){console.warn(e)}if(!products.length&&Array.isArray(window.products))products=window.products;products=products.filter(matches);count.textContent=`${products.length} ${products.length===1?'resultado':'resultados'}`;grid.innerHTML=products.length?products.map(card).join(''):'<div class="empty">Todavía no hay materiales en esta sección. Podés ser la primera persona en publicar uno.</div>'}
+load();
+})();

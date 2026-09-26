@@ -4,11 +4,28 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/materias/:slug",
+      "destination": "/materia?materia=:slug"
+    },
+    {
+      "source": "/cursos/:year",
+      "destination": "/curso?anio=:year"
+    },
+    {
       "source": "/colegio/:code",
       "destination": "/"
     }
   ],
   "headers": [
+    {
+      "source": "/((admin|moderacion|mensajes|perfil|publicar|analytics|beta-admin|auth-callback|recovery-callback))",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
     {
       "source": "/api/(.*)",
       "headers": [

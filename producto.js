@@ -252,6 +252,35 @@ function updateProductSeo(product) {
   upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonicalUrl);
   upsertMeta('meta[property="og:image"]', { property: "og:image" }, imageUrl);
   upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
+  upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, `${product.title} | ColegioLibre`);
+  upsertMeta('meta[name="twitter:description"]', { name: "twitter:description" }, description);
+  upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, imageUrl);
+
+  document.title = `${product.title} | ColegioLibre`;
+  let jsonLd = document.head.querySelector('#product-structured-data');
+  if (!jsonLd) {
+    jsonLd = document.createElement('script');
+    jsonLd.type = 'application/ld+json';
+    jsonLd.id = 'product-structured-data';
+    document.head.appendChild(jsonLd);
+  }
+  const offer = {
+    "@type": "Offer",
+    "url": canonicalUrl,
+    "priceCurrency": "ARS",
+    "price": Number(product.price || 0),
+    "availability": String(product.status || '').toLowerCase() === 'available' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    "itemCondition": String(product.condition || '').toLowerCase().includes('nuevo') ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition"
+  };
+  jsonLd.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "description": description,
+    "image": [imageUrl],
+    "category": product.category || "Material escolar",
+    "offers": offer
+  });
 }
 
 const elements = {
@@ -285,8 +314,10 @@ const elements = {
   productUpdatedDate: document.querySelector("#product-updated-date"),
   productUpdatedRow: document.querySelector("#product-updated-row"),
   productViews: document.querySelector("#product-views"),
+  productFavoritesCount: document.querySelector("#product-favorites-count"),
   saveButton: document.querySelector("#save-button"),
   shareButton: document.querySelector("#share-button"),
+  whatsappShareButton: document.querySelector("#whatsapp-share-button"),
   sellerAvatar: document.querySelector("#seller-avatar"),
   sellerName: document.querySelector("#seller-name"),
   sellerProfileLink: document.querySelector("#seller-profile-link"),
@@ -342,6 +373,7 @@ function bindEvents() {
   elements.reportCancel?.addEventListener("click", closeProductReport);
   elements.reportForm?.addEventListener("submit", submitProductReport);
   elements.shareButton?.addEventListener("click", shareCurrentProduct);
+  elements.whatsappShareButton?.addEventListener("click", shareCurrentProductOnWhatsApp);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !elements.reportModal?.hidden) {
@@ -561,6 +593,21 @@ async function updateViews(product) {
   }
 }
 
+async function loadFavoriteCount(id) {
+  if (!elements.productFavoritesCount || !id || !window.colegioLibreSupabase) return;
+  try {
+    const { count, error } = await window.colegioLibreSupabase
+      .from("favorites")
+      .select("product_id", { count: "exact", head: true })
+      .eq("product_id", id);
+    if (error) throw error;
+    const n = Number(count || 0);
+    elements.productFavoritesCount.textContent = `${n} ${n === 1 ? "guardado" : "guardados"}`;
+  } catch (_error) {
+    elements.productFavoritesCount.closest("p")?.setAttribute("hidden", "");
+  }
+}
+
 function renderProduct(product) {
   document.title = `ColegioLibre | ${product.title}`;
   updateProductSeo(product);
@@ -585,6 +632,7 @@ function renderProduct(product) {
   renderSchoolLinks(product);
   setFavoriteState(favoriteIds.has(product.id));
   updateProductActions(product);
+  loadFavoriteCount(product.id);
 }
 
 function renderUpdatedDate(product) {
@@ -633,6 +681,13 @@ async function shareCurrentProduct() {
       showToast("No se pudo compartir la publicación.");
     }
   }
+}
+
+function shareCurrentProductOnWhatsApp() {
+  if (!currentProduct) return;
+  const url = new URL(`/producto?id=${encodeURIComponent(currentProduct.id)}`, window.location.origin).href;
+  const message = `${currentProduct.title} — lo encontré en ColegioLibre ${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
 }
 
 function renderBreadcrumbs(product) {

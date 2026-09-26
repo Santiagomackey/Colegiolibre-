@@ -30,7 +30,9 @@ const categoryFieldConfig = {
   Apuntes: {
     academic: true,
     subject: true,
-    title: "Datos de los apuntes"
+    optionLabel: "Tipo de material",
+    options: ["Apunte", "Resumen", "Guía de estudio", "Examen / Prueba", "Trabajo práctico", "Otro"],
+    title: "Datos del material"
   },
   Cuadernos: {
     optionLabel: "Tipo de cuaderno",
@@ -206,7 +208,7 @@ async function initPublishPage() {
       event.preventDefault();
       const input = searchForm.querySelector('input[type="search"]');
       const term = input?.value.trim();
-      const url = term ? `/?search=${encodeURIComponent(term)}` : "/";
+      const url = term ? `index.html?search=${encodeURIComponent(term)}` : "index.html";
       window.location.href = url;
     });
   });
@@ -230,7 +232,7 @@ async function initPublishPage() {
 }
 
 function getPublishDestination() {
-  return `/publicar${window.location.search}`;
+  return `publicar.html${window.location.search}`;
 }
 
 async function ensurePublishAccess() {
@@ -246,7 +248,7 @@ async function ensurePublishAccess() {
 
   if (!user) {
     window.location.replace(
-      `/login?next=${encodeURIComponent(destination)}`
+      `login.html?next=${encodeURIComponent(destination)}`
     );
     return false;
   }
@@ -264,7 +266,7 @@ async function ensurePublishAccess() {
 
   if (!profile?.school_code) {
     window.location.replace(
-      `/?onboarding=1&next=${encodeURIComponent(destination)}`
+      `index.html?onboarding=1&next=${encodeURIComponent(destination)}`
     );
     return false;
   }
@@ -272,7 +274,7 @@ async function ensurePublishAccess() {
   if (window.colegioLibreApi.isAccountRestricted(profile)) {
     showToast("Tu cuenta no está habilitada para publicar.");
     window.setTimeout(() => {
-      window.location.replace("/perfil");
+      window.location.replace("perfil.html");
     }, 900);
     return false;
   }
@@ -288,7 +290,7 @@ async function ensurePublishAccess() {
     );
     window.setTimeout(() => {
       window.location.replace(
-        `/colegio?code=${encodeURIComponent(profileSchoolCode)}`
+        `colegio.html?code=${encodeURIComponent(profileSchoolCode)}`
       );
     }, 1300);
     return false;
@@ -394,7 +396,7 @@ async function initializeEditMode() {
   if (!product) {
     showToast("No encontramos una publicación tuya con ese ID.");
     window.setTimeout(() => {
-      window.location.href = "/perfil";
+      window.location.href = "perfil.html";
     }, 1200);
     return;
   }
@@ -484,13 +486,13 @@ function handleInitializationError(error) {
 function bindHeaderNavigation() {
   const headerButtons = Array.from(document.querySelectorAll(".header-action"));
   headerButtons[0]?.addEventListener("click", () => {
-    window.location.href = "/mensajes";
+    window.location.href = "mensajes.html";
   });
   headerButtons[1]?.addEventListener("click", () => {
-    window.location.href = "/favoritos";
+    window.location.href = "favoritos.html";
   });
   headerButtons[2]?.addEventListener("click", () => {
-    window.location.href = "/perfil";
+    window.location.href = "perfil.html";
   });
 }
 
@@ -691,7 +693,7 @@ function bindFormEvents() {
   form.addEventListener("submit", handleSubmit);
   cancelButton.addEventListener("click", () => {
     if (publishState.isEditMode) {
-      window.location.href = "/perfil";
+      window.location.href = "perfil.html";
       return;
     }
 
@@ -1060,7 +1062,7 @@ async function handleSubmit(event) {
 
       window.setTimeout(() => {
         window.location.href =
-          `/login?next=${encodeURIComponent(getPublishDestination())}`;
+          `login.html?next=${encodeURIComponent(getPublishDestination())}`;
       }, 800);
 
       return;
@@ -1081,20 +1083,20 @@ async function handleSubmit(event) {
 
     if (!profile) {
       window.location.href =
-        `/?onboarding=1&next=${encodeURIComponent(getPublishDestination())}`;
+        `index.html?onboarding=1&next=${encodeURIComponent(getPublishDestination())}`;
       return;
     }
 
     if (!profile.school_code) {
       window.location.href =
-        `/?onboarding=1&next=${encodeURIComponent(getPublishDestination())}`;
+        `index.html?onboarding=1&next=${encodeURIComponent(getPublishDestination())}`;
       return;
     }
 
     if (window.colegioLibreApi.isAccountRestricted(profile)) {
       showToast("Tu cuenta no está habilitada para publicar.");
       window.setTimeout(() => {
-        window.location.href = "/perfil";
+        window.location.href = "perfil.html";
       }, 900);
       return;
     }
@@ -1155,7 +1157,7 @@ async function handleSubmit(event) {
       showToast(moderationMessage(moderationResult, true));
 
       window.setTimeout(() => {
-        window.location.href = "/perfil";
+        window.location.href = "perfil.html";
       }, moderationResult?.decision === "approved" ? 900 : 1800);
       return;
     }
@@ -1198,8 +1200,8 @@ async function handleSubmit(event) {
     window.setTimeout(() => {
       window.location.href =
         moderationResult?.decision !== "approved"
-          ? "/perfil"
-          : `/colegio?code=${encodeURIComponent(profile.school_code)}`;
+          ? "perfil.html"
+          : `colegio.html?code=${encodeURIComponent(profile.school_code)}`;
     }, moderationResult?.decision === "approved" ? 900 : 1800);
   } catch (error) {
     console.error(
