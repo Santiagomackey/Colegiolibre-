@@ -5285,3 +5285,48 @@ body.has-blocking-modal {
     display: none;
   }
 }
+
+/* === Hero headline: clean two-line composition (ES + EN) === */
+.hero-copy h1 {
+  max-width: 16ch;
+  font-size: clamp(2.45rem, 4.15vw, 3.65rem);
+  line-height: .98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.hero-copy h1 > span {
+  display: block;
+  width: max-content;
+  max-width: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .hero-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(430px, 1fr);
+  }
+  .hero-copy h1 {
+    max-width: 16ch;
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-copy h1 {
+    max-width: 15ch;
+    font-size: clamp(2.35rem, 8.5vw, 3.35rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.15rem, 11vw, 3rem);
+    line-height: .96;
+  }
+  .hero-copy h1 > span {
+    width: auto;
+    max-width: 100%;
+    white-space: normal;
+  }
+}
