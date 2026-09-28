@@ -5323,35 +5323,219 @@ body.has-blocking-modal {
   }
 }
 
-/* === 2026-09 mobile polish: English hero + neutral app chrome === */
-@media (max-width: 900px) {
-  html[data-language="en"] .hero-copy h1 {
-    max-width: 100%;
-    width: 100%;
-    font-size: clamp(2.15rem, 7.25vw, 3rem);
-    line-height: .98;
-    letter-spacing: -.05em;
-    text-wrap: pretty;
+/* === Mobile hero repair: keep desktop unchanged, give phones a true stacked layout === */
+@media (max-width: 760px) {
+  .hero-section {
+    padding: 1rem 0 .75rem;
   }
 
-  html[data-language="en"] .hero-copy h1 > span {
-    display: block;
-    max-width: 100%;
+  .hero-panel,
+  body.institution-themed .hero-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
+    padding: 1.65rem 1.25rem 1.1rem;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+
+  .hero-copy {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hero-copy h1,
+  body.institution-themed .hero-copy h1 {
+    width: 100%;
+    max-width: 11ch;
+    margin: 0;
+    font-size: clamp(2.65rem, 13vw, 4rem);
+    line-height: .94;
+    letter-spacing: -.06em;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .hero-copy h1 > span,
+  body.institution-themed .hero-copy h1 > span {
+    display: inline;
     white-space: normal;
   }
 
-  html[data-language="en"] .hero-copy h1 em {
+  .hero-copy h1 em,
+  body.institution-themed .hero-copy h1 em {
+    display: inline;
     margin-left: .08em;
+  }
+
+  .hero-copy > p,
+  body.institution-themed .hero-copy > p {
+    width: 100%;
+    max-width: 28rem;
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hero-cta-row {
+    width: 100%;
+    margin-top: 1.25rem;
+    gap: .75rem;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero-cta-row .cta-button,
+  body.institution-themed .hero-cta-row .cta-button {
+    width: auto;
+    min-width: 0;
+    min-height: 50px;
+    padding: 0 1.2rem;
+    justify-content: center;
+  }
+
+  .hero-cta-row .text-link {
+    width: auto;
+    justify-content: flex-start;
+    font-size: .92rem;
+    line-height: 1.35;
+  }
+
+  .hero-collage--single,
+  body.institution-themed .hero-collage--single {
+    display: flex !important;
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin: -.25rem 0 -.4rem;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .hero-main-image,
+  body.institution-themed .hero-main-image {
+    display: block;
+    width: min(112%, 520px);
+    max-width: none;
+    height: auto;
+    margin: 0 auto;
+    transform: none;
+    object-fit: contain;
   }
 }
 
-/* The page itself meets the phone status area in pure black/white. */
-html:not([data-theme="dark"]),
-html:not([data-theme="dark"]) body {
-  background-color: #fff;
+@media (max-width: 430px) {
+  .hero-panel,
+  body.institution-themed .hero-panel {
+    padding: 1.45rem 1rem 1rem;
+    border-radius: 24px;
+  }
+
+  .hero-copy h1,
+  body.institution-themed .hero-copy h1 {
+    max-width: 10ch;
+    font-size: clamp(2.5rem, 13.5vw, 3.35rem);
+  }
+
+  .hero-main-image,
+  body.institution-themed .hero-main-image {
+    width: 108%;
+  }
 }
 
-html[data-theme="dark"],
-html[data-theme="dark"] body {
-  background-color: #000 !important;
+
+/* === 2026-09-28: final mobile hero fix (ES + EN) ===
+   Keep the hero readable after runtime language switching. */
+@media (max-width: 760px) {
+  .hero-panel,
+  body.institution-themed .hero-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .hero-copy,
+  body.institution-themed .hero-copy {
+    position: relative !important;
+    z-index: 3 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .hero-copy h1,
+  body.institution-themed .hero-copy h1 {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: clamp(2.65rem, 12.5vw, 4rem) !important;
+    line-height: .94 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  html[data-language="en"] .hero-copy h1,
+  html[lang="en"] .hero-copy h1 {
+    font-size: clamp(2.35rem, 10.7vw, 3.45rem) !important;
+    line-height: .96 !important;
+    letter-spacing: -.055em !important;
+  }
+
+  .hero-copy h1 > span,
+  .hero-copy h1 em,
+  body.institution-themed .hero-copy h1 > span,
+  body.institution-themed .hero-copy h1 em {
+    white-space: normal !important;
+  }
+
+  .hero-copy > p,
+  body.institution-themed .hero-copy > p {
+    position: relative !important;
+    z-index: 4 !important;
+    width: 100% !important;
+    max-width: 31rem !important;
+    margin: 1rem 0 0 !important;
+  }
+
+  .hero-cta-row,
+  body.institution-themed .hero-cta-row {
+    position: relative !important;
+    z-index: 5 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: .85rem !important;
+  }
+
+  .hero-collage--single,
+  body.institution-themed .hero-collage--single {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: .25rem 0 -.25rem !important;
+  }
+
+  .hero-main-image,
+  body.institution-themed .hero-main-image {
+    position: relative !important;
+    inset: auto !important;
+    width: min(112%, 520px) !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    object-fit: contain !important;
+  }
+}
+
+@media (max-width: 430px) {
+  html[data-language="en"] .hero-copy h1,
+  html[lang="en"] .hero-copy h1 {
+    font-size: clamp(2.15rem, 10.4vw, 2.85rem) !important;
+  }
 }
