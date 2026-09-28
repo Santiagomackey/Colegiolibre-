@@ -1227,3 +1227,75 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 24px);
   }
 }
+
+/* ColegioLibre mobile navigation motion — smooth tab-to-tab transitions.
+   Keeps the bottom navigation visually anchored while page content changes. */
+@media (max-width: 760px) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .cl-mobile-nav {
+    view-transition-name: colegio-mobile-nav;
+  }
+
+  ::view-transition-group(colegio-mobile-nav) {
+    animation-duration: 180ms;
+    animation-timing-function: cubic-bezier(.2, 0, 0, 1);
+    z-index: 9999;
+  }
+
+  ::view-transition-old(colegio-mobile-nav),
+  ::view-transition-new(colegio-mobile-nav) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-old(root) {
+    animation: cl-tab-out 115ms cubic-bezier(.4, 0, 1, 1) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: cl-tab-in 210ms cubic-bezier(.2, 0, 0, 1) both;
+  }
+
+  .cl-mobile-nav__item,
+  .cl-mobile-nav__item svg,
+  .cl-mobile-nav__item span {
+    transition:
+      background-color 180ms cubic-bezier(.2, 0, 0, 1),
+      color 180ms cubic-bezier(.2, 0, 0, 1),
+      transform 180ms cubic-bezier(.2, 0, 0, 1),
+      opacity 160ms ease;
+  }
+
+  .cl-mobile-nav__item:active:not(.cl-mobile-nav__item--publish) {
+    transform: scale(.94);
+  }
+
+  .cl-mobile-nav__item[aria-current="page"] svg {
+    transform: translateY(-1px) scale(1.06);
+  }
+
+  .cl-mobile-nav__item--publish:active {
+    transform: scale(.94);
+  }
+}
+
+@keyframes cl-tab-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(.992); }
+}
+
+@keyframes cl-tab-in {
+  from { opacity: 0; transform: translateY(5px) scale(.996); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(colegio-mobile-nav) {
+    animation-duration: 1ms !important;
+  }
+}
