@@ -111,7 +111,7 @@
           <a class="header-link" href="/" aria-label="Marketplace"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9Z"/><path d="M9 21v-7h6v7"/></svg><span>Marketplace</span></a>
           <a class="header-link" href="/favoritos" aria-label="Favoritos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><span>Favoritos</span></a>
           <a class="header-link" href="/publicar" aria-label="Publicar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Publicar</span></a>
-          <a class="header-link header-link--strong" id="messages-account-link" href="/perfil" aria-label="Mi cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Mi cuenta</span></a>
+          <a class="header-link header-link--strong" id="messages-account-link" href="/perfil" aria-label="Mi perfil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Mi perfil</span></a>
         </nav>
       </div>
     </header>
@@ -143,7 +143,7 @@
               <svg class="icon"><use href="#icon-chevron-left"></use></svg>
             </button>
 
-            <div class="chat-avatar" id="chat-avatar">?</div>
+            <div class="chat-avatar" id="chat-avatar" hidden></div>
 
             <div class="chat-header__copy">
               <h2 id="chat-title">Seleccioná una conversación</h2>
@@ -170,7 +170,7 @@
             </div>
           </section>
 
-          <form class="message-form" id="message-form">
+          <form class="message-form" id="message-form" hidden>
             <label class="sr-only" for="message-input">Escribí tu mensaje</label>
             <div class="message-composer">
               <textarea

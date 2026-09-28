@@ -78,7 +78,13 @@
     var copy = document.getElementById("selected-plan-copy");
     var explanation = document.getElementById("payment-explanation");
     var submitLabel = document.getElementById("request-submit-label");
+    var paymentStep = document.getElementById("payment-step");
+    var paymentStepLine = document.getElementById("payment-step-line");
+    var activationStep = document.getElementById("activation-step");
     var paid = selectedPlan !== "Comunidad";
+    if (paymentStep) paymentStep.hidden = !paid;
+    if (paymentStepLine) paymentStepLine.hidden = !paid;
+    if (activationStep) activationStep.innerHTML = paid ? "<b>4</b> Activación" : "<b>3</b> Activación";
     if (summary) summary.dataset.plan = selectedPlan;
     if (name) name.textContent = selectedPlan;
     if (icon) icon.textContent = selectedPlan.charAt(0);

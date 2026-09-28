@@ -3,8 +3,8 @@
 const defaultContent = {
   condition: "Usado",
   location: "Zona de tu colegio",
-  price: 15000,
-  title: "Matemática 3 - Santillana"
+  price: null,
+  title: "Tu producto"
 };
 
 const subjectOptions = [
@@ -706,7 +706,7 @@ function formatPrice(value) {
   if (!value || Number.isNaN(Number(value))) {
     const locale =
       window.colegioLibrePreferences?.language === "en" ? "en-GB" : "es-AR";
-    return `$${defaultContent.price.toLocaleString(locale)}`;
+    return "Precio";
   }
 
   const locale =

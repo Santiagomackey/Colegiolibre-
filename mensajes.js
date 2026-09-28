@@ -517,6 +517,8 @@
 
   function renderConversationHeader(conversation) {
     const name = getConversationName(conversation);
+    elements.chatAvatar.hidden = false;
+    elements.messageForm.hidden = false;
     elements.chatAvatar.textContent = getInitials(name);
     elements.chatTitle.textContent = name;
     elements.chatSubtitle.textContent = getConversationSchool(conversation);
@@ -1218,9 +1220,11 @@
   function renderEmptyChat(
     message = "Elegí un chat de la izquierda para empezar."
   ) {
-    elements.chatAvatar.textContent = "?";
+    elements.chatAvatar.hidden = true;
+    elements.messageForm.hidden = true;
+    elements.chatAvatar.textContent = "";
     elements.chatTitle.textContent = "Seleccioná una conversación";
-    elements.chatSubtitle.textContent = "ColegioLibre";
+    elements.chatSubtitle.textContent = "Elegí un chat para ver el historial completo.";
     elements.typingIndicator.hidden = true;
     elements.chatSafetyActions.hidden = true;
     elements.messagesList.innerHTML = `
