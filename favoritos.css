@@ -603,3 +603,7 @@ html[data-theme="dark"] .favorite-card__collection {
   border-color: #303640;
   color: #d9dee6;
 }
+
+/* Top navigation icons */
+.favorites-nav a { display:inline-flex; align-items:center; gap:8px; }
+.favorites-nav a svg { width:18px; height:18px; flex:0 0 18px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
