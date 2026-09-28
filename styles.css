@@ -5539,3 +5539,20 @@ body.has-blocking-modal {
     font-size: clamp(2.15rem, 10.4vw, 2.85rem) !important;
   }
 }
+
+/* === 2026-09-28: balance Spanish hero with English === */
+@media (min-width: 761px) {
+  html:not([data-language="en"]):not([lang="en"]) .hero-copy h1 {
+    font-size: clamp(2.15rem, 3.05vw, 3rem) !important;
+    line-height: 1 !important;
+    max-width: 16.5ch !important;
+    letter-spacing: -.05em !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html:not([data-language="en"]):not([lang="en"]) .hero-copy h1 {
+    font-size: clamp(2.35rem, 10.8vw, 3.45rem) !important;
+    line-height: .96 !important;
+  }
+}
