@@ -5322,3 +5322,124 @@ body.has-blocking-modal {
     white-space: normal;
   }
 }
+
+/* === Mobile hero repair: keep desktop unchanged, give phones a true stacked layout === */
+@media (max-width: 760px) {
+  .hero-section {
+    padding: 1rem 0 .75rem;
+  }
+
+  .hero-panel,
+  body.institution-themed .hero-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
+    padding: 1.65rem 1.25rem 1.1rem;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+
+  .hero-copy {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hero-copy h1,
+  body.institution-themed .hero-copy h1 {
+    width: 100%;
+    max-width: 11ch;
+    margin: 0;
+    font-size: clamp(2.65rem, 13vw, 4rem);
+    line-height: .94;
+    letter-spacing: -.06em;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .hero-copy h1 > span,
+  body.institution-themed .hero-copy h1 > span {
+    display: inline;
+    white-space: normal;
+  }
+
+  .hero-copy h1 em,
+  body.institution-themed .hero-copy h1 em {
+    display: inline;
+    margin-left: .08em;
+  }
+
+  .hero-copy > p,
+  body.institution-themed .hero-copy > p {
+    width: 100%;
+    max-width: 28rem;
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hero-cta-row {
+    width: 100%;
+    margin-top: 1.25rem;
+    gap: .75rem;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero-cta-row .cta-button,
+  body.institution-themed .hero-cta-row .cta-button {
+    width: auto;
+    min-width: 0;
+    min-height: 50px;
+    padding: 0 1.2rem;
+    justify-content: center;
+  }
+
+  .hero-cta-row .text-link {
+    width: auto;
+    justify-content: flex-start;
+    font-size: .92rem;
+    line-height: 1.35;
+  }
+
+  .hero-collage--single,
+  body.institution-themed .hero-collage--single {
+    display: flex !important;
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin: -.25rem 0 -.4rem;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .hero-main-image,
+  body.institution-themed .hero-main-image {
+    display: block;
+    width: min(112%, 520px);
+    max-width: none;
+    height: auto;
+    margin: 0 auto;
+    transform: none;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 430px) {
+  .hero-panel,
+  body.institution-themed .hero-panel {
+    padding: 1.45rem 1rem 1rem;
+    border-radius: 24px;
+  }
+
+  .hero-copy h1,
+  body.institution-themed .hero-copy h1 {
+    max-width: 10ch;
+    font-size: clamp(2.5rem, 13.5vw, 3.35rem);
+  }
+
+  .hero-main-image,
+  body.institution-themed .hero-main-image {
+    width: 108%;
+  }
+}
