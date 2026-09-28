@@ -1047,6 +1047,12 @@
   function applyTheme(nextTheme, persist = true) {
     theme = nextTheme === "dark" ? "dark" : "light";
     root.dataset.theme = theme;
+
+    // Keep the installed PWA / mobile browser system bar neutral:
+    // black in dark mode and white in light mode.
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.setAttribute("content", theme === "dark" ? "#000000" : "#ffffff");
+
     if (persist) localStorage.setItem(STORAGE_THEME, theme);
     const button = document.getElementById("preference-theme");
     if (button) {
