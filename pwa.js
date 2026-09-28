@@ -128,9 +128,9 @@
     if (
       !isMobileDevice ||
       !isHome ||
-      (!isAndroid && isStandalone) ||
+      isStandalone ||
       isNativeApp ||
-      (!isAndroid && wasInstalledFromThisBrowser()) ||
+      wasInstalledFromThisBrowser() ||
       (isAndroid && apkPromptWasDismissedRecently())
     ) return null;
 
@@ -249,8 +249,10 @@
   }
 
   async function showInstallCard() {
+    // Never show the install card when ColegioLibre is already running as an
+    // installed PWA/native app. This check must also run on Android.
+    if (await detectInstalledApp()) return;
     if (!isAndroid && sessionStorage.getItem(DISMISS_KEY) === "true") return;
-    if (!isAndroid && await detectInstalledApp()) return;
 
     const card = createInstallCard();
     if (!card) return;
