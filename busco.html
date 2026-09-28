@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="busco-v50.css?v=20260812-50">
   <link rel="stylesheet" href="busco-v51.css?v=20260812-51">
   <link rel="stylesheet" href="/global-search.css?v=20260926-1">
+<link rel="stylesheet" href="/marketplace-upgrades.css?v=20260928-1">
 </head>
 <body class="wanted-page">
   <header class="wanted-header">
@@ -48,6 +49,7 @@
         <header class="wanted-section-head"><span class="eyebrow">CREAR ALERTA</span><h2>¿Qué estás buscando?</h2><p>Cuanto más claro sea el pedido, mejores serán las coincidencias.</p></header>
         <label>Nombre del material<input name="title" maxlength="120" required placeholder="Ej. Biology IGCSE Coursebook"></label>
         <div class="wanted-two"><label>Categoría<select name="category"><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Otro</option></select></label><label>Tipo de búsqueda<select name="transaction_type" aria-label="Tipo de búsqueda"><option value="buy">Quiero comprar</option><option value="exchange">Acepto intercambio</option><option value="either">Compra o intercambio</option></select></label></div>
+        <label>Presupuesto máximo opcional ($)<input name="max_price" type="number" min="0" step="500" placeholder="Ej. 35000"></label>
         <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
         <fieldset><legend>¿Dónde querés que busquemos?</legend><div class="scope-grid">
           <label><input type="radio" name="scope" value="school" checked><span class="scope-icon">⌂</span><b>Mi colegio</b><small>Solo tu comunidad</small></label>
@@ -70,5 +72,6 @@
   <script src="busco.js?v=20260812-51"></script>
   <script src="mobile-ui.js?v=20260812-50"></script>
   <script src="/global-search.js?v=20260926-1"></script>
+<script src="/marketplace-upgrades.js?v=20260928-1"></script>
 </body>
 </html>

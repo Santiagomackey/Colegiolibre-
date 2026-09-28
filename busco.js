@@ -90,7 +90,7 @@
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();
     status.textContent = "Creando tu alerta…";
-    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina" };
+    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: Number(data.get("max_price") || 0) || null };
     if (scope === "school" && !record.school_code) { status.textContent = "Primero elegí tu colegio desde Mi perfil."; return; }
     if (scope === "zone" && !record.zone_code) { status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
     const result = await client.from("wanted_posts").insert(record);
