@@ -1082,3 +1082,23 @@ a:focus-visible {
     justify-content: center;
   }
 }
+
+/* 2026-09: natural scrolling for Messages on touch, trackpads and mouse drag */
+.messages-list,
+.conversation-list {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  cursor: grab;
+}
+.messages-list.is-drag-scrolling,
+.conversation-list.is-drag-scrolling {
+  cursor: grabbing;
+  user-select: none;
+  scroll-behavior: auto !important;
+}
+.messages-list :is(button,a,input,textarea,select),
+.conversation-list :is(button,a,input,textarea,select) {
+  cursor: pointer;
+}
