@@ -1228,74 +1228,71 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   }
 }
 
-/* ColegioLibre mobile navigation motion — smooth tab-to-tab transitions.
-   Keeps the bottom navigation visually anchored while page content changes. */
+/* V58 · mobile polish: clearer publish CTA + compact footer/filters */
 @media (max-width: 760px) {
-  @view-transition {
-    navigation: auto;
+  /* Keep the central List/Listo action readable in dark mode. */
+  html[data-theme="dark"] .cl-mobile-nav__item--publish,
+  html[data-theme="dark"] .cl-mobile-nav__item--publish[aria-current="page"] {
+    background: linear-gradient(145deg, #78df3f, #59c72d) !important;
+    color: #071a38 !important;
+    box-shadow: 0 10px 24px rgba(91, 205, 45, .28) !important;
+  }
+  html[data-theme="dark"] .cl-mobile-nav__item--publish svg,
+  html[data-theme="dark"] .cl-mobile-nav__item--publish span {
+    color: #071a38 !important;
+    stroke: currentColor !important;
+    opacity: 1 !important;
   }
 
-  .cl-mobile-nav {
-    view-transition-name: colegio-mobile-nav;
+  /* Mobile footer: useful links only; category discovery already lives above. */
+  .footer-medium.site-footer { margin-top: 1.5rem !important; }
+  .footer-medium-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem 1.25rem !important;
   }
+  .footer-medium-brand,
+  .footer-medium-col[aria-label="Categorías"] {
+    display: none !important;
+  }
+  .footer-medium-col { min-width: 0; }
+  .footer-medium-col h3 { font-size: .9rem !important; margin-bottom: .55rem !important; }
+  .footer-medium-col a { font-size: .76rem !important; margin-top: .42rem !important; }
+  .footer-medium-contact {
+    grid-column: 1 / -1 !important;
+    margin-top: .15rem !important;
+    padding-top: .9rem !important;
+  }
+  .footer-institution-cta { display: none !important; }
+  .footer-medium-bottom { margin-top: .8rem !important; }
 
-  ::view-transition-group(colegio-mobile-nav) {
-    animation-duration: 180ms;
-    animation-timing-function: cubic-bezier(.2, 0, 0, 1);
-    z-index: 9999;
+  /* Keep marketplace controls from becoming a wall of chips on phones. */
+  .home-category-nav { padding: 14px !important; }
+  .home-category-nav .category-pills {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    padding: 2px 2px 7px !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
-
-  ::view-transition-old(colegio-mobile-nav),
-  ::view-transition-new(colegio-mobile-nav) {
-    animation: none;
-    mix-blend-mode: normal;
+  .home-category-nav .category-pills::-webkit-scrollbar { display: none; }
+  .home-category-nav .category-pill {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
   }
-
-  ::view-transition-old(root) {
-    animation: cl-tab-out 115ms cubic-bezier(.4, 0, 1, 1) both;
+  .category-specific-filters {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
-
-  ::view-transition-new(root) {
-    animation: cl-tab-in 210ms cubic-bezier(.2, 0, 0, 1) both;
-  }
-
-  .cl-mobile-nav__item,
-  .cl-mobile-nav__item svg,
-  .cl-mobile-nav__item span {
-    transition:
-      background-color 180ms cubic-bezier(.2, 0, 0, 1),
-      color 180ms cubic-bezier(.2, 0, 0, 1),
-      transform 180ms cubic-bezier(.2, 0, 0, 1),
-      opacity 160ms ease;
-  }
-
-  .cl-mobile-nav__item:active:not(.cl-mobile-nav__item--publish) {
-    transform: scale(.94);
-  }
-
-  .cl-mobile-nav__item[aria-current="page"] svg {
-    transform: translateY(-1px) scale(1.06);
-  }
-
-  .cl-mobile-nav__item--publish:active {
-    transform: scale(.94);
-  }
+  .category-specific-filters::-webkit-scrollbar { display: none; }
 }
 
-@keyframes cl-tab-out {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(.992); }
-}
-
-@keyframes cl-tab-in {
-  from { opacity: 0; transform: translateY(5px) scale(.996); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root),
-  ::view-transition-group(colegio-mobile-nav) {
-    animation-duration: 1ms !important;
-  }
+@media (max-width: 420px) {
+  .footer-medium.site-footer { padding-top: 1.15rem !important; }
+  .footer-medium-grid { gap: .85rem 1rem !important; }
+  .footer-medium-contact { display: block !important; }
+  .footer-medium-bottom p:last-child { display: none !important; }
 }
