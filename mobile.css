@@ -1296,3 +1296,56 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   .footer-medium-contact { display: block !important; }
   .footer-medium-bottom p:last-child { display: none !important; }
 }
+
+/* V59 · mobile balance: category rail + footer */
+@media (max-width: 760px) {
+  /* Equal visual breathing room on both sides of the category row. */
+  .home-category-nav {
+    padding: 14px 16px !important;
+    overflow: hidden !important;
+  }
+  .home-category-nav .category-pills {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 7px !important;
+    padding: 2px 0 7px !important;
+    scroll-padding-inline: 0 !important;
+  }
+  .home-category-nav .category-pill {
+    padding: 9px 12px !important;
+    font-size: .82rem !important;
+    line-height: 1.15 !important;
+  }
+
+  /* Keep the two visible footer columns genuinely balanced on phones. */
+  .footer-medium-grid > nav:nth-of-type(3),
+  .footer-medium-col[aria-label="Categorías"],
+  .footer-medium-col[aria-label="Categories"] {
+    display: none !important;
+  }
+  .footer-medium-grid > nav:nth-of-type(1) a:nth-of-type(n+6) {
+    display: none !important;
+  }
+  .footer-medium-grid > nav:nth-of-type(1),
+  .footer-medium-grid > nav:nth-of-type(2) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .footer-medium-grid > nav:nth-of-type(1) h3,
+  .footer-medium-grid > nav:nth-of-type(2) h3 {
+    min-height: 1.15rem !important;
+  }
+  .footer-medium-contact {
+    margin-top: .35rem !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .home-category-nav { padding-inline: 14px !important; }
+  .home-category-nav .category-pills { gap: 6px !important; }
+  .home-category-nav .category-pill {
+    padding-inline: 10px !important;
+    font-size: .78rem !important;
+  }
+}
