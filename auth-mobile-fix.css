@@ -1,0 +1,31 @@
+/* Mobile auth: override legacy dark native shell and oversized form spacing. */
+@media (max-width: 780px) {
+ html,html[data-native-app],body { width:100%!important; min-width:0!important; max-width:100%!important; overflow-x:clip!important; background:#fff!important; color:#222!important; }
+ html body .auth-shell,html[data-native-app] body .auth-shell { display:block!important; width:100%!important; min-width:0!important; min-height:100dvh!important; padding:0!important; margin:0!important; background:#fff!important; overflow:visible!important; }
+ html body .auth-showcase { display:none!important; }
+ html body .auth-panel,html[data-native-app] body .auth-panel { display:block!important; width:100%!important; min-width:0!important; max-width:none!important; min-height:100dvh!important; margin:0!important; padding:max(28px,env(safe-area-inset-top,0px)) 24px max(36px,env(safe-area-inset-bottom,0px))!important; background:#fff!important; border:0!important; overflow:visible!important; }
+ html body .auth-panel-inner,html[data-native-app] body .auth-panel-inner { position:relative!important; width:100%!important; min-width:0!important; max-width:430px!important; margin:0 auto!important; padding:0!important; }
+ html body .brand--mobile,html[data-native-app] body .brand--mobile { display:flex!important; width:auto!important; min-height:0!important; max-width:240px!important; height:auto!important; margin:34px auto 30px!important; padding:0!important; justify-content:center!important; background:transparent!important; border:0!important; box-shadow:none!important; }
+ html body .brand--mobile img,html[data-native-app] body .brand--mobile img { display:block!important; width:min(205px,65vw)!important; height:auto!important; max-height:100px!important; object-fit:contain!important; }
+ html body .back-home,html[data-native-app] body .back-home { position:absolute!important; top:-12px!important; right:0!important; left:auto!important; width:42px!important; height:42px!important; padding:0!important; margin:0!important; border-radius:50%!important; background:#ededed!important; color:#444!important; font-size:0!important; display:grid!important; place-items:center!important; z-index:3!important; }
+ html body .back-home span { font-size:23px!important; }
+ html body .auth-card,html[data-native-app] body .auth-card { width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; padding:0!important; background:#fff!important; border:0!important; border-radius:0!important; box-shadow:none!important; backdrop-filter:none!important; color:#222!important; overflow:visible!important; }
+ html body .auth-heading { margin:0 0 22px!important; text-align:center!important; }
+ html body .auth-heading h2 { margin:0 0 10px!important; font-family:Georgia,'Times New Roman',serif!important; font-size:clamp(35px,10vw,46px)!important; line-height:1.14!important; font-weight:400!important; color:#29262a!important; }
+ html body .auth-heading p:not(.auth-eyebrow) { font-size:14px!important; line-height:1.5!important; color:#777!important; }
+ html body .auth-tabs { display:flex!important; width:100%!important; min-height:46px!important; margin:0 0 22px!important; padding:3px!important; background:#f3f3f3!important; border-radius:12px!important; }
+ html body .auth-tab { flex:1 1 0!important; min-width:0!important; color:#777!important; border-radius:10px!important; }
+ html body .auth-tab.is-active { color:#222!important; background:#fff!important; box-shadow:0 1px 5px #00000012!important; }
+ html body .auth-form { display:flex!important; flex-direction:column!important; width:100%!important; gap:17px!important; margin:0!important; }
+ html body .form-field,html body .field-label-row,html body .input-control { width:100%!important; min-width:0!important; max-width:100%!important; }
+ html body .form-field label { color:#666!important; font-size:14px!important; }
+ html body .input-control { display:flex!important; min-height:54px!important; padding:0 6px!important; background:#fff!important; border:0!important; border-bottom:1px solid #d5d5d5!important; border-radius:0!important; box-shadow:none!important; }
+ html body .input-control input { width:100%!important; min-width:0!important; height:52px!important; font-size:16px!important; color:#222!important; background:transparent!important; }
+ html body .input-icon { flex:0 0 auto!important; }
+ html body .forgot-link { font-size:12px!important; white-space:normal!important; }
+ html body .auth-submit,html[data-native-app] body .auth-submit { position:static!important; width:100%!important; min-height:56px!important; margin:15px 0 0!important; padding:12px 18px!important; background:#171317!important; color:#fff!important; border-radius:999px!important; transform:none!important; }
+ html body .social-auth { width:100%!important; margin:24px 0 0!important; }
+ html body .social-google { width:100%!important; min-height:54px!important; }
+ html body .auth-switch-copy { margin:24px 0 0!important; text-align:center!important; }
+ html body .auth-legal,html body .auth-footer { margin:22px 0 0!important; padding:0 0 8px!important; color:#777!important; }
+}
