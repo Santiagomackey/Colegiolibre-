@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="notifications.css?v=20260727-1" />
     <link rel="stylesheet" href="polish.css?v=20260729-8" />
     <link rel="stylesheet" href="./preferences.css?v=20260829-school-contrast" />
-    <link rel="stylesheet" href="./mobile.css?v=20261107-mobilefix" />
+    <link rel="stylesheet" href="./mobile.css?v=20261107-unified-footer" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
     <link rel="stylesheet" href="./pwa.css?v=20260829-ios-install" />
@@ -52,9 +52,12 @@
     <script defer src="./institution-theme.js?v=20260730-1"></script>
     <link rel="stylesheet" href="/global-search.css?v=20260926-1">
 <link rel="stylesheet" href="/marketplace-upgrades.css?v=20260928-1">
+<link rel="stylesheet" href="./opening.css?v=1" />
 </head>
   
   <body>
+<div id="cl-opening" role="status" aria-label="Cargando ColegioLibre"><div class="cl-center"><div class="cl-art"><svg class="cl-pencil left" viewBox="0 0 62 122" aria-hidden="true"><path d="M18 16Q18 6 28 6H34Q44 6 44 16V88H18Z" fill="#0c80db" stroke="#082e64" stroke-width="4"/><path d="M18 24H44V35H18Z" fill="#fff" stroke="#082e64" stroke-width="3"/><path d="M18 88L31 115L44 88Z" fill="#ffe3a7" stroke="#082e64" stroke-width="4" stroke-linejoin="round"/><path d="M26 105L31 115L36 105Z" fill="#082e64"/><path d="M27 39V85" stroke="#fff" stroke-opacity=".28" stroke-width="5"/></svg><svg class="cl-pencil right" viewBox="0 0 62 122" aria-hidden="true"><path d="M18 16Q18 6 28 6H34Q44 6 44 16V88H18Z" fill="#79c900" stroke="#082e64" stroke-width="4"/><path d="M18 24H44V35H18Z" fill="#fff" stroke="#082e64" stroke-width="3"/><path d="M18 88L31 115L44 88Z" fill="#ffe3a7" stroke="#082e64" stroke-width="4" stroke-linejoin="round"/><path d="M26 105L31 115L36 105Z" fill="#082e64"/><path d="M27 39V85" stroke="#fff" stroke-opacity=".28" stroke-width="5"/></svg><i class="cl-spark"></i></div><div class="cl-word">colegio<span>libre</span></div><div class="cl-caption">Preparando tu espacio</div></div></div>
+<script src="./opening.js?v=1"></script>
     <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
 
     <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -579,99 +582,48 @@
         </section>
       </main>
 
-      <footer class="site-footer footer-medium" id="ayuda">
-        <div class="container footer-medium-inner">
-          <div class="footer-medium-grid">
-            <div class="footer-medium-brand">
-              <img src="images/logo-horizontal.webp" alt="ColegioLibre">
-              <p>
-                El marketplace donde estudiantes compran, venden e intercambian materiales escolares de forma simple,
-                segura y sustentable.
-              </p>
-            </div>
-
-            <nav class="footer-medium-col" aria-label="ColegioLibre">
-              <h3>ColegioLibre</h3>
-              <a href="#hero">Nosotros</a>
-              <a href="#como-funciona">Cómo funciona</a>
-              <a href="/publicar">Publicar producto</a>
-              <a href="/instituciones">Para instituciones</a>
-              <a href="/busco">Busco un material</a>
-              <a href="/terminos">Términos</a>
-              <a href="/privacidad">Privacidad</a>
-            </nav>
-
-            <nav class="footer-medium-col" aria-label="Ayuda">
-              <h3>Ayuda</h3>
-              <a href="/ayuda">Centro de ayuda</a>
-              <a href="/ayuda#comprar">Cómo comprar</a>
-              <a href="/ayuda#publicar">Cómo vender</a>
-              <a href="/seguridad">Seguridad</a>
-              <a href="/productos-prohibidos">Productos prohibidos</a>
-            </nav>
-
-            <nav class="footer-medium-col" aria-label="Categorías">
-              <h3>Categorías</h3>
-              <a href="#productos" data-category-link="Libros">Libros</a>
-              <a href="#productos" data-category-link="Apuntes">Apuntes</a>
-              <a href="#productos" data-category-link="Cuadernos">Cuadernos</a>
-              <a href="#productos" data-category-link="Útiles">Útiles</a>
-              <a href="#productos" data-category-link="Mochilas">Mochilas</a>
-              <a href="#productos" data-category-link="Tecnología">Tecnología</a>
-              <a href="#productos" data-category-link="Uniformes">Uniformes</a>
-              <a href="#productos" data-category-link="Otros">Otros</a>
-            </nav>
-
-    <div class="footer-medium-contact">
-
-    <h3>Contacto</h3>
-
-    <p>
-        ¿Tenés alguna duda o necesitás ayuda?
-        Escribinos y te responderemos lo antes posible.
-    </p>
-
-   <a
-    href="mailto:ayuda@colegiolibre.com?subject=Consulta%20desde%20ColegioLibre"
-    class="footer-contact-btn"
-  >
-    Enviar un correo
-  </a>
-    <span class="footer-contact-mail">
-     
-    </span>
-
+      <footer class="site-footer footer-medium cl-editorial-footer" id="ayuda">
+  <div class="container footer-medium-inner">
+    <div class="footer-medium-grid">
+      <div class="footer-medium-brand">
+        <a class="cl-footer-wordmark" href="/" aria-label="ColegioLibre, inicio"><span>colegio</span><strong>libre</strong></a>
+        <p>Un lugar para comprar, vender e intercambiar materiales escolares entre estudiantes y familias.</p>
+      </div>
+      <nav class="footer-medium-col" aria-label="Plataforma">
+        <h3>PLATAFORMA</h3>
+        <a href="/#como-funciona">Cómo funciona</a>
+        <a href="/#productos">Explorar productos</a>
+        <a href="/publicar">Publicar producto</a>
+        <a href="/busco">Buscar material</a>
+        <a href="/instituciones">Para instituciones</a>
+      </nav>
+      <nav class="footer-medium-col" aria-label="Ayuda">
+        <h3>AYUDA</h3>
+        <a href="/ayuda">Centro de ayuda</a>
+        <a href="/ayuda#comprar">Cómo comprar</a>
+        <a href="/ayuda#publicar">Cómo vender</a>
+        <a href="/seguridad">Seguridad</a>
+        <a href="/productos-prohibidos">Productos prohibidos</a>
+      </nav>
+      <nav class="footer-medium-col" aria-label="Información legal">
+        <h3>INFORMACIÓN</h3>
+        <a href="/terminos">Términos de uso</a>
+        <a href="/privacidad">Política de privacidad</a>
+        <a href="/instituciones">Colegios e instituciones</a>
+      </nav>
+      <div class="footer-medium-contact">
+        <h3>CONTACTO</h3>
+        <p>¿Necesitás ayuda o querés hacernos una consulta?</p>
+        <a class="cl-footer-email" href="mailto:colegiolibreayuda@gmail.com?subject=Consulta%20ColegioLibre">colegiolibreayuda@gmail.com</a>
+        <a class="cl-footer-contact-link" href="mailto:colegiolibreayuda@gmail.com?subject=Consulta%20ColegioLibre">Escribinos por correo</a>
+      </div>
+    </div>
+    <div class="footer-medium-bottom">
+      <p>© <span id="current-year">2026</span> ColegioLibre. Todos los derechos reservados.</p>
+      <div class="cl-footer-bottom-links"><a href="/privacidad">Privacidad</a><a href="/terminos">Términos de uso</a></div>
+    </div>
   </div>
-          </div>
-
-          <section class="footer-institution-cta" aria-label="ColegioLibre para instituciones">
-            <div class="footer-institution-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M3 10.5 12 5l9 5.5M5.5 10v8.5m13-8.5v8.5M3.5 19h17M9 19v-4.5h6V19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="footer-institution-content">
-              <span>COLEGIOLIBRE PARA INSTITUCIONES</span>
-              <h3>¿Tu colegio quiere unirse?</h3>
-              <p>Creá una comunidad oficial para que sus familias compren y vendan materiales dentro del colegio.</p>
-              <ul aria-label="Beneficios para instituciones">
-                <li>Plan inicial gratuito</li>
-                <li>Logo y colores propios</li>
-                <li>Sin configuración técnica</li>
-              </ul>
-            </div>
-            <a href="/instituciones">
-              <span>Ver planes para colegios</span>
-              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </section>
-
-          <div class="footer-medium-bottom">
-            <p>© <span id="current-year"></span> ColegioLibre</p>
-            <p>Hecho por estudiantes para estudiantes en Argentina.</p>
-          </div>
-        </div>
-      </footer>
+</footer>
     </div>
 <div class="category-overlay" id="category-overlay"></div>
 

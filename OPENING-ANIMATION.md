@@ -1,0 +1,1 @@
+ColegioLibre loading screen added to 64 root HTML pages across website and mobile bundled www. Pencil collision is CSS/SVG, runs once per full page navigation, respects reduced-motion settings, exits after load (minimum 1.5s, maximum 3.5s). Native Capacitor app currently points to https://colegiolibre.com; deploy website files to show it in the native app.

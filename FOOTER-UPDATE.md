@@ -1,0 +1,1 @@
+ColegioLibre footer redesigned with responsive navigation, text-only wordmark, and contact mailto:colegiolibreayuda@gmail.com. All links point to existing routes/pages in this project. Deploy website files for live changes; mobile-app/www is synchronized for bundled builds.

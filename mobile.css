@@ -1375,3 +1375,17 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 @media (prefers-reduced-motion: reduce) {
   .cl-mobile-nav, .cl-mobile-nav *, .category-pills, .category-specific-filters { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Unified editorial footer in the native app and mobile website. */
+@media (max-width:760px) {
+  .cl-editorial-footer.footer-medium.site-footer { background:#200e08!important; padding:44px 0 max(30px,env(safe-area-inset-bottom))!important; margin-top:32px!important; }
+  .cl-editorial-footer .footer-medium-grid { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:28px 18px!important; }
+  .cl-editorial-footer .footer-medium-brand { display:flex!important; grid-column:1/-1!important; }
+  .cl-editorial-footer .footer-medium-grid > nav { display:flex!important; flex-direction:column!important; align-items:flex-start!important; min-width:0!important; }
+  .cl-editorial-footer .footer-medium-grid > nav:nth-of-type(3) { display:flex!important; }
+  .cl-editorial-footer .footer-medium-grid > nav a { display:block!important; font-size:13px!important; margin:0 0 12px!important; }
+  .cl-editorial-footer .footer-medium-contact { display:flex!important; grid-column:1/-1!important; margin-top:0!important; padding-top:18px!important; border-top:1px solid #4a3026!important; }
+  .cl-editorial-footer .footer-medium-bottom { display:flex!important; margin-top:32px!important; flex-direction:column!important; align-items:flex-start!important; }
+  .cl-editorial-footer .footer-medium-bottom p:last-child { display:block!important; }
+  .cl-editorial-footer .cl-footer-bottom-links { display:flex!important; flex-wrap:wrap!important; }
+}

@@ -925,3 +925,27 @@ input:focus-visible {
  .auth-footer { margin-top:35px; }
 }
 @media(max-width:440px) { .auth-shell { padding-inline:22px; } .brand--mobile { margin-top:38px; margin-bottom:30px; } .brand--mobile img { width:185px; } .auth-card { padding:0; } }
+
+/* Unified Fable-inspired auth experience across desktop and mobile. */
+@media (min-width: 781px) {
+  html,body { background:#fff!important; }
+  .auth-shell { display:flex!important; align-items:flex-start!important; justify-content:center!important; background:#fff!important; min-height:100dvh!important; padding:50px 28px 90px!important; }
+  .auth-showcase { display:none!important; }
+  .auth-panel { flex:0 1 520px!important; width:100%!important; min-width:0!important; background:#fff!important; padding:0!important; }
+  .auth-panel-inner { width:100%!important; max-width:500px!important; margin:0 auto!important; }
+  .brand--mobile { display:flex!important; justify-content:center!important; margin:18px auto 42px!important; }
+  .brand--mobile img { width:205px!important; max-height:110px!important; object-fit:contain!important; }
+  .back-home { position:fixed!important; top:25px!important; right:30px!important; z-index:5!important; border-radius:50%!important; width:44px!important; height:44px!important; background:#e7e7e7!important; display:grid!important; place-items:center!important; font-size:0!important; }
+  .back-home span { font-size:23px!important; }
+  .auth-card { border:0!important; box-shadow:none!important; background:#fff!important; padding:0!important; border-radius:0!important; backdrop-filter:none!important; }
+  .auth-heading h2 { font-family:Georgia,'Times New Roman',serif!important; font-size:clamp(42px,4vw,54px)!important; font-weight:400!important; letter-spacing:-.045em!important; color:#272328!important; }
+  .auth-heading .auth-eyebrow { display:none!important; }
+  .auth-heading p:not(.auth-eyebrow) { color:#858585!important; }
+  .auth-tabs { background:transparent!important; }
+  .auth-form { gap:18px!important; }
+  .form-field label { color:#777!important; }
+  .input-control { border-radius:0!important; background:#fff!important; border:0!important; border-bottom:1px solid #d5d5d5!important; box-shadow:none!important; }
+  .input-control input { background:transparent!important; font-size:16px!important; }
+  .auth-submit { border-radius:999px!important; min-height:58px!important; background:#151015!important; }
+  .auth-footer { margin-top:35px!important; }
+}
