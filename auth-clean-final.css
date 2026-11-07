@@ -1,0 +1,41 @@
+/* ColegioLibre auth rebuild: intentional white canvas across all themes and devices. */
+html,html[data-theme],html[data-native-app],body,body[data-theme]{background:#fff!important;color:#24242a!important;overflow-x:clip!important}
+body .auth-shell,html[data-native-app] body .auth-shell{display:block!important;min-height:100dvh!important;width:100%!important;background:#fff!important;padding:0!important;margin:0!important;overflow:visible!important}
+body .auth-showcase{display:none!important}
+body .auth-panel,html[data-native-app] body .auth-panel{display:block!important;width:100%!important;min-height:100dvh!important;max-width:none!important;background:#fff!important;padding:clamp(28px,5vh,56px) 24px 28px!important;margin:0!important;border:0!important;overflow:visible!important}
+body .auth-panel-inner,html[data-native-app] body .auth-panel-inner{position:relative!important;width:100%!important;max-width:460px!important;min-width:0!important;margin:0 auto!important;padding:0!important;display:block!important}
+body .brand--mobile,html[data-native-app] body .brand--mobile{display:flex!important;justify-content:center!important;align-items:center!important;width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;margin:20px auto 38px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body .brand--mobile img{display:block!important;width:min(230px,64vw)!important;max-height:110px!important;height:auto!important;object-fit:contain!important}
+body .back-home,html[data-native-app] body .back-home{position:absolute!important;right:0!important;left:auto!important;top:0!important;display:flex!important;align-items:center!important;justify-content:center!important;width:42px!important;height:42px!important;padding:0!important;margin:0!important;border-radius:50%!important;background:#f1f2f4!important;color:#2a3447!important;font-size:0!important;z-index:5!important;box-shadow:none!important}
+body .back-home span{font-size:23px!important}
+body .auth-card,html[data-native-app] body .auth-card{display:block!important;position:static!important;width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;color:#25252b!important;overflow:visible!important;transform:none!important;backdrop-filter:none!important}
+body .auth-heading{margin:0 0 25px!important;text-align:center!important}
+body .auth-eyebrow{display:none!important}
+body .auth-heading h2{font:400 clamp(40px,8vw,56px)/1.13 Georgia,'Times New Roman',serif!important;color:#2d2b2d!important;letter-spacing:-.035em!important;margin:0 0 12px!important}
+body .auth-heading p:not(.auth-eyebrow){color:#73737a!important;font-size:14px!important;line-height:1.5!important;margin:0!important}
+body .auth-tabs{display:flex!important;width:100%!;width:100%!important;min-height:46px!important;margin:0 0 24px!important;padding:4px!important;border:0!important;border-radius:14px!important;background:#f3f4f5!important;box-shadow:none!important}
+body .auth-tab{flex:1 1 0!important;width:auto!important;min-width:0!important;min-height:42px!important;padding:8px!important;color:#74747b!important;background:transparent!important;border-radius:11px!important;font-weight:600!important}
+body .auth-tab.is-active{background:#fff!important;color:#222!important;box-shadow:0 2px 7px #0000000e!important}
+body .auth-form{display:flex!important;flex-direction:column!important;gap:17px!important;width:100%!important;min-height:0!important;margin:0!important;padding:0!important}
+body .form-field,body .field-label-row{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
+body .form-field label{color:#65656b!important;font-size:14px!important;font-weight:600!important}
+body .input-control{display:flex!important;align-items:center!important;position:relative!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:54px!important;margin:4px 0 0!important;padding:0 4px!important;background:#fff!important;border:0!important;border-bottom:1px solid #d5d6da!important;border-radius:0!important;box-shadow:none!important;outline:0!important}
+body .input-control:focus-within{border-bottom:2px solid #0b2e6b!important;box-shadow:none!important;outline:0!important}
+body .input-control input{display:block!important;flex:1!important;min-width:0!important;width:100%!important;min-height:52px!important;padding:0 8px!important;background:transparent!important;color:#24242a!important;font-size:16px!important;border:0!important;box-shadow:none!important;outline:0!important}
+body .input-control input::placeholder{color:#a0a3ad!important}
+body .input-icon{opacity:.65!important;flex:0 0 auto!important}
+body .field-error:empty{display:none!important}
+body .field-error{font-size:12px!important;margin:4px 0 0!important}
+body .forgot-link{color:#0b2e6b!important;font-size:12px!important;white-space:normal!important}
+body .auth-submit,html[data-native-app] body .auth-submit{position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:58px!important;height:auto!important;margin:14px 0 0!important;padding:14px 18px!important;background:#151317!important;color:#fff!important;border:0!important;border-radius:999px!important;box-shadow:none!important;transform:none!important;font-weight:700!important}
+body .social-auth{display:block!important;width:100%!important;margin:28px 0 0!important;padding:0!important}
+body .social-divider{margin:0 0 20px!important;color:#898b92!important}
+body .social-google{display:flex!important;justify-content:center!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:56px!important;background:#fff!important;color:#191919!important;border:1px solid #292929!important;border-radius:999px!important;box-shadow:none!important}
+body .auth-switch-copy{margin:25px 0 0!important;text-align:center!important;color:#666!important}
+body .auth-switch-copy button{color:#0b2e6b!important}
+body .auth-legal,body .auth-footer{margin:22px 0 0!important;color:#85858c!important;text-align:center!important;font-size:12px!important}
+body .auth-legal a{color:#0b2e6b!important}
+/* Keep global preference widgets from obscuring authentication actions. */
+body :is(.preferences-fab,.preferences-widget,.preference-toggle,.theme-language-toggle,#preferences-toggle,#preferences-fab,.floating-preferences,.preferences-launcher){display:none!important}
+@media(max-width:600px){body .auth-panel{padding:max(24px,env(safe-area-inset-top,0px)) 22px max(32px,env(safe-area-inset-bottom,0px))!important}body .brand--mobile{margin:46px auto 38px!important}body .auth-heading{margin-bottom:22px!important}body .auth-heading h2{font-size:clamp(40px,11vw,52px)!important}body .auth-tabs{margin-bottom:22px!important}}
+@media(prefers-reduced-motion:reduce){body .auth-card *,body .auth-panel *{scroll-behavior:auto!important;transition-duration:.01ms!important}}
