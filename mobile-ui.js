@@ -10,7 +10,11 @@
     "/mensajes",
     "/colegio",
     "/perfil-publico",
-    "/busco"
+    "/busco",
+    "/explorar",
+    "/apuntes",
+    "/materia",
+    "/curso"
   ]);
 
   const icons = {

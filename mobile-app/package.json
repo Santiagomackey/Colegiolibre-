@@ -1,15 +1,17 @@
 {
   "name": "colegiolibre-mobile",
-  "version": "1.0.0",
+  "version": "1.0.23",
   "private": true,
-  "description": "Aplicación móvil oficial de ColegioLibre",
+  "description": "Aplicaci\u00f3n m\u00f3vil oficial de ColegioLibre",
   "scripts": {
     "prepare:web": "node scripts/sync-web.mjs",
     "sync": "npm run prepare:web && npx cap sync && npm run configure:native",
     "configure:native": "node scripts/configure-native.mjs",
     "android": "npm run sync && npx cap open android",
     "ios": "npm run sync && npx cap open ios",
-    "assets": "npx capacitor-assets generate --iconBackgroundColor '#0B2E6B' --iconBackgroundColorDark '#0B2E6B' --splashBackgroundColor '#0B2E6B' --splashBackgroundColorDark '#0B2E6B'"
+    "assets": "npx capacitor-assets generate --iconBackgroundColor '#0B2E6B' --iconBackgroundColorDark '#0B2E6B' --splashBackgroundColor '#0B2E6B' --splashBackgroundColorDark '#0B2E6B'",
+    "android:apk": "node scripts/build-android.mjs",
+    "android:release": "node scripts/build-android.mjs --release"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",

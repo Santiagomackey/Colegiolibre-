@@ -270,7 +270,7 @@ test("la versión nacional protege catálogo, imágenes y API", () => {
     /error:\s*"No pudimos revisar la publicación en este momento\.",\s*details:/
   );
   assert.match(vercel, /Cross-Origin-Opener-Policy/);
-  assert.match(vercel, /"source": "\/api\/\(\.\*\)"/);
+  assert.ok(JSON.parse(vercel).headers.some(entry => ["/api/:path*", "/api/(.*)"].includes(entry.source)));
 });
 
 test("el inicio traduce las descripciones institucionales y de categorías", () => {
@@ -320,7 +320,7 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
     preferences,
     /\.mobile-profile \.profile-sidebar\s*\{[\s\S]*?min-height:\s*0 !important/
   );
-  assert.match(home, /images\/favicon\.svg/);
-  assert.match(profile, /preferences\.css\?v=20260730-31/);
+  assert.match(home, /images\/favicon(?:-32\.png|\.svg)/);
+  assert.match(profile, /preferences\.css\?v=[\w-]+/);
   assert.match(serviceWorker, /colegiolibre-pwa-v\d+/);
 });

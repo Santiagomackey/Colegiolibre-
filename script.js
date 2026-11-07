@@ -8,7 +8,7 @@ const INSTITUTION_PORTAL = window.ColegioLibreInstitution || {
 };
 
 function createLocalApiFallback() {
-  const localFallbackImage = "images/materiales.webp";
+  const localFallbackImage = "/images/product-placeholder.svg";
   const statusLabels = {
     available: "Disponible",
     paused: "Pausado",
@@ -1493,7 +1493,7 @@ async function refreshAccountButton(force = false) {
 }
 
 async function loadProducts() {
-  const PRODUCT_CACHE_KEY = "colegiolibre-home-products-v1";
+  const PRODUCT_CACHE_KEY = "colegiolibre-home-products-v2";
   const QUERY_TIMEOUT_MS = 12000;
   const isDemoEnvironment =
     ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname) ||
@@ -1535,6 +1535,8 @@ async function loadProducts() {
       const endpoint = new URL(`${config.supabaseUrl}/rest/v1/products`);
       endpoint.searchParams.set("select", "*");
       endpoint.searchParams.set("order", "created_at.desc");
+      endpoint.searchParams.set("status", "eq.available");
+      endpoint.searchParams.set("or", "(moderation_status.eq.approved,moderation_status.is.null)");
       endpoint.searchParams.set("limit", String(HOME_QUERY_LIMIT));
 
       try {
@@ -1554,6 +1556,8 @@ async function loadProducts() {
       const response = await window.colegioLibreSupabase
         .from("products")
         .select("*")
+        .eq("status", "available")
+        .or("moderation_status.eq.approved,moderation_status.is.null")
         .order("created_at", { ascending: false })
         .limit(HOME_QUERY_LIMIT);
       data = response.data || [];

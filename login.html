@@ -20,7 +20,7 @@
     name="description"
     content="Iniciá sesión o creá tu cuenta en ColegioLibre."
   />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#080A0D" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Ingresar | ColegioLibre</title>
     <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
@@ -31,26 +31,22 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="./login.css?v=20261107-unified-auth" />
-  <link rel="stylesheet" href="./polish.css?v=20260810-43" />
-  <link rel="stylesheet" href="./preferences.css?v=20260730-31" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
     <link rel="stylesheet" href="./pwa.css?v=20260925-apk-mobile" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
-    <link rel="stylesheet" href="./institution-theme.css?v=20260730-1" />
     <script defer src="./institution-theme.js?v=20260730-1"></script>
     <link rel="stylesheet" href="/global-search.css?v=20260926-1">
 <link rel="stylesheet" href="./opening.css?v=3" />
-
-  <link rel="stylesheet" href="./auth-clean-final.css?v=20261107-5" />
+  <link rel="stylesheet" href="./login.css?v=20261107-audit" />
+<link rel="stylesheet" href="/ui-consistency.css?v=20261107-audit">
 </head>
 
 <body>
-<div id="cl-opening" role="status" aria-label="Cargando ColegioLibre"><div class="cl-center"><div class="cl-art"><svg class="cl-pencil left" viewBox="0 0 62 122" aria-hidden="true"><path d="M18 16Q18 6 28 6H34Q44 6 44 16V88H18Z" fill="#0c80db" stroke="#082e64" stroke-width="4"/><path d="M18 24H44V35H18Z" fill="#fff" stroke="#082e64" stroke-width="3"/><path d="M18 88L31 115L44 88Z" fill="#ffe3a7" stroke="#082e64" stroke-width="4" stroke-linejoin="round"/><path d="M26 105L31 115L36 105Z" fill="#082e64"/><path d="M27 39V85" stroke="#fff" stroke-opacity=".28" stroke-width="5"/></svg><svg class="cl-pencil right" viewBox="0 0 62 122" aria-hidden="true"><path d="M18 16Q18 6 28 6H34Q44 6 44 16V88H18Z" fill="#79c900" stroke="#082e64" stroke-width="4"/><path d="M18 24H44V35H18Z" fill="#fff" stroke="#082e64" stroke-width="3"/><path d="M18 88L31 115L44 88Z" fill="#ffe3a7" stroke="#082e64" stroke-width="4" stroke-linejoin="round"/><path d="M26 105L31 115L36 105Z" fill="#082e64"/><path d="M27 39V85" stroke="#fff" stroke-opacity=".28" stroke-width="5"/></svg><i class="cl-spark"></i></div><div class="cl-word">colegio<span>libre</span></div><svg class="cl-swoosh" viewBox="0 0 330 24" aria-hidden="true"><path d="M10 3 Q165 39 313 4" fill="none" stroke="#ffb900" stroke-width="8" stroke-linecap="round"/><path d="M312 4 L329 7 L313 15 Z" fill="#082e64"/></svg><div class="cl-caption">Preparando tu espacio</div><div class="cl-progress" aria-hidden="true"><span class="cl-progress-fill"></span></div></div></div>
-<script src="./opening.js?v=3"></script>
+<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
+<script src="/opening.js?v=4"></script>
   <main class="auth-shell">
     <section class="auth-showcase" aria-label="Acerca de ColegioLibre">
       <a class="brand brand--light" href="/" aria-label="Volver al inicio">
@@ -209,7 +205,7 @@
               </div>
 
               <div
-                class="form-field is-reserved-hidden"
+                class="form-field" hidden
                 id="confirm-password-field"
                 aria-hidden="true"
               >
@@ -255,7 +251,7 @@
               </div>
 
               <div
-                class="password-health is-reserved-hidden"
+                class="password-health" hidden
                 id="password-health"
                 aria-hidden="true"
               >
@@ -461,11 +457,11 @@
   </main>
 
   <script src="./vendor/supabase.js?v=2.111.0"></script>
-  <script src="./supabase.js?v=20260827-school-name"></script>
-  <script src="./telemetry.js?v=20260829-ga4-events2"></script>
-  <script src="./native-bridge.js?v=20260730-auth2"></script>
+  <script src="./supabase.js?v=20261107-audit"></script>
+  <script src="./telemetry.js?v=20261107-audit"></script>
+  <script src="./native-bridge.js?v=20261107-audit"></script>
   <script src="./login.js?v=20261107-google-oauth"></script>
-  <script src="./pwa.js?v=20260925-apk-mobile"></script>
+  <script src="./pwa.js?v=20261107-audit"></script>
   <script src="/global-search.js?v=20260926-1"></script>
 </body>
 </html>

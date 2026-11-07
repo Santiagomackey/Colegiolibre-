@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = new URL("../", import.meta.url);
 const rootPath = fileURLToPath(root);
-const ignoredDirectories = new Set([".git", ".vercel", "node_modules", "mobile-app"]);
+const ignoredDirectories = new Set([".git", ".vercel", "node_modules", "mobile-app", "dist"]);
 const files = [];
 const errors = [];
 
@@ -82,12 +82,18 @@ for (const file of files.filter((item) => extname(item) === ".html")) {
       continue;
     }
 
-    const normalizedReference = reference.startsWith("/")
-      ? reference.slice(1)
-      : reference;
-    const target = new URL(normalizedReference, new URL(projectPath(file), root));
-    if (target.protocol !== "file:") continue;
-    if (!existsSync(fileURLToPath(target))) {
+    const base = html.match(/<base\b[^>]*href=["']([^"']+)["']/i)?.[1];
+    const pageUrl = new URL(projectPath(file), "https://project.invalid/");
+    const target = new URL(reference, base ? new URL(base, pageUrl) : pageUrl);
+    if (target.origin !== pageUrl.origin) continue;
+    const pathname = decodeURIComponent(target.pathname);
+    const local = join(rootPath, pathname.replace(/^\//, ""));
+    const rewrites = JSON.parse(readFileSync(join(rootPath,"vercel.json"),"utf8")).rewrites || [];
+    const rewritten = rewrites.some(({source}) => {
+      const pattern = source.split("/").map(x => x.startsWith(":") ? "[^/]+" : x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("/");
+      return new RegExp(`^${pattern}$`).test(pathname);
+    });
+    if (![local, `${local}.html`, join(local,"index.html")].some(existsSync) && !rewritten) {
       report(`Recurso inexistente en ${projectPath(file)}: ${reference}`);
     }
   }

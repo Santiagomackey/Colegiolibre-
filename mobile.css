@@ -1389,15 +1389,3 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   .cl-editorial-footer .footer-medium-bottom p:last-child { display:block!important; }
   .cl-editorial-footer .cl-footer-bottom-links { display:flex!important; flex-wrap:wrap!important; }
 }
-
-/* ColegioLibre navy footer, replacing the brown reference palette. */
-.cl-editorial-footer.footer-medium.site-footer{background:#082e64!important;color:#f5f8ff!important}
-.cl-editorial-footer .footer-medium-brand p,.cl-editorial-footer .footer-medium-contact p{color:#c1d2ea!important}
-.cl-editorial-footer .footer-medium-col h3,.cl-editorial-footer .footer-medium-contact h3{color:#9cb9df!important}
-.cl-editorial-footer .footer-medium-col a{color:#d9e6f6!important}
-.cl-editorial-footer .cl-footer-email{color:#fff!important}
-.cl-editorial-footer .cl-footer-contact-link{color:#b3ef98!important}
-.cl-editorial-footer .footer-medium-bottom{border-top-color:#315586!important;color:#b5c8e3!important}
-.cl-editorial-footer .cl-footer-bottom-links a{color:#b5c8e3!important}
-.cl-editorial-footer .footer-medium-contact{border-top-color:#315586!important}
-.cl-editorial-footer .cl-footer-wordmark{color:#fff!important}

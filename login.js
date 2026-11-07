@@ -417,7 +417,7 @@
     elements.verificationResend.disabled = true;
     setMessage(elements.verificationMessage, "Enviando un enlace nuevo…", "loading");
     try {
-      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app").replace(/\/$/, "");
+      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com").replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(
         "source",
@@ -460,11 +460,13 @@
 
     clearStandardErrors();
     elements.form.reset();
-    elements.confirmField.classList.toggle("is-reserved-hidden", !registering);
+    elements.confirmField.hidden = !registering;
+    elements.confirmField.classList.remove("is-reserved-hidden");
     elements.confirmField.setAttribute("aria-hidden", registering ? "false" : "true");
     elements.confirmPassword.required = registering;
     elements.confirmPassword.disabled = !registering;
-    elements.passwordHealth.classList.toggle("is-reserved-hidden", !registering);
+    elements.passwordHealth.hidden = !registering;
+    elements.passwordHealth.classList.remove("is-reserved-hidden");
     elements.passwordHealth.setAttribute(
       "aria-hidden",
       registering ? "false" : "true"
@@ -625,7 +627,7 @@
 
   function recoveryRedirectUrl() {
     const publicSiteUrl = String(
-      window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
+      window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
     ).replace(/\/$/, "");
     const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback`);
     redirectUrl.searchParams.set(
@@ -685,7 +687,7 @@
     try {
       await assertEmailConfirmationEnabled();
       const publicSiteUrl = String(
-        window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
+        window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
       ).replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(

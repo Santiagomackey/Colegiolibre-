@@ -3,7 +3,7 @@
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
   const APK_DISMISS_KEY = "colegiolibre-apk-dismissed-at";
-  const APK_URL = "./downloads/ColegioLibre-1.0.22.apk";
+  const APK_URL = null; // Enable only after installing a newly built, signed release.
   const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -76,6 +76,15 @@
           update: "Actualizar",
           later: "Después"
         };
+  }
+
+  function showManualInstallGuide() {
+    const dialog=document.createElement("dialog");
+    const en=language()==="en";
+    const title=document.createElement("h2");title.textContent=en?"Install ColegioLibre":"Instalar ColegioLibre";
+    const text=document.createElement("p");text.textContent=en?"Open your browser menu and choose Install app or Add to Home screen.":"Abrí el menú de tu navegador y elegí Instalar app o Agregar a pantalla de inicio.";
+    const close=document.createElement("button");close.type="button";close.textContent=en?"Got it":"Entendido";close.onclick=()=>dialog.close();
+    dialog.append(title,text,close);dialog.style.cssText="max-width:min(420px,90vw);border:1px solid #dce4f0;border-radius:18px;padding:24px;line-height:1.6";document.body.append(dialog);dialog.addEventListener("close",()=>dialog.remove(),{once:true});dialog.showModal();
   }
 
   function rememberInstalled() {
@@ -183,7 +192,8 @@
 
         // Fallback for Android browsers that do not expose the install prompt:
         // download the APK directly from ColegioLibre (same origin), not via Drive.
-        window.location.assign(APK_URL);
+        if (APK_URL) window.location.assign(APK_URL);
+        else showManualInstallGuide();
         card.hidden = true;
         return;
       }

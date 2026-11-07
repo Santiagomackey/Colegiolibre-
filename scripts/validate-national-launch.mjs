@@ -58,7 +58,7 @@ check(
 );
 check(
   "Vercel evita caché de API",
-  headers.includes("/api/(.*)") && headers.includes("no-store, max-age=0")
+  (vercel.headers || []).some(entry => ["/api/:path*", "/api/(.*)"].includes(entry.source)) && headers.includes("no-store, max-age=0")
 );
 check(
   "La política CSP permite PWA sin abrir scripts externos nuevos",

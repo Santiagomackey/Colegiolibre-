@@ -1,31 +1,15 @@
-import { cp, mkdir, readdir, rm } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
-
-const scriptDirectory = resolve(fileURLToPath(new URL(".", import.meta.url)));
-const mobileRoot = resolve(scriptDirectory, "..");
-const projectRoot = resolve(mobileRoot, "..");
-const webDir = resolve(mobileRoot, "www");
-
-await rm(webDir, { recursive: true, force: true });
-await mkdir(webDir, { recursive: true });
-
-const ignored = new Set([
-  ".git",
-  ".github",
-  "database",
-  "docs",
-  "mobile-app",
-  "node_modules"
-]);
-
-for (const entry of await readdir(projectRoot, { withFileTypes: true })) {
-  if (ignored.has(entry.name)) continue;
-  await cp(
-    resolve(projectRoot, entry.name),
-    resolve(webDir, entry.name),
-    { recursive: true }
-  );
+import {cp,mkdir,readdir,rm} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {resolve,extname} from 'node:path';
+const mobileRoot=fileURLToPath(new URL('..',import.meta.url));
+const root=resolve(mobileRoot,'..'),target=resolve(mobileRoot,'www');
+await rm(target,{recursive:true,force:true});await mkdir(target,{recursive:true});
+const folders=new Set(['images','vendor','colegio']);
+const extensions=new Set(['.html','.css','.js','.webmanifest','.txt','.xml']);
+for(const entry of await readdir(root,{withFileTypes:true})){
+ if(entry.name.startsWith('.')||entry.name.includes(' ('))continue;
+ if(entry.isDirectory()?!folders.has(entry.name):!extensions.has(extname(entry.name)))continue;
+ if(!entry.isDirectory()&&['.txt','.xml'].includes(extname(entry.name))&&!['robots.txt','sitemap.xml'].includes(entry.name))continue;
+ await cp(resolve(root,entry.name),resolve(target,entry.name),{recursive:true});
 }
-
-console.log("Web de ColegioLibre sincronizada en mobile-app/www.");
+console.log('Current web assets synchronized; downloads, API, development and release files excluded.');

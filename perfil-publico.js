@@ -50,11 +50,11 @@
   };
 
   bindEvents();
-  void initPublicProfile();
+  void initPublicProfile().catch(() => showProfileError("No pudimos conectarnos. Volvé a intentar."));
 
   async function initPublicProfile() {
-    if (!profileId) {
-      showToast("No se encontró el perfil.");
+    if (!profileId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(profileId)) {
+      showProfileError("No se encontró este perfil.");
       return;
     }
 
@@ -82,7 +82,7 @@
 
     if (profileResponse.error || !profileResponse.data) {
       console.error("Error cargando perfil:", profileResponse.error);
-      showToast("No se pudo cargar este perfil.");
+      showProfileError("Este perfil no está disponible. Podés volver al inicio para seguir explorando.");
       return;
     }
 
@@ -95,6 +95,21 @@
       elements.profileActions.hidden = false;
       await hydrateBlockState();
     }
+  }
+
+  function showProfileError(message) {
+    elements.name.textContent = "Perfil no disponible";
+    elements.school.textContent = message;
+    elements.zone.textContent = "";
+    elements.memberSince.textContent = "";
+    elements.verifiedBadge.hidden = true;
+    elements.profileActions.hidden = true;
+    elements.productsEmpty.hidden = false;
+    document.title = "Perfil no disponible | ColegioLibre";
+    const retry = document.createElement("button");
+    retry.type = "button"; retry.textContent = "Volver a intentar";
+    retry.addEventListener("click", () => window.location.reload());
+    elements.school.append(document.createElement("br"), retry);
   }
 
   function bindEvents() {

@@ -15,12 +15,12 @@
       let nextInput = input;
 
       if (typeof input === "string" && input.startsWith("/api/")) {
-        nextInput = `https:/colegiolibre.com${input}`;
+        nextInput = `https://www.colegiolibre.com${input}`;
       } else if (input instanceof Request) {
         try {
           const url = new URL(input.url);
           if ((url.hostname === "localhost" || url.hostname.endsWith(".localhost")) && url.pathname.startsWith("/api/")) {
-            nextInput = new Request(`https:/colegiolibre.com${url.pathname}${url.search}`, input);
+            nextInput = new Request(`https://www.colegiolibre.com${url.pathname}${url.search}`, input);
           }
         } catch (_error) {
           // Keep the original request if it cannot be normalized.

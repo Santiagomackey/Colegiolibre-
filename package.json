@@ -1,6 +1,6 @@
 {
   "name": "colegiolibre-web",
-  "version": "1.0.20",
+  "version": "1.0.23",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
     "release:check": "npm run validate && npm test && npm run smoke:production",
     "release:national": "npm run validate && npm run validate:national && npm test",
     "check:auth": "node scripts/check-auth-settings.mjs",
-    "prelaunch": "npm run release:national && npm run check:auth && npm run smoke:production"
+    "prelaunch": "npm run release:national && npm run check:auth && npm run smoke:production",
+    "android:apk": "npm --prefix mobile-app run android:apk"
   }
 }

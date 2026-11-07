@@ -1,11 +1,12 @@
-const SUPABASE_URL = "https://riqhwmszshleyyaxlwqu.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_eDrbeuMnSqyN_NqPXw0iHQ_mh5mJjzJ";
+(() => {
+"use strict";
 const GA_MEASUREMENT_ID = "G-Z4KWLEPTV4";
-const APP_VERSION = "web-20260901-ga4-debug";
+const APP_VERSION = "1.0.23";
 const GA_DEBUG_STORAGE_KEY = "colegiolibre-ga-debug";
 const AUTH_SESSION_EVENT_KEY = "colegiolibre-ga-authenticated-session-v1";
 
-const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const supabase = window.colegioLibreSupabase;
 
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
@@ -175,12 +176,26 @@ function bindMarketplaceTracking() {
   }, true);
 }
 
-function reportClientError(kind, message, source) {
+let reportedErrors = 0;
+async function reportClientError(kind, message, source) {
+  if (!supabase || reportedErrors >= 10) return;
+  reportedErrors += 1;
   try {
-    const safe = String(message || "unknown").replace(/https?:\/\/\S+/g, "[url]").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]").slice(0, 500);
-    if (!supabase) return;
-    supabase.from("client_errors").insert({ kind, message: safe, source: String(source || location.pathname).slice(0, 180), app_version: APP_VERSION }).then(() => {}).catch(() => {});
-  } catch (_) {}
+    const {data} = await supabase.auth.getUser();
+    const user = data?.user;
+    if (!user) return;
+    const safe = String(message || "unknown")
+      .replace(/https?:\/\/\S+/g, "[url]")
+      .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
+      .replace(/(?:Bearer\s+|sb_secret_|sb_publishable_)[^\s]+/gi, "[token]").slice(0,500);
+    let sourcePath = location.pathname;
+    try { sourcePath = new URL(source || location.href, location.href).pathname; } catch (_) {}
+    await supabase.from("client_errors").insert({
+      user_id:user.id, page_path:location.pathname,
+      error_source:sourcePath.slice(0,180), error_message:`${kind}: ${safe}`,
+      app_version:APP_VERSION
+    });
+  } catch (_) { /* Reporting must never interrupt the application. */ }
 }
 
 window.addEventListener("error", (e) => reportClientError("error", e.message, e.filename));
@@ -189,3 +204,5 @@ window.addEventListener("unhandledrejection", (e) => reportClientError("unhandle
 if (GA_DEBUG_MODE) console.info("[ColegioLibre] GA4 debug mode enabled");
 initAuthAnalytics();
 bindMarketplaceTracking();
+
+})();

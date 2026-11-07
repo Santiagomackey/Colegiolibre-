@@ -1,37 +1,5 @@
-# Aplicación móvil de ColegioLibre
+# ColegioLibre Android 1.0.23
 
-Requiere Node.js 20 o posterior.
+Leé ../LEEME-ARREGLOS.md para compilar desde terminal, desplegar y verificar esta versión.
 
-```bash
-npm install
-npm run sync
-```
-
-Primera generación de plataformas:
-
-```bash
-npx cap add android
-npx cap add ios
-npm run assets
-```
-
-Abrir Android Studio:
-
-```bash
-npm run android
-```
-
-Abrir Xcode en una Mac:
-
-```bash
-npm run ios
-```
-
-La aplicación usa la misma web y Supabase que Vercel. Incluye cámara,
-notificaciones locales y push mediante Firebase, OAuth mediante navegador
-seguro y bloqueo vertical.
-
-Android ya incluye `firebase/google-services.json`. Para activar el registro de
-dispositivos, ejecutar `database/04_push_notifications.sql` en Supabase.
-Las credenciales privadas de la cuenta de servicio Firebase y de Supabase se
-guardan únicamente como variables de entorno de Vercel.
+Una única configuración: capacitor.config.json. La app carga la web de producción mediante HTTPS y requiere conexión. No se incluye un APK compilado nuevo.

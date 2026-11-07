@@ -3,13 +3,12 @@
   "appName": "ColegioLibre",
   "webDir": "www",
   "server": {
-    "url": "https://colegiolibre.com",
+    "url": "https://www.colegiolibre.com",
     "cleartext": false,
     "androidScheme": "https",
     "allowNavigation": [
-      "colegiolibre.com",
       "www.colegiolibre.com",
-      "*.supabase.co"
+      "colegiolibre.com"
     ]
   },
   "plugins": {
@@ -17,9 +16,16 @@
       "allowEditing": false,
       "saveToGallery": false
     },
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#FFFFFF",
+      "androidScaleType": "CENTER_INSIDE",
+      "showSpinner": false
+    },
     "LocalNotifications": {
-      "smallIcon": "ic_launcher_foreground",
-      "iconColor": "#67C23A"
+      "smallIcon": "ic_stat_colegiolibre",
+      "iconColor": "#0B2E6B"
     },
     "PushNotifications": {
       "presentationOptions": [

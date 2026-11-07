@@ -1,7 +1,7 @@
 const SUPABASE_URL = "https://riqhwmszshleyyaxlwqu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_FYZUQhaTqN6gL-KenUnzWg__nGQLrhJ";
 
-const FALLBACK_PRODUCT_IMAGE = "images/materiales.webp";
+const FALLBACK_PRODUCT_IMAGE = "/images/product-placeholder.svg";
 
 const PRODUCT_STATUS = {
   available: "Disponible",
@@ -13,7 +13,7 @@ const PRODUCT_STATUS = {
 window.colegioLibreConfig = Object.freeze({
   supabaseUrl: SUPABASE_URL,
   supabaseKey: SUPABASE_KEY,
-  publicSiteUrl: "https:/colegiolibre.vercel.app"
+  publicSiteUrl: "https://www.colegiolibre.com"
 });
 
 function createUnavailableError() {
@@ -312,7 +312,7 @@ function getZoneLabel(source) {
 
 function safeProductRecord(product) {
   return {
-    category: (product && product.category) || "Otros",
+    category: ({Tecnologia:"Tecnología", Utiles:"Útiles"})[product?.category] || product?.category || "Otros",
     condition: (product && product.condition) || "Usado",
     created_at: (product && product.created_at) || null,
     description: (product && product.description) || "",

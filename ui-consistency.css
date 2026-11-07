@@ -1,0 +1,5 @@
+/* Shared action roles; greens are reserved for status and success. */
+body :is(.header-cta,.primary-action,.primary-button,.publish-button,.action-button--primary){background:#0b2e6b!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:none!important;border-color:#0b2e6b!important}
+body :is(.header-cta,.primary-action,.primary-button,.publish-button,.action-button--primary):hover{background:#173f82!important}
+body .product-title{overflow-wrap:anywhere}
+body .cl-mobile-nav__item--publish{background:#0b2e6b!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:none!important}body .cl-mobile-nav__item--publish svg{color:#fff!important}

@@ -1,7 +1,7 @@
 (function () {
 
 function createProductPageFallbackApi() {
-  const localFallbackImage = "images/materiales.webp";
+  const localFallbackImage = "/images/product-placeholder.svg";
   const statusLabels = {
     available: "Disponible",
     paused: "Pausado",
@@ -343,7 +343,7 @@ async function initProductPage() {
   bindEvents();
 
   if (!productId) {
-    showToast("No se encontró el producto.");
+    showProductUnavailable();
     return;
   }
 
@@ -506,6 +506,14 @@ function getProductAttributes(product) {
   return attributes.filter(([, value]) => value !== null && value !== undefined && value !== "");
 }
 
+function showProductUnavailable() {
+  currentProduct = null;
+  const content = document.getElementById("contenido");
+  if (content) content.innerHTML = '<section class="empty-state" style="padding:48px 24px;max-width:700px;margin:auto"><h1>Publicación no disponible</h1><p>Esta publicación no está disponible o no pudimos cargarla.</p><p><a href="/explorar">Explorar productos</a></p><button type="button" id="retry-product">Volver a intentar</button></section>';
+  document.getElementById("retry-product")?.addEventListener("click", () => location.reload());
+  document.title = "Publicación no disponible | ColegioLibre";
+}
+
 async function loadProduct() {
   const staticProduct = getStaticProductById(productId);
 
@@ -545,7 +553,7 @@ async function loadProduct() {
   }
 
   if (!data) {
-    showToast("No se pudo cargar el producto.");
+    showProductUnavailable();
     return;
   }
 
@@ -657,7 +665,7 @@ async function shareCurrentProduct() {
   if (!currentProduct) return;
 
   const publicSiteUrl = String(
-    window.colegioLibreConfig?.publicSiteUrl || "https:/colegiolibre.vercel.app"
+    window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
   ).replace(/\/$/, "");
   const productPath = `/producto?id=${encodeURIComponent(currentProduct.id)}`;
   const sharedUrl = `${publicSiteUrl}/open-app?path=${encodeURIComponent(productPath)}`;
