@@ -89,6 +89,36 @@
     verificationMessage: document.querySelector("#verification-message")
   };
 
+  const googleButton = document.querySelector("#google-signin");
+  const googleStatus = document.querySelector("#google-auth-status");
+  googleButton?.addEventListener("click", async () => {
+    if (busy || googleButton.disabled) return;
+    googleButton.disabled = true;
+    googleStatus.textContent = "Conectando con Google…";
+    try {
+      // Redirect through our HTTPS callback, where the Supabase session is completed.
+      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || window.location.origin).replace(/\/$/, "");
+      const callback = new URL("/auth-callback", publicSiteUrl);
+      callback.searchParams.set("next", nextPage);
+      callback.searchParams.set("source", window.Capacitor?.isNativePlatform?.() ? "app" : "web");
+      const { data, error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callback.href, scopes: "email profile" }
+      });
+      if (error) throw error;
+      if (!data?.url) throw new Error("Google no devolvió un enlace de acceso.");
+      // Supabase normally navigates automatically in browsers. For native WebViews,
+      // use the external browser when the Capacitor Browser plugin is available.
+      if (window.Capacitor?.isNativePlatform?.() && window.Capacitor?.Plugins?.Browser?.open) {
+        await window.Capacitor.Plugins.Browser.open({ url: data.url });
+      }
+    } catch (error) {
+      console.error("Google OAuth:", error);
+      googleStatus.textContent = "No se pudo conectar con Google. Revisá que Google esté habilitado en Supabase y que la URL de retorno esté autorizada.";
+      googleButton.disabled = false;
+    }
+  });
+
   let mode = "login";
   let busy = false;
 

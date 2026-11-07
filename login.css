@@ -892,3 +892,36 @@ input:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ColegioLibre mobile authentication — clean, full-screen native-style layout */
+.social-auth { margin-top: 24px; }
+.social-divider { display:flex; align-items:center; gap:14px; margin:0 0 18px; color:#858585; font-size:13px; }
+.social-divider:before,.social-divider:after { content:""; flex:1; height:1px; background:#e5e5e5; }
+.social-google { display:flex; justify-content:center; align-items:center; gap:13px; width:100%; min-height:56px; border:1.5px solid #242424; border-radius:999px; background:#fff; color:#171717; font-weight:650; font-size:16px; cursor:pointer; }
+.social-google:disabled { opacity:.6; cursor:wait; }
+.social-google:focus-visible { outline:3px solid #4c86e8; outline-offset:3px; }
+.social-help { font-size:13px; line-height:1.5; color:#9b3232; }
+@media (max-width:780px) {
+ html,body { background:#fff!important; }
+ .auth-shell { background:#fff!important; min-height:100dvh; padding: max(20px, env(safe-area-inset-top)) 22px max(24px, env(safe-area-inset-bottom)); }
+ .auth-panel-inner { max-width:450px; }
+ .brand--mobile { display:flex; justify-content:center; margin:45px auto 40px; }
+ .brand--mobile img { width:205px; max-height:100px; object-fit:contain; }
+ .back-home { position:absolute; top:max(16px, env(safe-area-inset-top)); right:22px; width:40px; height:40px; display:grid; place-items:center; overflow:hidden; font-size:0; border-radius:50%; background:#e7e7e7; color:#444; }
+ .back-home span { font-size:23px; }
+ .auth-card { border:0; border-radius:0; padding:0; box-shadow:none; background:#fff; backdrop-filter:none; }
+ .auth-heading { margin-bottom:27px; }
+ .auth-heading h2 { font-family:Georgia,'Times New Roman',serif; font-size:clamp(36px,10vw,49px); font-weight:400; letter-spacing:-.045em; color:#272328; }
+ .auth-heading .auth-eyebrow { display:none; }
+ .auth-heading p:not(.auth-eyebrow) { font-size:14px; color:#858585; }
+ .auth-tabs { background:transparent; border-radius:0; margin-bottom:22px; }
+ .auth-tab.is-active { color:#151515; }
+ .auth-form { gap:18px; }
+ .form-field label { color:#777; }
+ .input-control { border-radius:0!important; background:#fff!important; border:0!important; border-bottom:1px solid #d5d5d5!important; box-shadow:none!important; }
+ .input-control input { font-size:16px!important; background:transparent!important; }
+ .auth-submit { border-radius:999px!important; min-height:58px; background:#151015!important; }
+ .auth-switch-copy { margin-top:25px; }
+ .auth-footer { margin-top:35px; }
+}
+@media(max-width:440px) { .auth-shell { padding-inline:22px; } .brand--mobile { margin-top:38px; margin-bottom:30px; } .brand--mobile img { width:185px; } .auth-card { padding:0; } }
