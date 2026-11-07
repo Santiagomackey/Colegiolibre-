@@ -21,7 +21,10 @@
     user: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a8.5 8.5 0 0 1 15 0"/>'
   };
 
-  const currentFile = window.location.pathname === "/" ? "/" : `/${window.location.pathname.split("/").filter(Boolean).pop()}`;
+  const lastSegment = window.location.pathname.split("/").filter(Boolean).pop() || "";
+  const currentFile = !lastSegment || lastSegment === "index.html"
+    ? "/"
+    : `/${lastSegment.replace(/\.html$/i, "")}`;
   if (!NAV_PAGES.has(currentFile)) return;
 
   const language = document.documentElement.dataset.language === "en" ? "en" : "es";
@@ -71,6 +74,7 @@
       const link = document.createElement("a");
       link.className = `cl-mobile-nav__item${item.primary ? " cl-mobile-nav__item--publish" : ""}`;
       link.href = item.href;
+      if (item.primary) link.setAttribute("title", labels[item.key]);
       link.setAttribute("aria-label", labels[item.key]);
       if (item.requiresAuth) link.dataset.requiresAuth = "";
       if (activeByPage[currentFile] === item.key) link.setAttribute("aria-current", "page");

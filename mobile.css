@@ -1349,3 +1349,29 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     font-size: .78rem !important;
   }
 }
+
+/* Mobile quality pass: narrow screens, safe areas and accessible controls. */
+@media (max-width: 760px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { min-width: 0; overflow-x: clip; }
+  img, video, iframe { max-width: 100%; }
+  input, select, textarea { max-width: 100%; min-width: 0; box-sizing: border-box; font-size: max(16px, 1em); }
+  textarea { resize: vertical; }
+  button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  :is(button, a, input, select, textarea):focus-visible { outline: 3px solid #4b96ed; outline-offset: 3px; }
+  .cl-mobile-nav { box-sizing: border-box; width: auto; max-width: 520px; margin-inline: auto; bottom: calc(8px + var(--mobile-safe-bottom)); }
+  .cl-mobile-nav__item { min-width: 0; }
+  .cl-mobile-nav__item span { white-space: nowrap; }
+  body[data-mobile-nav="true"] { padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 28px); }
+  :is(.category-pills, .category-specific-filters) { overscroll-behavior-x: contain; scroll-snap-type: x proximity; }
+  :is(.category-pill, .category-specific-filters > *) { scroll-snap-align: start; }
+}
+@media (max-width: 360px) {
+  .cl-mobile-nav { left: 5px; right: 5px; padding-inline: 4px; border-radius: 19px; }
+  .cl-mobile-nav__item { padding-inline: 0; }
+  .cl-mobile-nav__item span { font-size: 0.58rem; letter-spacing: -0.02em; }
+  .cl-mobile-nav__item--publish { width: 52px; height: 54px; min-height: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-mobile-nav, .cl-mobile-nav *, .category-pills, .category-specific-filters { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
