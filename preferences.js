@@ -5,8 +5,9 @@
   const STORAGE_LANGUAGE = "colegiolibre-language";
   const root = document.documentElement;
   const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)");
-  const storedTheme = localStorage.getItem(STORAGE_THEME);
-  const storedLanguage = localStorage.getItem(STORAGE_LANGUAGE);
+  const readPreference = key => {try{return localStorage.getItem(key)}catch(_){return null}};
+  const storedTheme = readPreference(STORAGE_THEME);
+  const storedLanguage = readPreference(STORAGE_LANGUAGE);
   let theme = storedTheme === "dark" || storedTheme === "light"
     ? storedTheme
     : systemDark?.matches
@@ -849,6 +850,10 @@
     "¡Listo! Ya podés usar ColegioLibre.": "Done! You can now use ColegioLibre."
   }));
 
+  for (const [es,en] of Object.entries({"Alertas de la comunidad": "Community alerts", "¿Buscás algo en particular?": "Looking for something specific?", "Creá una alerta con el material que necesitás. Te avisamos cuando aparezca una coincidencia.": "Create an alert for the supplies you need. We will let you know when a match appears.", "Crear alerta": "Create alert", "Ver alertas": "View alerts", "Gratis · En tu colegio, tu zona o todo el país.": "Free · At your school, nearby or nationwide.", "La comunidad está buscando": "The community is looking for", "Ver todas": "View all", "Todavía no hay alertas activas": "No active alerts yet", "Cuando alguien busque un material, su alerta va a aparecer acá.": "When someone needs supplies, their alert will appear here.", "No pudimos cargar las alertas": "We could not load alerts", "Así de simple": "It is that simple", "Crear una alerta": "Create an alert", "Agregar detalles": "Add details", "opcional": "optional", "Alertas recientes": "Recent alerts", "Nombre del material": "Item name", "Presupuesto máximo ($)": "Maximum budget ($)", "Detalles opcionales": "Optional details", "¿Dónde querés que busquemos?": "Where should we look?", "Crear alerta gratuita": "Create a free alert", "Iniciar sesión": "Sign in", "Mi perfil": "My profile"})) translations.set(es,en);
+
+  for (const [es,en] of Object.entries({"Eso que buscás": "What you need", "puede estar por aparecer.": "could show up any moment.", "Contanos qué material necesitás. Cuando se publique una coincidencia, te avisamos.": "Tell us which supplies you need. We will let you know when a match is posted.", "Contanos qué buscás": "Tell us what you need", "Un libro, un uniforme, eso que te falta.": "A book, a uniform, whatever you are missing.", "Elegí dónde encontrarlo": "Choose where to look", "Tu colegio, tu zona o todo el país.": "Your school, nearby or nationwide.", "Recibí el aviso": "Get notified", "Te avisamos si aparece una coincidencia.": "We let you know when a match appears.", "Empezá por el nombre del material que necesitás.": "Start with the name of the supplies you need.", "PARA AYUDARNOS ENTRE TODOS": "HELPING EACH OTHER", "alertas activas de estudiantes y familias.": "active alerts from students and families.", "Las alertas no están disponibles ahora": "Alerts are unavailable right now", "No pudimos conectarnos. Podés volver a intentar en un momento.": "We could not connect. Please try again in a moment.", "Todavía no hay alertas acá": "No alerts here yet", "Probá otro alcance o creá una alerta con el material que necesitás.": "Try another area or create an alert for the supplies you need.", "Ej. Libro de Matemática de 3.º año": "E.g. Year 3 maths textbook", "Buscar material, categoría…": "Search by item or category…"})) translations.set(es,en);
+
   const phraseTranslations = [
     ["La publicación aparecerá en ", "Your listing will appear in "],
     [" y también podrá encontrarse por zona.", " and can also be found by area."],
@@ -973,7 +978,9 @@
     if (!parent || parent.closest(protectedContentSelector)) return;
     if (!originalText.has(node)) originalText.set(node, node.nodeValue);
     const original = originalText.get(node);
-    node.nodeValue = language === "en" ? translateString(original) : original;
+    const leading = original.match(/^\s*/)[0];
+    const trailing = original.match(/\s*$/)[0];
+    node.nodeValue = language === "en" ? leading + translateString(original.trim()) + trailing : original;
   }
 
   function translateElementAttributes(element) {
@@ -1053,7 +1060,7 @@
     const themeColor = document.querySelector('meta[name="theme-color"]');
     if (themeColor) themeColor.setAttribute("content", theme === "dark" ? "#000000" : "#ffffff");
 
-    if (persist) localStorage.setItem(STORAGE_THEME, theme);
+    if (persist) {try {localStorage.setItem(STORAGE_THEME, theme)} catch (_) {}}
     const button = document.getElementById("preference-theme");
     if (button) {
       const dark = theme === "dark";
@@ -1075,7 +1082,7 @@
     language = nextLanguage === "en" ? "en" : "es";
     root.lang = language;
     root.dataset.language = language;
-    if (persist) localStorage.setItem(STORAGE_LANGUAGE, language);
+    if (persist) {try {localStorage.setItem(STORAGE_LANGUAGE, language)} catch (_) {}}
     translateTree(document.body);
     document.title =
       language === "en"
@@ -1123,13 +1130,16 @@
       </button>
     `;
     document.body.appendChild(controls);
+    applyTheme(theme, false);
+    const languageButton=controls.querySelector("#preference-language");
+    languageButton.querySelector("span").textContent=language==="en"?"ES":"EN";
+    languageButton.setAttribute("aria-label",language==="en"?"Cambiar a español":"Switch to English");
     document.getElementById("preference-theme").addEventListener("click", () => {
       applyTheme(theme === "dark" ? "light" : "dark");
     });
     document.getElementById("preference-language").addEventListener("click", () => {
       const nextLanguage = language === "en" ? "es" : "en";
-      localStorage.setItem(STORAGE_LANGUAGE, nextLanguage);
-      window.location.reload();
+      applyLanguage(nextLanguage);
     });
   }
 
@@ -1137,6 +1147,15 @@
   applyTheme(theme, false);
   root.lang = language;
   root.dataset.language = language;
+
+  // Controls do not wait for database/vendor scripts to finish loading.
+  if (document.body) createControls();
+  else {
+    const earlyControlsObserver=new MutationObserver(() => {
+      if(document.body){earlyControlsObserver.disconnect();createControls()}
+    });
+    earlyControlsObserver.observe(root,{childList:true});
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     if (!root.dataset.originalTitle) root.dataset.originalTitle = document.title;
@@ -1155,7 +1174,7 @@
   });
 
   systemDark?.addEventListener("change", (event) => {
-    if (!localStorage.getItem(STORAGE_THEME)) {
+    if (!readPreference(STORAGE_THEME)) {
       applyTheme(event.matches ? "dark" : "light", false);
     }
   });

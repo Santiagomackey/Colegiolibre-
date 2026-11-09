@@ -29,7 +29,6 @@
   body.cl-marketplace .site-header .mobile-menu[hidden]{display:none!important}
   body.cl-marketplace .site-header .mobile-menu:not([hidden]){display:block!important}
   body.cl-marketplace .site-header .mobile-menu-panel{width:100%!important;min-width:0!important;max-height:60dvh;overflow-y:auto}
-  body.cl-marketplace[data-mobile-nav="true"] .preference-controls{position:static!important;inset:auto!important;transform:none!important;width:fit-content!important;height:auto!important;margin:16px auto 24px!important}
 }
 /* The account action keeps a readable label and reserves its final width. */
 @media(max-width:980px){body.cl-marketplace .site-header .header-actions--mobile{min-width:226px!important}}

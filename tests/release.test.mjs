@@ -291,7 +291,7 @@ test("el inicio traduce las descripciones institucionales y de categorías", () 
     /"Remeras, buzos, pantalones y prendas escolares filtradas por talle\.":\s*"School shirts, sweatshirts, trousers and uniforms filtered by size\."/
   );
   assert.match(preferences, /\.trim\(\)\.replace\(\/\\s\+\/g,\s*" "\)/);
-  assert.match(home, /preferences\.js\?v=20260730-31/);
+  assert.match(home, /preferences\.js\?v=[\w-]+/);
   assert.match(script, /refresh\?\.\(elements\.categoryShelves\)/);
 });
 

@@ -5,7 +5,7 @@
 }
 
 /* El marketplace móvil usa siempre una superficie oscura para este panel. */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   /* El menú desplegable necesita colores propios: el header oscuro no debe
      heredarlos sobre la tarjeta clara. */
   html[data-theme="light"] .mobile-menu-panel {
@@ -101,7 +101,7 @@ html {
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width:980px) {
   html[data-native-app],
   html[data-native-app] body {
     scrollbar-width: none !important;
@@ -476,7 +476,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 /* V31 · app bar móvil compacta, inspirada en marketplaces.
    Estas reglas son deliberadamente finales para impedir que estilos de
    escritorio vuelvan a mostrar dos logos en el Home. */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   body:not(.mobile-subpage) .site-header {
     position: sticky;
     top: 0;
@@ -627,7 +627,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
    ColegioLibre · interfaz móvil de aplicación
    Estas reglas reemplazan el header de escritorio únicamente en subpáginas.
    -------------------------------------------------------------------------- */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   :root {
     --mobile-nav-height: 62px;
   }
@@ -1123,7 +1123,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* V32 · áreas seguras y composición nativa. */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   html[data-native-app] {
     --mobile-safe-top: max(env(safe-area-inset-top, 0px), 30px);
     --mobile-safe-bottom: max(env(safe-area-inset-bottom, 0px), 18px);
@@ -1212,7 +1212,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* Keep the floating app navigation clear of the phone/browser safe area. */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   .cl-mobile-nav {
     right: 10px;
     bottom: max(10px, env(safe-area-inset-bottom, 0px));
@@ -1229,7 +1229,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* V58 · mobile polish: clearer publish CTA + compact footer/filters */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   /* Keep the central List/Listo action readable in dark mode. */
   html[data-theme="dark"] .cl-mobile-nav__item--publish,
   html[data-theme="dark"] .cl-mobile-nav__item--publish[aria-current="page"] {
@@ -1298,7 +1298,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* V59 · mobile balance: category rail + footer */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   /* Equal visual breathing room on both sides of the category row. */
   .home-category-nav {
     padding: 14px 16px !important;
@@ -1351,7 +1351,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* Mobile quality pass: narrow screens, safe areas and accessible controls. */
-@media (max-width: 760px) {
+@media (max-width:980px) {
   html { -webkit-text-size-adjust: 100%; }
   body { min-width: 0; overflow-x: clip; }
   img, video, iframe { max-width: 100%; }
@@ -1377,7 +1377,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* Unified editorial footer in the native app and mobile website. */
-@media (max-width:760px) {
+@media (max-width:980px) {
   .cl-editorial-footer.footer-medium.site-footer { background:#0b2e6b!important; padding:44px 0 max(30px,env(safe-area-inset-bottom))!important; margin-top:32px!important; }
   .cl-editorial-footer .footer-medium-grid { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:28px 18px!important; }
   .cl-editorial-footer .footer-medium-brand { display:flex!important; grid-column:1/-1!important; }
@@ -1388,4 +1388,29 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   .cl-editorial-footer .footer-medium-bottom { display:flex!important; margin-top:32px!important; flex-direction:column!important; align-items:flex-start!important; }
   .cl-editorial-footer .footer-medium-bottom p:last-child { display:block!important; }
   .cl-editorial-footer .cl-footer-bottom-links { display:flex!important; flex-wrap:wrap!important; }
+}
+
+/* Phone/tablet preferences remain visible above the bottom navigation. */
+@media(max-width:980px){
+ html body #preference-controls.preference-controls{position:fixed!important;inset:auto 14px calc(env(safe-area-inset-bottom,0px) + 92px) auto!important;display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;width:auto!important;min-width:0!important;height:46px!important;min-height:46px!important;max-height:46px!important;margin:0!important;padding:3px!important;gap:2px!important;flex-direction:row!important;align-items:center!important;z-index:950!important;border:1px solid #d6e0ef!important;border-radius:15px!important;background:#fff!important;color:#0b2e6b!important;box-shadow:0 5px 20px #071f4b20!important}
+ html body #preference-controls .preference-controls__button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;border:0!important;border-radius:11px!important;background:transparent!important;color:inherit!important;gap:4px!important}
+ html body #preference-controls .preference-controls__theme-label{display:none!important}html body #preference-controls .preference-controls__language-label{display:inline!important;font-size:11px!important;font-weight:700!important}html body #preference-controls svg{display:block!important;width:17px!important;height:17px!important;fill:none!important;stroke:currentColor!important}
+ html[data-theme="dark"] body #preference-controls.preference-controls{background:#162131!important;color:#edf4ff!important;border-color:#33455f!important}
+ html body .cl-mobile-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+/* The home content uses the same mobile breakpoint as its header. */
+@media(max-width:980px){
+ body.cl-marketplace .hero-panel{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:22px!important;width:100%!important;min-height:0!important;height:auto!important;padding:26px 22px 20px!important;border-radius:24px!important}
+ body.cl-marketplace .hero-copy{width:100%!important;max-width:100%!important;min-width:0!important}
+ html body.cl-marketplace .hero-copy h1{width:100%!important;max-width:100%!important;margin:0!important;font-size:clamp(30px,7.7vw,42px)!important;line-height:1.06!important;letter-spacing:-.04em!important;word-break:normal!important;overflow-wrap:normal!important}
+ html body.cl-marketplace .hero-copy h1 :is(span,em){display:inline!important;white-space:normal!important}
+ body.cl-marketplace .hero-copy>p{max-width:580px!important;font-size:15px!important;line-height:1.6!important}
+ body.cl-marketplace .hero-collage.hero-collage--single{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:auto!important;min-height:0!important;max-height:250px!important;margin:0!important;transform:none!important}
+ body.cl-marketplace .hero-main-image{display:block!important;width:min(100%,370px)!important;max-width:100%!important;max-height:245px!important;height:auto!important;margin:0 auto!important;object-fit:contain!important;transform:none!important}
+ body.cl-marketplace .products-layout{grid-template-columns:minmax(0,1fr)!important}
+ body.cl-marketplace .section-heading{flex-wrap:wrap!important;gap:12px!important}
+ body.cl-marketplace .section-heading h2{font-size:clamp(24px,5vw,30px)!important;line-height:1.15!important}
+ html body .cl-mobile-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item--publish{background:#0b2e6b!important;color:#fff!important;box-shadow:none!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item--publish :is(svg,span){color:#fff!important;stroke:currentColor!important}
 }

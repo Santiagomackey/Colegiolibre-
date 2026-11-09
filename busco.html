@@ -3,21 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#071a38">
+  <meta name="theme-color" content="#0b2e6b"><script src="preferences.js?v=20261109-mobile-alerts"></script><link rel="stylesheet" href="preferences.css?v=20261109-alerts"><link rel="icon" href="/images/favicon-32.png">
   <title>Pedidos de la comunidad | ColegioLibre</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="mobile.css?v=20261107-blue-footer">
-  <link rel="stylesheet" href="busco.css?v=20260812-50">
-  <link rel="stylesheet" href="busco-v50.css?v=20260812-50">
-  <link rel="stylesheet" href="busco-v51.css?v=20260812-51">
+  <link rel="stylesheet" href="mobile.css?v=20261109-mobile-alerts">
+  <link rel="stylesheet" href="busco.css?v=20261109-alerts">
   <link rel="stylesheet" href="/global-search.css?v=20260926-1">
 <link rel="stylesheet" href="/marketplace-upgrades.css?v=20260928-1">
 <link rel="stylesheet" href="./opening.css?v=3" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261107-audit">
 </head>
-<body class="wanted-page">
+<body class="wanted-page mobile-subpage mobile-wanted">
 <div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
 <script src="/opening.js?v=4"></script>
   <header class="wanted-header">
@@ -26,56 +24,36 @@
   </header>
 
   <main class="wanted-shell">
-    <section class="wanted-hero">
-      <div class="wanted-hero__copy">
-        <span class="wanted-kicker">PEDIDOS DE LA COMUNIDAD</span>
-        <h1>Decinos qué buscás.<br><em>Nosotros te avisamos.</em></h1>
-        <p>Creá una alerta para ese libro, uniforme o material difícil de encontrar. Cuando alguien publique una coincidencia, vas a recibir una notificación.</p>
-        <div class="wanted-benefits"><span>✓ Alertas automáticas</span><span>✓ Elegís el alcance</span><span>✓ Publicar es gratis</span></div>
-        <a class="wanted-hero__cta" href="#crear-pedido">Crear mi pedido <span>↓</span></a>
-      </div>
-      <div class="wanted-preview" aria-hidden="true">
-        <div class="wanted-preview__top"><i></i><i></i><i></i><small>ALERTA ACTIVA</small></div>
-        <div class="wanted-preview__search"><span>⌕</span><div><small>ESTOY BUSCANDO</small><strong>Biology IGCSE Coursebook</strong></div></div>
-        <div class="wanted-preview__match"><span>✓</span><div><small>COINCIDENCIA ENCONTRADA</small><strong>Se publicó un producto para vos</strong><p>En tu colegio · Hace 2 minutos</p></div></div>
-        <div class="wanted-preview__phone">Te avisamos dentro de la app y en tu celular.</div>
-      </div>
-    </section>
-
-    <section class="wanted-steps" aria-label="Cómo funciona">
-      <article><b>01</b><div><strong>Contanos qué necesitás</strong><span>Agregá título, categoría y detalles.</span></div></article>
-      <article><b>02</b><div><strong>Elegí dónde buscar</strong><span>Tu colegio, tu zona o Argentina.</span></div></article>
-      <article><b>03</b><div><strong>Recibí el aviso</strong><span>Te notificamos cuando aparezca.</span></div></article>
-    </section>
+    <section class="wanted-hero"><div class="wanted-hero__copy"><span class="wanted-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg> Alertas de la comunidad</span><h1>Eso que buscás<br>puede estar por aparecer.</h1><p>Contanos qué material necesitás. Cuando se publique una coincidencia, te avisamos.</p><a class="wanted-hero__cta" href="#crear-pedido">Crear una alerta <span aria-hidden="true">↗</span></a></div><aside class="wanted-how"><h2>Así de simple</h2><ol><li><span>1</span><div><b>Contanos qué buscás</b><p>Un libro, un uniforme, eso que te falta.</p></div></li><li><span>2</span><div><b>Elegí dónde encontrarlo</b><p>Tu colegio, tu zona o todo el país.</p></div></li><li><span>3</span><div><b>Recibí el aviso</b><p>Te avisamos si aparece una coincidencia.</p></div></li></ol></aside></section>
 
     <section class="wanted-layout" id="crear-pedido">
       <form id="wanted-form" class="wanted-card wanted-create">
-        <header class="wanted-section-head"><span class="eyebrow">CREAR ALERTA</span><h2>¿Qué estás buscando?</h2><p>Cuanto más claro sea el pedido, mejores serán las coincidencias.</p></header>
-        <label>Nombre del material<input name="title" maxlength="120" required placeholder="Ej. Biology IGCSE Coursebook"></label>
+        <header class="wanted-section-head"><span class="eyebrow">CREAR ALERTA</span><h2>Crear una alerta</h2><p>Empezá por el nombre del material que necesitás.</p></header>
+        <label>Nombre del material<input name="title" maxlength="120" required placeholder="Ej. Libro de Matemática de 3.º año"></label>
         <div class="wanted-two"><label>Categoría<select name="category"><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Otro</option></select></label><label>Tipo de búsqueda<select name="transaction_type" aria-label="Tipo de búsqueda"><option value="buy">Quiero comprar</option><option value="exchange">Acepto intercambio</option><option value="either">Compra o intercambio</option></select></label></div>
-        <label>Presupuesto máximo opcional ($)<input name="max_price" type="number" min="0" step="500" placeholder="Ej. 35000"></label>
-        <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
+        <details class="wanted-extra"><summary>Agregar detalles <span>opcional</span></summary><label>Presupuesto máximo ($)<input name="max_price" type="number" min="0" step="500" placeholder="Ej. 35000"></label>
+        <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label></details>
         <fieldset><legend>¿Dónde querés que busquemos?</legend><div class="scope-grid">
-          <label><input type="radio" name="scope" value="school" checked><span class="scope-icon">⌂</span><b>Mi colegio</b><small>Solo tu comunidad</small></label>
-          <label><input type="radio" name="scope" value="zone"><span class="scope-icon">◎</span><b>Mi zona</b><small>Colegios cercanos</small></label>
-          <label><input type="radio" name="scope" value="country"><span class="scope-icon">AR</span><b>Argentina</b><small>Todo el país</small></label>
+          <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b><small>Solo tu comunidad</small></label>
+          <label><input type="radio" name="scope" value="zone"><b>Mi zona</b><small>Colegios cercanos</small></label>
+          <label><input type="radio" name="scope" value="country"><b>Argentina</b><small>Todo el país</small></label>
         </div></fieldset>
         <button class="wanted-submit" type="submit"><span>Crear alerta gratuita</span><b>→</b></button>
         <p id="wanted-status" class="wanted-status" role="status"></p>
       </form>
 
       <section class="wanted-card wanted-feed">
-        <header class="feed-head"><div><span class="eyebrow">EN TIEMPO REAL</span><h2>Lo que busca la comunidad</h2><p><b id="wanted-result-count">0</b> pedidos activos publicados por estudiantes y familias.</p></div><select id="wanted-filter" aria-label="Filtrar pedidos"><option value="all">Todos</option><option value="school">Mi colegio</option><option value="zone">Mi zona</option><option value="country">Argentina</option><option value="mine">Mis pedidos</option></select></header>
-        <div class="wanted-feed-search"><span>⌕</span><input id="wanted-search" type="search" placeholder="Buscar entre los pedidos" autocomplete="off"></div>
+        <header class="feed-head"><div><span class="eyebrow">PARA AYUDARNOS ENTRE TODOS</span><h2>Alertas recientes</h2><p><b id="wanted-result-count">0</b> alertas activas de estudiantes y familias.</p></div><select id="wanted-filter" aria-label="Filtrar pedidos"><option value="all">Todos</option><option value="school">Mi colegio</option><option value="zone">Mi zona</option><option value="country">Argentina</option><option value="mine">Mis alertas</option></select></header>
+        <div class="wanted-feed-search"><label class="sr-only" for="wanted-search">Buscar alertas</label><input id="wanted-search" type="search" placeholder="Buscar material, categoría…" autocomplete="off"></div>
         <div id="wanted-list" class="wanted-list"><div class="wanted-loading"><i></i><i></i><i></i><span>Cargando pedidos…</span></div></div>
       </section>
     </section>
   </main>
   <script src="vendor/supabase.js?v=2.111.0"></script>
   <script src="supabase.js?v=20261107-audit"></script>
-  <script src="busco.js?v=20260812-51"></script>
+  <script src="busco.js?v=20261109-alerts"></script>
   <script src="mobile-ui.js?v=20261107-audit"></script>
   <script src="/global-search.js?v=20260926-1"></script>
 <script src="/marketplace-upgrades.js?v=20260928-1"></script>
-</body>
+<script src="/native-bridge.js?v=20261109-alerts"></script></body>
 </html>

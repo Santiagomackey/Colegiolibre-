@@ -11,11 +11,10 @@
   let user = null;
   let profile = null;
   let posts = [];
-  init();
+  init().catch(() => showFeedError());
 
   async function init() {
-    user = await api.getCurrentUser(true);
-    profile = user ? await api.getCurrentProfile(true) : null;
+    try { user = await api.getCurrentUser(true); profile = user ? await api.getCurrentProfile(true) : null; } catch (_) {}
     form.addEventListener("submit", submit);
     filter.addEventListener("change", render);
     search?.addEventListener("input", render);
@@ -27,13 +26,16 @@
       .order("created_at", { ascending: false }).limit(100);
     posts = result.data || [];
     if (result.error) {
-      const missing = /wanted_posts|schema cache|does not exist/i.test(String(result.error.message || ""));
-      list.innerHTML = missing
-        ? '<div class="wanted-empty"><b>El foro todavía no fue activado</b><p>Ejecutá database/05_growth_payments_forum.sql en Supabase para habilitar los pedidos.</p></div>'
-        : '<div class="wanted-empty"><b>No pudimos cargar los pedidos</b><p>Revisá tu conexión e intentá nuevamente.</p></div>';
+      showFeedError();
       return;
     }
     render();
+  }
+
+  function showFeedError() {
+    if (resultCount) resultCount.textContent = "—";
+    list.innerHTML = '<div class="wanted-empty"><b>Las alertas no están disponibles ahora</b><p>No pudimos conectarnos. Podés volver a intentar en un momento.</p><button type="button">Volver a intentar</button></div>';
+    list.querySelector("button").onclick = () => load().catch(showFeedError);
   }
 
   function render() {
@@ -71,7 +73,7 @@
       }
       list.appendChild(item);
     });
-    if (!visible.length) list.innerHTML = '<div class="wanted-empty"><b>Todavía no hay pedidos acá</b><p>Sé la primera persona en crear una alerta para este alcance.</p></div>';
+    if (!visible.length) list.innerHTML = '<div class="wanted-empty"><b>Todavía no hay alertas acá</b><p>Probá otro alcance o creá una alerta con el material que necesitás.</p></div>';
   }
 
   function relativeTime(value) {
@@ -89,17 +91,23 @@
     const data = new FormData(form);
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();
+    status.dataset.state = "loading";
     status.textContent = "Creando tu alerta…";
     const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: Number(data.get("max_price") || 0) || null };
-    if (scope === "school" && !record.school_code) { status.textContent = "Primero elegí tu colegio desde Mi perfil."; return; }
-    if (scope === "zone" && !record.zone_code) { status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
-    const result = await client.from("wanted_posts").insert(record);
+    if (scope === "school" && !record.school_code) { status.dataset.state = "error"; status.textContent = "Primero elegí tu colegio desde Mi perfil."; return; }
+    if (scope === "zone" && !record.zone_code) { status.dataset.state = "error"; status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
+    const button = form.querySelector('[type="submit"]');
+    button.disabled = true;
+    let result;
+    try { result = await client.from("wanted_posts").insert(record); }
+    catch (_) { result = {error: true}; }
+    finally { button.disabled = false; }
     if (result.error) {
-      status.textContent = /wanted_posts|schema cache|does not exist/i.test(String(result.error.message || ""))
-        ? "El foro todavía no está activado en Supabase. Ejecutá el SQL incluido en la carpeta."
-        : `No pudimos publicar: ${result.error.message}`;
+      status.dataset.state = "error";
+      status.textContent = "No pudimos crear tu alerta. Volvé a intentar en un momento.";
       return;
     }
+    status.dataset.state = "success";
     form.reset();
     status.textContent = "¡Alerta creada! Te avisaremos cuando aparezca una coincidencia.";
     await load();

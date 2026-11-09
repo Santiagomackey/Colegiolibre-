@@ -63,3 +63,12 @@ Pendiente de comprobar con cuenta de prueba y teléfono: inicio/registro/recuper
 El inicio incluye los estilos críticos del encabezado en el propio HTML, antes de que se analice el contenido visible. Así la composición móvil no espera a la descarga de home-header.css ni a la recuperación de sesión. Se reserva espacio para los avisos y para el botón de cuenta: muestra Iniciar sesión sin sesión y Mi perfil cuando se recupera la cuenta. Los estilos completos y la versión incluida en el HTML se comparan en una prueba para evitar diferencias futuras. Se verificó el encabezado inicial sin hojas compartidas ni scripts, a 320 y 820 px, además de las composiciones con y sin sesión a 390 px. Estas revisiones no sustituyen la prueba en un teléfono físico.
 
 Reemplazá el proyecto completo y volvé a desplegarlo. El cambio de caché PWA está incluido. Para una instalación Android con recursos empaquetados antiguos, compilá e instalá un APK nuevo con las instrucciones de esta entrega.
+
+## Alertas y corrección móvil completa
+
+- Se rediseñaron la sección de alertas del inicio y /busco: menos ruido visual, tipografía legible, acciones azules claras, solicitudes recientes y estados vacíos/de error diferenciados. El formulario mantiene sus nombres y campos; presupuesto y descripción están agrupados como detalles opcionales.
+- La web de inicio incluye ahora mobile.css completo y home-header.css en el HTML, antes del body. Todo el inicio comparte el breakpoint móvil de 980 px, incluida la composición de la portada; no depende de la recuperación de sesión para cambiar al diseño móvil.
+- Los controles de tema claro/oscuro y ES/EN vuelven a estar fijos encima de la navegación inferior. Se crean apenas existe el body y no esperan a que terminen las consultas ni los scripts de datos. Cambiar el idioma ya no recarga la página.
+- Se verificaron los controles con clics en la vista responsive y el inicio completo a 390 y 820 px. Se comprobaron los estilos iniciales incrustados mediante una prueba de integridad. Las 29 pruebas y las validaciones del proyecto pasan; no se realizó una prueba con un teléfono físico ni se generó un APK nuevo.
+
+Aplicación: reemplazá el proyecto completo con esta carpeta y volvé a desplegarlo. El sitio en producción se comprobó durante la revisión y todavía servía la versión con solo el encabezado incrustado, no esta corrección móvil completa. Para una app Android con recursos antiguos, compilá e instalá el APK actualizado con las instrucciones anteriores. El footer azul y el logo oficial se conservan.
