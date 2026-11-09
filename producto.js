@@ -367,6 +367,7 @@ function bindEvents() {
   elements.mainFavoriteButton?.addEventListener("click", () => handleFavoriteToggle(productId));
   elements.saveButton?.addEventListener("click", () => handleFavoriteToggle(productId));
   elements.contactButton?.addEventListener("click", handleContactSeller);
+  document.querySelector('#buy-transfer-button')?.addEventListener('click',()=>{if(currentProduct?.id)window.location.href='/compra?product='+encodeURIComponent(currentProduct.id)});
   elements.reportButton?.addEventListener("click", openProductReport);
   elements.reportBackdrop?.addEventListener("click", closeProductReport);
   elements.reportClose?.addEventListener("click", closeProductReport);
@@ -925,6 +926,8 @@ function updateProductActions(product) {
   const isOwner = Boolean(currentUser && currentUser.id === product.user_id);
   const isUnavailable = ["sold", "paused", "reserved"].includes(product.status);
 
+  const buyButton=document.querySelector('#buy-transfer-button');
+  if(buyButton){buyButton.hidden=isOwner;buyButton.disabled=isUnavailable;}
   elements.contactButton.hidden = isOwner;
   elements.ownerEditButton.hidden = !isOwner;
   elements.ownerEditButton.href = isOwner

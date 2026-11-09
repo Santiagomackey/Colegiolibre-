@@ -80,7 +80,7 @@
       const url = new URL(value || '/', 'https://www.colegiolibre.com/');
       if (!['https://www.colegiolibre.com','https://colegiolibre.com',window.location?.origin].includes(url.origin)) return '/';
       const page = url.pathname.replace(/\.html$/, '') || '/';
-      return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco'].includes(page) ? page+url.search : '/';
+      return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco', '/compra', '/pedidos'].includes(page) ? page+url.search : '/';
     } catch (_) {return '/'}
   };
   const publishPushState = () => window.dispatchEvent(new CustomEvent('colegiolibre:pushstatechange',{detail:{...pushState}}));
@@ -154,7 +154,7 @@
     const app = capacitor.Plugins?.App;
     const allowedPages = new Set([
       "/", "/producto", "/mensajes", "/favoritos",
-      "/perfil", "/publicar", "/colegio", "/busco", "/login"
+      "/perfil", "/publicar", "/colegio", "/busco", "/login", "/compra", "/pedidos"
     ]);
     const safeDestination = (rawValue, fallback = "/") => {
       try {

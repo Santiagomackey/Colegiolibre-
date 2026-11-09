@@ -253,7 +253,7 @@
                 getNotificationTitle(notification)
               )}</span>
               <span class="cl-notification-item__body">${escapeHtml(
-                notification.body || ""
+                transferNotificationBody(notification)
               )}</span>
               <span class="cl-notification-item__time">${escapeHtml(
                 formatRelativeTime(notification.updated_at || notification.created_at)
@@ -479,6 +479,13 @@
     } catch (_error) {
       return "";
     }
+  }
+
+  window.addEventListener('colegiolibre:languagechange',()=>{if(state.panel)renderNotifications()});
+  function transferNotificationBody(notification) {
+    if(document.documentElement.dataset.language!=='en')return notification.body||'';
+    const messages={payment_claim:'The buyer reported a transfer. Check your account before confirming receipt.',payment_confirmed:'The seller confirmed receiving your payment. Arrange delivery at school.',order_delivered:'The buyer confirmed receiving the item.',order_cancelled:'This order is no longer active.'};
+    return messages[notification.type]||notification.body||'';
   }
 
   function getDefaultTitle(type) {

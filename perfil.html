@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20261109-alerts-apple-push"></script>
+    <script src="./preferences.js?v=20261109-transfer27"></script>
     <title>ColegioLibre | Mi perfil</title>
     <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
     <meta
@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
-</head>
+<link rel="stylesheet" href="/transfer.css?v=20261109-transfer27"></head>
   <body class="mobile-subpage mobile-profile" data-sidebar-open="false">
 <div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
 <script src="/opening.js?v=20261109-release25"></script>
@@ -205,6 +205,7 @@
         <div class="profile-sidebar__divider"></div>
 
         <nav class="profile-nav profile-nav--secondary" aria-label="Configuración de la cuenta">
+          <a class="profile-nav__item" href="/pedidos"><svg class="icon"><use href="#icon-user"></use></svg><span>Mis pedidos</span></a>
           <button class="profile-nav__item" type="button" data-profile-view="settings">
             <svg class="icon"><use href="#icon-settings"></use></svg>
             <span>Configuración</span>
@@ -234,7 +235,7 @@
       Administrá tus materiales, revisá métricas reales y seguí el estado de cada publicación.
     </p>
     <div class="mobile-profile-actions" aria-label="Acciones de la cuenta">
-      <button class="mobile-profile-action" type="button" data-profile-view="settings">Configuración</button>
+      <button class="mobile-profile-action" type="button" data-profile-view="settings">Configuración</button><a class="pay-order-profile-link" href="/pedidos">Mis pedidos</a>
       <button class="mobile-profile-action mobile-profile-action--logout" type="button" data-profile-action="logout">Cerrar sesión</button>
     </div>
   </div>
@@ -402,6 +403,8 @@
               </button>
             </div>
           </form>
+
+<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title"><span class="pay-kicker">VENTAS POR TRANSFERENCIA</span><h2 id="payment-settings-title">Datos de cobro</h2><p class="pay-muted">Los compradores verán estos datos solo en el pedido. No se publican en tu perfil.</p><form id="seller-payment-form" autocomplete="off"><div class="pay-form-grid"><label><span>Método de cobro</span><select name="method" required><option value="mercado_pago">Mercado Pago</option><option value="bank">Transferencia bancaria</option></select></label><label><span>Alias</span><input name="alias" minlength="6" maxlength="20" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias"></label><label><span>CBU / CVU</span><input name="account_number" type="text" inputmode="numeric" maxlength="30" required autocomplete="off" placeholder="22 dígitos"></label><label><span>Nombre del titular</span><input name="holder_name" minlength="2" maxlength="100" required autocomplete="off"></label></div><p class="pay-small">Comprobamos el formato, no la titularidad de la cuenta. Revisá los datos en tu banco antes de guardarlos.</p><button class="pay-button" type="submit">Guardar datos de cobro</button><p class="pay-message" id="seller-payment-message" role="status"></p><button class="pay-button pay-button--secondary" type="button" data-payment-retry>Volver a cargar</button></form><a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a></section>
         </section>
       </main>
     </div>
@@ -464,11 +467,11 @@
 <script src="./supabase.js?v=20261109-release25"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./perfil.js?v=20261109-release25"></script>
-<script src="./native-bridge.js?v=20261109-alerts-apple-push"></script>
-<script src="./notifications.js?v=20261109-alerts-apple-push"></script>
-    <script src="./mobile-ui.js?v=20261109-nav-language"></script>
+<script src="./perfil.js?v=20261109-transfer27"></script>
+<script src="./native-bridge.js?v=20261109-transfer27"></script>
+<script src="./notifications.js?v=20261109-transfer27"></script>
+    <script src="./mobile-ui.js?v=20261109-transfer27"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-</body>
+<script src="/transfer-common.js?v=20261109-transfer27"></script><script src="/payment-settings.js?v=20261109-transfer27"></script></body>
 </html>

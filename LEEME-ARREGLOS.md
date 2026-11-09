@@ -102,3 +102,11 @@ Alertas tiene pestañas Comunidad/Mis alertas, vista previa, presupuesto visible
 Leé docs/APPLE_AND_PHONE_NOTIFICATIONS.md antes de desplegar. Apple necesita configurarse en Supabase/Apple Developer; FCM necesita credenciales privadas del servidor y el webhook de Supabase. La migración database/09_alert_matches.sql está preparada pero no se ha ejecutado en una base real. Android 1.0.26 requiere recompilar/reinstalar; este ZIP contiene fuente, no un APK. No se ha probado entrega push en un teléfono real ni una cuenta Apple real.
 
 Verificación: 37 pruebas automatizadas correctas, validación del proyecto/auditoría/PWA correctas. Vistas de alertas y Apple revisadas en navegador a ancho móvil y escritorio; vista previa y pestaña Mis alertas comprobadas como invitado.
+
+## Versión 1.0.27 — compras por transferencia
+
+Datos de cobro privados en Perfil, Comprar desde Producto, checkout con alias/CBU/CVU e importe congelado, confirmación manual exclusiva del vendedor y seguimiento en Mis pedidos. La conversación se crea con el pedido para coordinar en el colegio. Incluye español/inglés y ambos temas.
+
+Aplicá database/10_direct_transfer_orders.sql antes de desplegar. Leé docs/DIRECT_TRANSFER_PAYMENTS.md para permisos, pruebas de staging y límites. El dinero se mueve externamente: el aviso del comprador nunca confirma el pago. No se ejecutó la migración en producción ni se compiló un APK.
+
+Validación de transferencias: 44 pruebas correctas (incluye PostgreSQL/PGlite), validación general, auditoría, PWA y 13 comprobaciones nacionales. La migración y la configuración real deben verificarse en Supabase staging antes de publicar.

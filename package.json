@@ -1,6 +1,6 @@
 {
   "name": "colegiolibre-web",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,5 +13,8 @@
     "check:auth": "node scripts/check-auth-settings.mjs",
     "prelaunch": "npm run release:national && npm run check:auth && npm run smoke:production",
     "android:apk": "npm --prefix mobile-app run android:apk"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16"
   }
 }

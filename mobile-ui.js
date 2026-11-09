@@ -14,7 +14,7 @@
     "/explorar",
     "/apuntes",
     "/materia",
-    "/curso"
+    "/curso", "/compra", "/pedidos"
   ]);
 
   const icons = {
@@ -57,7 +57,7 @@
     "/publicar": "publish",
     "/mensajes": "messages",
     "/perfil": "profile",
-    "/busco": "home"
+    "/busco": "home", "/compra": "profile", "/pedidos": "profile"
   };
 
   const links = [
