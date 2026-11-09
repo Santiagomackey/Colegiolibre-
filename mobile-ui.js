@@ -31,12 +31,12 @@
     : `/${lastSegment.replace(/\.html$/i, "")}`;
   if (!NAV_PAGES.has(currentFile)) return;
 
-  const language = document.documentElement.dataset.language === "en" ? "en" : "es";
-  const labels = language === "en"
+  function getNavigationLabels() {
+    return document.documentElement.dataset.language === "en"
     ? {
         home: "Home",
-        favorites: "Saved",
-        publish: "List",
+        favorites: "Favorites",
+        publish: "Sell",
         messages: "Messages",
         profile: "Profile",
         nav: "Main navigation"
@@ -49,6 +49,7 @@
         profile: "Mi perfil",
         nav: "Navegación principal"
       };
+  }
 
   const activeByPage = {
     "/": "home",
@@ -67,17 +68,35 @@
     { href: "/perfil", icon: "user", key: "profile", requiresAuth: true }
   ];
 
+  function updateNavigationLabels() {
+    const nav = document.querySelector(".cl-mobile-nav");
+    if (!nav) return;
+    const labels = getNavigationLabels();
+    nav.setAttribute("aria-label", labels.nav);
+    nav.querySelectorAll("[data-mobile-nav-key]").forEach(link => {
+      const label = labels[link.dataset.mobileNavKey];
+      link.querySelector("span").textContent = label;
+      link.setAttribute("aria-label", label);
+      if (link.dataset.mobileNavKey === "publish") link.setAttribute("title", label);
+    });
+  }
+
+  window.addEventListener("colegiolibre:languagechange", updateNavigationLabels);
+
   function createNavigation() {
     if (document.querySelector(".cl-mobile-nav")) return;
 
+    const labels = getNavigationLabels();
     const nav = document.createElement("nav");
     nav.className = "cl-mobile-nav";
+    nav.setAttribute("data-no-translate", "");
     nav.setAttribute("aria-label", labels.nav);
 
     links.forEach((item) => {
       const link = document.createElement("a");
       link.className = `cl-mobile-nav__item${item.primary ? " cl-mobile-nav__item--publish" : ""}`;
       link.href = item.href;
+      link.dataset.mobileNavKey = item.key;
       if (item.primary) link.setAttribute("title", labels[item.key]);
       link.setAttribute("aria-label", labels[item.key]);
       if (item.requiresAuth) link.dataset.requiresAuth = "";

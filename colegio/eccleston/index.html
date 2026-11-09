@@ -1560,15 +1560,6 @@ html[data-theme] body #preference-controls.preference-controls{position:fixed!im
 html[data-theme] body #preference-controls .preference-controls__button{min-width:40px!important;min-height:38px!important;padding:6px 8px!important}
 html[data-theme] body #preference-controls .preference-controls__theme-label{display:none!important}
 html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!important;border-bottom-color:#252a32!important}
-html[data-theme] body.cl-marketplace #como-funciona{padding:20px 0 24px!important}
-html[data-theme] body.cl-marketplace #como-funciona .steps-panel{padding:24px 0!important;background:transparent!important;box-shadow:none!important;border:0!important;border-top:1px solid var(--cl-chrome-border)!important;border-radius:0!important}
-html[data-theme] body.cl-marketplace #como-funciona .steps-copy{max-width:none!important}
-html[data-theme] body.cl-marketplace #como-funciona h2{margin:6px 0 0!important;font-size:26px!important;line-height:1.2!important;letter-spacing:-.03em!important}
-html[data-theme] body.cl-marketplace #como-funciona .steps-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:24px!important;margin-top:22px!important}
-html[data-theme] body.cl-marketplace #como-funciona .step-card{display:grid!important;grid-template-columns:22px 1fr!important;gap:4px 10px!important;align-content:start!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
-html[data-theme] body.cl-marketplace #como-funciona .step-index{grid-row:1/3!important;width:auto!important;height:auto!important;align-self:start!important;background:transparent!important;border-radius:0!important;color:var(--cl-chrome-muted)!important;font-size:12px!important;line-height:22px!important;font-weight:600!important}
-html[data-theme] body.cl-marketplace #como-funciona .step-card h3{margin:0!important;font-size:16px!important;line-height:22px!important;letter-spacing:0!important;font-weight:700!important}
-html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!important;font-size:13px!important;line-height:1.6!important;color:var(--cl-chrome-muted)!important}
 @media(max-width:980px){
  html[data-theme] body[data-mobile-nav="true"] #preference-controls.preference-controls{bottom:calc(max(env(safe-area-inset-bottom,0px),var(--cl-native-bottom,0px)) + 92px)!important}
  html[data-theme] body.cl-marketplace .site-header .header-actions--mobile{min-width:0!important;gap:6px!important}
@@ -1577,8 +1568,6 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
  html[data-theme] body.cl-marketplace .site-header .mobile-session-button span{display:block!important;max-width:82px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;line-height:1.2!important}
 }
 @media(max-width:600px){
- html[data-theme] body.cl-marketplace #como-funciona h2{font-size:22px!important}
- html[data-theme] body.cl-marketplace #como-funciona .steps-grid{grid-template-columns:1fr!important;gap:16px!important;margin-top:18px!important}
 }
 
 @media(max-width:980px){
@@ -1964,7 +1953,7 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
               <a href="#productos" data-category-link="Tecnología" data-close-menu="true">Tecnología</a>
               <a href="#productos" data-category-link="Uniformes" data-close-menu="true">Uniformes</a>
               <a href="#productos" data-category-link="Otros" data-close-menu="true">Otros</a>
-              <a href="#como-funciona" data-close-menu="true">¿Cómo funciona?</a>
+              
               <a href="/ayuda" data-close-menu="true">Ayuda</a>
               <button id="mobile-logout-button" class="mobile-logout-button" type="button" hidden>
                 <svg class="icon"><use href="#icon-logout"></use></svg>
@@ -1989,10 +1978,7 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
 
                 <div class="hero-cta-row">
                   <a class="cta-button cta-button--green" href="#productos">Explorá productos</a>
-                  <a class="text-link" href="#como-funciona">
-                    Ver cómo funciona
-                    <svg class="icon"><use href="#icon-chevron"></use></svg>
-                  </a>
+                  
                 </div>
               </div>
 
@@ -2018,7 +2004,7 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
                   <p class="section-kicker" id="products-kicker">Selección nacional</p>
                   <h2 id="products-title">Recomendados de toda Argentina</h2>
                 </div>
-                <a class="text-link text-link--dark" href="#como-funciona">
+                <a class="text-link text-link--dark" href="/ayuda#comprar">
                   Ver cómo comprar
                   <svg class="icon"><use href="#icon-chevron"></use></svg>
                 </a>
@@ -2132,18 +2118,6 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
             <div class="category-shelves" id="category-shelves"></div>
           </div>
         </section>
-
-        <section class="steps-section reveal" id="como-funciona">
-          <div class="container">
-            <div class="steps-panel">
-              <div class="steps-copy">
-                <p class="section-kicker">Cómo funciona</p>
-                <h2>De una mano a otra</h2>
-              </div>
-              <div class="steps-grid" id="steps-grid"></div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer class="site-footer footer-medium" id="ayuda">
@@ -2160,7 +2134,7 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
             <nav class="footer-medium-col" aria-label="ColegioLibre">
               <h3>ColegioLibre</h3>
               <a href="#hero">Nosotros</a>
-              <a href="#como-funciona">Cómo funciona</a>
+              
               <a href="/publicar">Publicar producto</a>
               <a href="/instituciones">Para instituciones</a>
               <a href="/terminos">Términos</a>
@@ -2248,7 +2222,7 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
 
   <div class="drawer-section">
     <h3>ColegioLibre</h3>
-    <a href="#como-funciona">Cómo funciona <span>›</span></a>
+    
     <a href="#productos">Publicar producto <span>›</span></a>
     <a href="/ayuda">Ayuda <span>›</span></a>
   </div>
@@ -2379,11 +2353,11 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
 <script src="./jsonboarding.js?v=20261109-release25"></script>
-<script src="./script.js?v=20261109-release25"></script>
+<script src="./script.js?v=20261109-nav-language"></script>
 <script src="./native-bridge.js?v=20261109-release25"></script>
 <script src="./notifications.js?v=20261109-release25"></script>
     
-    <script src="./mobile-ui.js?v=20261109-release25"></script>
+    <script src="./mobile-ui.js?v=20261109-nav-language"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
   </body>
 </html>

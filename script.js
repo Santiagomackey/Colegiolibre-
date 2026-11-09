@@ -258,20 +258,6 @@ const trendingProducts = [
   "Libro de Matemática 3"
 ];
 
-const marketplaceSteps = [
-  {
-    description: "Encontrá el material que necesitás.",
-    title: "Buscá"
-  },
-  {
-    description: "Coordiná los detalles por chat.",
-    title: "Contactá"
-  },
-  {
-    description: "Comprá, vendé o intercambiá.",
-    title: "Dale otra vida"
-  }
-];
 
 const state = {
   activeCategory: null,
@@ -343,7 +329,6 @@ const elements = {
   sizeFilterGroup: document.getElementById("size-filter-group"),
   sizeFilterLabel: document.getElementById("size-filter-label"),
   sizePills: document.getElementById("size-pills"),
-  stepsGrid: document.getElementById("steps-grid"),
   subjectFilter: document.getElementById("subject-filter"),
   subjectFilterGroup: document.getElementById("subject-filter-group"),
   subcategoryFilter: document.getElementById("subcategory-filter"),
@@ -384,7 +369,6 @@ function normalizeProductRecord(product) {
 async function init() {
   hydrateLogos();
   renderSidebar();
-  renderSteps();
   renderCategoryPills();
   renderConditionPills();
   renderYearPills();
@@ -563,23 +547,6 @@ function renderSidebar() {
   }
 }
 
-function renderSteps() {
-  if (!elements.stepsGrid) return;
-
-  elements.stepsGrid.innerHTML = marketplaceSteps
-    .map(
-      (step, index) => `
-        <article class="step-card reveal">
-          <span class="step-index">0${index + 1}</span>
-          <h3>${step.title}</h3>
-          <p>${step.description}</p>
-        </article>
-      `
-    )
-    .join("");
-
-  window.colegioLibrePreferences?.refresh?.(elements.stepsGrid);
-}
 
 function renderConditionPills() {
   if (!elements.conditionPills) return;

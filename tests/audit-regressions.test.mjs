@@ -81,3 +81,28 @@ test('UI cache returns fresh layout code online and the current cached code offl
  handlers.fetch(event);assert.equal(await promise,fresh);assert.deepEqual(writes,[fresh]);
  offline=true;handlers.fetch(event);assert.equal(await promise,old);
 });
+test('bottom navigation switches both ways from an English startup without changing routes',()=>{
+ class Node {
+  constructor(tag){this.tag=tag;this.children=[];this.dataset={};this.attributes={};this.textContent=''}
+  setAttribute(key,value){this.attributes[key]=value}
+  append(...nodes){this.children.push(...nodes)}
+  appendChild(node){this.append(node)}
+  querySelector(selector){return this.children.find(node=>node.tag===selector)||null}
+  querySelectorAll(){return this.children.filter(node=>node.dataset.mobileNavKey)}
+ }
+ const handlers={},body=new Node('body'),root={dataset:{language:'en'}};
+ const document={documentElement:root,body,readyState:'complete',querySelector:()=>body.children.find(node=>node.className==='cl-mobile-nav'),createElement:tag=>new Node(tag),createElementNS:(_,tag)=>new Node(tag)};
+ const window={location:{pathname:'/favoritos'},addEventListener:(key,fn)=>{handlers[key]=fn}};
+ vm.runInNewContext(read('mobile-ui.js'),{window,document});
+ const nav=body.children[0],items=nav.children,routes=items.map(link=>link.href);
+ assert.deepEqual(items.map(link=>link.querySelector('span').textContent),['Home','Favorites','Sell','Messages','Profile']);
+ assert.equal(nav.attributes['data-no-translate'],'');
+ for(const language of ['es','en','es']){
+  root.dataset.language=language;handlers['colegiolibre:languagechange']();
+  const expected=language==='en'?['Home','Favorites','Sell','Messages','Profile']:['Inicio','Favoritos','Publicar','Mensajes','Mi perfil'];
+  assert.deepEqual(items.map(link=>link.querySelector('span').textContent),expected);
+  assert.deepEqual(items.map(link=>link.attributes['aria-label']),expected);
+  assert.equal(items[2].attributes.title,expected[2]);assert.deepEqual(items.map(link=>link.href),routes);
+  assert.equal(items[1].attributes['aria-current'],'page');
+ }
+});

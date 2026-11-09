@@ -94,3 +94,7 @@ Android ahora limita el WebView al ancho del teléfono y dibuja una superficie n
 IMPORTANTE: desplegá esta versión web y compilá/reinstalá el APK 1.0.25 (versionCode 25). Subir solo la web no actualiza el código Android de una app instalada. El ZIP no contiene un APK compilado. El entorno de edición no dispone de Android SDK; el intento de compilación se detuvo por ese motivo. Podés generar el APK con npm run android:apk o con el workflow incluido de GitHub Actions.
 
 Verificación: 32 pruebas correctas, validación del proyecto, auditoría y PWA correctas. Código nativo pendiente de compilación y prueba en dispositivo.
+
+## Navegación traducida y eliminación de Cómo funciona
+
+Se eliminó la sección y sus enlaces de menú/pie de página. Ver cómo comprar apunta ahora a /ayuda#comprar. La barra inferior actualiza sus cinco etiquetas, nombres accesibles y título al cambiar de idioma, sin recargar. También funciona si la página inicia en inglés y después cambia a español. Se comprobó en navegador en ambos sentidos; 33 pruebas correctas. Archivos web y copia de la app sincronizados. Esta entrega sigue sin desplegar ni contener un APK compilado.
