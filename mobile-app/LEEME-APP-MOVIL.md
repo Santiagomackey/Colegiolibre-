@@ -1,4 +1,4 @@
-# ColegioLibre Android 1.0.24
+# ColegioLibre Android 1.0.25
 
 Leé ../LEEME-ARREGLOS.md para compilar desde terminal, desplegar y verificar esta versión.
 

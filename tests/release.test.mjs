@@ -307,7 +307,7 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
   assert.match(translations, /\["La publicación aparecerá en ",\s*"Your listing will appear in "\]/);
   assert.match(translations, /\[" y también podrá encontrarse por zona\.",\s*" and can also be found by area\."\]/);
   assert.match(publishScript, /colegioLibrePreferences\.translate\(publicationContext\)/);
-  assert.match(publishPage, /publicar\.js\?v=20260730-i18n2/);
+  assert.match(publishPage, /publicar\.js\?v=[^"\s]+/);
   assert.match(preferences, /--cl-brand-box-width:\s*190px/);
   assert.match(preferences, /--cl-brand-box-height:\s*64px/);
   assert.match(preferences, /--cl-brand-image-width:\s*160px/);

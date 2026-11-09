@@ -315,7 +315,7 @@
     window.addEventListener("load", async () => {
       try {
         const registration = await navigator.serviceWorker.register("/service-worker.js", {
-          scope: "/"
+          scope: "/", updateViaCache: "none"
         });
 
         if (registration.waiting && navigator.serviceWorker.controller) {

@@ -1,4 +1,4 @@
-# ColegioLibre 1.0.24 — correcciones de la auditoría
+# ColegioLibre 1.0.25 — correcciones de la auditoría
 
 Esta carpeta contiene el sitio completo y el código Android actualizado. Conserva el logo oficial del footer y su fondo azul. Reemplazá el proyecto completo: no mezcles archivos con ZIP anteriores.
 
@@ -20,7 +20,7 @@ npm --prefix mobile-app ci
 npm run android:apk
 ```
 
-El comando sincroniza la web actual, registra los plugins nativos y genera `mobile-app/artifacts/ColegioLibre-1.0.24-debug.apk` para probar en un teléfono. El APK de prueba usa una firma de depuración; para actualizar una instalación firmada de producción necesitás la misma clave de firma original.
+El comando sincroniza la web actual, registra los plugins nativos y genera `mobile-app/artifacts/ColegioLibre-1.0.25-debug.apk` para probar en un teléfono. El APK de prueba usa una firma de depuración; para actualizar una instalación firmada de producción necesitás la misma clave de firma original.
 
 También podés generar el APK de prueba sin instalar el SDK en tu PC: subí el proyecto a GitHub, abrí Actions → Crear APK Android → Run workflow y descargá el artefacto ColegioLibre-Android-debug al finalizar. El flujo conserva los cambios nativos y se ejecuta también al cambiar archivos de la web. Ese flujo está preparado, pero no se ha ejecutado desde esta entrega.
 
@@ -46,7 +46,7 @@ La app usa una sola configuración Capacitor, carga https://www.colegiolibre.com
 - Tipografía sans serif, acciones principales azul ColegioLibre, temas claro/oscuro explícitos y controles de preferencias fuera de las acciones.
 - Filtros móviles plegables, navegación móvil en Explore, fotos faltantes identificadas como tales y menos espacio en la cabecera.
 - Pantalla de apertura con el logo maestro, sin barra de progreso simulada ni espera mínima en cada página.
-- Splash y recursos Android con la marca, una configuración Capacitor y versión 1.0.24/versionCode 24.
+- Splash y recursos Android con la marca, una configuración Capacitor y versión 1.0.25/versionCode 25.
 - Sincronización móvil con lista permitida de recursos; no copia APK, API, SQL, pruebas ni documentos de desarrollo.
 - Validador corregido para rutas de Vercel sin extensión, rutas desde la raíz y etiquetas base; pruebas antiguas comprueban requisitos sin fijar una versión vieja de CSS.
 
@@ -73,7 +73,7 @@ Reemplazá el proyecto completo y volvé a desplegarlo. El cambio de caché PWA 
 
 Aplicación: reemplazá el proyecto completo con esta carpeta y volvé a desplegarlo. El sitio en producción se comprobó durante la revisión y todavía servía la versión con solo el encabezado incrustado, no esta corrección móvil completa. Para una app Android con recursos antiguos, compilá e instalá el APK actualizado con las instrucciones anteriores. El footer azul y el logo oficial se conservan.
 
-## Navegación y tema (1.0.24)
+## Navegación y tema (1.0.25)
 
 Los controles móviles usan tonos neutros en ambos temas. La franja inferior deja de mostrar el azul del pie de página. El plugin Android SystemAppearance sincroniza el color de las barras y sus iconos con el tema elegido. Es necesario desplegar la web y recompilar/reinstalar el APK; cambiar solo los archivos web no incorpora el plugin a una app ya instalada.
 
@@ -82,3 +82,15 @@ Verificación: 30 pruebas automatizadas, validación del proyecto, auditoría de
 ## Ajustes de interfaz móvil y escritorio
 
 Preferencias fijas abajo a la derecha (encima de la navegación cuando exista), también en acceso. Botón de cuenta móvil con icono y nombre o Iniciar sesión debajo. Se eliminaron las cuatro tarjetas de beneficios y Cómo funciona ahora tiene tres pasos compactos. Encabezado de alertas negro en modo oscuro. Comprobado en navegador a ancho móvil y escritorio; 31 pruebas automatizadas correctas. No se ha desplegado esta versión ni compilado un APK nuevo.
+
+## Versión 1.0.25: móvil compacto y barras Android
+
+Se conserva el orden de las secciones y el estilo de ColegioLibre. Se reducen encabezados, banner, espacios y paneles de favoritos para mostrar más contenido en el teléfono. El encabezado con nombre y notificaciones se revisó a 320 y 390 px mediante una vista de prueba, sin iniciar una cuenta real.
+
+Los recursos CSS/JS usan identificadores nuevos y el service worker descarga primero el código de interfaz de la red, con respaldo offline. Esto evita combinar una página nueva con un diseño anterior cacheado.
+
+Android ahora limita el WebView al ancho del teléfono y dibuja una superficie nativa detrás de la barra de gestos de Android 15+, blanca u oscura según el tema. El pie de página conserva su azul de marca.
+
+IMPORTANTE: desplegá esta versión web y compilá/reinstalá el APK 1.0.25 (versionCode 25). Subir solo la web no actualiza el código Android de una app instalada. El ZIP no contiene un APK compilado. El entorno de edición no dispone de Android SDK; el intento de compilación se detuvo por ese motivo. Podés generar el APK con npm run android:apk o con el workflow incluido de GitHub Actions.
+
+Verificación: 32 pruebas correctas, validación del proyecto, auditoría y PWA correctas. Código nativo pendiente de compilación y prueba en dispositivo.

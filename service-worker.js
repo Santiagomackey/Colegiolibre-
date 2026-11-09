@@ -1,9 +1,11 @@
-const CACHE_VERSION = "colegiolibre-pwa-v65";
+const CACHE_VERSION = "colegiolibre-pwa-v66";
 const APP_SHELL = [
   "/",
   "/404.html",
   "/styles.css",
   "/mobile.css",
+  "/chrome-theme.css",
+  "/home-header.css",
   "/pwa.css",
   "/preferences.css",
   "/polish.css",
@@ -95,7 +97,23 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (["style", "script", "image", "font"].includes(request.destination)) {
+  if (["style", "script"].includes(request.destination)) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_VERSION);
+      try {
+        const response = await fetch(request, {cache: "no-cache"});
+        if (response.ok) await cache.put(request, response.clone());
+        return response;
+      } catch (error) {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        throw error;
+      }
+    })());
+    return;
+  }
+
+  if (["image", "font"].includes(request.destination)) {
     event.respondWith(
       caches.match(request).then((cached) => {
         const network = fetch(request)

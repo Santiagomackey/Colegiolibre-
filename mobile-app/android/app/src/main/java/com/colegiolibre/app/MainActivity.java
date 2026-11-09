@@ -7,22 +7,65 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.View;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
+    private View navigationSurface;
+
+    private void configurePhoneViewport() {
+        if (getBridge() == null || getBridge().getWebView() == null) return;
+        // Never shrink a wide document into a desktop overview on a phone.
+        getBridge().getWebView().getSettings().setUseWideViewPort(false);
+        getBridge().getWebView().getSettings().setLoadWithOverviewMode(false);
+    }
+
+    private void paintNavigationInset(int surface) {
+        if (Build.VERSION.SDK_INT < 35) return;
+        View decor = getWindow().getDecorView();
+        if (!(decor instanceof FrameLayout)) return;
+        if (navigationSurface == null) {
+            navigationSurface = new View(this);
+            navigationSurface.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            navigationSurface.setClickable(false);
+            navigationSurface.setFocusable(false);
+            navigationSurface.setElevation(64 * getResources().getDisplayMetrics().density);
+            FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, 0, Gravity.BOTTOM);
+            ((FrameLayout) decor).addView(navigationSurface, layout);
+            ViewCompat.setOnApplyWindowInsetsListener(navigationSurface, (view, insets) -> {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+                int height = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+                if (params.height != height) {
+                    params.height = height;
+                    view.setLayoutParams(params);
+                }
+                return insets;
+            });
+            ViewCompat.requestApplyInsets(navigationSurface);
+        }
+        navigationSurface.setBackgroundColor(surface);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(SystemAppearancePlugin.class);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        configurePhoneViewport();
         applySystemTheme(currentTheme());
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        configurePhoneViewport();
         applySystemTheme(currentTheme());
     }
 
@@ -48,7 +91,8 @@ public class MainActivity extends BridgeActivity {
         if (getBridge() != null && getBridge().getWebView() != null) {
             getBridge().getWebView().setBackgroundColor(surface);
         }
-        // Android 15+ draws behind transparent bars. CSS paints the gesture inset.
+        // Paint behind transparent gesture bars natively, even before web CSS loads.
+        paintNavigationInset(surface);
         window.setStatusBarColor(Build.VERSION.SDK_INT >= 35 ? Color.TRANSPARENT : surface);
         window.setNavigationBarColor(Build.VERSION.SDK_INT >= 35 ? Color.TRANSPARENT : surface);
         if (Build.VERSION.SDK_INT >= 28) window.setNavigationBarDividerColor(Color.TRANSPARENT);

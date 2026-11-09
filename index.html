@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <script id="cl-native-early">try{if(window.Capacitor?.isNativePlatform?.())document.documentElement.dataset.nativeApp=window.Capacitor.getPlatform?.()||"true"}catch(_){}</script>
-    <script src="./preferences.js?v=20261109-minimal-ui"></script>
+    <script src="./preferences.js?v=20261109-release25"></script>
     <title>ColegioLibre | Marketplace de material escolar usado</title>
     <meta
       name="description"
@@ -36,24 +36,24 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20261107-blue-footer" />
-    <link rel="stylesheet" href="home-wanted.css?v=20261109-alerts" />
-    <link rel="stylesheet" href="notifications.css?v=20260727-1" />
-    <link rel="stylesheet" href="polish.css?v=20260729-8" />
-    <link rel="stylesheet" href="./preferences.css?v=20260829-school-contrast" />
+    <link rel="stylesheet" href="styles.css?v=20261109-release25" />
+    <link rel="stylesheet" href="home-wanted.css?v=20261109-release25" />
+    <link rel="stylesheet" href="notifications.css?v=20261109-release25" />
+    <link rel="stylesheet" href="polish.css?v=20261109-release25" />
+    <link rel="stylesheet" href="./preferences.css?v=20261109-release25" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./pwa.css?v=20260829-ios-install" />
+    <link rel="stylesheet" href="./pwa.css?v=20261109-release25" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
-    <script src="./institution-bootstrap.js?v=20260730-1"></script>
-    <link rel="stylesheet" href="./institution-theme.css?v=20260730-1" />
-    <script defer src="./institution-theme.js?v=20260730-1"></script>
-    <link rel="stylesheet" href="/global-search.css?v=20260926-1">
-<link rel="stylesheet" href="/marketplace-upgrades.css?v=20260928-1">
-<link rel="stylesheet" href="./opening.css?v=3" />
-<link rel="stylesheet" href="/ui-consistency.css?v=20261107-audit">
+    <script src="./institution-bootstrap.js?v=20261109-release25"></script>
+    <link rel="stylesheet" href="./institution-theme.css?v=20261109-release25" />
+    <script defer src="./institution-theme.js?v=20261109-release25"></script>
+    <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
+<link rel="stylesheet" href="/marketplace-upgrades.css?v=20261109-release25">
+<link rel="stylesheet" href="./opening.css?v=20261109-release25" />
+<link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
 
 
 <style id="cl-mobile-critical">
@@ -1584,12 +1584,87 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
  html[data-theme] body.cl-marketplace #como-funciona .steps-grid{grid-template-columns:1fr!important;gap:16px!important;margin-top:18px!important}
 }
 
+@media(max-width:980px){
+ html[data-theme],html[data-theme] body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:clip!important}
+ html[data-theme] body.cl-marketplace .site-header .header-actions-wrap,html[data-theme] body.cl-marketplace .site-header .header-actions--mobile{min-width:0!important}
+ html[data-theme] body.cl-marketplace .site-header .cl-notification-trigger{flex:0 0 40px!important;min-width:40px!important;width:40px!important}
+ html[data-theme] body.cl-marketplace .site-header .menu-toggle{flex:0 0 40px!important;min-width:40px!important;width:40px!important}
+}
+
+/* Phone density: keep the existing page order, color palette and components. */
+@media(max-width:700px){
+ html[data-theme] body{--mobile-nav-height:64px;font-size:14px}
+ html[data-theme] body.cl-marketplace .site-header .header-top{padding-block:6px!important}
+ html[data-theme] body.cl-marketplace .site-header .mobile-session-button{height:46px!important;min-height:46px!important}
+ html[data-theme] body.cl-marketplace .site-header .brand--mobile{height:40px!important;min-height:40px!important;padding-block:4px!important}
+ html[data-theme] body.cl-marketplace .site-header .search-bar--mobile{height:44px!important;min-height:44px!important;margin-bottom:8px!important}
+ html[data-theme] body.cl-marketplace .site-header .search-bar--mobile .search-submit{height:38px!important;width:38px!important;flex-basis:38px!important}
+ html[data-theme] body.cl-marketplace .hero-panel{padding:20px 18px 16px!important;gap:16px!important;border-radius:20px!important}
+ html[data-theme] body.cl-marketplace .hero-copy h1{font-size:clamp(25px,6.7vw,30px)!important;line-height:1.1!important}
+ html[data-theme] body.cl-marketplace .hero-copy>p{font-size:14px!important;line-height:1.5!important;margin:12px 0 16px!important}
+ html[data-theme] body.cl-marketplace .hero-copy .hero-cta-row{gap:10px!important}
+ html[data-theme] body.cl-marketplace .hero-copy .cta-button{min-height:44px!important;padding:11px 16px!important;font-size:14px!important;border-radius:12px!important}
+ html[data-theme] body.cl-marketplace .hero-copy .text-link{font-size:12px!important;line-height:1.5!important}
+ html[data-theme] body.cl-marketplace .hero-collage.hero-collage--single{max-height:148px!important}
+ html[data-theme] body.cl-marketplace .hero-collage.hero-collage--single img{width:100%!important;max-height:148px!important;object-fit:contain!important}
+ html[data-theme] body.cl-marketplace .section-heading h2{font-size:22px!important;line-height:1.2!important}
+ html[data-theme] body.cl-marketplace .section-heading{gap:8px!important;margin-bottom:14px!important}
+ html[data-theme] body.cl-marketplace .section-kicker{font-size:10px!important;letter-spacing:.14em!important}
+ html[data-theme] body.cl-marketplace :is(.home-category-nav,.filter-bar){padding:12px!important;border-radius:16px!important}
+ html[data-theme] body.cl-marketplace .condition-pills{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;max-width:100%!important;gap:6px!important}
+ html[data-theme] body.cl-marketplace .condition-pill{flex:0 0 auto!important;min-height:44px!important;font-size:12px!important;padding:8px 12px!important}
+ html[data-theme] body.cl-marketplace .empty-state{padding:24px 16px!important;min-height:0!important;border-radius:18px!important}
+ html[data-theme] body.cl-marketplace .empty-state h3{font-size:16px!important;line-height:1.4!important}
+ html[data-theme] body.cl-marketplace .empty-state p{font-size:13px!important;line-height:1.5!important}
+ html[data-theme] body .cl-mobile-nav{min-height:64px!important;padding:4px 6px!important;border-radius:20px!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item{min-height:48px!important;padding:5px 1px!important;gap:3px!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item svg{width:21px!important;height:21px!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item span{font-size:10px!important;line-height:1.2!important}
+ html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item--publish{min-height:52px!important;height:52px!important;width:52px!important;border-radius:15px!important}
+ html[data-theme] body[data-mobile-nav="true"] #preference-controls.preference-controls{bottom:calc(max(env(safe-area-inset-bottom,0px),var(--cl-native-bottom,0px)) + 84px)!important}
+ html[data-theme] body.mobile-favorites .favorites-header__inner{min-height:54px!important;padding-block:6px!important}
+ html[data-theme] body.mobile-favorites .favorites-brand{min-height:38px!important;padding:4px 7px!important;border-radius:10px!important;box-shadow:none!important}
+ html[data-theme] body.mobile-favorites .favorites-brand img{width:124px!important;height:30px!important;max-height:30px!important}
+ html[data-theme] body.mobile-favorites .favorites-main{padding-top:18px!important}
+ html[data-theme] body.mobile-favorites .favorites-hero{gap:12px!important;margin-bottom:14px!important}
+ html[data-theme] body.mobile-favorites .favorites-kicker{font-size:10px!important;margin-bottom:6px!important;letter-spacing:.14em!important}
+ html[data-theme] body.mobile-favorites .favorites-hero h1{font-size:26px!important;line-height:1.15!important;margin:0!important}
+ html[data-theme] body.mobile-favorites .favorites-hero p:not(.favorites-kicker){font-size:14px!important;line-height:1.5!important;margin-top:10px!important}
+ html[data-theme] body.mobile-favorites .favorites-total{display:flex!important;align-items:baseline!important;gap:8px!important;width:100%!important;padding:10px 14px!important;min-height:44px!important;border-radius:14px!important}
+ html[data-theme] body.mobile-favorites .favorites-total strong{font-size:21px!important;line-height:1.2!important}
+ html[data-theme] body.mobile-favorites .favorites-total span{font-size:12px!important;margin:0!important}
+ html[data-theme] body.mobile-favorites .favorites-collections{gap:10px!important;padding:14px!important;margin-bottom:14px!important;border-radius:16px!important}
+ html[data-theme] body.mobile-favorites .favorites-collections strong{font-size:14px!important}
+ html[data-theme] body.mobile-favorites .new-collection,html[data-theme] body.mobile-favorites .collection-tabs button{font-size:12px!important;min-height:44px!important;padding:8px 12px!important}
+ html[data-theme] body.mobile-favorites .favorites-toolbar{padding:12px!important;gap:10px!important;margin-top:14px!important;border-radius:16px!important}
+ html[data-theme] body.mobile-favorites .favorites-search{min-height:44px!important;padding-inline:12px!important;border-radius:12px!important}
+ html[data-theme] body.mobile-favorites .favorites-sort{gap:6px!important;font-size:12px!important}
+ html[data-theme] body.mobile-favorites .favorites-sort select{min-height:44px!important;font-size:16px!important;padding-block:8px!important;border-radius:12px!important}
+ html[data-theme] body.mobile-favorites :is(.favorites-empty,.favorites-error){padding:24px 16px!important;min-height:0!important;border-radius:18px!important}
+ html[data-theme] body.mobile-favorites :is(.favorites-empty,.favorites-error) h2{font-size:18px!important}
+ html[data-theme] body.wanted-page .wanted-shell{margin-top:22px!important}
+ html[data-theme] body.wanted-page .wanted-hero h1{font-size:28px!important;line-height:1.15!important}
+ html[data-theme] body.wanted-page :is(.wanted-create,.wanted-feed){padding:18px 16px!important}
+ html[data-theme] body.wanted-page .wanted-card h2{font-size:22px!important}
+ html[data-theme] body.publish-body .page-intro h1,html[data-theme] body.mobile-profile .content-header h1{font-size:26px!important;line-height:1.15!important}
+ html[data-theme] body.publish-body .page-intro p,html[data-theme] body.mobile-profile .content-header p{font-size:14px!important;line-height:1.5!important}
+ html[data-theme] body .product-card{border-radius:16px!important}
+ html[data-theme] body .product-card :is(.product-info,.product-card__body){padding:12px!important}
+ html[data-theme] body .product-card :is(.product-title,.product-card__title){font-size:14px!important;line-height:1.4!important}
+}
+
+@media(max-width:700px){
+ html[data-theme] body.cl-marketplace .hero-section{padding:16px 0 20px!important}
+ html[data-theme] body.cl-marketplace .products-section{padding-top:8px!important}
+ html[data-theme] body.mobile-favorites .favorite-skeleton{background:var(--cl-chrome-soft)!important;min-height:220px!important;border-radius:16px!important}
+}
+
 </style>
 </head>
   
   <body class="cl-marketplace">
 <div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
-<script src="/opening.js?v=4"></script>
+<script src="/opening.js?v=20261109-release25"></script>
     <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
 
     <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -1950,12 +2025,6 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
           </div>
         </section>
 
-        <section class="trust-section reveal" id="categorias">
-          <div class="container">
-
-          </div>
-        </section>
-
         <section class="products-section" id="productos">
           <div class="container products-layout">
             <div class="products-column">
@@ -2292,19 +2361,19 @@ html[data-theme] body.cl-marketplace #como-funciona .step-card p{margin:0!import
   </section>
 </div>
 
-<script src="./vendor/supabase.js?v=2.111.0"></script>
-<script src="./supabase.js?v=20261107-audit"></script>
-<script src="./telemetry.js?v=20261107-audit"></script>
-<script src="./products.js?v=20261107-audit"></script>
-<script src="./jsonboarding.js?v=20260829-school-dedupe-v2"></script>
-<script src="./script.js?v=20261109-minimal-ui"></script>
-<script src="./native-bridge.js?v=20261109-system-theme"></script>
-<script src="./notifications.js?v=20260727-1"></script>
-<script src="./home-wanted.js?v=20261109-alerts"></script>
+<script src="./vendor/supabase.js?v=20261109-release25"></script>
+<script src="./supabase.js?v=20261109-release25"></script>
+<script src="./telemetry.js?v=20261109-release25"></script>
+<script src="./products.js?v=20261109-release25"></script>
+<script src="./jsonboarding.js?v=20261109-release25"></script>
+<script src="./script.js?v=20261109-release25"></script>
+<script src="./native-bridge.js?v=20261109-release25"></script>
+<script src="./notifications.js?v=20261109-release25"></script>
+<script src="./home-wanted.js?v=20261109-release25"></script>
     
-    <script src="./mobile-ui.js?v=20261107-audit"></script>
-    <script src="./pwa.js?v=20261107-audit"></script>
-    <script src="/global-search.js?v=20260926-1"></script>
-<script src="/marketplace-upgrades.js?v=20260928-1"></script>
+    <script src="./mobile-ui.js?v=20261109-release25"></script>
+    <script src="./pwa.js?v=20261109-release25"></script>
+    <script src="/global-search.js?v=20261109-release25"></script>
+<script src="/marketplace-upgrades.js?v=20261109-release25"></script>
 </body>
 </html>

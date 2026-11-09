@@ -35,6 +35,10 @@
   ].join(", ");
 
   const translations = new Map(Object.entries({
+    "¿No lo encontrás? Creá una alerta": "Can't find it? Create an alert",
+    "Mis colecciones": "My collections",
+    "Organizá lo que guardás para encontrarlo después.": "Organize saved items so you can find them later.",
+    "+ Nueva colección": "+ New collection",
     "De una mano a otra": "From one hand to another",
     "Buscá": "Find",
     "Contactá": "Get in touch",

@@ -71,3 +71,13 @@ test('mobile account shows the profile name and resets after sign-out',async()=>
  await context.refresh();assert.equal(label.textContent,'Santiago');assert.equal(mobile.href,'/perfil');assert.equal(label.protected,true);
  state.user=null;await context.refresh(true);assert.equal(label.textContent,'Iniciar sesión');assert.equal(mobile.href,'/login');assert.equal(label.protected,false);
 });
+test('UI cache returns fresh layout code online and the current cached code offline',async()=>{
+ const handlers={},writes=[];let offline=false,promise;
+ const old={text:'old layout'},fresh={text:'new layout',ok:true,clone(){return this}};
+ const cache={match:async()=>old,put:async(request,response)=>writes.push(response)};
+ const self={location:{origin:'https://www.colegiolibre.com'},addEventListener:(key,fn)=>{handlers[key]=fn}};
+ vm.runInNewContext(read('service-worker.js'),{self,URL,caches:{open:async()=>cache},fetch:async()=>{if(offline)throw Error('offline');return fresh}});
+ const event={request:{method:'GET',url:'https://www.colegiolibre.com/mobile.css?v=current',mode:'cors',destination:'style'},respondWith:value=>{promise=value}};
+ handlers.fetch(event);assert.equal(await promise,fresh);assert.deepEqual(writes,[fresh]);
+ offline=true;handlers.fetch(event);assert.equal(await promise,old);
+});
