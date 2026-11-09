@@ -1,0 +1,33 @@
+/* Final home header rules: account state changes text, never the layout. */
+@media (min-width:981px){
+  body.cl-marketplace .site-header :is(.brand--mobile,.header-actions--mobile,.search-bar--mobile,.mobile-shortcuts,.mobile-menu){display:none!important}
+  body.cl-marketplace .site-header .brand--desktop{display:inline-flex!important}
+  body.cl-marketplace .site-header .search-bar--desktop{display:flex!important;min-width:0}
+  body.cl-marketplace .site-header .header-actions--desktop{display:flex!important}
+}
+@media (max-width:980px){
+  body.cl-marketplace .site-header{position:sticky!important;top:0;z-index:110;padding-top:env(safe-area-inset-top,0px)!important;background:#fff!important;box-shadow:0 1px 0 #0b2e6b18!important}
+  html[data-theme="dark"] body.cl-marketplace .site-header{background:#080c12!important}
+  body.cl-marketplace .site-header .container{width:calc(100% - 28px)!important;max-width:720px!important;min-width:0!important}
+  body.cl-marketplace .site-header :is(.brand--desktop,.search-bar--desktop,.header-actions--desktop,.mobile-shortcuts,.header-nav,#mobile-publish-link){display:none!important}
+  body.cl-marketplace .site-header .header-top{display:block!important;min-height:0!important;padding:10px 0!important}
+  body.cl-marketplace .site-header .header-actions-wrap{display:flex!important;align-items:center!important;justify-content:space-between!important;min-width:0!important;min-height:44px!important;gap:8px!important;width:100%!important}
+  body.cl-marketplace .site-header .brand--mobile{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 1 142px!important;width:142px!important;min-width:104px!important;height:44px!important;min-height:44px!important;padding:6px 8px!important;margin:0!important;border-radius:11px!important;background:#fff!important;box-shadow:none!important;overflow:hidden!important}
+  body.cl-marketplace .site-header .brand--mobile img{display:block!important;width:126px!important;max-width:100%!important;height:32px!important;max-height:32px!important;object-fit:contain!important}
+  body.cl-marketplace .site-header .header-actions--mobile{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex:0 0 auto!important;min-width:0!important;width:auto!important;margin:0 0 0 auto!important;gap:6px!important}
+  body.cl-marketplace .site-header :is(.mobile-session-button,.menu-toggle,.cl-notification-trigger){display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 44px!important;min-width:44px!important;width:44px!important;min-height:44px!important;height:44px!important;margin:0!important;padding:10px!important;gap:0!important;border:1px solid #dce4f0!important;border-radius:11px!important;background:#f6f8fc!important;color:#0b2e6b!important;box-shadow:none!important;text-decoration:none!important}
+  body.cl-marketplace .site-header :is(.mobile-session-button span,.cl-notification-trigger__label){display:none!important}
+  body.cl-marketplace .site-header .cl-notification-trigger{position:relative!important}
+  body.cl-marketplace .site-header :is(.mobile-session-button .icon,.menu-toggle .icon,.cl-notification-trigger__icon){width:21px!important;height:21px!important;stroke:currentColor!important}
+  body.cl-marketplace .site-header .menu-toggle .menu-close-icon{display:none!important}
+  body.cl-marketplace .site-header .menu-toggle[aria-expanded="true"] .menu-open-icon{display:none!important}
+  body.cl-marketplace .site-header .menu-toggle[aria-expanded="true"] .menu-close-icon{display:block!important}
+  body.cl-marketplace .site-header .search-bar--mobile{display:flex!important;align-items:center!important;flex-direction:row!important;width:100%!important;min-width:0!important;min-height:48px!important;height:48px!important;margin:0 0 10px!important;padding:3px 4px 3px 12px!important;border:1px solid #dce4f0!important;border-radius:13px!important;box-shadow:none!important;background:#f6f8fc!important;color:#172033!important}
+  body.cl-marketplace .site-header .search-bar--mobile input{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:100%!important;font-size:16px!important;background:transparent!important;color:inherit!important}
+  body.cl-marketplace .site-header .search-bar--mobile .search-submit{flex:0 0 40px!important;width:40px!important;height:40px!important;margin:0!important;border-radius:10px!important;background:#0b2e6b!important;color:#fff!important;box-shadow:none!important}
+  html[data-theme="dark"] body.cl-marketplace .site-header :is(.mobile-session-button,.menu-toggle,.cl-notification-trigger,.search-bar--mobile){background:#141b26!important;border-color:#2c3748!important;color:#e6eefb!important}
+  body.cl-marketplace .site-header .mobile-menu[hidden]{display:none!important}
+  body.cl-marketplace .site-header .mobile-menu:not([hidden]){display:block!important}
+  body.cl-marketplace .site-header .mobile-menu-panel{width:100%!important;min-width:0!important;max-height:60dvh;overflow-y:auto}
+  body.cl-marketplace[data-mobile-nav="true"] .preference-controls{position:static!important;inset:auto!important;transform:none!important;width:fit-content!important;height:auto!important;margin:16px auto 24px!important}
+}

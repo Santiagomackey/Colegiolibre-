@@ -5558,29 +5558,32 @@ body.has-blocking-modal {
 }
 
 /* ColegioLibre editorial footer — Givingli-inspired layout */
-.cl-editorial-footer.footer-medium.site-footer {background:#200e08!important;color:#f9f5f2!important;border-radius:0!important;padding:88px 0 30px!important;margin-top:60px!important;}
+.cl-editorial-footer.footer-medium.site-footer {background:#0b2e6b!important;color:#f5f8ff!important;border-radius:0!important;padding:88px 0 30px!important;margin-top:60px!important;}
 .cl-editorial-footer .footer-medium-inner{max-width:1460px!important;}
 .cl-editorial-footer .footer-medium-grid{display:grid!important;grid-template-columns:minmax(210px,1.5fr) repeat(3,minmax(120px,1fr)) minmax(190px,1.15fr)!important;gap:clamp(20px,3.3vw,60px)!important;align-items:start!important;}
 .cl-editorial-footer .footer-medium-brand{display:flex!important;max-width:300px!important;gap:18px;}
 .cl-footer-wordmark{font-size:clamp(24px,2.1vw,32px);font-weight:750;letter-spacing:-.055em;text-decoration:none!important;color:#fff!important;line-height:1.2;white-space:nowrap;}
 .cl-footer-wordmark strong{font-weight:750;color:#77c85b;}
-.cl-editorial-footer .footer-medium-brand p,.cl-editorial-footer .footer-medium-contact p{color:#b7a9a4!important;font-size:14px!important;line-height:1.8!important;margin:0!important;}
+.cl-editorial-footer .footer-medium-brand p,.cl-editorial-footer .footer-medium-contact p{color:#c7d7ef!important;font-size:14px!important;line-height:1.8!important;margin:0!important;}
 .cl-editorial-footer .footer-medium-col{display:flex!important;flex-direction:column;align-items:flex-start;min-width:0;}
-.cl-editorial-footer .footer-medium-col h3,.cl-editorial-footer .footer-medium-contact h3{font-size:12px!important;letter-spacing:.095em!important;color:#9d8980!important;font-weight:700!important;margin:4px 0 22px!important;}
-.cl-editorial-footer .footer-medium-col a{display:block!important;margin:0 0 13px!important;font-size:14px!important;font-weight:450!important;line-height:1.5;color:#d0c3be!important;text-decoration:none!important;transition:color .18s ease!important;}
+.cl-editorial-footer .footer-medium-col h3,.cl-editorial-footer .footer-medium-contact h3{font-size:12px!important;letter-spacing:.095em!important;color:#ffffff!important;font-weight:700!important;margin:4px 0 22px!important;}
+.cl-editorial-footer .footer-medium-col a{display:block!important;margin:0 0 13px!important;font-size:14px!important;font-weight:450!important;line-height:1.5;color:#dce8fa!important;text-decoration:none!important;transition:color .18s ease!important;}
 .cl-editorial-footer .footer-medium-col a:hover,.cl-editorial-footer .footer-medium-col a:focus-visible,.cl-editorial-footer .cl-footer-bottom-links a:hover{color:#fff!important;transform:none!important;text-decoration:underline!important;text-underline-offset:4px;}
 .cl-editorial-footer .footer-medium-contact{display:flex!important;flex-direction:column;align-items:flex-start;min-width:0;grid-column:auto!important;border:0!important;background:transparent!important;padding:0!important;margin:0!important;}
 .cl-editorial-footer .cl-footer-email{overflow-wrap:anywhere;color:#fff!important;text-decoration:none!important;font-size:13px;font-weight:600;margin:18px 0 14px;}
 .cl-editorial-footer .cl-footer-contact-link{color:#b5e29d!important;text-decoration:underline;text-underline-offset:4px;font-size:13px;}
-.cl-editorial-footer .footer-medium-bottom{display:flex!important;align-items:center;justify-content:space-between;gap:16px;margin-top:70px!important;padding-top:25px!important;border-top:1px solid #4a3026!important;color:#9f8d85!important;font-size:13px!important;}
+.cl-editorial-footer .footer-medium-bottom{display:flex!important;align-items:center;justify-content:space-between;gap:16px;margin-top:70px!important;padding-top:25px!important;border-top:1px solid #365989!important;color:#c7d7ef!important;font-size:13px!important;}
 .cl-editorial-footer .footer-medium-bottom p{display:block!important;margin:0!important;color:inherit!important;}
 .cl-footer-bottom-links{display:flex;gap:28px;flex-wrap:wrap;}
-.cl-footer-bottom-links a{color:#9f8d85!important;text-decoration:none;font-size:13px;}
+.cl-footer-bottom-links a{color:#c7d7ef!important;text-decoration:none;font-size:13px;}
 @media(max-width:1100px){.cl-editorial-footer .footer-medium-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:34px!important;}.cl-editorial-footer .footer-medium-brand{grid-column:span 3;}.cl-editorial-footer .footer-medium-contact{grid-column:span 3!important;}}
-@media(max-width:760px){.cl-editorial-footer.footer-medium.site-footer{padding:44px 0 26px!important;margin-top:35px!important;}.cl-editorial-footer .footer-medium-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:30px 18px!important;}.cl-editorial-footer .footer-medium-brand{grid-column:span 2!important;display:flex!important;}.cl-editorial-footer .footer-medium-col{display:flex!important;}.cl-editorial-footer .footer-medium-col h3{min-height:0!important;}.cl-editorial-footer .footer-medium-col a{display:block!important;font-size:13px!important;}.cl-editorial-footer .footer-medium-contact{grid-column:span 2!important;padding-top:18px!important;border-top:1px solid #4a3026!important;}.cl-editorial-footer .footer-medium-bottom{margin-top:34px!important;flex-direction:column;align-items:flex-start!important;}.cl-editorial-footer .footer-medium-bottom p{display:block!important;}.cl-footer-bottom-links{gap:22px;}}
+@media(max-width:760px){.cl-editorial-footer.footer-medium.site-footer{padding:44px 0 26px!important;margin-top:35px!important;}.cl-editorial-footer .footer-medium-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:30px 18px!important;}.cl-editorial-footer .footer-medium-brand{grid-column:span 2!important;display:flex!important;}.cl-editorial-footer .footer-medium-col{display:flex!important;}.cl-editorial-footer .footer-medium-col h3{min-height:0!important;}.cl-editorial-footer .footer-medium-col a{display:block!important;font-size:13px!important;}.cl-editorial-footer .footer-medium-contact{grid-column:span 2!important;padding-top:18px!important;border-top:1px solid #365989!important;}.cl-editorial-footer .footer-medium-bottom{margin-top:34px!important;flex-direction:column;align-items:flex-start!important;}.cl-editorial-footer .footer-medium-bottom p{display:block!important;}.cl-footer-bottom-links{gap:22px;}}
 @media(max-width:380px){.cl-editorial-footer .footer-medium-grid{column-gap:14px!important;}.cl-editorial-footer .footer-medium-col a{font-size:12px!important;}}
 
 /* ColegioLibre official logo in footer */
 .cl-editorial-footer .cl-footer-logo-link{display:inline-flex!important;align-items:center!important;max-width:min(100%,290px)!important;width:100%!important;line-height:1!important;}
 .cl-editorial-footer .cl-footer-logo-link img{display:block!important;width:100%!important;height:auto!important;max-height:105px!important;object-fit:contain!important;object-position:left center!important;}
 @media(max-width:760px){.cl-editorial-footer .cl-footer-logo-link{max-width:245px!important;}}
+
+/* Preserve the official dark-lettered logo on the blue footer. */
+.cl-editorial-footer .cl-footer-logo-link{background:#fff!important;border-radius:12px;padding:10px 12px;}

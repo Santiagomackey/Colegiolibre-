@@ -57,3 +57,9 @@ Se ejecutaron las validaciones del proyecto, auditoría de lanzamiento, PWA y pr
 Se revisaron visualmente login de escritorio y login/registro y Explore en marcos de ancho móvil. No se observó desbordamiento horizontal en los marcos inspeccionados. Se comprobó el tema oscuro del formulario. Son revisiones responsive de navegador; no equivalen a pruebas en un Android físico.
 
 Pendiente de comprobar con cuenta de prueba y teléfono: inicio/registro/recuperación completos, publicación y cámara, chat, favoritos, notificaciones y retorno desde autenticación externa. Las comprobaciones de SQL incluidas validan los archivos del proyecto; no certifican la configuración actual de tu Supabase. Revisá la configuración SMTP/OAuth ya documentada antes de publicar para usuarios reales.
+
+## Corrección del encabezado después de iniciar sesión
+
+Se unificó el breakpoint del inicio en 980 px. En ese ancho o menor se muestra un solo logo, una sola búsqueda y botones compactos para cuenta, avisos y menú; los accesos duplicados de escritorio se ocultan también después de recuperar la sesión. Se revisó el encabezado con etiquetas de sesión iniciada a 320, 390 y 820 px, y sin sesión a 390 px. La prueba cubre composición responsive, sin iniciar sesión con credenciales reales.
+
+Subí/reemplazá el proyecto y volvé a desplegar la web. Para una app Android que tenga recursos antiguos empaquetados, compilá e instalá el nuevo APK usando las instrucciones anteriores. No se incluye un APK nuevo compilado.
