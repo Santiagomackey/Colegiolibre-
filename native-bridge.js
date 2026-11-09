@@ -73,15 +73,51 @@
     }
   }
 
+  const pushState = {permission:'prompt', registered:false, error:null};
+  const plugin = name => capacitor?.Plugins?.[name] || (isNative ? capacitor?.registerPlugin?.(name) : null);
+  const notificationPath = value => {
+    try {
+      const url = new URL(value || '/', 'https://www.colegiolibre.com/');
+      if (!['https://www.colegiolibre.com','https://colegiolibre.com',window.location?.origin].includes(url.origin)) return '/';
+      const page = url.pathname.replace(/\.html$/, '') || '/';
+      return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco'].includes(page) ? page+url.search : '/';
+    } catch (_) {return '/'}
+  };
+  const publishPushState = () => window.dispatchEvent(new CustomEvent('colegiolibre:pushstatechange',{detail:{...pushState}}));
+  async function notificationStatus() {
+    if (!isNative) return {supported:false,registered:false};
+    try {
+      const push = plugin('PushNotifications');
+      const permissions = await push?.checkPermissions();
+      pushState.permission = permissions?.receive || 'denied';
+      const display=await plugin('LocalNotifications')?.checkPermissions?.();
+      if(display?.display==='denied')pushState.permission='denied';
+      if(pushState.permission!=='granted')pushState.registered=false;
+      return {supported:Boolean(push),...pushState};
+    } catch (_) {return {supported:false,...pushState}}
+  }
+  async function createNotificationChannels() {
+    if (!isNative || capacitor.getPlatform?.() !== 'android') return;
+    const channel={id:'colegiolibre-general',name:'Mensajes y alertas',description:'Mensajes y coincidencias de materiales',importance:4,visibility:0,vibration:true,lights:true,lightColor:'#67C23A'};
+    await plugin('PushNotifications')?.createChannel?.(channel);
+    await plugin('LocalNotifications')?.createChannel?.(channel);
+  }
+
   async function requestNotificationPermission() {
     if (!isNative) return false;
-    const pushNotifications = capacitor.Plugins?.PushNotifications;
+    const pushNotifications = plugin("PushNotifications");
     if (pushNotifications) {
       let result = await pushNotifications.checkPermissions();
       if (result?.receive === "prompt" || result?.receive === "prompt-with-rationale") {
         result = await pushNotifications.requestPermissions();
       }
-      return result?.receive === "granted";
+      pushState.permission = result?.receive || 'denied';
+      publishPushState();
+      if(result?.receive !== 'granted')return false;
+      const local=plugin('LocalNotifications');
+      const display=await local?.checkPermissions?.();
+      if(display?.display==='denied'){pushState.permission='denied';publishPushState();return false;}
+      return true;
     }
     if (!capacitor.Plugins?.LocalNotifications) return false;
     const result = await capacitor.Plugins.LocalNotifications.requestPermissions();
@@ -89,16 +125,16 @@
   }
 
   async function showNotification(title, options = {}) {
-    if (!isNative || !capacitor.Plugins?.LocalNotifications) return false;
+    if (!isNative || !plugin("LocalNotifications")) return false;
     const granted = await requestNotificationPermission();
     if (!granted) return false;
-    await capacitor.Plugins.LocalNotifications.schedule({
+    await createNotificationChannels();
+    await plugin("LocalNotifications").schedule({
       notifications: [{
         id: Math.floor(Date.now() % 2147483647),
         title,
         body: options.body || "",
-        schedule: { at: new Date(Date.now() + 150) },
-        extra: { url: options.data?.url || "/" },
+        extra: { url: notificationPath(options.data?.url) },
         smallIcon: "ic_stat_colegiolibre",
         iconColor: "#67C23A",
         channelId: "colegiolibre-general"
@@ -109,10 +145,10 @@
 
   async function initializeNativeListeners() {
     if (!isNative) return;
-    const localNotifications = capacitor.Plugins?.LocalNotifications;
+    const localNotifications = plugin("LocalNotifications");
     await localNotifications?.addListener?.("localNotificationActionPerformed", (event) => {
       const destination = event?.notification?.extra?.url;
-      if (destination) window.location.href = destination;
+      if (destination) window.location.href = notificationPath(destination);
     });
 
     const app = capacitor.Plugins?.App;
@@ -133,6 +169,7 @@
       if (!rawUrl || !String(rawUrl).startsWith("colegiolibre://")) return;
       try {
         const url = new URL(rawUrl);
+        await plugin("Browser")?.close?.().catch(() => {});
         if (url.host === "open") {
           window.location.href = safeDestination(url.searchParams.get("path"));
           return;
@@ -179,18 +216,19 @@
       // La web sigue funcionando si el dispositivo no admite este bloqueo.
     }
 
-    await initializePushNotifications();
+    await initializePushNotifications().catch(() => {pushState.error="registration_failed";publishPushState()});
   }
 
   let pushListenersReady = false;
   async function initializePushNotifications() {
-    const pushNotifications = capacitor.Plugins?.PushNotifications;
+    const pushNotifications = plugin("PushNotifications");
     const client = window.colegioLibreSupabase;
     const api = window.colegioLibreApi;
-    if (!pushNotifications || !client || !api?.getCurrentUser) return;
+    if (!isNative || !pushNotifications || !client || !api?.getCurrentUser) return false;
 
+    if(capacitor.getPlatform?.() !== 'android'){pushState.error='platform_not_configured';publishPushState();return false;}
     const user = await api.getCurrentUser();
-    if (!user) return;
+    if (!user) {pushState.error="sign_in_required";publishPushState();return false;}
 
     if (!pushListenersReady) {
       pushListenersReady = true;
@@ -198,18 +236,19 @@
         const value = String(token?.value || "").trim();
         if (!value) return;
         const platform = capacitor.getPlatform?.() === "ios" ? "ios" : "android";
-        const { error } = await client.rpc("register_push_token", {
-          p_token: value,
-          p_platform: platform
-        });
-        if (error) console.error("No se pudo registrar el dispositivo:", error);
+        try {
+          const {error}=await client.rpc('register_push_token',{p_token:value,p_platform:platform});
+          pushState.registered=!error;pushState.error=error?'token_save_failed':null;
+        }catch(_){pushState.registered=false;pushState.error='token_save_failed';}
+        publishPushState();
       });
 
       await pushNotifications.addListener("registrationError", (error) => {
-        console.error("Firebase no pudo registrar las notificaciones:", error);
+        pushState.registered=false;pushState.error="registration_failed";publishPushState();
       });
 
       await pushNotifications.addListener("pushNotificationReceived", (notification) => {
+        if (capacitor.getPlatform?.() === "ios") return;
         const data = notification?.data || {};
         void showNotification(notification?.title || "ColegioLibre", {
           body: notification?.body || "Tenés un nuevo aviso.",
@@ -222,7 +261,7 @@
         (event) => {
           const data = event?.notification?.data || {};
           const destination = data.url || data.action_url;
-          if (destination) window.location.href = destination;
+          if (destination) window.location.href = notificationPath(destination);
         }
       );
     }
@@ -230,20 +269,10 @@
     const granted = await requestNotificationPermission();
     if (!granted) return;
 
-    if (capacitor.getPlatform?.() === "android") {
-      await pushNotifications.createChannel({
-        id: "colegiolibre-general",
-        name: "Avisos de ColegioLibre",
-        description: "Mensajes, operaciones y novedades de tu comunidad escolar",
-        importance: 4,
-        visibility: 1,
-        vibration: true,
-        lights: true,
-        lightColor: "#67C23A"
-      });
-    }
-
+    await createNotificationChannels();
+    pushState.error=null;
     await pushNotifications.register();
+    return true;
   }
 
   let pushRefreshPending = false;
@@ -252,12 +281,17 @@
     pushRefreshPending = true;
     window.setTimeout(async () => {
       pushRefreshPending = false;
-      await initializePushNotifications();
+      await initializePushNotifications().catch(() => {pushState.error="registration_failed";publishPushState()});
     }, 250);
   }
 
   const authSubscription = window.colegioLibreSupabase?.auth?.onAuthStateChange?.(
     (event) => {
+      if (event === "SIGNED_OUT" && isNative) {
+        pushState.registered=false;
+        void plugin('PushNotifications')?.unregister?.().catch(() => {});
+        publishPushState();
+      }
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         refreshPushRegistration();
       }
@@ -276,6 +310,8 @@
     isNative,
     platform: isNative ? capacitor.getPlatform?.() : "web",
     requestNotificationPermission,
+    enablePushNotifications: initializePushNotifications,
+    notificationStatus,
     showNotification,
     takePhoto
   };

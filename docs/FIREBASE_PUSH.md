@@ -16,7 +16,7 @@ nuevo por cada mensaje recibido.
 
 Crear un Database Webhook sobre `public.notifications`:
 
-- Evento: `INSERT`.
+- Eventos: `INSERT` y `UPDATE` (el endpoint omite cambios de lectura).
 - Método: `POST`.
 - URL: `https://TU_DOMINIO/api/push-notification`.
 - Header: `x-push-secret` con el mismo valor guardado en Vercel.
@@ -42,3 +42,5 @@ servicio de Firebase/Google Cloud. Nunca deben guardarse en GitHub.
 3. Una fila nueva en `notifications` dispara el webhook.
 4. Vercel firma una solicitud OAuth y envía el aviso mediante FCM HTTP v1.
 5. Al tocar el aviso, la app abre `action_url`.
+
+Ver la guía actualizada `APPLE_AND_PHONE_NOTIFICATIONS.md` para completar Apple, permisos, registro y pruebas. El envío del servidor está configurado para tokens FCM Android; iOS/APNs requiere integración separada.

@@ -95,6 +95,10 @@ IMPORTANTE: desplegá esta versión web y compilá/reinstalá el APK 1.0.25 (ver
 
 Verificación: 32 pruebas correctas, validación del proyecto, auditoría y PWA correctas. Código nativo pendiente de compilación y prueba en dispositivo.
 
-## Navegación traducida y eliminación de Cómo funciona
+## Versión 1.0.26 — alertas, Apple y avisos Android
 
-Se eliminó la sección y sus enlaces de menú/pie de página. Ver cómo comprar apunta ahora a /ayuda#comprar. La barra inferior actualiza sus cinco etiquetas, nombres accesibles y título al cambiar de idioma, sin recargar. También funciona si la página inicia en inglés y después cambia a español. Se comprobó en navegador en ambos sentidos; 33 pruebas correctas. Archivos web y copia de la app sincronizados. Esta entrega sigue sin desplegar ni contener un APK compilado.
+Alertas tiene pestañas Comunidad/Mis alertas, vista previa, presupuesto visible, validación y mejor manejo de errores. Apple se agrega junto a Google usando Supabase y el callback existente, con navegador externo en Android. El registro push ahora es accesible desde la interfaz; los avisos en primer plano usan una notificación inmediata y el canal Android se crea desde código nativo para los avisos en segundo plano.
+
+Leé docs/APPLE_AND_PHONE_NOTIFICATIONS.md antes de desplegar. Apple necesita configurarse en Supabase/Apple Developer; FCM necesita credenciales privadas del servidor y el webhook de Supabase. La migración database/09_alert_matches.sql está preparada pero no se ha ejecutado en una base real. Android 1.0.26 requiere recompilar/reinstalar; este ZIP contiene fuente, no un APK. No se ha probado entrega push en un teléfono real ni una cuenta Apple real.
+
+Verificación: 37 pruebas automatizadas correctas, validación del proyecto/auditoría/PWA correctas. Vistas de alertas y Apple revisadas en navegador a ancho móvil y escritorio; vista previa y pestaña Mis alertas comprobadas como invitado.

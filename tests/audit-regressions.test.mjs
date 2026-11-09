@@ -53,7 +53,7 @@ test('Explore exposes retry and truthful empty states after server failures',asy
 test('native system bars follow initial and changed themes with the navigation inset',async()=>{
  const calls=[],handlers={},styles={};
  const root={dataset:{theme:'light'},style:{setProperty:(key,value)=>{styles[key]=value}}};
- const window={Capacitor:{isNativePlatform:()=>true,getPlatform:()=> 'android',Plugins:{},registerPlugin:name=>{assert.equal(name,'SystemAppearance');return {setTheme:async value=>{calls.push(value.theme);return {bottomInset:24}}}}},fetch:async()=>({}),addEventListener:(key,fn)=>{handlers[key]=fn},setTimeout(){},localStorage:{}};
+ const window={Capacitor:{isNativePlatform:()=>true,getPlatform:()=> 'android',Plugins:{},registerPlugin:name=>{if(name!=='SystemAppearance')return null;return {setTheme:async value=>{calls.push(value.theme);return {bottomInset:24}}}}},fetch:async()=>({}),addEventListener:(key,fn)=>{handlers[key]=fn},setTimeout(){},localStorage:{}};
  const document={documentElement:root,addEventListener(){}};
  vm.runInNewContext(read('native-bridge.js'),{window,document,Request,URL,console,File:class {}});
  await new Promise(resolve=>setImmediate(resolve));

@@ -1,6 +1,6 @@
 {
   "name": "colegiolibre-mobile",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "private": true,
   "description": "Aplicaci\u00f3n m\u00f3vil oficial de ColegioLibre",
   "scripts": {
@@ -22,7 +22,8 @@
     "@capacitor/local-notifications": "^7.0.3",
     "@capacitor/push-notifications": "^7.0.3",
     "@capacitor/screen-orientation": "^7.0.2",
-    "@capacitor/splash-screen": "^7.0.3"
+    "@capacitor/splash-screen": "^7.0.3",
+    "@capacitor/browser": "^7.0.2"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

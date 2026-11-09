@@ -347,12 +347,14 @@
       .subscribe();
   }
 
+  window.addEventListener('colegiolibre:pushstatechange', updateSystemPermissionButton);
+
   async function enableSystemNotifications() {
     const button = state.panel?.querySelector("[data-enable-system]");
     if (button) button.disabled = true;
     try {
       if (window.colegioLibreNative?.isNative) {
-        await window.colegioLibreNative.requestNotificationPermission();
+        await window.colegioLibreNative.enablePushNotifications();
       } else if ("Notification" in window) {
         await Notification.requestPermission();
       }
@@ -368,7 +370,9 @@
     const button = state.panel?.querySelector("[data-enable-system]");
     if (!button) return;
     if (window.colegioLibreNative?.isNative) {
-      button.textContent = "Avisos del teléfono";
+      window.colegioLibreNative.notificationStatus().then(status => {
+        button.textContent = status.registered ? 'Avisos activados' : status.permission === 'denied' ? 'Avisos bloqueados en el teléfono' : 'Activar avisos del teléfono';
+      });
       return;
     }
     if (!("Notification" in window)) {

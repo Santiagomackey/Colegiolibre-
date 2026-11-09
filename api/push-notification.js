@@ -1,4 +1,5 @@
-const crypto = require("node:crypto");
+import crypto from "node:crypto";
+import {buildPushMessage} from "../server/push-payload.js";
 
 const FIREBASE_SCOPE =
   "https://www.googleapis.com/auth/firebase.messaging";
@@ -95,58 +96,24 @@ async function sendToDevice(accessToken, device, notification) {
     `https://fcm.googleapis.com/v1/projects/${encodeURIComponent(
       projectId
     )}/messages:send`;
-  const actionUrl = String(notification.action_url || "/");
   const response = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      message: {
-        token: device.token,
-        notification: {
-          title: String(notification.title || "ColegioLibre").slice(0, 120),
-          body: String(notification.body || "Tenés una nueva notificación.").slice(
-            0,
-            240
-          )
-        },
-        data: {
-          url: actionUrl,
-          action_url: actionUrl,
-          notification_id: String(notification.id || ""),
-          type: String(notification.type || "general")
-        },
-        android: {
-          priority: "high",
-          notification: {
-            channel_id: "colegiolibre-general",
-            icon: "ic_stat_colegiolibre",
-            color: "#67C23A",
-            sound: "default"
-          }
-        },
-        apns: {
-          payload: {
-            aps: {
-              sound: "default"
-            }
-          }
-        }
-      }
-    })
+    body: JSON.stringify(buildPushMessage(device, notification))
   });
   const result = await response.json();
   if (!response.ok) {
-    const status = result?.error?.details?.[0]?.errorCode;
+    const status = result?.error?.details?.find(detail => detail.errorCode)?.errorCode;
     if (status === "UNREGISTERED") await removeInvalidToken(device.token);
     throw new Error(status || result?.error?.message || "FCM rechazó el envío.");
   }
   return result;
 }
 
-module.exports = async function handler(request, response) {
+export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     return sendJson(response, 405, { error: "Método no permitido." });
@@ -159,12 +126,17 @@ module.exports = async function handler(request, response) {
   }
 
   const notification = request.body?.record || request.body;
-  if (!notification?.user_id) {
+  if(request.body?.type === 'UPDATE' && (notification?.read !== false || request.body?.old_record?.updated_at === notification?.updated_at)) {
+    return sendJson(response,200,{sent:0,skipped:true});
+  }
+  if (!notification?.user_id || !notification?.id) {
     return sendJson(response, 400, { error: "La notificación no tiene usuario." });
   }
 
   try {
-    const devices = await loadTokens(notification.user_id);
+    const allDevices = await loadTokens(notification.user_id);
+    // These are FCM registration tokens; iOS APNs tokens need a separate sender.
+    const devices = allDevices.filter(device => device.platform === "android");
     if (!devices.length) {
       return sendJson(response, 200, { sent: 0, message: "Sin dispositivos registrados." });
     }

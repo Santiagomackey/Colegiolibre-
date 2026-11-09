@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v67";
+const CACHE_VERSION = "colegiolibre-pwa-v68";
 const APP_SHELL = [
   "/",
   "/404.html",
@@ -14,6 +14,8 @@ const APP_SHELL = [
   "/native-bridge.js",
   "/pwa.js",
   "/preferences.js",
+  "/social-auth.js",
+  "/alerts-enhancements.js",
   "/telemetry.js",
   "/products.js",
   "/vendor/supabase.js",

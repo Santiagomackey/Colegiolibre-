@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.view.View;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -58,6 +60,13 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(SystemAppearancePlugin.class);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel = new NotificationChannel("colegiolibre-general", "Mensajes y alertas", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Mensajes y coincidencias de materiales");
+            channel.enableVibration(true);
+            channel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PRIVATE);
+            getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
         configurePhoneViewport();
         applySystemTheme(currentTheme());
     }
