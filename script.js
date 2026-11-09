@@ -238,28 +238,6 @@ const categoryShelfDetails = {
   }
 };
 
-const trustFeatures = [
-  {
-    description: "Moderación, reportes y chat seguro",
-    icon: "shield",
-    title: "Seguridad"
-  },
-  {
-    description: "Dale una segunda vida",
-    icon: "leaf",
-    title: "Sustentable"
-  },
-  {
-    description: "Mejores precios",
-    icon: "tag",
-    title: "Económico"
-  },
-  {
-    description: "Hecho por estudiantes",
-    icon: "users",
-    title: "Comunidad"
-  }
-];
 
 const popularCategories = [
   { icon: "book", label: "Libros" },
@@ -282,16 +260,16 @@ const trendingProducts = [
 
 const marketplaceSteps = [
   {
-    description: "Filtrá por estado, categoría, precio y colegio para encontrar exactamente lo que necesitás.",
-    title: "Buscá por materia o categoría"
+    description: "Encontrá el material que necesitás.",
+    title: "Buscá"
   },
   {
-    description: "Chateá con estudiantes de tu comunidad, coordiná entrega y resolvé dudas rápido.",
-    title: "Conectate con estudiantes reales"
+    description: "Coordiná los detalles por chat.",
+    title: "Contactá"
   },
   {
-    description: "Publicá gratis, ahorrá plata y mové materiales dentro de tu red escolar.",
-    title: "Comprá, vendé o intercambiá"
+    description: "Comprá, vendé o intercambiá.",
+    title: "Dale otra vida"
   }
 ];
 
@@ -372,7 +350,6 @@ const elements = {
   subcategoryFilterGroup: document.getElementById("subcategory-filter-group"),
   subcategoryFilterLabel: document.getElementById("subcategory-filter-label"),
   trendingProducts: document.getElementById("trending-products"),
-  trustGrid: document.getElementById("trust-grid"),
   yearFilterGroup: document.getElementById("year-filter-group"),
   yearPills: document.getElementById("year-pills")
 };
@@ -406,7 +383,6 @@ function normalizeProductRecord(product) {
 
 async function init() {
   hydrateLogos();
-  renderTrustFeatures();
   renderSidebar();
   renderSteps();
   renderCategoryPills();
@@ -532,21 +508,6 @@ function icon(name) {
   return `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
 }
 
-function renderTrustFeatures() {
-  if (!elements.trustGrid) return;
-
-  elements.trustGrid.innerHTML = trustFeatures
-    .map(
-      (feature) => `
-        <article class="trust-card reveal">
-          <span class="trust-icon">${icon(feature.icon)}</span>
-          <h3>${feature.title}</h3>
-          <p>${feature.description}</p>
-        </article>
-      `
-    )
-    .join("");
-}
 
 function renderSidebar() {
   if (elements.popularCategories) {
@@ -1478,7 +1439,10 @@ async function refreshAccountButton(force = false) {
       user ? `Abrir el perfil de ${accountLabel}` : "Iniciar sesión"
     );
     const sessionText = elements.mobileSessionButton.querySelector("span");
-    if (sessionText) sessionText.textContent = user ? "Mi perfil" : "Iniciar sesión";
+    if (sessionText) {
+      sessionText.textContent = accountLabel;
+      sessionText.toggleAttribute("data-no-translate", Boolean(user && firstName));
+    }
   }
 
   if (elements.headerLogoutButton) {

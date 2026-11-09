@@ -61,3 +61,13 @@ test('native system bars follow initial and changed themes with the navigation i
  root.dataset.theme='dark';await handlers['colegiolibre:themechange']();
  assert.deepEqual(calls,['light','dark']);assert.equal(root.dataset.nativeApp,'android');
 });
+test('mobile account shows the profile name and resets after sign-out',async()=>{
+ const code=read('script.js').match(/async function refreshAccountButton\(force = false\) \{[\s\S]*?\n\}/)[0];
+ const label={textContent:'',toggleAttribute:(key,value)=>{label.protected=value}};
+ const mobile={setAttribute:(key,value)=>{mobile[key]=value},querySelector:()=>label};
+ const state={user:{id:'example'}},elements={accountText:{},mobileSessionButton:mobile};
+ const context={state,elements,getCurrentUser:async()=>state.user,getCurrentProfile:async()=>({name:'Santiago Pérez'})};
+ vm.runInNewContext(code+';this.refresh=refreshAccountButton',context);
+ await context.refresh();assert.equal(label.textContent,'Santiago');assert.equal(mobile.href,'/perfil');assert.equal(label.protected,true);
+ state.user=null;await context.refresh(true);assert.equal(label.textContent,'Iniciar sesión');assert.equal(mobile.href,'/login');assert.equal(label.protected,false);
+});

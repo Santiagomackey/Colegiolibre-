@@ -78,3 +78,7 @@ Aplicación: reemplazá el proyecto completo con esta carpeta y volvé a despleg
 Los controles móviles usan tonos neutros en ambos temas. La franja inferior deja de mostrar el azul del pie de página. El plugin Android SystemAppearance sincroniza el color de las barras y sus iconos con el tema elegido. Es necesario desplegar la web y recompilar/reinstalar el APK; cambiar solo los archivos web no incorpora el plugin a una app ya instalada.
 
 Verificación: 30 pruebas automatizadas, validación del proyecto, auditoría de lanzamiento y PWA correctas. Vista móvil revisada en navegador en ambos temas. No se ha compilado ni probado este cambio nativo en Android; no se incluye APK nuevo.
+
+## Ajustes de interfaz móvil y escritorio
+
+Preferencias fijas abajo a la derecha (encima de la navegación cuando exista), también en acceso. Botón de cuenta móvil con icono y nombre o Iniciar sesión debajo. Se eliminaron las cuatro tarjetas de beneficios y Cómo funciona ahora tiene tres pasos compactos. Encabezado de alertas negro en modo oscuro. Comprobado en navegador a ancho móvil y escritorio; 31 pruebas automatizadas correctas. No se ha desplegado esta versión ni compilado un APK nuevo.

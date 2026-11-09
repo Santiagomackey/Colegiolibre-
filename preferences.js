@@ -35,6 +35,13 @@
   ].join(", ");
 
   const translations = new Map(Object.entries({
+    "De una mano a otra": "From one hand to another",
+    "Buscá": "Find",
+    "Contactá": "Get in touch",
+    "Dale otra vida": "Give it a new life",
+    "Encontrá el material que necesitás.": "Find the supplies you need.",
+    "Coordiná los detalles por chat.": "Arrange the details in chat.",
+    "Comprá, vendé o intercambiá.": "Buy, sell or exchange.",
     "Saltar al contenido": "Skip to content",
     "ColegioLibre | Marketplace de material escolar usado": "ColegioLibre | Used school supplies marketplace",
     "Ingresar | ColegioLibre": "Sign in | ColegioLibre",
