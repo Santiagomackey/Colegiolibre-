@@ -1478,7 +1478,7 @@ async function refreshAccountButton(force = false) {
       user ? `Abrir el perfil de ${accountLabel}` : "Iniciar sesión"
     );
     const sessionText = elements.mobileSessionButton.querySelector("span");
-    if (sessionText) sessionText.textContent = user ? "Mi perfil" : "Ingresar";
+    if (sessionText) sessionText.textContent = user ? "Mi perfil" : "Iniciar sesión";
   }
 
   if (elements.headerLogoutButton) {

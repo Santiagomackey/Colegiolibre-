@@ -52,14 +52,14 @@ La app usa una sola configuración Capacitor, carga https://www.colegiolibre.com
 
 ## Verificación y límites
 
-Se ejecutaron las validaciones del proyecto, auditoría de lanzamiento, PWA y preparación nacional. Pasan 28 pruebas, incluyendo regresiones del catálogo, URLs nativas, privacidad/esquema de telemetría y estados de error de Explore.
+Se ejecutaron las validaciones del proyecto, auditoría de lanzamiento, PWA y preparación nacional. Pasan 29 pruebas, incluyendo regresiones del catálogo, URLs nativas, privacidad/esquema de telemetría y estados de error de Explore.
 
 Se revisaron visualmente login de escritorio y login/registro y Explore en marcos de ancho móvil. No se observó desbordamiento horizontal en los marcos inspeccionados. Se comprobó el tema oscuro del formulario. Son revisiones responsive de navegador; no equivalen a pruebas en un Android físico.
 
 Pendiente de comprobar con cuenta de prueba y teléfono: inicio/registro/recuperación completos, publicación y cámara, chat, favoritos, notificaciones y retorno desde autenticación externa. Las comprobaciones de SQL incluidas validan los archivos del proyecto; no certifican la configuración actual de tu Supabase. Revisá la configuración SMTP/OAuth ya documentada antes de publicar para usuarios reales.
 
-## Corrección del encabezado después de iniciar sesión
+## Carga inicial y texto de cuenta
 
-Se unificó el breakpoint del inicio en 980 px. En ese ancho o menor se muestra un solo logo, una sola búsqueda y botones compactos para cuenta, avisos y menú; los accesos duplicados de escritorio se ocultan también después de recuperar la sesión. Se revisó el encabezado con etiquetas de sesión iniciada a 320, 390 y 820 px, y sin sesión a 390 px. La prueba cubre composición responsive, sin iniciar sesión con credenciales reales.
+El inicio incluye los estilos críticos del encabezado en el propio HTML, antes de que se analice el contenido visible. Así la composición móvil no espera a la descarga de home-header.css ni a la recuperación de sesión. Se reserva espacio para los avisos y para el botón de cuenta: muestra Iniciar sesión sin sesión y Mi perfil cuando se recupera la cuenta. Los estilos completos y la versión incluida en el HTML se comparan en una prueba para evitar diferencias futuras. Se verificó el encabezado inicial sin hojas compartidas ni scripts, a 320 y 820 px, además de las composiciones con y sin sesión a 390 px. Estas revisiones no sustituyen la prueba en un teléfono físico.
 
-Subí/reemplazá el proyecto y volvé a desplegar la web. Para una app Android que tenga recursos antiguos empaquetados, compilá e instalá el nuevo APK usando las instrucciones anteriores. No se incluye un APK nuevo compilado.
+Reemplazá el proyecto completo y volvé a desplegarlo. El cambio de caché PWA está incluido. Para una instalación Android con recursos empaquetados antiguos, compilá e instalá un APK nuevo con las instrucciones de esta entrega.

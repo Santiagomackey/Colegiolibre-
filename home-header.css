@@ -31,3 +31,29 @@
   body.cl-marketplace .site-header .mobile-menu-panel{width:100%!important;min-width:0!important;max-height:60dvh;overflow-y:auto}
   body.cl-marketplace[data-mobile-nav="true"] .preference-controls{position:static!important;inset:auto!important;transform:none!important;width:fit-content!important;height:auto!important;margin:16px auto 24px!important}
 }
+/* The account action keeps a readable label and reserves its final width. */
+@media(max-width:980px){body.cl-marketplace .site-header .header-actions--mobile{min-width:226px!important}}
+@media(max-width:420px){body.cl-marketplace .site-header .header-actions--mobile{min-width:200px!important}}
+@media (max-width:980px){
+  body.cl-marketplace .site-header .brand--mobile{flex:0 1 142px!important;min-width:76px!important}
+  body.cl-marketplace .site-header .mobile-session-button{flex:0 0 126px!important;width:126px!important;min-width:126px!important;padding:0 8px!important;gap:6px!important;font-size:12px!important;font-weight:700!important}
+  body.cl-marketplace .site-header .mobile-session-button span{display:inline!important;white-space:nowrap!important;line-height:1.2!important}
+  body.cl-marketplace .site-header .mobile-session-button .icon{flex:0 0 18px!important;width:18px!important;height:18px!important}
+}
+@media (max-width:420px){
+  body.cl-marketplace .site-header .mobile-session-button{flex-basis:104px!important;width:104px!important;min-width:104px!important}
+  body.cl-marketplace .site-header .mobile-session-button .icon{display:none!important}
+  body.cl-marketplace .site-header .header-actions--mobile{gap:4px!important}
+}
+/* Essential geometry also works before the shared stylesheet is available. */
+@media(max-width:980px){
+  body.cl-marketplace .site-header,body.cl-marketplace .site-header *{box-sizing:border-box!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  body.cl-marketplace .site-header .container{margin-inline:auto!important}
+  body.cl-marketplace .site-header .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  body.cl-marketplace .site-header .search-bar--mobile{gap:8px!important}
+  body.cl-marketplace .site-header .search-bar--mobile .icon-shell{display:grid!important;place-items:center!important;flex:0 0 18px!important;width:18px!important;height:20px!important;padding:0!important;background:transparent!important}
+  body.cl-marketplace .site-header .search-bar--mobile .icon{width:18px!important;height:18px!important;fill:none!important;stroke:currentColor!important}
+  body.cl-marketplace .site-header .search-bar--mobile input{border:0!important;box-shadow:none!important;outline:0!important;padding:0!important}
+  body.cl-marketplace .site-header .search-bar--mobile:focus-within{outline:2px solid #8bb8f4;outline-offset:2px}
+  body.cl-marketplace .site-header .search-bar--mobile .search-submit{display:grid!important;place-items:center!important;border:0!important;padding:0!important}
+}
