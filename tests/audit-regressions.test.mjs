@@ -49,3 +49,15 @@ test('Explore exposes retry and truthful empty states after server failures',asy
  assert.equal(element('#results-error').hidden,true);assert.equal(element('#empty').hidden,false);assert.equal(element('#count').textContent,'0 resultados');
  assert.ok(calls.some(([method,start,end])=>method==='range'&&start===0&&end===23));
 });
+
+test('native system bars follow initial and changed themes with the navigation inset',async()=>{
+ const calls=[],handlers={},styles={};
+ const root={dataset:{theme:'light'},style:{setProperty:(key,value)=>{styles[key]=value}}};
+ const window={Capacitor:{isNativePlatform:()=>true,getPlatform:()=> 'android',Plugins:{},registerPlugin:name=>{assert.equal(name,'SystemAppearance');return {setTheme:async value=>{calls.push(value.theme);return {bottomInset:24}}}}},fetch:async()=>({}),addEventListener:(key,fn)=>{handlers[key]=fn},setTimeout(){},localStorage:{}};
+ const document={documentElement:root,addEventListener(){}};
+ vm.runInNewContext(read('native-bridge.js'),{window,document,Request,URL,console,File:class {}});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(calls,['light']);assert.equal(styles['--cl-native-bottom'],'24px');
+ root.dataset.theme='dark';await handlers['colegiolibre:themechange']();
+ assert.deepEqual(calls,['light','dark']);assert.equal(root.dataset.nativeApp,'android');
+});

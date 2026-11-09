@@ -5,6 +5,23 @@
   const isNative = Boolean(capacitor?.isNativePlatform?.());
   if (isNative) document.documentElement.dataset.nativeApp = capacitor.getPlatform?.() || "true";
 
+  let appearancePlugin;
+  async function syncSystemAppearance() {
+    if (!isNative || capacitor.getPlatform?.() !== "android") return;
+    try {
+      appearancePlugin ||= capacitor.registerPlugin?.("SystemAppearance") || capacitor.Plugins?.SystemAppearance;
+      if (!appearancePlugin?.setTheme) return;
+      const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      const result = await appearancePlugin.setTheme({theme});
+      if (Number.isFinite(result?.bottomInset)) {
+        document.documentElement.style.setProperty("--cl-native-bottom", `${Math.max(0,result.bottomInset)}px`);
+      }
+    } catch (_) { /* Older installed APKs keep working until rebuilt. */ }
+  }
+  window.addEventListener("colegiolibre:themechange", syncSystemAppearance);
+  document.addEventListener("visibilitychange", () => {if (!document.hidden) void syncSystemAppearance()});
+  void syncSystemAppearance();
+
   // Capacitor serves bundled HTML/JS from a local app origin. Relative `/api/...`
   // requests would otherwise stay inside the WebView and never reach Vercel.
   // Route all ColegioLibre backend calls through the production web origin.

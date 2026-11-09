@@ -1054,11 +1054,12 @@
   function applyTheme(nextTheme, persist = true) {
     theme = nextTheme === "dark" ? "dark" : "light";
     root.dataset.theme = theme;
+    window.dispatchEvent(new CustomEvent("colegiolibre:themechange", {detail:{theme}}));
 
     // Keep the installed PWA / mobile browser system bar neutral:
     // black in dark mode and white in light mode.
     const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) themeColor.setAttribute("content", theme === "dark" ? "#000000" : "#ffffff");
+    if (themeColor) themeColor.setAttribute("content", theme === "dark" ? "#07090c" : "#ffffff");
 
     if (persist) {try {localStorage.setItem(STORAGE_THEME, theme)} catch (_) {}}
     const button = document.getElementById("preference-theme");

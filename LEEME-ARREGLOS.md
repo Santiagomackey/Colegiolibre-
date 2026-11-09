@@ -1,4 +1,4 @@
-# ColegioLibre 1.0.23 — correcciones de la auditoría
+# ColegioLibre 1.0.24 — correcciones de la auditoría
 
 Esta carpeta contiene el sitio completo y el código Android actualizado. Conserva el logo oficial del footer y su fondo azul. Reemplazá el proyecto completo: no mezcles archivos con ZIP anteriores.
 
@@ -20,7 +20,7 @@ npm --prefix mobile-app ci
 npm run android:apk
 ```
 
-El comando sincroniza la web actual, registra los plugins nativos y genera `mobile-app/artifacts/ColegioLibre-1.0.23-debug.apk` para probar en un teléfono. El APK de prueba usa una firma de depuración; para actualizar una instalación firmada de producción necesitás la misma clave de firma original.
+El comando sincroniza la web actual, registra los plugins nativos y genera `mobile-app/artifacts/ColegioLibre-1.0.24-debug.apk` para probar en un teléfono. El APK de prueba usa una firma de depuración; para actualizar una instalación firmada de producción necesitás la misma clave de firma original.
 
 También podés generar el APK de prueba sin instalar el SDK en tu PC: subí el proyecto a GitHub, abrí Actions → Crear APK Android → Run workflow y descargá el artefacto ColegioLibre-Android-debug al finalizar. El flujo conserva los cambios nativos y se ejecuta también al cambiar archivos de la web. Ese flujo está preparado, pero no se ha ejecutado desde esta entrega.
 
@@ -46,7 +46,7 @@ La app usa una sola configuración Capacitor, carga https://www.colegiolibre.com
 - Tipografía sans serif, acciones principales azul ColegioLibre, temas claro/oscuro explícitos y controles de preferencias fuera de las acciones.
 - Filtros móviles plegables, navegación móvil en Explore, fotos faltantes identificadas como tales y menos espacio en la cabecera.
 - Pantalla de apertura con el logo maestro, sin barra de progreso simulada ni espera mínima en cada página.
-- Splash y recursos Android con la marca, una configuración Capacitor y versión 1.0.23/versionCode 23.
+- Splash y recursos Android con la marca, una configuración Capacitor y versión 1.0.24/versionCode 24.
 - Sincronización móvil con lista permitida de recursos; no copia APK, API, SQL, pruebas ni documentos de desarrollo.
 - Validador corregido para rutas de Vercel sin extensión, rutas desde la raíz y etiquetas base; pruebas antiguas comprueban requisitos sin fijar una versión vieja de CSS.
 
@@ -72,3 +72,9 @@ Reemplazá el proyecto completo y volvé a desplegarlo. El cambio de caché PWA 
 - Se verificaron los controles con clics en la vista responsive y el inicio completo a 390 y 820 px. Se comprobaron los estilos iniciales incrustados mediante una prueba de integridad. Las 29 pruebas y las validaciones del proyecto pasan; no se realizó una prueba con un teléfono físico ni se generó un APK nuevo.
 
 Aplicación: reemplazá el proyecto completo con esta carpeta y volvé a desplegarlo. El sitio en producción se comprobó durante la revisión y todavía servía la versión con solo el encabezado incrustado, no esta corrección móvil completa. Para una app Android con recursos antiguos, compilá e instalá el APK actualizado con las instrucciones anteriores. El footer azul y el logo oficial se conservan.
+
+## Navegación y tema (1.0.24)
+
+Los controles móviles usan tonos neutros en ambos temas. La franja inferior deja de mostrar el azul del pie de página. El plugin Android SystemAppearance sincroniza el color de las barras y sus iconos con el tema elegido. Es necesario desplegar la web y recompilar/reinstalar el APK; cambiar solo los archivos web no incorpora el plugin a una app ya instalada.
+
+Verificación: 30 pruebas automatizadas, validación del proyecto, auditoría de lanzamiento y PWA correctas. Vista móvil revisada en navegador en ambos temas. No se ha compilado ni probado este cambio nativo en Android; no se incluye APK nuevo.

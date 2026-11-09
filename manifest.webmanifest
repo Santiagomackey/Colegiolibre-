@@ -8,11 +8,19 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait-primary",
-  "background_color": "#F7F9FC",
-  "theme_color": "#0B2E6B",
-  "categories": ["education", "shopping", "social"],
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "categories": [
+    "education",
+    "shopping",
+    "social"
+  ],
   "icons": [
     {
       "src": "/images/icon-192.png",
@@ -37,7 +45,7 @@
     {
       "name": "Publicar producto",
       "short_name": "Publicar",
-      "description": "Crear una nueva publicación",
+      "description": "Crear una nueva publicaci\u00f3n",
       "url": "/publicar?source=shortcut",
       "icons": [
         {
