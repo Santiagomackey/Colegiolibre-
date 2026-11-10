@@ -12,6 +12,7 @@ export default async function handler(req,res){
    const state=random(),launch=random(),verifier=random();
    await db(config,'prepare_mp_link',{p_seller_id:user.id,p_state_hash:digest(state),p_launch_hash:digest(launch),p_verifier:verifier,p_source:req.body?.source==='app'?'app':'web'});
    const url=new URL(config.redirect);url.searchParams.set('launch',launch);url.searchParams.set('state',state);
+   console.info('MP_LINK_START','ready');
    return json(res,200,{url:url.href});
   }catch(error){
    const allowed=['LINK_STORAGE_MISSING','LINK_STORAGE_DENIED','LINK_RATE_LIMIT','LINK_SERVER_AUTH_FAILED','LINK_STORAGE_FAILED','LINK_STORAGE_RESPONSE_INVALID'];
@@ -27,19 +28,31 @@ export default async function handler(req,res){
   if(!validNonce(launch))return json(res,400,{error:'INVALID_LINK_ATTEMPT'});
   try{
    const value=random();const attempt=await db(config,'launch_mp_link',{p_state_hash:digest(state),p_launch_hash:digest(launch),p_cookie_hash:digest(value)});
+   console.info('MP_LINK_LAUNCH','ready');
    res.setHeader('Set-Cookie',cookie(value));return redirect(res,authorizationUrl(config,state,attempt.verifier));
   }catch(_){return json(res,400,{error:'INVALID_OR_EXPIRED_LINK'});}
  }
- let attempt;
+ let attempt,stage='session';
  try{
   const value=getCookie(req.headers.cookie);if(!validNonce(value))return json(res,400,{error:'INVALID_LINK_SESSION'});
   attempt=await db(config,'consume_mp_link',{p_state_hash:digest(state),p_cookie_hash:digest(value)});
   res.setHeader('Set-Cookie',cookie('',true));
-  if(url.searchParams.has('error'))return redirect(res,returnUrl(config,attempt.source,'cancelled'));
+  if(url.searchParams.has('error')){
+   const denied=url.searchParams.get('error')==='access_denied';
+   return redirect(res,returnUrl(config,attempt.source,denied?'cancelled':'error',denied?'':'PROVIDER_AUTH_FAILED'));
+  }
   const code=url.searchParams.get('code');if(!code||code.length>2000)throw Error('INVALID_CODE');
+  stage='provider';
   const identity=await exchangeIdentity(config,code,attempt.verifier);
+  stage='save';
   await db(config,'complete_mp_link',{p_state_hash:digest(state),p_seller_id:attempt.seller_id,p_mp_user_id:identity.userId,p_display_name:identity.display,p_holder_name:identity.holder});
+  console.info('MP_LINK_CALLBACK','linked');
   return redirect(res,returnUrl(config,attempt.source,'linked'));
- }catch(_){return redirect(res,returnUrl(config,attempt?.source||'web','error'));}
+ }catch(error){
+  const allowed=['PROVIDER_INVALID_CLIENT','PROVIDER_INVALID_GRANT','PROVIDER_INVALID_SCOPE','PROVIDER_UNAUTHORIZED_CLIENT','PROVIDER_AUTH_FAILED','IDENTITY_MISMATCH','LINK_STORAGE_MISSING','LINK_STORAGE_DENIED','LINK_SERVER_AUTH_FAILED','LINK_STORAGE_FAILED'];
+  const reason=allowed.includes(error.message)?error.message:'LINK_CALLBACK_FAILED';
+  console.error('MP_LINK_CALLBACK',stage,reason);
+  return redirect(res,returnUrl(config,attempt?.source||'web','error',reason));
+ }
 }
-function returnUrl(config,source,result){return source==='app'?config.origin+'/mp-vinculado?result='+result:config.origin+'/perfil?view=settings&mp_link='+result+'#datos-cobro';}
+function returnUrl(config,source,result,reason=''){const suffix=reason?'&mp_reason='+encodeURIComponent(reason):'';return source==='app'?config.origin+'/mp-vinculado?result='+result+suffix:config.origin+'/perfil?view=settings&mp_link='+result+suffix+'#datos-cobro';}

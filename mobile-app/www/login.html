@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="es">
+<head>
+<script src="/auth-routing.js?v=20261110-recovery31"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    try {
+      if (window.Capacitor?.isNativePlatform?.()) {
+        document.documentElement.dataset.nativeApp =
+          window.Capacitor.getPlatform?.() || "true";
+      }
+      const hasStoredSession = Object.keys(localStorage).some(
+        (key) => key.startsWith("sb-") && key.endsWith("-auth-token")
+      );
+      if (hasStoredSession) document.documentElement.classList.add("auth-session-probe");
+    } catch (_error) {}
+  </script>
+  <script src="./preferences.js?v=20261110-release35f"></script>
+  <meta
+    name="description"
+    content="Iniciá sesión o creá tu cuenta en ColegioLibre."
+  />
+  <meta name="theme-color" content="#080A0D" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ingresar | ColegioLibre</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./pwa.css?v=20261109-release25" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
+    <script defer src="./institution-theme.js?v=20261109-release25"></script>
+    <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
+<link rel="stylesheet" href="./opening.css?v=20261109-release25" />
+  <link rel="stylesheet" href="./login.css?v=20261109-alerts-apple-push" />
+<link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
+<link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
+<link rel="stylesheet" href="/site-header.css?v=20261110-release35f">
+<link rel="stylesheet" href="/notifications.css?v=20261109-release25">
+</head>
+
+<body>
+<header class="cl-site-header" data-no-translate>
+ <div class="cl-site-top">
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colegiolibre-logo-transparent.png" alt="ColegioLibre" width="2048" height="704" fetchpriority="high"></a>
+  <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
+   <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
+   <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
+   <button type="submit" data-site-label="searchLabel" aria-label="Buscar material escolar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+  </form>
+  <div class="cl-site-actions header-actions" aria-label="Acciones de tu cuenta" data-site-label="accountActions">
+   <a class="cl-site-action cl-site-desktop-action" id="header-messages-link" href="/mensajes" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4Z"/><path d="M8 8h8M8 12h5"/></svg><span data-site-text="messages">Mensajes</span></a>
+   <a class="cl-site-action cl-site-desktop-action" id="header-favorites-link" href="/favoritos" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg><span data-site-text="favorites">Favoritos</span></a>
+   <a class="cl-site-action cl-site-account" id="accountButton" href="/login"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg><span id="accountText">Iniciar sesión</span></a>
+   <details class="cl-site-account-menu"><summary data-site-label="accountMenu" aria-label="Abrir menú de cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><nav class="cl-site-menu-panel" aria-label="Mi cuenta" data-site-label="accountMenu">
+    <a href="/perfil" data-site-text="profile">Mi perfil</a><a href="/perfil?view=settings" data-site-text="settings">Configuración</a><a href="/pedidos" data-site-text="orders">Mis compras y ventas</a><a href="/mensajes" data-site-text="messages">Mensajes</a><a href="/favoritos" data-site-text="favorites">Favoritos</a><button type="button" data-site-logout hidden data-site-text="logout">Cerrar sesión</button>
+   </nav></details>
+  </div>
+ </div>
+ <div class="cl-site-subnav"><div class="cl-site-subnav-inner">
+  <details class="cl-site-categories"><summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-site-text="all">Todo</span></summary><nav class="cl-site-menu-panel" aria-label="Categorías" data-site-label="categories">
+   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
+   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
+   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
+   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
+   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
+   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
+   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
+   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
+  </nav></details>
+  <nav class="cl-site-nav-scroll" aria-label="Categorías" data-site-label="categories">
+   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
+   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
+   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
+   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
+   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
+   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
+   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
+   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
+    </nav>
+ </div></div>
+</header>
+
+
+<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
+<script src="/opening.js?v=20261109-release25"></script>
+  <main class="auth-shell">
+    <section class="auth-showcase" aria-label="Acerca de ColegioLibre">
+      <a class="brand brand--light" href="/" aria-label="Volver al inicio">
+        <img
+          src="images/logo-horizontal.webp"
+          alt="ColegioLibre"
+        />
+      </a>
+
+      <div class="showcase-content">
+        <p class="showcase-eyebrow">Tu comunidad escolar, más cerca</p>
+        <h1>Comprá y vendé entre familias de tu colegio.</h1>
+        <p class="showcase-copy">
+          Encontrá libros, uniformes y materiales escolares cerca tuyo,
+          de forma simple y segura.
+        </p>
+
+        <ul class="showcase-benefits">
+          <li>
+            <span class="benefit-icon" aria-hidden="true">✓</span>
+            Productos de tu colegio y tu zona
+          </li>
+          <li>
+            <span class="benefit-icon" aria-hidden="true">✓</span>
+            Contacto directo entre compradores y vendedores
+          </li>
+          <li>
+            <span class="benefit-icon" aria-hidden="true">✓</span>
+            Publicaciones gratuitas y fáciles de gestionar
+          </li>
+        </ul>
+      </div>
+
+      <p class="showcase-note">
+        Ahorrá, reutilizá y ayudá a otra familia.
+      </p>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-panel-inner">
+        <a class="brand brand--mobile" href="/" aria-label="Volver al inicio">
+          <img
+            src="images/logo-horizontal.webp"
+            alt="ColegioLibre"
+          />
+        </a>
+
+        <a class="back-home" href="/">
+          <span aria-hidden="true">←</span>
+          Volver al inicio
+        </a>
+
+        <div class="auth-card" id="auth-card">
+          <div id="standard-auth-view">
+            <div class="auth-heading">
+              <p class="auth-eyebrow">Bienvenido a ColegioLibre</p>
+              <h2 id="auth-title">Iniciar sesión</h2>
+              <p id="auth-description">
+                Ingresá con tu email y contraseña para continuar.
+              </p>
+            </div>
+
+            <div class="auth-tabs" role="tablist" aria-label="Acceso a la cuenta">
+              <button
+                class="auth-tab is-active"
+                id="login-tab"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="auth-form"
+                data-mode="login"
+              >
+                Iniciar sesión
+              </button>
+              <button
+                class="auth-tab"
+                id="register-tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="auth-form"
+                data-mode="register"
+              >
+                Crear cuenta
+              </button>
+            </div>
+
+            <form id="auth-form" class="auth-form" novalidate>
+              <div class="form-field">
+                <label for="auth-email">Email</label>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M3 6.5 12 13l9-6.5M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+                    </svg>
+                  </span>
+                  <input
+                    id="auth-email"
+                    name="email"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    placeholder="nombre@email.com"
+                    maxlength="254"
+                    required
+                  />
+                </div>
+                <p class="field-error" id="email-error" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <div class="field-label-row">
+                  <label for="auth-password">Contraseña</label>
+                  <button
+                    class="forgot-link"
+                    id="forgot-password-btn"
+                    type="button"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <rect x="4" y="10" width="16" height="11" rx="2" />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                  </span>
+                  <input
+                    id="auth-password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Ingresá tu contraseña"
+                    minlength="8"
+                    maxlength="72"
+                    required
+                  />
+                  <button
+                    class="password-toggle"
+                    type="button"
+                    data-password-target="auth-password"
+                    aria-label="Mostrar contraseña"
+                    aria-pressed="false"
+                  >
+                    <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </svg>
+                    <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m4 4 16 16M10.7 6.1A10 10 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-2.3 3M6.5 6.6C3.9 8.3 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5M9.8 9.7a3 3 0 0 0 4.5 4.5" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="field-error" id="password-error" aria-live="polite"></p>
+              </div>
+
+              <div
+                class="form-field" hidden
+                id="confirm-password-field"
+                aria-hidden="true"
+              >
+                <label for="auth-password-confirm">Confirmar contraseña</label>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <rect x="4" y="10" width="16" height="11" rx="2" />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                  </span>
+                  <input
+                    id="auth-password-confirm"
+                    name="password-confirm"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Repetí tu contraseña"
+                    minlength="8"
+                    maxlength="72"
+                    disabled
+                  />
+                  <button
+                    class="password-toggle"
+                    type="button"
+                    data-password-target="auth-password-confirm"
+                    aria-label="Mostrar contraseña"
+                    aria-pressed="false"
+                  >
+                    <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </svg>
+                    <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m4 4 16 16M10.7 6.1A10 10 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-2.3 3M6.5 6.6C3.9 8.3 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5M9.8 9.7a3 3 0 0 0 4.5 4.5" />
+                    </svg>
+                  </button>
+                </div>
+                <p
+                  class="field-error"
+                  id="password-confirm-error"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <div
+                class="password-health" hidden
+                id="password-health"
+                aria-hidden="true"
+              >
+                <div class="password-strength" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <p id="password-strength-label">Usá al menos 8 caracteres.</p>
+              </div>
+
+              <button class="auth-submit" id="auth-submit" type="submit">
+                <span class="button-label">Iniciar sesión</span>
+                <span class="button-loader" aria-hidden="true"></span>
+              </button>
+
+              <div
+                class="auth-message"
+                id="auth-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </form>
+
+
+            <div class="social-auth" aria-label="Ingresar con una cuenta externa">
+              <div class="social-divider"><span>o continuá con</span></div>
+              <button class="social-google" id="google-signin" data-social-provider="google" type="button">
+                <svg viewBox="0 0 48 48" width="23" height="23" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6C44.4 38.03 46.98 31.88 46.98 24.55Z"/><path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.2A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19Z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.97 6.19C6.51 42.62 14.62 48 24 48Z"/></svg>
+                <span>Continuar con Google</span>
+              </button>
+              <button class="social-apple" id="apple-signin" data-social-provider="apple" type="button"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M17.1 12.3c0-2 1.6-3 1.7-3.1-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.4 0-2.7.8-3.4 2-1.5 2.5-.4 6.2 1.1 8.3.7 1 1.5 2 2.5 1.9 1-.1 1.4-.6 2.6-.6s1.5.6 2.6.6 1.8-1 2.5-2c.8-1.1 1.1-2.2 1.1-2.3-.1 0-2.2-.9-2.2-3.2ZM15.1 6.3c.6-.8 1-1.8.9-2.8-.9 0-2 .6-2.7 1.3-.6.6-1.1 1.7-1 2.7 1 .1 2-.5 2.8-1.2Z"/></svg><span>Continuar con Apple</span></button>
+
+              <p class="social-help" id="social-auth-status" role="status" aria-live="polite"></p>
+            </div>
+
+            <p class="auth-switch-copy">
+              <span id="auth-switch-label">¿Todavía no tenés una cuenta?</span>
+              <button id="auth-switch-btn" type="button">Crear cuenta</button>
+            </p>
+
+            <p class="auth-legal">
+              Al continuar aceptás los
+              <a href="/terminos">Términos</a> y la
+              <a href="/privacidad">Política de privacidad</a>.
+            </p>
+          </div>
+
+          <div id="recovery-request-view" hidden>
+            <button class="inline-back" id="recovery-back-btn" type="button">
+              <span aria-hidden="true">←</span>
+              Volver
+            </button>
+
+            <div class="auth-heading auth-heading--left">
+              <div class="heading-icon" aria-hidden="true">✉</div>
+              <h2>Recuperar contraseña</h2>
+              <p>
+                Ingresá tu email y te enviaremos un enlace seguro para crear
+                una contraseña nueva.
+              </p>
+            </div>
+
+            <form id="recovery-request-form" class="auth-form" novalidate>
+              <div class="form-field">
+                <label for="recovery-email">Email</label>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M3 6.5 12 13l9-6.5M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+                    </svg>
+                  </span>
+                  <input
+                    id="recovery-email"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    placeholder="nombre@email.com"
+                    maxlength="254"
+                    required
+                  />
+                </div>
+                <p class="field-error" id="recovery-email-error"></p>
+              </div>
+
+              <button class="auth-submit" id="recovery-submit" type="submit">
+                <span class="button-label">Enviar enlace</span>
+                <span class="button-loader" aria-hidden="true"></span>
+              </button>
+
+              <div
+                class="auth-message"
+                id="recovery-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </form>
+          </div>
+
+          <div id="password-update-view" hidden>
+            <div class="auth-heading auth-heading--left">
+              <div class="heading-icon" aria-hidden="true">✓</div>
+              <h2>Creá una contraseña nueva</h2>
+              <p>Elegí una contraseña segura que no hayas usado anteriormente.</p>
+            </div>
+
+            <button class="inline-back" id="update-request-again" type="button">Pedir un enlace nuevo</button>
+            <form id="password-update-form" class="auth-form" novalidate>
+              <div class="form-field">
+                <label for="new-password">Contraseña nueva</label>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <rect x="4" y="10" width="16" height="11" rx="2" />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                  </span>
+                  <input
+                    id="new-password"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Mínimo 8 caracteres"
+                    minlength="8"
+                    maxlength="72"
+                    required
+                  />
+                </div>
+                <p class="field-error" id="new-password-error"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="new-password-confirm">Confirmar contraseña nueva</label>
+                <div class="input-control">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <rect x="4" y="10" width="16" height="11" rx="2" />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                  </span>
+                  <input
+                    id="new-password-confirm"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Repetí la contraseña nueva"
+                    minlength="8"
+                    maxlength="72"
+                    required
+                  />
+                </div>
+                <p class="field-error" id="new-password-confirm-error"></p>
+              </div>
+
+              <button class="auth-submit" id="password-update-submit" type="submit">
+                <span class="button-label">Guardar contraseña</span>
+                <span class="button-loader" aria-hidden="true"></span>
+              </button>
+
+              <div
+                class="auth-message"
+                id="password-update-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </form>
+          </div>
+
+          <div id="email-verification-view" hidden>
+            <div class="auth-heading verification-heading">
+              <div class="verification-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 6.5 12 13l9-6.5M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg>
+              </div>
+              <p class="auth-eyebrow">UN ÚLTIMO PASO</p>
+              <h2>Revisá tu email</h2>
+              <p>Te enviamos un enlace de confirmación a:</p>
+              <strong class="verification-email" id="verification-email"></strong>
+            </div>
+
+            <div class="verification-note">
+              <strong>Confirmá tu cuenta para continuar</strong>
+              <span>Después de verificarla vas a poder elegir tu colegio y completar tu perfil.</span>
+            </div>
+
+            <button class="auth-submit" id="verification-open-email" type="button" aria-label="Abrir la bandeja de entrada del correo">
+              <span class="button-label">Abrir mi correo</span>
+            </button>
+            <button class="verification-resend" id="verification-check" type="button">
+              Ya confirmé mi email
+            </button>
+            <button class="verification-resend" id="verification-resend" type="button">
+              Reenviar email de verificación
+            </button>
+            <button class="verification-change" id="verification-change" type="button">
+              Usar otro email
+            </button>
+            <div class="auth-message" id="verification-message" role="status" aria-live="polite" hidden></div>
+            <p class="verification-help">Si no aparece en unos minutos, revisá Spam o Correo no deseado.</p>
+          </div>
+        </div>
+
+        <p class="auth-footer">
+          © 2026 ColegioLibre · Hecho para comunidades escolares.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="./vendor/supabase.js?v=20261109-release25"></script>
+  <script src="./supabase.js?v=20261110-recovery31"></script>
+  <script src="./telemetry.js?v=20261109-release25"></script>
+  <script src="./native-bridge.js?v=20261110-recovery31"></script>
+  <script src="./social-auth.js?v=20261109-alerts-apple-push"></script>
+    <script src="./login.js?v=20261110-recovery31"></script>
+  <script src="./pwa.js?v=20261109-release25"></script>
+  <script src="/global-search.js?v=20261109-release25"></script>
+<script src="/notifications.js?v=20261110-shell32"></script>
+<script src="/site-header.js?v=20261110-release35f"></script>
+</body>
+</html>

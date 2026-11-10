@@ -40,3 +40,10 @@ test('optional alias failure does not prevent OAuth and saved input survives tra
 test('optional callback scroll cannot produce an account-load failure',async()=>{
  const f=await fixture({search:'?mp_link=cancelled'});assert.equal(f.node('#mp-link-message').dataset.code,'cancelled');assert.deepEqual(f.calls,['get_my_mp_link']);
 });
+
+
+test('a rejected provider credential is distinguished from cancellation and remains bilingual',async()=>{
+ const f=await fixture({search:'?mp_link=error&mp_reason=PROVIDER_INVALID_CLIENT'});
+ assert.equal(f.node('#mp-link-message').dataset.code,'PROVIDER_INVALID_CLIENT');assert.match(f.node('#mp-link-message').textContent,/credenciales/);
+ f.language('en');assert.match(f.node('#mp-link-message').textContent,/credentials/);assert.equal(f.node('#mp-alias-form').hidden,true);
+});

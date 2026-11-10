@@ -18,6 +18,11 @@
   LINK_STORAGE_RESPONSE_INVALID:['La base de datos devolvió una respuesta inesperada. Volvé a intentar.','The database returned an unexpected response. Try again.'],
   LINK_START_FAILED:['No pudimos abrir Mercado Pago. Volvé a intentar.','We could not open Mercado Pago. Try again.'],
   LINK_NETWORK_FAILED:['No pudimos conectar con el servidor. Revisá tu conexión y volvé a intentar.','We could not connect to the server. Check your connection and try again.'],
+  PROVIDER_INVALID_CLIENT:['Mercado Pago rechazó las credenciales de ColegioLibre. El administrador debe revisar el Client ID y Client Secret de la misma aplicación.','Mercado Pago rejected ColegioLibre’s credentials. The administrator must check the Client ID and Client Secret belong to the same application.'],
+  PROVIDER_INVALID_GRANT:['El permiso de Mercado Pago venció o no coincide con este intento. Volvé a vincular tu cuenta.','The Mercado Pago authorization expired or does not match this attempt. Link your account again.'],
+  PROVIDER_INVALID_SCOPE:['Mercado Pago no aceptó los permisos de la aplicación. El administrador debe habilitar el acceso de lectura.','Mercado Pago did not accept the application permissions. The administrator must enable read access.'],
+  PROVIDER_UNAUTHORIZED_CLIENT:['Mercado Pago no autorizó esta aplicación para tu cuenta. Revisá los permisos en Mercado Pago o contactá a su soporte.','Mercado Pago did not authorize this application for your account. Check its permissions in Mercado Pago or contact their support.'],
+  PROVIDER_AUTH_FAILED:['Mercado Pago rechazó la autorización. Comprobá que la URL de retorno y PKCE estén habilitados en la aplicación.','Mercado Pago rejected authorization. Check that the application has its callback URL and PKCE enabled.'],
   error:['No se completó la vinculación. Volvé a intentar.','Linking did not complete. Try again.'],
   cancelled:['Vinculación cancelada. No cambiamos tu cuenta.','Linking cancelled. Your account was not changed.'],
   removed:['Vínculo eliminado de ColegioLibre. También podés retirar el permiso desde Mercado Pago. Tus pedidos existentes no cambian.','Link removed from ColegioLibre. You can also revoke access in Mercado Pago. Existing orders are unchanged.'],
@@ -113,6 +118,7 @@
  window.addEventListener('colegiolibre:languagechange',()=>{render();show(messageCode,messageSource);});
  window.addEventListener('pagehide',()=>{++generation;form.reset();status.textContent='';link=null;details=null;dirty=false;});
  const result=new URLSearchParams(location.search).get('mp_link');
- if(result==='error'||result==='cancelled')show(result,'callback');
+ const reason=new URLSearchParams(location.search).get('mp_reason');
+ if(result==='error'||result==='cancelled')show(result==='error'&&messages[reason]?reason:result,'callback');
  void load();
 })();

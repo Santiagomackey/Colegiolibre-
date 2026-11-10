@@ -3,9 +3,9 @@
 
   const { client, getCurrentUser } = window.colegioLibreApi;
   const STORAGE_KEY = "colegiolibre-beta-tasks-v1";
-  const language = document.documentElement.dataset.language === "en" ? "en" : "es";
+  let language = document.documentElement.dataset.language === "en" ? "en" : "es";
 
-  const copy = {
+  const copies = {
     es: {
       badge: "Programa beta",
       eyebrow: "Ayudanos a mejorar",
@@ -92,7 +92,8 @@
       error: "We couldn't send your feedback. Please try again.",
       resetConfirm: "Reset all tests?"
     }
-  }[language];
+  };
+  let copy=copies[language];
 
   const tasks = [
     {
@@ -142,7 +143,7 @@
     },
     {
       title: { es: "Probá apariencia e idioma", en: "Test appearance and language" },
-      description: { es: "Revisá modo claro, oscuro, español e inglés.", en: "Check light mode, dark mode, Spanish and English." },
+      description: { es: "Revisá el diseño, español e inglés.", en: "Check the layout, Spanish and English." },
       href: "/"
     }
   ];
@@ -164,6 +165,7 @@
   applyCopy();
   renderRatings();
   renderTasks();
+  window.addEventListener('colegiolibre:languagechange',()=>{language=document.documentElement.dataset.language==='en'?'en':'es';copy=copies[language];applyCopy();renderTasks();});
   elements.reset.addEventListener("click", resetTasks);
   elements.form.addEventListener("submit", submitFeedback);
 

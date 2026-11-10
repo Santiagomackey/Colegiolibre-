@@ -1525,3 +1525,9 @@ html[data-theme="dark"] .footer-contact-btn:is(:hover, :focus-visible) {
     max-height: var(--cl-brand-image-height) !important;
   }
 }
+
+/* The language switch stays in reach independently of the scrolling header. */
+html[data-theme][data-language] body #preference-controls.preference-controls{position:fixed!important;top:auto!important;left:auto!important;right:max(16px,env(safe-area-inset-right,0px))!important;bottom:max(16px,env(safe-area-inset-bottom,0px))!important;display:flex!important;width:auto!important;min-width:0!important;height:auto!important;max-height:none!important;padding:5px!important;margin:0!important;border:1px solid #d9e2ef!important;border-radius:24px!important;background:#fff!important;color:#0b2e6b!important;box-shadow:0 6px 20px #0b2e6b18!important;z-index:10020!important;transform:none!important}
+html[data-theme][data-language] body #preference-controls #preference-language{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-width:64px!important;width:auto!important;min-height:36px!important;height:36px!important;max-height:none!important;padding:0 10px!important;background:transparent!important;color:#0b2e6b!important;border:0!important;border-radius:20px!important;font:650 12px/1.2 Inter,system-ui,sans-serif!important}
+html[data-theme][data-language] body #preference-controls svg{width:17px!important;height:17px!important;stroke:currentColor!important}
+@media(max-width:700px){html[data-theme][data-language] body[data-mobile-nav] #preference-controls.preference-controls{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;right:12px!important}}

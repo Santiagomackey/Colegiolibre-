@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {setupTransferDb} from './helpers/transfer-db.mjs';
-import {challenge,authorizationUrl,configuration,cookie,digest,validNonce,db} from '../server/mp-link.js';
+import {challenge,authorizationUrl,configuration,cookie,digest,validNonce,db,exchangeIdentity} from '../server/mp-link.js';
 import handler from '../api/mercadopago-link.js';
 const ids={seller:'10000000-0000-0000-0000-000000000001',buyer:'20000000-0000-0000-0000-000000000002',other:'30000000-0000-0000-0000-000000000003',product:'40000000-0000-0000-0000-000000000004'};
 test('MP linking uses PKCE, a private cookie, and read-only authorization',()=>{
@@ -83,4 +83,15 @@ test('database transport accepts empty successful writes and preserves JSON read
    globalThis.fetch=async()=>new Response(JSON.stringify(body),{status});await assert.rejects(db(config,'prepare_mp_link',{}),error=>error.message===code);
   }
  }finally{globalThis.fetch=original;}
+});
+
+
+test('provider errors expose fixed diagnostic codes without leaking provider response data',async()=>{
+ const previous=globalThis.fetch;
+ try{
+  for(const [provider,expected] of Object.entries({invalid_client:'PROVIDER_INVALID_CLIENT',invalid_grant:'PROVIDER_INVALID_GRANT',invalid_scope:'PROVIDER_INVALID_SCOPE',unauthorized_client:'PROVIDER_UNAUTHORIZED_CLIENT',unknown:'PROVIDER_AUTH_FAILED'})){
+   globalThis.fetch=async()=>new Response(JSON.stringify({error:provider,message:'private-provider-details',access_token:'secret-test-token'}),{status:400});
+   await assert.rejects(exchangeIdentity({clientId:'test',clientSecret:'secret',redirect:'https://www.colegiolibre.com/api/mercadopago-link'},'code','verifier'),error=>error.message===expected);
+  }
+ }finally{globalThis.fetch=previous;}
 });
