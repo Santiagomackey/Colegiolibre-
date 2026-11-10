@@ -27,14 +27,13 @@
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
-<link rel="stylesheet" href="/site-header.css?v=20261110-shell32b">
+<link rel="stylesheet" href="/site-header.css?v=20261110-shell33">
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 </head>
 <body>
-<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
-<script src="/opening.js?v=20261109-release25"></script>
-  <header class="cl-site-header" data-no-translate>
+<header class="cl-site-header" data-no-translate>
  <div class="cl-site-top">
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colegiolibre-logo-transparent.png" alt="ColegioLibre" width="2048" height="704" fetchpriority="high"></a>
   <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
    <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
    <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
@@ -48,7 +47,6 @@
     <a href="/perfil" data-site-text="profile">Mi perfil</a><a href="/perfil?view=settings" data-site-text="settings">Configuración</a><a href="/pedidos" data-site-text="orders">Mis compras y ventas</a><a href="/mensajes" data-site-text="messages">Mensajes</a><a href="/favoritos" data-site-text="favorites">Favoritos</a><button type="button" data-site-logout hidden data-site-text="logout">Cerrar sesión</button>
    </nav></details>
   </div>
-  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colegiolibre-logo-transparent.png" alt="ColegioLibre" width="2048" height="704" fetchpriority="high"></a>
  </div>
  <div class="cl-site-subnav"><div class="cl-site-subnav-inner">
   <details class="cl-site-categories"><summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-site-text="all">Todo</span></summary><nav class="cl-site-menu-panel" aria-label="Categorías">
@@ -66,6 +64,9 @@
   </nav><div class="cl-site-language"></div>
  </div></div>
 </header>
+<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
+<script src="/opening.js?v=20261109-release25"></script>
+  
   <main class="legal-main">
     <div class="legal-hero"><p class="legal-kicker">Catálogo seguro</p><h1>Productos prohibidos</h1><p class="legal-lead">ColegioLibre está destinado a materiales escolares permitidos. Esta lista puede ampliarse cuando aparezcan nuevos riesgos.</p></div>
     <div class="legal-grid">

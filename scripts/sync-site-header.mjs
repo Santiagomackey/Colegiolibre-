@@ -5,11 +5,11 @@ const pages=['index','explorar','producto','publicar','favoritos','mensajes','pe
 for(const name of pages){
  const file=new URL(name+'.html',root);let html=fs.readFileSync(file,'utf8');
  const header=/<header\b[^>]*>[\s\S]*?<\/header>/;
- if(name==='login'){
-  if(html.includes('<header class="cl-site-header"'))html=html.replace(header,template);
-  else html=html.replace(/(<body\b[^>]*>)/,'$1\n'+template);
- }else html=html.replace(header,template);
- if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261110-shell32b">\n</head>');
+ // Keep the fixed header outside page-specific wrappers that may clip or
+ // establish a containing block while scrolling.
+ if(html.includes('<header class="cl-site-header"')||name!=='login')html=html.replace(header,'');
+ html=html.replace(/(<body\b[^>]*>)/,'$1\n'+template);
+ if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261110-shell33">\n</head>');
  const add=[];
  if(!/src=["'](?:\.\/|\/)?supabase\.js/.test(html))add.push('<script src="/vendor/supabase.js?v=20261109-release25"></script>','<script src="/supabase.js?v=20261110-recovery31"></script>');
  if(!/src=["'](?:\.\/|\/)?notifications\.js/.test(html))add.push('<script src="/notifications.js?v=20261110-shell32"></script>');
