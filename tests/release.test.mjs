@@ -205,7 +205,7 @@ test("recuperar contraseña procesa PKCE y abre el formulario de cambio", () => 
   const login = read("login.js");
 
   assert.match(callback, /exchangeCodeForSession/);
-  assert.match(callback, /colegiolibre-password-recovery/);
+  assert.match(read("auth-routing.js"), /colegiolibre-password-recovery/);
   assert.match(callback, /type=recovery/);
   assert.match(login, /showPasswordUpdate\(\)/);
   assert.match(login, /sessionStorage\.removeItem\("colegiolibre-password-recovery"\)/);

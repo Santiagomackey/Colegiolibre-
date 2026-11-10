@@ -42,7 +42,7 @@
   const recoveryRequested =
     params.get("mode") === "recovery" ||
     window.location.hash.includes("type=recovery") ||
-    Boolean(window.sessionStorage.getItem("colegiolibre-password-recovery"));
+    Boolean(window.colegioLibreRecovery?.readMarker());
 
   const elements = {
     standardView: document.querySelector("#standard-auth-view"),
@@ -542,6 +542,9 @@
         ? `No pudimos crear la cuenta: ${detail}`
         : "No pudimos crear la cuenta. Revisá los datos e intentá nuevamente.";
     }
+    if (error?.message === "RECOVERY_SESSION_REQUIRED") {
+      return "El enlace venció o no pertenece a esta sesión. Pedí un enlace nuevo desde ¿Olvidaste tu contraseña?.";
+    }
     if (context === "recovery") {
       return "No pudimos completar la recuperación. Intentá nuevamente.";
     }
@@ -602,18 +605,11 @@
   }
 
   function recoveryRedirectUrl() {
-    const publicSiteUrl = String(
-      window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
-    ).replace(/\/$/, "");
-    const redirectUrl = new URL(`${publicSiteUrl}/recovery-callback`);
-    redirectUrl.searchParams.set(
-      "source",
-      window.Capacitor?.isNativePlatform?.() ? "app" : "web"
-    );
-    if (nextPage !== "/") {
-      redirectUrl.searchParams.set("next", nextPage);
-    }
-    return redirectUrl.href;
+    const publicSiteUrl=String(window.colegioLibreConfig?.publicSiteUrl||"https://www.colegiolibre.com").replace(/\/$/,"");
+    // A static destination matches Supabase's exact allow-list entry. Recovery
+    // completes in the browser on phones too, without an automatic app launch.
+    window.sessionStorage.setItem("colegiolibre-recovery-next",nextPage);
+    return new URL("/recovery-callback",publicSiteUrl).href;
   }
 
   async function submitLogin() {
@@ -842,6 +838,12 @@
     setMessage(elements.updateMessage, "Guardando tu contraseña…", "loading");
 
     try {
+      const {data: sessionData,error: sessionError}=await client.auth.getSession();
+      const marker=window.colegioLibreRecovery?.readMarker();
+      if(sessionError||!marker||marker.userId!==sessionData?.session?.user?.id){
+        window.colegioLibreRecovery?.clear();
+        throw new Error("RECOVERY_SESSION_REQUIRED");
+      }
       const { error } = await client.auth.updateUser({ password });
       if (error) throw error;
 
@@ -883,7 +885,7 @@
   }
 
   async function checkExistingSession() {
-    if (recoveryRequested) {
+    if (recoveryRequested || params.get("view") === "forgot") {
       document.documentElement.classList.remove("auth-session-probe");
       return false;
     }
@@ -955,6 +957,10 @@
   });
 
   elements.forgotButton.addEventListener("click", showRecoveryRequest);
+  document.querySelector("#update-request-again")?.addEventListener("click", () => {
+    window.colegioLibreRecovery?.clear();
+    showRecoveryRequest();
+  });
   elements.recoveryBack.addEventListener("click", showStandardView);
   elements.recoveryForm.addEventListener("submit", submitRecoveryRequest);
   elements.updateForm.addEventListener("submit", submitPasswordUpdate);
@@ -983,7 +989,9 @@
     );
   }
 
-  if (recoveryRequested) {
+  if (params.get("view") === "forgot" && !recoveryRequested) {
+    showRecoveryRequest();
+  } else if (recoveryRequested) {
     showPasswordUpdate();
   } else {
     const pendingEmail = window.localStorage.getItem("colegiolibre-pending-verification");

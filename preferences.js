@@ -35,6 +35,9 @@
   ].join(", ");
 
   const translations = new Map(Object.entries({
+    "Pedir un enlace nuevo": "Request a new link",
+    "El enlace venció o no pertenece a esta sesión. Pedí un enlace nuevo desde ¿Olvidaste tu contraseña?.": "The link expired or does not belong to this session. Request a new link from Forgot your password?.",
+
     "COBRÁ TUS VENTAS": "GET PAID FOR YOUR SALES",
     "Vinculá tu Mercado Pago": "Link your Mercado Pago",
     "Conectá tu cuenta con ColegioLibre. La autorización se realiza en Mercado Pago.": "Connect your account to ColegioLibre. Authorization takes place on Mercado Pago.",

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script src="/auth-routing.js?v=20261110-recovery31"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
@@ -15,7 +16,7 @@
       if (hasStoredSession) document.documentElement.classList.add("auth-session-probe");
     } catch (_error) {}
   </script>
-  <script src="./preferences.js?v=20261109-mp28"></script>
+  <script src="./preferences.js?v=20261110-recovery31"></script>
   <meta
     name="description"
     content="Iniciá sesión o creá tu cuenta en ColegioLibre."
@@ -359,6 +360,7 @@
               <p>Elegí una contraseña segura que no hayas usado anteriormente.</p>
             </div>
 
+            <button class="inline-back" id="update-request-again" type="button">Pedir un enlace nuevo</button>
             <form id="password-update-form" class="auth-form" novalidate>
               <div class="form-field">
                 <label for="new-password">Contraseña nueva</label>
@@ -460,11 +462,11 @@
   </main>
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
-  <script src="./supabase.js?v=20261109-release25"></script>
+  <script src="./supabase.js?v=20261110-recovery31"></script>
   <script src="./telemetry.js?v=20261109-release25"></script>
-  <script src="./native-bridge.js?v=20261109-transfer27"></script>
+  <script src="./native-bridge.js?v=20261110-recovery31"></script>
   <script src="./social-auth.js?v=20261109-alerts-apple-push"></script>
-    <script src="./login.js?v=20261109-alerts-apple-push"></script>
+    <script src="./login.js?v=20261110-recovery31"></script>
   <script src="./pwa.js?v=20261109-release25"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 </body>

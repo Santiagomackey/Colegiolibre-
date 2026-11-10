@@ -143,6 +143,7 @@ const client = hasSupabaseFactory
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth: {
         autoRefreshToken: true,
+        detectSessionInUrl: !window.colegioLibreRecoveryRedirect && !/\/recovery-callback(?:\.html)?$/.test(window.location?.pathname || ""),
         persistSession: true
       }
     })
