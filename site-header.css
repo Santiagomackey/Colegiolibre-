@@ -31,9 +31,14 @@ html[data-theme] body .cl-site-header .cl-site-subnav #preference-controls.prefe
 html[data-theme] body .cl-site-header .cl-site-subnav #preference-controls #preference-language{display:flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:36px!important;height:32px!important;min-height:32px!important;max-height:32px!important;padding:0!important;color:#fff!important;background:transparent!important;border:0!important;border-radius:0!important;gap:6px!important}
 html[data-theme] body .cl-site-header .cl-site-subnav #preference-controls svg{display:block!important;width:16px!important;height:16px!important;stroke:#fff!important}
 
-/* The complete search/navigation header remains visible through the footer. */
+/* Reserve layout space while the header follows scroll direction. */
 html body:has(>.cl-site-header){padding-top:var(--cl-site-header-height)!important}
 html:has(.cl-site-header){scroll-padding-top:calc(var(--cl-site-header-height) + 16px)}
 body.cl-marketplace #productos{padding-top:28px!important}
 body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26px,3.3vw,34px);line-height:1.15;letter-spacing:-.035em;font-weight:800}
 @media(max-width:700px){body.cl-marketplace #productos{padding-top:22px!important}body.cl-marketplace .section-heading #products-title{font-size:26px}}
+
+.cl-site-header{transition:transform .2s ease!important}
+.cl-site-header.cl-header-hidden{transform:translateY(-110%)!important;pointer-events:none}
+.cl-site-header:focus-within{transform:translateY(0)!important;pointer-events:auto}
+@media(prefers-reduced-motion:reduce){.cl-site-header{transition:none!important}}
