@@ -61,3 +61,12 @@ Se confirmó que los RPC de lectura funcionan. El endpoint de producción devuel
 ## Corrección 1.0.30
 
 El transporte de RPC acepta HTTP 204 y cuerpos vacíos en operaciones que devuelven void, como prepare_mp_link y complete_mp_link. Antes intentaba interpretar siempre JSON y fallaba incluso tras una escritura correcta. Se añadieron pruebas con objetos Response reales y respuestas vacías tanto al iniciar como al completar OAuth. Los errores de preparación muestran categorías específicas y el servidor registra solo códigos fijos, sin datos personales ni tokens. No requiere nueva migración SQL. La autorización real debe comprobarse con el titular desde el botón Vincular Mercado Pago.
+
+
+## Estado revisado — versión 1.0.35
+
+El endpoint de producción ya responde y pasa la validación de configuración: una petición sin intento devuelve HTTP 400 INVALID_LINK_ATTEMPT, en lugar del antiguo 503 LINK_NOT_CONFIGURED. Las variables privadas MERCADOPAGO_CLIENT_ID y MERCADOPAGO_CLIENT_SECRET están presentes en el entorno de producción. Esta comprobación verifica presencia; no verifica que las credenciales coincidan ni que Mercado Pago haya aprobado la cuenta.
+
+El código contrasta con la documentación oficial OAuth: Authorization Code, scope read, retorno HTTPS fijo y PKCE S256. Los fallos de credenciales, código vencido, permisos y persistencia se diferencian mediante códigos públicos fijos. Los logs MP_LINK_START, MP_LINK_LAUNCH y MP_LINK_CALLBACK contienen únicamente etapa/resultado; nunca códigos de autorización, cookies, identidad, tokens o URLs privadas. Las variables se normalizan para evitar espacios al copiar valores.
+
+Una autorización real sigue pendiente de verificación por el titular. No se accedió a su cuenta de Mercado Pago ni se concedieron permisos desde este entorno. No se efectuaron pagos. Si el proveedor muestra «La aplicación no está preparada» antes de volver al callback, no hay una respuesta OAuth que ColegioLibre pueda reparar: hay que comprobar la URL y PKCE en el panel de la misma aplicación o solicitar a Mercado Pago que revise su habilitación. No se cambia arbitrariamente el tipo de Checkout ni se crea un vínculo ficticio para ocultar ese bloqueo.

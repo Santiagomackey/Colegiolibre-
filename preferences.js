@@ -21,6 +21,10 @@
   let translationTask = null;
   const protectedContentSelector = [
     "[data-no-translate]",
+    "[translate=no]",
+    ".message__body",
+    ".conversation-card__name",
+    ".conversation-card__preview",
     "[data-product-title]",
     ".product-title",
     ".publication-card__title",
@@ -927,6 +931,668 @@
 
   for (const [es,en] of Object.entries({"Eso que buscás": "What you need", "puede estar por aparecer.": "could show up any moment.", "Contanos qué material necesitás. Cuando se publique una coincidencia, te avisamos.": "Tell us which supplies you need. We will let you know when a match is posted.", "Contanos qué buscás": "Tell us what you need", "Un libro, un uniforme, eso que te falta.": "A book, a uniform, whatever you are missing.", "Elegí dónde encontrarlo": "Choose where to look", "Tu colegio, tu zona o todo el país.": "Your school, nearby or nationwide.", "Recibí el aviso": "Get notified", "Te avisamos si aparece una coincidencia.": "We let you know when a match appears.", "Empezá por el nombre del material que necesitás.": "Start with the name of the supplies you need.", "PARA AYUDARNOS ENTRE TODOS": "HELPING EACH OTHER", "alertas activas de estudiantes y familias.": "active alerts from students and families.", "Las alertas no están disponibles ahora": "Alerts are unavailable right now", "No pudimos conectarnos. Podés volver a intentar en un momento.": "We could not connect. Please try again in a moment.", "Todavía no hay alertas acá": "No alerts here yet", "Probá otro alcance o creá una alerta con el material que necesitás.": "Try another area or create an alert for the supplies you need.", "Ej. Libro de Matemática de 3.º año": "E.g. Year 3 maths textbook", "Buscar material, categoría…": "Search by item or category…"})) translations.set(es,en);
 
+  // Public UI coverage: search, account, alerts, school portals and callbacks.
+  for (const [es,en] of Object.entries({
+  "Abriendo ColegioLibre": "Opening ColegioLibre",
+  "Abriendo ColegioLibre…": "Opening ColegioLibre…",
+  "Explorar productos por categoría": "Browse products by category",
+  "Filtros específicos de la categoría": "Category-specific filters",
+  "Cargando alertas…": "Loading alerts…",
+  "ColegioLibre, inicio": "ColegioLibre, home",
+  "Un lugar para comprar, vender e intercambiar materiales escolares entre estudiantes y familias.": "A place for students and families to buy, sell and exchange school supplies.",
+  "Plataforma": "Platform",
+  "PLATAFORMA": "PLATFORM",
+  "Explorar productos": "Browse products",
+  "Buscar material": "Find supplies",
+  "Para instituciones": "For schools",
+  "AYUDA": "HELP",
+  "INFORMACIÓN": "INFORMATION",
+  "Colegios e instituciones": "Schools and institutions",
+  "CONTACTO": "CONTACT",
+  "¿Necesitás ayuda o querés hacernos una consulta?": "Need help or have a question?",
+  "Escribinos por correo": "Email us",
+  "ColegioLibre. Todos los derechos reservados.": "ColegioLibre. All rights reserved.",
+  "Explorar": "Browse",
+  "Categorías y accesos": "Categories and shortcuts",
+  "Cerrar categorías": "Close categories",
+  "Busco un material": "Find school supplies",
+  "Configuración de cuenta": "Account settings",
+  "Tu nombre": "Your name",
+  "Escribí el nombre del colegio. La ciudad y el barrio aparecen debajo para que elijas la sede correcta.": "Enter the school name. The city and neighbourhood appear below so you can choose the right campus.",
+  "Ej: La Salle, Florida Day o FDS…": "E.g. La Salle, Florida Day or FDS…",
+  "Buscar libros y material escolar | ColegioLibre": "Find books and school supplies | ColegioLibre",
+  "DESCUBRÍ EN COLEGIOLIBRE": "DISCOVER ON COLEGIOLIBRE",
+  "Encontrá exactamente": "Find exactly",
+  "lo que necesitás.": "what you need.",
+  "Ej. libro de matemática de 4.º año, calculadora, uniforme…": "E.g. Year 4 maths textbook, calculator, uniform…",
+  "Calculadoras": "Calculators",
+  "Filtros": "Filters",
+  "Limpiar": "Clear",
+  "Cualquier colegio": "Any school",
+  "Precio máximo": "Maximum price",
+  "Sin límite": "No limit",
+  "Ordenar": "Sort",
+  "Más vistos": "Most viewed",
+  "PARA VOS": "FOR YOU",
+  "Descubrí algo útil": "Discover something useful",
+  "0 resultados": "0 results",
+  "Cargando publicaciones…": "Loading listings…",
+  "No pudimos cargar las publicaciones. Revisá tu conexión y volvé a intentar.": "We could not load the listings. Check your connection and try again.",
+  "Volver a intentar": "Try again",
+  "Ver más productos": "View more products",
+  "No encontramos eso todavía.": "We have not found that yet.",
+  "Probá con menos palabras o cambiá los filtros. También podés crear una alerta y te avisamos cuando aparezca.": "Try fewer words or change the filters. You can also create an alert and we will notify you when it appears.",
+  "Buscar por materia y curso": "Search by subject and year",
+  "Encontrá material escolar más rápido.": "Find school supplies faster.",
+  "Apuntes y exámenes": "Notes and exams",
+  "4.º año": "Year 4",
+  "5.º año": "Year 5",
+  "Navegación de ubicación": "Breadcrumb navigation",
+  "Miniaturas del producto": "Product thumbnails",
+  "0 guardados": "0 saved",
+  "Compartir por WhatsApp": "Share on WhatsApp",
+  "Reputación del vendedor": "Seller reputation",
+  "Cerrar reporte": "Close report",
+  "Cerrar": "Close",
+  "Explicanos brevemente qué observaste.": "Briefly explain what you noticed.",
+  "Ej: Matemática 3 - Santillana": "E.g. Mathematics 3 - Santillana",
+  "Ej: 15000": "E.g. 15000",
+  "Contá el estado del producto, edición, si tiene marcas, subrayados, etc.": "Describe the condition, edition, marks, highlighting, and other details.",
+  "Subí hasta 6 fotos. En computadora también podés arrastrarlas aquí": "Upload up to 6 photos. On a computer, you can also drag them here",
+  "Agregar foto 2": "Add photo 2",
+  "Agregar foto 3": "Add photo 3",
+  "Tu producto": "Your product",
+  "Zona de tu colegio": "Your school area",
+  "Buscar por persona o producto": "Search by person or product",
+  "Chat abierto": "Open chat",
+  "Volver a conversaciones": "Back to conversations",
+  "No incluyas contraseñas ni información bancaria.": "Do not include passwords or bank details.",
+  "Panel de cuenta": "Account dashboard",
+  "Navegación de la cuenta": "Account navigation",
+  "Configuración de la cuenta": "Account settings",
+  "Acciones de la cuenta": "Account actions",
+  "Estados de publicaciones": "Listing statuses",
+  "Ej: ECCL-X7P9": "E.g. ECCL-X7P9",
+  "Ej: Caballito, CABA": "E.g. Caballito, Buenos Aires",
+  "mi.alias": "my.alias",
+  "Abrir acciones de publicación": "Open listing actions",
+  "Cargando perfil...": "Loading profile...",
+  "Resumen de reputación": "Reputation summary",
+  "Buscar dentro del colegio": "Search within the school",
+  "Pedidos de la comunidad | ColegioLibre": "Community alerts | ColegioLibre",
+  "Activá los avisos para enterarte a tiempo.": "Enable notifications to stay up to date.",
+  "CREAR ALERTA": "CREATE ALERT",
+  "Tipo de búsqueda": "Search type",
+  "Quiero comprar": "I want to buy",
+  "Acepto intercambio": "Open to exchanges",
+  "Compra o intercambio": "Buy or exchange",
+  "Ej. 35000": "E.g. 35000",
+  "Edición, año, talle, color o cualquier dato útil": "Edition, year, size, colour or any useful details",
+  "Solo tu comunidad": "Your community only",
+  "Colegios cercanos": "Nearby schools",
+  "Todo el país": "Nationwide",
+  "Vista previa de tu alerta": "Preview your alert",
+  "Filtrar pedidos": "Filter requests",
+  "Buscar alertas": "Search alerts",
+  "Cargando pedidos…": "Loading requests…",
+  "Ver pedidos": "View orders",
+  "ColegioLibre | Material escolar": "ColegioLibre | School supplies",
+  "ColegioLibre · Estudiar": "ColegioLibre · Study",
+  "Encontrá material para estudiar.": "Find study materials.",
+  "Ej: funciones cuadráticas 4.º año": "E.g. quadratic functions Year 4",
+  "Buscando…": "Searching…",
+  "Cargando materiales…": "Loading materials…",
+  "Encontrá lo que necesitás para estudiar": "Find what you need to study",
+  "Filtrá material por materia y año. Cada publicación muestra información académica para que puedas encontrar apuntes, resúmenes, libros, guías y exámenes con menos vueltas.": "Filter materials by subject and year. Each listing includes academic details to help you find notes, summaries, books, guides and exams more easily.",
+  "productos prohibidos": "prohibited items",
+  "Probá la aplicación": "Try the app",
+  "Si participás de la beta, completá el recorrido desde tu celular. Podrás marcar cada prueba y enviar errores o sugerencias sin incluir datos privados.": "If you are taking part in the beta, complete the walkthrough on your phone. You can tick off each test and submit issues or suggestions without including private information.",
+  "Abrir prueba guiada": "Open guided test",
+  "Prueba beta": "Beta test",
+  "Contenido": "Contents",
+  "Sumá tu colegio | ColegioLibre": "Add your school | ColegioLibre",
+  "COLEGIOLIBRE PARA INSTITUCIONES": "COLEGIOLIBRE FOR SCHOOLS",
+  "El marketplace oficial de tu comunidad escolar.": "The official marketplace for your school community.",
+  "Un espacio propio para que las familias de tu colegio compren, vendan y reutilicen materiales de forma simple y segura.": "A dedicated space for families at your school to buy, sell and reuse supplies simply and safely.",
+  "Ver planes": "View plans",
+  "Empezá gratis y mejorá el portal cuando tu comunidad crezca": "Start for free and upgrade your portal as your community grows",
+  "Plan inicial gratuito": "Free starter plan",
+  "Identidad personalizada": "Custom branding",
+  "Sin trabajo técnico": "No technical work",
+  "Vista previa del portal institucional": "School portal preview",
+  "Tu Colegio": "Your School",
+  "Comunidad oficial": "Official community",
+  "Materiales de tu comunidad": "Supplies from your community",
+  "Matemática IGCSE": "IGCSE Mathematics",
+  "Uniforme escolar": "School uniform",
+  "Mochila azul": "Blue backpack",
+  "Características del servicio": "Service features",
+  "Desde $0": "From $0",
+  "Un plan para cada etapa del colegio": "A plan for every stage of your school",
+  "Padrón oficial": "Official directory",
+  "Instituciones argentinas verificadas": "Verified Argentine schools",
+  "Administración simple": "Simple administration",
+  "Sin conocimientos técnicos": "No technical knowledge needed",
+  "Identidad propia": "Your own identity",
+  "Logo, colores y dirección exclusiva": "Logo, colours and a dedicated address",
+  "Cómo solicitar el portal": "How to request a portal",
+  "Buscá tu colegio": "Find your school",
+  "Usamos el padrón oficial argentino.": "We use Argentina's official school directory.",
+  "Personalizalo": "Make it yours",
+  "Elegí su nombre, código y colores.": "Choose its name, code and colours.",
+  "Enviá la solicitud": "Submit your request",
+  "La revisamos antes de activarla.": "We review it before activation.",
+  "PLANES PARA INSTITUCIONES": "PLANS FOR SCHOOLS",
+  "Una solución que crece con tu comunidad.": "A solution that grows with your community.",
+  "Todos los planes incluyen un portal seguro, acceso para las familias y acompañamiento de ColegioLibre.": "Every plan includes a secure portal, family access and support from ColegioLibre.",
+  "Modalidad de facturación": "Billing frequency",
+  "Mensual": "Monthly",
+  "Anual": "Yearly",
+  "2 meses gratis": "2 months free",
+  "PARA EMPEZAR": "GETTING STARTED",
+  "La forma más simple de abrir un espacio oficial para las familias del colegio.": "The simplest way to open an official space for your school's families.",
+  "para siempre": "forever",
+  "Sin tarjeta ni compromiso de permanencia.": "No card or long-term commitment required.",
+  "Crear portal gratis": "Create a free portal",
+  "Incluye:": "Includes:",
+  "Portal exclusivo del colegio": "Dedicated school portal",
+  "Publicaciones y búsquedas ilimitadas": "Unlimited listings and searches",
+  "Logo y nombre institucional": "School logo and name",
+  "Soporte por email": "Email support",
+  "Panel de métricas avanzadas": "Advanced analytics dashboard",
+  "MÁS ELEGIDO": "MOST POPULAR",
+  "PARA COLEGIOS ACTIVOS": "FOR ACTIVE SCHOOLS",
+  "Institucional": "Institutional",
+  "Más control, identidad y herramientas para convertir el portal en un servicio del colegio.": "More control, branding and tools to make the portal part of your school's services.",
+  "/mes": "/month",
+  "Facturación mensual. Cancelá cuando quieras.": "Billed monthly. Cancel anytime.",
+  "Elegir Institucional": "Choose Institutional",
+  "Todo lo de Comunidad, más:": "Everything in Community, plus:",
+  "Colores y portada personalizados": "Custom colours and cover",
+  "Panel de métricas del colegio": "School analytics dashboard",
+  "Moderación y usuarios responsables": "Moderation and responsible account holders",
+  "Comunicaciones destacadas": "Featured announcements",
+  "Soporte prioritario": "Priority support",
+  "PARA GRUPOS EDUCATIVOS": "FOR SCHOOL GROUPS",
+  "Red Escolar": "School Network",
+  "Una administración central para instituciones con varias sedes o comunidades.": "Central administration for institutions with multiple campuses or communities.",
+  "Facturación mensual por red educativa.": "Monthly billing per school network.",
+  "Elegir Red Escolar": "Choose School Network",
+  "Todo lo de Institucional, más:": "Everything in Institutional, plus:",
+  "Hasta 5 sedes conectadas": "Up to 5 connected campuses",
+  "Panel general y métricas por sede": "Central dashboard and campus analytics",
+  "Administradores por institución": "Administrators for each institution",
+  "Implementación acompañada": "Guided setup",
+  "Soporte directo y seguimiento": "Direct support and follow-up",
+  "Los precios se expresan en pesos argentinos y no incluyen impuestos. Las familias usan ColegioLibre sin costo.": "Prices are in Argentine pesos and exclude taxes. Families use ColegioLibre free of charge.",
+  "SOLICITUD INSTITUCIONAL": "SCHOOL APPLICATION",
+  "Creá el portal de tu colegio": "Create your school's portal",
+  "Completá los datos. Podrás revisar todo antes de enviarlo.": "Fill in the details. You can review everything before submitting.",
+  "Plan Comunidad": "Community Plan",
+  "PLAN SELECCIONADO": "SELECTED PLAN",
+  "Gratis para siempre. No requiere medio de pago.": "Free forever. No payment method required.",
+  "Cambiar": "Change",
+  "Proceso de contratación": "Application process",
+  "Solicitud": "Application",
+  "Verificación": "Verification",
+  "Pago seguro": "Secure payment",
+  "Activación": "Activation",
+  "El plan Comunidad no requiere tarjeta. Se activa cuando aprobamos los datos del colegio.": "The Community plan does not require a card. It is activated once we approve the school's details.",
+  "Necesitás iniciar sesión para enviar una solicitud verificable.": "Sign in to submit a verifiable application.",
+  "Institución oficial": "Official institution",
+  "Encontrala por nombre, dirección o CUE.": "Find it by name, address or school ID (CUE).",
+  "Buscá el colegio": "Find the school",
+  "Nombre, dirección o CUE": "Name, address or school ID (CUE)",
+  "Colegio seleccionado": "Selected school",
+  "Identidad del portal": "Portal identity",
+  "Así se verá y encontrará tu comunidad.": "How your community will look and be found.",
+  "Nombre corto": "Short name",
+  "Ej. ORT Almagro": "E.g. ORT Almagro",
+  "Código sugerido": "Suggested code",
+  "Email de contacto institucional": "School contact email",
+  "Colores institucionales": "School colours",
+  "Personalizá el portal con la identidad del colegio.": "Personalise the portal with your school's identity.",
+  "Confirmo que pertenezco o represento a esta comunidad educativa.": "I confirm that I belong to or represent this school community.",
+  "Solicitar portal gratuito": "Request a free portal",
+  "PROCESO DE ACTIVACIÓN": "ACTIVATION PROCESS",
+  "Nos ocupamos de que el portal quede listo.": "We take care of getting your portal ready.",
+  "Una vez enviada la solicitud, ColegioLibre verifica los datos antes de habilitar la comunidad.": "After you submit a request, ColegioLibre verifies the details before enabling the community.",
+  "Revisión institucional": "School review",
+  "Validamos el colegio y el contacto responsable.": "We verify the school and its responsible contact.",
+  "Configuración del portal": "Portal setup",
+  "Aplicamos el nombre, la dirección y los colores.": "We apply the name, address and colours.",
+  "Recibís el acceso para compartirlo con las familias.": "You receive access to share with families.",
+  "Solicitud segura y verificable": "Secure, verifiable application",
+  "Nunca publicamos un portal sin revisar sus datos.": "We always review a portal's details before publishing it.",
+  "¿Tenés dudas? Hablá con nosotros →": "Have questions? Talk to us →",
+  "MIS SOLICITUDES": "MY APPLICATIONS",
+  "Seguimiento": "Tracking",
+  "Consultá el estado de los portales que solicitaste.": "Check the status of the portals you requested.",
+  "Hecho por estudiantes para comunidades escolares.": "Made by students for school communities.",
+  "Acerca de ColegioLibre": "About ColegioLibre",
+  "Acceso a la cuenta": "Account access",
+  "nombre@email.com": "your@email.com",
+  "Repetí tu contraseña": "Repeat your password",
+  "Ingresar con una cuenta externa": "Sign in with an external account",
+  "o continuá con": "or continue with",
+  "Confirmar contraseña nueva": "Confirm new password",
+  "Repetí la contraseña nueva": "Repeat the new password",
+  "UN ÚLTIMO PASO": "ONE LAST STEP",
+  "Revisá tu email": "Check your email",
+  "Te enviamos un enlace de confirmación a:": "We sent a confirmation link to:",
+  "Confirmá tu cuenta para continuar": "Confirm your account to continue",
+  "Después de verificarla vas a poder elegir tu colegio y completar tu perfil.": "After verification, you can choose your school and complete your profile.",
+  "Abrir la bandeja de entrada del correo": "Open your email inbox",
+  "Abrir mi correo": "Open my email",
+  "Ya confirmé mi email": "I confirmed my email",
+  "Reenviar email de verificación": "Resend verification email",
+  "Usar otro email": "Use another email",
+  "Prueba beta | ColegioLibre": "Beta test | ColegioLibre",
+  "Ayudanos a mejorar": "Help us improve",
+  "Probá ColegioLibre desde tu celular": "Try ColegioLibre on your phone",
+  "Completá estas pruebas como usarías normalmente la aplicación. Si algo falla o resulta confuso, reportalo al final.": "Complete these tests as you would normally use the app. If something fails or feels confusing, report it at the end.",
+  "Tu progreso": "Your progress",
+  "Recorrido recomendado": "Suggested walkthrough",
+  "10 pruebas importantes": "10 important tests",
+  "Reiniciar": "Reset",
+  "Tu experiencia": "Your experience",
+  "Tipo de comentario": "Feedback type",
+  "Encontré un error": "I found a bug",
+  "Algo fue confuso": "Something was confusing",
+  "Tengo una sugerencia": "I have a suggestion",
+  "Algo me gustó": "Something I liked",
+  "¿Dónde ocurrió?": "Where did it happen?",
+  "Seleccioná la página": "Select the page",
+  "Registro o inicio de sesión": "Sign-up or sign-in",
+  "Selección del colegio": "School selection",
+  "Detalle de producto": "Product details",
+  "Publicar o editar": "Create or edit a listing",
+  "Perfil": "Profile",
+  "Instalación de la app": "App installation",
+  "Otra parte": "Somewhere else",
+  "Calificación general": "Overall rating",
+  "¿Qué pasó o qué mejorarías?": "What happened or what would you improve?",
+  "Pasos para repetir el problema": "Steps to reproduce the issue",
+  "(opcional)": "(optional)",
+  "No incluyas contraseñas, códigos, DNI, direcciones ni conversaciones privadas.": "Do not include passwords, codes, ID numbers, addresses or private conversations.",
+  "Enviar comentario": "Send feedback",
+  "Cambiar contraseña | ColegioLibre": "Change password | ColegioLibre",
+  "Preparando el cambio…": "Preparing password reset…",
+  "Estamos abriendo la pantalla segura para crear tu nueva contraseña.": "We are opening the secure screen to create your new password.",
+  "Cambiar mi contraseña": "Change my password",
+  "Volvé a ColegioLibre": "Return to ColegioLibre",
+  "Abrí la app para continuar con tu cuenta.": "Open the app to continue with your account.",
+  "Abrir ColegioLibre": "Open ColegioLibre",
+  "Continuar en la web": "Continue on the website",
+  "Abrir publicación | ColegioLibre": "Open listing | ColegioLibre",
+  "Abrir publicación": "Open listing",
+  "Si tenés la aplicación instalada, podés ver el producto directamente en ColegioLibre.": "If you have the app installed, you can view the product directly in ColegioLibre.",
+  "Abrir en la aplicación": "Open in the app",
+  "Continuar en la website": "Continue on the website"
+})) translations.set(es,en);
+
+  for (const [es,en] of Object.entries({
+  "Volver al producto": "Back to listing",
+  "TU COMPRA": "YOUR PURCHASE",
+  "TU VENTA": "YOUR SALE",
+  "Vendedor: ": "Seller: ",
+  "Comprador: ": "Buyer: ",
+  "Pedido ": "Order ",
+  "Importe exacto a transferir · ARS": "Exact transfer amount · ARS",
+  "Total del pedido · ARS": "Order total · ARS",
+  "Estado del pedido": "Order status",
+  "Pedido cancelado. No realices una transferencia para este pedido.": "Order cancelled. Do not send a transfer for this order.",
+  "Transferí al vendedor": "Transfer to the seller",
+  "Datos de tu transferencia": "Your transfer details",
+  "Cuenta indicada para este pedido": "Account specified for this order",
+  "Ya avisaste que transferiste. No vuelvas a enviar dinero.": "You reported a transfer. Do not send the money again.",
+  "Usá Mercado Pago o tu banco. El dinero se transfiere fuera de ColegioLibre.": "Use Mercado Pago or your bank. The money is transferred outside ColegioLibre.",
+  "Método": "Method",
+  "Transferencia bancaria": "Bank transfer",
+  "Titular": "Account holder",
+  "Copiar alias": "Copy alias",
+  "Copiar CBU / CVU": "Copy CBU / CVU",
+  "Antes de transferir, verificá en tu banco el titular y el importe. ColegioLibre no verifica automáticamente el movimiento.": "Before transferring, check the recipient and amount in your bank. ColegioLibre does not verify the transfer automatically.",
+  "El vendedor confirmó el dinero recibido. Coordiná la entrega en el colegio.": "The seller confirmed receipt of the money. Arrange delivery at school.",
+  "El comprador confirmó que recibió el material.": "The buyer confirmed receiving the item.",
+  "No transfieras: esta publicación ya no está disponible. Si ya pagaste, avisale al vendedor y coordiná por chat.": "Do not transfer: this listing is no longer available. If you already paid, notify the seller and coordinate in chat.",
+  "Siguiente paso": "Next step",
+  "Después de transferir el importe exacto, avisale al vendedor. Esto no confirma el pago.": "After transferring the exact amount, let the seller know. This does not confirm payment.",
+  "Ya transferí": "I’ve transferred",
+  "Esperá a que el comprador indique que transfirió. No entregues el material hasta verificar el dinero.": "Wait for the buyer to report the transfer. Verify receipt of the money before handing over the item.",
+  "Esperando al vendedor. No vuelvas a transferir: el pago todavía no está confirmado.": "Waiting for the seller. Do not transfer again: payment is not confirmed yet.",
+  "El comprador indicó que transfirió. Revisá los movimientos de tu cuenta; un aviso o comprobante no confirma que recibiste el dinero.": "The buyer reported a transfer. Check your account transactions; a claim or receipt does not confirm that the money arrived.",
+  "Confirmar pago recibido": "Confirm payment received",
+  "Confirmar que lo recibí": "Confirm I received the item",
+  "Coordiná la entrega. El comprador confirmará cuando reciba el material.": "Arrange delivery. The buyer will confirm receiving the item.",
+  "Coordinar entrega en el colegio": "Arrange delivery at school",
+  "Cancelar sin transferencia": "Cancel before transferring",
+  "Actualizar estado": "Refresh status",
+  "Copiado.": "Copied.",
+  "No pudimos copiar. Seleccioná el dato y copialo manualmente.": "Could not copy. Select the value and copy it manually.",
+  "¿Ya hiciste la transferencia?": "Have you made the transfer?",
+  "El vendedor deberá verificar que el dinero llegó a su cuenta. Tu aviso no marca el pedido como pagado.": "The seller must verify the money arrived. Reporting a transfer does not mark the order paid.",
+  "Transferí el importe exacto a la cuenta indicada.": "I transferred the exact amount to the specified account.",
+  "Verificá tu cuenta antes de confirmar": "Check your account before confirming",
+  "Confirmá solo si viste el dinero acreditado en tu cuenta. No alcanza con el aviso del comprador o una captura.": "Confirm only after seeing the money credited to your account. A buyer claim or screenshot is not enough.",
+  "Verifiqué en mi cuenta que recibí el importe completo.": "I checked my account and received the full amount.",
+  "¿Recibiste el material?": "Did you receive the item?",
+  "El pedido quedará marcado como entregado.": "The order will be marked delivered.",
+  "Ya recibí el material acordado.": "I received the agreed item.",
+  "Cancelar este pedido": "Cancel this order",
+  "Si hubo una transferencia, no canceles: contactá a la otra persona.": "If money was transferred, do not cancel: contact the other person.",
+  "No se transfirió ni recibió dinero por este pedido.": "No money was transferred or received for this order.",
+  "Apunte": "Resumen",
+  "Rayado": "Cuadriculado",
+  "Escritura": "Geometría",
+  "Chica": "Mediana",
+  "Calculadora": "Tablet",
+  "Remera": "Chomba",
+  "Material deportivo": "Instrumento",
+  "Mi colegio": "My school",
+  "Mi zona": "My area",
+  "Toda Argentina": "Nationwide",
+  "Tu próxima búsqueda": "Your next search",
+  "Listo: recibirás mensajes y coincidencias en tu teléfono.": "Ready: messages and matches will appear on your phone.",
+  "Iniciá sesión para activar los avisos.": "Sign in to enable notifications.",
+  "No pudimos registrar el teléfono. Volvé a intentar.": "We could not register this phone. Try again.",
+  "Los avisos están bloqueados. Habilitalos en los ajustes del teléfono.": "Notifications are blocked. Enable them in your phone settings.",
+  "Recibí mensajes y coincidencias aunque no tengas la app abierta.": "Receive messages and matches while the app is closed.",
+  "Probar aviso": "Test notification",
+  "Activar avisos": "Enable notifications",
+  "Avisos mientras navegás. Usá la app Android para recibirlos con el sitio cerrado.": "Notifications while browsing. Use the Android app to receive them with the site closed.",
+  "Avisos activados": "Notifications enabled",
+  "Así vas a recibir tus avisos.": "This is how you will receive notifications.",
+  "No pudimos activar los avisos. Volvé a intentar.": "We could not enable notifications. Try again.",
+  "Pendiente de pago": "Payment pending",
+  "Esperando confirmación": "Awaiting confirmation",
+  "Pagado": "Paid",
+  "Entregado": "Delivered",
+  "Cancelado": "Cancelled",
+  "Completá tu perfil antes de comprar.": "Complete your profile before buying.",
+  "El alias debe tener entre 6 y 20 letras, números, puntos o guiones.": "Use 6–20 letters, numbers, dots or hyphens for the alias.",
+  "Ingresá los 22 dígitos de tu CBU o CVU.": "Enter the 22 digits of your CBU or CVU.",
+  "Ingresá el nombre del titular de la cuenta.": "Enter the account holder’s name.",
+  "El vendedor todavía no configuró sus datos de cobro. Contactalo antes de comprar.": "The seller has not set up payment details yet. Contact them before buying.",
+  "Este producto tiene otro pedido activo. Contactá al vendedor.": "This item has another active order. Contact the seller.",
+  "Este producto ya no está disponible.": "This item is no longer available.",
+  "No podés comprar tu propia publicación.": "You cannot buy your own listing.",
+  "No encontramos este pedido en tu cuenta.": "This order could not be found in your account.",
+  "Iniciá sesión para continuar.": "Sign in to continue.",
+  "Tu cuenta no está habilitada para comprar.": "Your account cannot make purchases.",
+  "Solo el vendedor puede confirmar el dinero recibido.": "Only the seller can confirm receipt of payment.",
+  "El pedido cambió. Actualizá para ver su estado.": "This order has changed. Refresh to see its status.",
+  "No se puede cancelar después de indicar la transferencia. Contactá a la otra persona.": "You cannot cancel after reporting a transfer. Contact the other person.",
+  "No pudimos completar la acción. Volvé a intentar.": "We could not complete this action. Try again.",
+  "Buscar material escolar": "Search school supplies",
+  "¿Qué material estás buscando?": "What school supplies are you looking for?",
+  "Mensajes": "Messages",
+  "Favoritos": "Favorites",
+  "Mi perfil": "My profile",
+  "Configuración": "Settings",
+  "Mis compras y ventas": "My purchases and sales",
+  "Cerrar sesión": "Sign out",
+  "Abrir menú de cuenta": "Open account menu",
+  "Categorías": "Categories",
+  "Acciones de tu cuenta": "Account actions",
+  "Todo": "All",
+  "Explorar": "Browse",
+  "Recién publicados": "New arrivals",
+  "Apuntes y exámenes": "Notes and exams",
+  "Alertas": "Alerts",
+  "Ayuda": "Help",
+  "Publicar": "Sell",
+  "Inicio": "Home",
+  "Iniciar sesión": "Sign in",
+  "Libros": "Books",
+  "Apuntes": "Notes",
+  "Cuadernos": "Notebooks",
+  "Útiles": "Supplies",
+  "Mochilas": "Backpacks",
+  "Tecnología": "Technology",
+  "Uniformes": "Uniforms",
+  "Otros": "Other",
+  "Guardando datos…": "Saving details…",
+  "Datos guardados. Los pedidos ya iniciados conservan los datos anteriores.": "Details saved. Existing orders keep their original payment details.",
+  "Cargando pedidos…": "Loading orders…",
+  "Todavía no hay pedidos acá": "No orders here yet",
+  "Las compras por transferencia aparecerán en esta sección.": "Purchases by transfer will appear here.",
+  "El enlace no está disponible": "This link is unavailable",
+  "Puede haber vencido o ya haber sido utilizado. Pedí un enlace nuevo para cambiar tu contraseña.": "It may have expired or already been used. Request a new link to reset your password.",
+  "Pedir un enlace nuevo": "Request a new link",
+  "Abriendo Mercado Pago…": "Opening Mercado Pago…",
+  "Iniciá sesión nuevamente para vincular tu cuenta.": "Sign in again to link your account.",
+  "ColegioLibre todavía no habilitó Mercado Pago. Falta completar la configuración del servidor.": "ColegioLibre has not enabled Mercado Pago yet. Server setup must be completed.",
+  "La conexión con Mercado Pago no está instalada en el servidor de ColegioLibre.": "The Mercado Pago connection is not installed on the ColegioLibre server.",
+  "Falta actualizar la base de datos de vinculación de ColegioLibre.": "The ColegioLibre account-linking database needs an update.",
+  "No pudimos acceder al vínculo de tu cuenta. Volvé a iniciar sesión.": "We could not access your account link. Sign in again.",
+  "No pudimos cargar tu cuenta vinculada. Volvé a intentar.": "We could not load your linked account. Try again.",
+  "Tu cuenta está vinculada, pero no pudimos cargar el alias. Volvé a intentar antes de editarlo.": "Your account is linked, but we could not load your alias. Try again before editing it.",
+  "Hay varios intentos de vinculación pendientes. Esperá 10 minutos y volvé a intentar.": "Several linking attempts are pending. Wait 10 minutes and try again.",
+  "El servidor de ColegioLibre no pudo acceder a la base de datos. Es necesario revisar su configuración.": "The ColegioLibre server could not access the database. Its configuration needs to be checked.",
+  "No pudimos preparar la vinculación en la base de datos. Volvé a intentar.": "We could not prepare account linking in the database. Try again.",
+  "La base de datos devolvió una respuesta inesperada. Volvé a intentar.": "The database returned an unexpected response. Try again.",
+  "No pudimos abrir Mercado Pago. Volvé a intentar.": "We could not open Mercado Pago. Try again.",
+  "No pudimos conectar con el servidor. Revisá tu conexión y volvé a intentar.": "We could not connect to the server. Check your connection and try again.",
+  "No se completó la vinculación. Volvé a intentar.": "Linking did not complete. Try again.",
+  "Vinculación cancelada. No cambiamos tu cuenta.": "Linking cancelled. Your account was not changed.",
+  "Vínculo eliminado de ColegioLibre. También podés retirar el permiso desde Mercado Pago. Tus pedidos existentes no cambian.": "Link removed from ColegioLibre. You can also revoke access in Mercado Pago. Existing orders are unchanged.",
+  "Listo para recibir transferencias. Los pedidos ya iniciados no cambian.": "Ready to receive transfers. Existing orders are unchanged.",
+  "Cuenta vinculada: ": "Linked account: ",
+  "Vinculá tu cuenta para empezar.": "Link your account to get started.",
+  "Vincular otra cuenta": "Link another account",
+  "Vincular Mercado Pago": "Link Mercado Pago"
+})) translations.set(es,en);
+
+  for (const [es,en] of Object.entries({
+  "Revisá tu conexión y volvé a intentar.": "Check your connection and try again.",
+  "Configurá primero las notificaciones en Supabase.": "Configure notifications in Supabase first.",
+  "Avisos bloqueados en el teléfono": "Phone notifications blocked",
+  "Activar avisos del teléfono": "Enable phone notifications",
+  "No pudimos verificar el enlace": "We could not verify the link",
+  "El enlace puede haber vencido o ya fue utilizado. Podés volver a iniciar sesión.": "The link may have expired or already been used. You can sign in again.",
+  "Volver a iniciar sesión": "Sign in again",
+  "¡Email verificado!": "Email verified!",
+  "Estamos abriendo la aplicación de ColegioLibre…": "We are opening the ColegioLibre app…",
+  "Si la aplicación no se abrió, podés continuar en la website.": "If the app did not open, you can continue on the website.",
+  "Tu cuenta ya está activa. Estamos abriendo ColegioLibre…": "Your account is active. We are opening ColegioLibre…",
+  "No encontramos este colegio": "We could not find this school",
+  "Buscar mi colegio": "Find my school",
+  "Seguí todas tus conversaciones activas y contestá rápido desde un solo lugar.": "Keep track of your active conversations and reply quickly from one place.",
+  "Acá vas a concentrar tu historial de compras cuando empieces a reservar materiales.": "Your purchase history will appear here when you start reserving supplies.",
+  "Revisá tus materiales vendidos y el rendimiento de tus publicaciones cerradas.": "Review your sold items and the performance of your closed listings.",
+  "Actualizá tu perfil, tu colegio y la zona usada para personalizar la experiencia.": "Update your profile, school and the area used to personalise your experience.",
+  "No se pudo cargar la verificación escolar:": "Could not load school verification:",
+  "El historial de operaciones todavía no está disponible:": "Transaction history is not available yet:",
+  "Producto sin título": "Untitled product",
+  "Centralizá todas tus conversaciones con compradores y vendedores. Desde acá podés entrar al chat completo y responder rápido.": "Keep all your conversations with buyers and sellers in one place. Open the full chat and reply quickly.",
+  "Tu colegio ya fue enviado a revisión. Un administrador puede aprobarlo desde el Centro de moderación.": "Your school has been submitted for review. An administrator can approve it in the Moderation Centre.",
+  "La solicitud no pudo aprobarse. Revisá tu colegio o probá con un código válido.": "The request could not be approved. Check your school or try a valid code.",
+  "Verificá tu colegio con un código temporal o enviá una solicitud manual.": "Verify your school with a temporary code or submit a manual request.",
+  "Cuando reserves o compres un producto desde el chat, la operación aparecerá acá.": "When you reserve or buy a product through chat, the transaction will appear here.",
+  "Completada": "Completed",
+  "¿Querés cancelar la reserva? El producto volverá a estar disponible.": "Cancel the reservation? The product will become available again.",
+  "Error cerrando sesión:": "Error signing out:",
+  "Para confirmar, escribí \"DESACTIVAR\".": "To confirm, type \"DESACTIVAR\".",
+  "No se pudo desactivar la cuenta. Ejecutá primero el archivo SQL 8.": "Could not deactivate the account. Run SQL file 8 first.",
+  "Cerrar búsqueda": "Close search",
+  "¿Qué estás buscando?": "What are you looking for?",
+  "¡Recorrido completo! Ya podés enviar tu opinión.": "Walkthrough complete! You can now send your feedback.",
+  "¡Gracias! Recibimos tu comentario correctamente.": "Thank you! We received your feedback.",
+  "No pudimos enviar el comentario. Probá nuevamente.": "We could not send your feedback. Try again.",
+  "¿Querés reiniciar todas las pruebas?": "Reset all tests?",
+  "Instalá la aplicación": "Install the app",
+  "Creá una cuenta o iniciá sesión": "Create an account or sign in",
+  "Buscá y elegí tu colegio": "Find and choose your school",
+  "Probá por nombre conocido y por dirección.": "Try searching by a familiar name and by address.",
+  "Explorá productos y categorías": "Browse products and categories",
+  "Usá búsqueda, condición, categoría y alcance.": "Try search, condition, category and area filters.",
+  "Abrí el detalle de un producto": "Open a product's details",
+  "Revisá fotos, datos, vendedor y botones.": "Check photos, details, seller information and buttons.",
+  "Confirmá que aparezca correctamente en Favoritos.": "Check that it appears correctly in Favourites.",
+  "Publicá un producto de prueba": "Create a test listing",
+  "Editá, pausá y reactivá": "Edit, pause and reactivate",
+  "Probá el menú de una publicación propia.": "Try the menu on one of your own listings.",
+  "Iniciá una conversación": "Start a conversation",
+  "Probá apariencia e idioma": "Test appearance and language",
+  "Revisá modo claro, oscuro, español e inglés.": "Check the layout, Spanish and English.",
+  "Economía": "Economics",
+  "Francés": "French",
+  "Guía de estudio": "Study guide",
+  "Trabajo práctico": "Assignment",
+  "Geometría": "Geometry",
+  "Organización": "Organisation",
+  "Pantalón": "Trousers",
+  "La publicación quedó en revisión manual:": "The listing was sent for manual review:",
+  "Error cargando la publicación:": "Error loading the listing:",
+  "Algunas imágenes no son válidas o superan los 6 MB.": "Some images are invalid or exceed 6 MB.",
+  "Tenés que iniciar sesión para subir imágenes.": "Sign in to upload images.",
+  "Guardando cambios...": "Saving changes...",
+  "No disponible": "Unavailable",
+  "Respuesta inválida": "Invalid response",
+  "Facturación anual mediante Mercado Pago.": "Yearly billing through Mercado Pago.",
+  "Facturación mensual mediante Mercado Pago.": "Monthly billing through Mercado Pago.",
+  "Primero verificamos que representes al colegio. Cuando la solicitud sea aprobada, en Seguimiento aparecerá el botón para pagar con Mercado Pago. No se cobra nada antes de la aprobación.": "We first verify that you represent the school. Once approved, a Mercado Pago payment button appears in Tracking. You are not charged before approval.",
+  "Enviar solicitud del plan ": "Submit application for plan ",
+  "Primero seleccioná el colegio oficial.": "Select the official school first.",
+  "Ese colegio ya tiene una solicitud pendiente. ColegioLibre la revisará pronto.": "This school already has a pending application. ColegioLibre will review it soon.",
+  "No pudimos enviarla: ": "We could not submit it: ",
+  "Solicitud enviada. ColegioLibre la revisará antes de activar el portal.": "Application submitted. ColegioLibre will review it before activating the portal.",
+  "No pudimos abrir el pago.": "We could not open the payment page.",
+  "Sin ubicacion": "No location",
+  "calculadora científica": "scientific calculator",
+  "libro de física": "physics book",
+  "Libro de Matemática 3": "Year 3 Mathematics textbook",
+  "Ingresar": "Sign in",
+  "Cargando publicaciones reales...": "Loading listings...",
+  "Tu cuenta está bloqueada. Revisá el estado desde tu perfil.": "Your account is blocked. Check its status in your profile.",
+  "Tu cuenta está suspendida temporalmente.": "Your account is temporarily suspended.",
+  "No se pudo cerrar la sesión:": "Could not sign out:",
+  "Sesión cerrada.": "Signed out.",
+  "No se pudieron cargar los productos reales:": "Could not load listings:",
+  "No pudimos conectarnos con las publicaciones.": "We could not connect to the listings.",
+  "Resultados de búsqueda": "Search results",
+  "Sin resultados para los filtros actuales.": "No results for the current filters.",
+  "tamaño": "size",
+  "No pudimos cargar las publicaciones.": "We could not load the listings.",
+  "Revisá tu conexión y volvé a intentarlo.": "Check your connection and try again.",
+  "Error de conexión": "Connection error",
+  "No se pudieron cargar algunos perfiles:": "Could not load some profiles:",
+  "No se pudieron cargar algunos productos:": "Could not load some products:",
+  "Error cargando conversación:": "Error loading conversation:",
+  "Este producto está reservado para vos": "This product is reserved for you",
+  "Comentario opcional (máximo 500 caracteres)": "Optional comment (up to 500 characters)",
+  "Esta reserva no está asociada a tu cuenta.": "This reservation is not associated with your account.",
+  "Leído": "Read",
+  "No se pudo cargar Analytics.": "Could not load Analytics.",
+  "Tu cuenta no tiene permisos de administrador.": "Your account does not have administrator permissions.",
+  "La sesión expiró.": "Your session has expired.",
+  "Instalá ColegioLibre": "Install ColegioLibre",
+  "Instalá ColegioLibre directamente en tu pantalla de inicio.": "Install ColegioLibre directly on your home screen.",
+  "Instalá la versión para iPhone desde Safari.": "Install the iPhone version through Safari.",
+  "Ver pasos": "View steps",
+  "Abrí esta página desde Safari.": "Open this page in Safari.",
+  "Tocá el botón Compartir que aparece abajo en la pantalla.": "Tap the Share button at the bottom of the screen.",
+  "Elegí “Agregar a pantalla de inicio”, activá “Abrir como app” y tocá Agregar.": "Choose “Add to Home Screen”, enable “Open as Web App” and tap Add.",
+  "Hay una nueva versión": "A new version is available",
+  "Actualizá para recibir las últimas mejoras.": "Update to get the latest improvements.",
+  "Después": "Later",
+  "Abrí el menú de tu navegador y elegí Instalar app o Agregar a pantalla de inicio.": "Open your browser menu and choose Install app or Add to Home Screen.",
+  "No pudimos cargar las publicaciones. Volvé a intentar.": "We could not load the listings. Try again.",
+  "No se pudo completar la verificación en la app:": "Could not complete verification in the app:",
+  "Tenés un nuevo aviso.": "You have a new notification.",
+  "No se encontró el cliente de Supabase.": "Supabase client not found.",
+  "No se pudo comprobar la sesión:": "Could not check the session:",
+  "No se pudo comprobar el perfil:": "Could not check the profile:",
+  "No se pudieron buscar colegios:": "Could not search schools:",
+  "No se pudo verificar el colegio:": "Could not verify the school:",
+  "No se pudo guardar el perfil:": "Could not save the profile:",
+  "El perfil se guardó, pero no sus metadatos:": "The profile was saved, but its metadata was not:",
+  "Guardando…": "Saving…",
+  "Cargando reportes…": "Loading reports…",
+  "Primero ejecutá sql/9_CONFIGURAR_PRUEBAS_BETA.sql en Supabase.": "Run sql/9_CONFIGURAR_PRUEBAS_BETA.sql in Supabase first.",
+  "Tester sin sesión": "Signed-out tester",
+  "No se pudo cargar la identidad institucional:": "Could not load school branding:",
+  "Inicio de la comunidad de ": "Community home for ",
+  "Comprá y vendé libros, uniformes y materiales dentro de una comunidad que ya conocés.": "Buy and sell books, uniforms and supplies within a community you already know.",
+  "Publicar un producto ": "List a product ",
+  "Encontrá exactamente lo que necesitás": "Find exactly what you need",
+  "Una forma más cercana, económica y sustentable de circular materiales dentro de ": "A closer, more affordable and sustainable way to reuse supplies within ",
+  "No se pudo subir el logo institucional:": "Could not upload the school logo:",
+  "No se pudo guardar la identidad institucional:": "Could not save school branding:",
+  "Nombre de la nueva colección": "New collection name",
+  "Ver producto": "View product",
+  "Mover a colección": "Move to collection",
+  "Primero elegí tu colegio desde Mi perfil.": "Choose your school in My profile first.",
+  "Primero completá tu zona desde Mi perfil.": "Complete your area in My profile first.",
+  "No pudimos crear tu alerta. Volvé a intentar en un momento.": "We could not create your alert. Try again in a moment.",
+  "¡Alerta creada! Te avisaremos cuando aparezca una coincidencia.": "Alert created! We will notify you when a match appears.",
+  "No pudimos conectarnos. Volvé a intentar.": "We could not connect. Try again.",
+  "No se encontró este perfil.": "Profile not found.",
+  "Este perfil no está disponible. Podés volver al inicio para seguir explorando.": "This profile is unavailable. Return home to keep browsing.",
+  "Encontrá apuntes, libros, resúmenes, guías y material escolar publicado por la comunidad de ColegioLibre.": "Find notes, books, summaries, guides and school supplies listed by the ColegioLibre community.",
+  "Apuntes, resúmenes y exámenes": "Notes, summaries and exams",
+  "Buscá apuntes, resúmenes, guías de estudio, exámenes y trabajos prácticos por materia y año.": "Search notes, summaries, study guides, exams and assignments by subject and year.",
+  "No se pudo cargar el historial. Ejecutá el archivo SQL 8.": "Could not load the history. Run SQL file 8.",
+  "Sistema automático": "Automatic system",
+  "Estado de publicación": "Listing status",
+  "No se pudo cargar la revisión automática. Ejecutá primero el archivo SQL 4.": "Could not load the automated review. Run SQL file 4 first.",
+  "No se pudieron cargar los productos moderados:": "Could not load moderated products:",
+  "Publicación eliminada": "Listing deleted",
+  "Sin motivo informado.": "No reason provided.",
+  "Sin categoría": "No category",
+  "No especificado": "Not specified",
+  "Sin detalles adicionales.": "No further details.",
+  "Escribí el motivo del rechazo. La persona podrá verlo:": "Enter the reason for rejection. The person will be able to see it:",
+  "Seleccioná el código y copialo manualmente.": "Select the code and copy it manually.",
+  "Sin etiqueta": "No label",
+  "Sin código": "No code",
+  "Código temporal": "Temporary code",
+  "Guardar esta búsqueda": "Save this search",
+  "Escribí primero qué querés buscar.": "Enter what you want to search for first.",
+  "Ejecutá database/08_marketplace_loop.sql en Supabase para activar esta función.": "Run database/08_marketplace_loop.sql in Supabase to enable this feature.",
+  "Búsqueda guardada ✓": "Search saved ✓",
+  "Abrí una conversación antes de hacer una oferta.": "Open a conversation before making an offer.",
+  "Ejecutá database/08_marketplace_loop.sql en Supabase para activar ofertas.": "Run database/08_marketplace_loop.sql in Supabase to enable offers.",
+  "Reenvío temporalmente limitado": "Resending is temporarily limited",
+  "Tu email ya puede estar confirmado. Ingresá tu contraseña para continuar.": "Your email may already be confirmed. Enter your password to continue.",
+  "Comprobando la confirmación…": "Checking confirmation…",
+  "No se pudo iniciar la sesión confirmada.": "Could not start the verified session.",
+  "Todavía no figura confirmado. Si ya tocaste el enlace, esperá unos segundos y probá otra vez.": "Your email is not confirmed yet. If you already opened the link, wait a few seconds and try again.",
+  "No se pudo abrir Gmail de forma nativa:": "Could not open Gmail in the app:",
+  "Si tu correo no se abrió, entrá manualmente a tu bandeja de entrada.": "If your email did not open, go to your inbox manually.",
+  "Listo. Enviamos un nuevo enlace de confirmación.": "Done. We sent a new confirmation link.",
+  "Error reenviando verificación:": "Error resending verification:",
+  "Ese email ya tiene una cuenta. Probá iniciar sesión o recuperar tu contraseña.": "This email already has an account. Try signing in or resetting your password.",
+  "Ese email no fue aceptado. Revisalo o probá con otra dirección.": "This email was not accepted. Check it or try another address.",
+  "Esa contraseña fue rechazada por seguridad. Usá una nueva con mayúsculas, minúsculas, números y un símbolo.": "This password was rejected for security reasons. Use a new one with upper and lower case letters, numbers and a symbol.",
+  "El servicio de correo alcanzó su límite temporal. No es un problema de tu cuenta: esperá un rato antes de volver a intentarlo.": "The email service has reached its temporary limit. Your account is fine; wait a while before trying again.",
+  "supabase no está disponible": "Supabase is unavailable",
+  "No se pudo iniciar la sesión.": "Could not sign in.",
+  "Error al iniciar sesión:": "Error signing in:",
+  "Error al crear la cuenta:": "Error creating the account:",
+  "Error al recuperar la contraseña:": "Error requesting a password reset:",
+  "Error al actualizar la contraseña:": "Error updating the password:",
+  "Primero verificá tu email desde el enlace que te enviamos. Después vas a poder completar tu perfil.": "Verify your email using the link we sent first. You can then complete your profile.",
+  "Publicación no disponible | ColegioLibre": "Listing unavailable | ColegioLibre",
+  "Se cargó una ficha local porque falló Supabase:": "A local listing was loaded because Supabase failed:",
+  "Esta publicación está pausada y no aparece en el Home.": "This listing is paused and does not appear on the home page.",
+  "Ver imagen principal": "View main image",
+  "Ver colegio": "View school",
+  "calificación": "rating",
+  "Se cargaron similares locales porque falló Supabase:": "Local similar products were loaded because Supabase failed:",
+  "No podés reportar tu propia publicación.": "You cannot report your own listing.",
+  "Este producto no está disponible para contactar.": "This product is unavailable for contact.",
+  "Tu cuenta no está habilitada para iniciar conversaciones.": "Your account is not enabled to start conversations.",
+  "No podés contactarte con tu propio producto.": "You cannot contact yourself about your own product.",
+  "Abriendo conversación…": "Opening conversation…",
+  "Error creando conversación:": "Error creating conversation:",
+  "Navegación principal": "Main navigation",
+  "¿Seguro que querés rechazar esta solicitud?": "Are you sure you want to reject this application?",
+  "No se pudo completar: ": "Could not complete: ",
+  "sin membresía": "no membership"
+})) translations.set(es,en);
+
   const phraseTranslations = [
     ["La publicación aparecerá en ", "Your listing will appear in "],
     [" y también podrá encontrarse por zona.", " and can also be found by area."],
@@ -1033,11 +1699,35 @@
     "tu@email.com": "you@email.com"
   }));
 
+  const reverseTranslations=new Map([...translations].map(([es,en])=>[en,es]));
+  function sourceText(value){
+    const clean=String(value||'').trim().replace(/\s+/g,' ');
+    const spanish=reverseTranslations.get(clean);
+    if(/^(\d+) results?$/.test(clean))return clean.replace(/^(\d+) results?$/,(_,n)=>n+' '+(n==='1'?'resultado':'resultados'));
+    if(/^Filters · (\d+) active$/.test(clean))return clean.replace(/^Filters · (\d+) active$/,(_,n)=>'Filtros · '+n+' activos');
+    return spanish ? value.replace(clean,spanish) : value;
+  }
   function translateString(value) {
     const clean = String(value || "").trim().replace(/\s+/g, " ");
     if (!clean) return value;
     if (translations.has(clean)) return translations.get(clean);
 
+    const patterns=[
+      [/^(\d+) resultados?$/,(_,n)=>n+' '+(n==='1'?'result':'results')],
+      [/^(\d+) guardados?$/,(_,n)=>n+' saved'],
+      [/^Filtros · (\d+) activos$/,(_,n)=>'Filters · '+n+' active'],
+      [/^Resultados para (.+)$/,(_,q)=>'Results for '+q],
+      [/^(\d+)\.º año$/,(_,n)=>'Year '+n],
+      [/^Material de (\d+)\.º año$/,(_,n)=>'Year '+n+' study materials'],
+      [/^(.+): apuntes y material escolar$/,(_,subject)=>translateString(subject)+': notes and school supplies'],
+      [/^Encontrá apuntes, libros, guías, resúmenes y material de (.+) para estudiar, comprar o guardar en ColegioLibre\.$/,(_,subject)=>'Find '+translateString(subject)+' notes, books, guides, summaries and supplies to study, buy or save on ColegioLibre.'],
+      [/^Apuntes, libros, exámenes, guías y material para (\d+)\.º año reunidos en ColegioLibre\.$/,(_,n)=>'Year '+n+' notes, books, exams, guides and supplies together on ColegioLibre.'],
+      [/^Ver (.+)$/,(_,name)=>'View '+name],
+      [/^Guardar (.+) en favoritos$/,(_,name)=>'Save '+name+' to favorites'],
+      [/^Quitar (.+) de favoritos$/,(_,name)=>'Remove '+name+' from favorites'],
+      [/^Agregar foto (\d+)$/,(_,n)=>'Add photo '+n]
+    ];
+    for(const [pattern,render] of patterns)if(pattern.test(clean))return clean.replace(pattern,render);
     let result = String(value);
     for (const [spanish, english] of phraseTranslations) {
       if (result.includes(spanish)) result = result.replaceAll(spanish, english);
@@ -1045,29 +1735,36 @@
     return result;
   }
 
+  // Browser dialogs are UI too; never translate the value supplied by a user.
+  for(const name of ['alert','confirm','prompt']){
+    const native=window[name];
+    if(typeof native==='function')window[name]=function(message,...args){
+      return native.call(window,language==='en'?translateString(message):sourceText(message),...args);
+    };
+  }
+
   function translateTextNode(node) {
     if (!node.nodeValue?.trim()) return;
-    const parent = node.parentElement;
-    if (!parent || parent.closest(protectedContentSelector)) return;
-    if (!originalText.has(node)) originalText.set(node, node.nodeValue);
-    const original = originalText.get(node);
-    const leading = original.match(/^\s*/)[0];
-    const trailing = original.match(/\s*$/)[0];
-    node.nodeValue = language === "en" ? leading + translateString(original.trim()) + trailing : original;
+    const parent=node.parentElement;
+    if(!parent||parent.closest(protectedContentSelector))return;
+    let entry=originalText.get(node);
+    if(!entry||node.nodeValue!==entry.rendered){entry={original:sourceText(node.nodeValue),rendered:node.nodeValue};originalText.set(node,entry);}
+    const leading=entry.original.match(/^\s*/)[0],trailing=entry.original.match(/\s*$/)[0];
+    const next=language==='en'?leading+translateString(entry.original.trim())+trailing:entry.original;
+    entry.rendered=next;
+    if(node.nodeValue!==next)node.nodeValue=next;
   }
 
   function translateElementAttributes(element) {
-    if (element.closest?.(protectedContentSelector)) return;
-    if (!originalAttributes.has(element)) originalAttributes.set(element, new Map());
-    const originals = originalAttributes.get(element);
-    for (const attribute of ["placeholder", "title", "aria-label"]) {
-      if (!element.hasAttribute?.(attribute)) continue;
-      if (!originals.has(attribute)) {
-        originals.set(attribute, element.getAttribute(attribute));
-      }
-      const original = originals.get(attribute);
-      const translated = placeholderTranslations.get(original) || translateString(original);
-      element.setAttribute(attribute, language === "en" ? translated : original);
+    if(element.closest?.(protectedContentSelector))return;
+    if(!originalAttributes.has(element))originalAttributes.set(element,new Map());
+    const originals=originalAttributes.get(element);
+    for(const attribute of ['placeholder','title','aria-label','alt']){
+      if(!element.hasAttribute?.(attribute))continue;
+      const current=element.getAttribute(attribute);let entry=originals.get(attribute);
+      if(!entry||current!==entry.rendered){entry={original:sourceText(current),rendered:current};originals.set(attribute,entry);}
+      const next=language==='en'?(placeholderTranslations.get(entry.original)||translateString(entry.original)):entry.original;
+      entry.rendered=next;if(current!==next)element.setAttribute(attribute,next);
     }
   }
 
@@ -1091,7 +1788,7 @@
       textNodes.forEach(translateTextNode);
 
       if (target.nodeType === Node.ELEMENT_NODE) translateElementAttributes(target);
-      target.querySelectorAll?.("[placeholder], [title], [aria-label]")
+      target.querySelectorAll?.("[placeholder], [title], [aria-label], [alt]")
         .forEach(translateElementAttributes);
     } finally {
       translating = false;
@@ -1112,7 +1809,7 @@
   }
 
   function scheduleTranslation(node) {
-    if (!node || language !== "en") return;
+    if (!node) return;
     translationQueue.add(node);
     if (translationTask !== null) return;
     if ("requestIdleCallback" in window) {
@@ -1152,17 +1849,25 @@
     }
   }
 
+  let renderedTitle=document.title;
+  function renderTitle(){
+    if(document.title!==renderedTitle)root.dataset.originalTitle=sourceText(document.title);
+    const source=root.dataset.originalTitle||document.title;
+    renderedTitle=language==='en'?translateString(source):source;
+    if(document.title!==renderedTitle)document.title=renderedTitle;
+  }
+  const titleNode=document.querySelector('title');
+  if(titleNode)new MutationObserver(renderTitle).observe(titleNode,{childList:true,characterData:true,subtree:true});
   function applyLanguage(nextLanguage, persist = true) {
     language = nextLanguage === "en" ? "en" : "es";
     root.lang = language;
     root.dataset.language = language;
     if (persist) {try {localStorage.setItem(STORAGE_LANGUAGE, language)} catch (_) {}}
     translateTree(document.body);
-    document.title =
-      language === "en"
-        ? translateString(document.documentElement.dataset.originalTitle || document.title)
-        : document.documentElement.dataset.originalTitle || document.title;
+    renderTitle();
 
+    const controls=document.getElementById("preference-controls");
+    controls?.setAttribute("aria-label",language==="en"?"Display preferences":"Preferencias de visualización");
     const button = document.getElementById("preference-language");
     if (button) {
       button.querySelector(".preference-controls__language-label").textContent =
@@ -1227,13 +1932,17 @@
     createControls();
     applyLanguage(language, false);
     observer = new MutationObserver((mutations) => {
-      if (translating || language !== "en") return;
+      if (translating) return;
       for (const mutation of mutations) {
         mutation.addedNodes.forEach(scheduleTranslation);
+        if(mutation.type==='characterData'||mutation.type==='attributes')scheduleTranslation(mutation.target);
       }
     });
     observer.observe(document.body, {
       childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["placeholder","title","aria-label","alt"],
       subtree: true
     });
   });
@@ -1255,7 +1964,7 @@
     setTheme: applyTheme,
     translate: translateString,
     refresh(target = document.body) {
-      if (language === "en" && target) translateTree(target);
+      if (target) translateTree(target);
     }
   };
 })();

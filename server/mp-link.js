@@ -4,6 +4,7 @@ export const random=()=>crypto.randomBytes(32).toString('base64url');
 export const challenge=value=>crypto.createHash('sha256').update(value).digest('base64url');
 export const validNonce=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{43}$/.test(value);
 export function configuration(env=process.env){
+ env=Object.fromEntries(Object.entries(env).map(([key,value])=>[key,typeof value==='string'?value.trim():value]));
  const redirect=new URL(env.MERCADOPAGO_REDIRECT_URI||'https://www.colegiolibre.com/api/mercadopago-link');
  if(redirect.protocol!=='https:'||redirect.pathname!=='/api/mercadopago-link'||redirect.search||redirect.hash)throw Error('CONFIGURATION_REQUIRED');
  if(!env.MERCADOPAGO_CLIENT_ID||!env.MERCADOPAGO_CLIENT_SECRET||!env.SUPABASE_URL||!env.SUPABASE_SERVICE_ROLE_KEY)throw Error('CONFIGURATION_REQUIRED');
@@ -32,7 +33,8 @@ export async function authenticatedUser(config,request){const match=/^Bearer ([A
 export async function exchangeIdentity(config,code,verifier){
  const response=await fetch('https://api.mercadopago.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_id:config.clientId,client_secret:config.clientSecret,grant_type:'authorization_code',code,code_verifier:verifier,redirect_uri:config.redirect})});
  const token=await response.json();
- if(!response.ok||!token.access_token||!/^\d+$/.test(String(token.user_id)))throw Error('PROVIDER_AUTH_FAILED');
+ if(!response.ok){const codes={invalid_client:'PROVIDER_INVALID_CLIENT',invalid_grant:'PROVIDER_INVALID_GRANT',invalid_scope:'PROVIDER_INVALID_SCOPE',unauthorized_client:'PROVIDER_UNAUTHORIZED_CLIENT'};throw Error(codes[token.error]||'PROVIDER_AUTH_FAILED');}
+ if(!token.access_token||!/^\d+$/.test(String(token.user_id)))throw Error('PROVIDER_AUTH_FAILED');
  // Only account identity is retained. Access/refresh tokens never reach the
  // browser or database: manual transfers do not need ongoing account access.
  let holder='',display='Cuenta Mercado Pago';

@@ -12,3 +12,6 @@ The v1.0.33 header is fixed to the viewport with reserved page space and anchor 
 
 
 v1.0.34: The complete header hides on downward scrolling and returns on upward scrolling. It remains available at the top, while a menu is open, or while a header control has keyboard focus. Reduced-motion preferences disable its transition.
+
+
+v1.0.35: The blue navigation lists the eight product categories accepted by the listing form; route values stay in Spanish while displayed labels follow the chosen language. The English/Spanish switch floats at the bottom right, above mobile navigation. Expanded translation coverage includes public static copy, dynamic statuses, placeholders, accessible labels and school portals. Translation tracks source and rendered text separately so late updates translate without mutation loops and switch back correctly. User-authored product titles, messages and collection names remain untouched.

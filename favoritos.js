@@ -237,7 +237,7 @@
         <p class="favorite-card__meta">${escapeHtml(product.school_name || "Sin colegio")}</p>
         <select class="favorite-card__collection" data-collection-for="${escapeHtml(String(product.id))}" aria-label="Mover a colección">
           <option value="">Sin colección</option>
-          ${Object.keys(state.collections).map(name => `<option value="${escapeHtml(name)}" ${(state.collections[name] || []).includes(String(product.id)) ? "selected" : ""}>${escapeHtml(name)}</option>`).join("")}
+          ${Object.keys(state.collections).map(name => `<option data-no-translate value="${escapeHtml(name)}" ${(state.collections[name] || []).includes(String(product.id)) ? "selected" : ""}>${escapeHtml(name)}</option>`).join("")}
         </select>
       </div>
     `;

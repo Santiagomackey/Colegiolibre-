@@ -22,7 +22,7 @@ test('shared account labels preserve the seller name across language changes and
  const header={querySelector:node,querySelectorAll:selector=>selector==='[data-site-text]'?[message]:[],contains:()=>false};
  const document={readyState:'complete',documentElement:{dataset:{language:'es'}},querySelector:selector=>selector==='.cl-site-header'?header:null,addEventListener(){}};
  const window={addEventListener:(k,v)=>events[k]=v,colegioLibreApi:{getCurrentUser:async()=>currentUser,getCurrentProfile:async()=>({name:'Santiago Pérez'})},colegioLibreSupabase:{auth:{onAuthStateChange:fn=>{onAuth=fn},signOut:async()=>({error:null})}}};
- vm.runInNewContext(source('site-header.js'),{document,window,location:{pathname:'/mensajes',assign:p=>navigations.push(p)},queueMicrotask});
+ vm.runInNewContext(source('site-header.js'),{document,window,URL,URLSearchParams,location:{pathname:'/mensajes',assign:p=>navigations.push(p)},queueMicrotask});
  const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
  assert.equal(node('#accountText').textContent,'Santiago');assert.equal(node('#accountButton').href,'/perfil');
  document.documentElement.dataset.language='en';events['colegiolibre:languagechange']();assert.equal(message.textContent,'Messages');assert.equal(node('#accountText').textContent,'Santiago');
