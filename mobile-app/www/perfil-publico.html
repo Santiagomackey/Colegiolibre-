@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./preferences.js?v=20261110-shell32"></script>
+    <title>Perfil público | ColegioLibre</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
+    <meta
+      name="description"
+      content="Perfil público, reputación y publicaciones de un miembro de ColegioLibre."
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./perfil-publico.css?v=20261109-release25" />
+    <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
+    <link rel="stylesheet" href="./preferences.css?v=20261109-release25" />
+    <link rel="stylesheet" href="./mobile.css?v=20261109-release25" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./pwa.css?v=20261109-release25" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
+    <meta name="theme-color" content="#0B2E6B" />
+    <link rel="stylesheet" href="./institution-theme.css?v=20261109-release25" />
+    <script defer src="./institution-theme.js?v=20261109-release25"></script>
+    <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
+<link rel="stylesheet" href="./opening.css?v=20261109-release25" />
+<link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
+<link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
+<link rel="stylesheet" href="/site-header.css?v=20261110-shell32b">
+<link rel="stylesheet" href="/notifications.css?v=20261109-release25">
+</head>
+  <body>
+<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
+<script src="/opening.js?v=20261109-release25"></script>
+    <header class="cl-site-header" data-no-translate>
+ <div class="cl-site-top">
+  <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
+   <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
+   <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
+   <button type="submit" data-site-label="searchLabel" aria-label="Buscar material escolar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+  </form>
+  <div class="cl-site-actions header-actions" aria-label="Acciones de tu cuenta">
+   <a class="cl-site-action cl-site-desktop-action" id="header-messages-link" href="/mensajes" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4Z"/><path d="M8 8h8M8 12h5"/></svg><span data-site-text="messages">Mensajes</span></a>
+   <a class="cl-site-action cl-site-desktop-action" id="header-favorites-link" href="/favoritos" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg><span data-site-text="favorites">Favoritos</span></a>
+   <a class="cl-site-action cl-site-account" id="accountButton" href="/login"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg><span id="accountText">Iniciar sesión</span></a>
+   <details class="cl-site-account-menu"><summary data-site-label="accountMenu" aria-label="Abrir menú de cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><nav class="cl-site-menu-panel" aria-label="Mi cuenta">
+    <a href="/perfil" data-site-text="profile">Mi perfil</a><a href="/perfil?view=settings" data-site-text="settings">Configuración</a><a href="/pedidos" data-site-text="orders">Mis compras y ventas</a><a href="/mensajes" data-site-text="messages">Mensajes</a><a href="/favoritos" data-site-text="favorites">Favoritos</a><button type="button" data-site-logout hidden data-site-text="logout">Cerrar sesión</button>
+   </nav></details>
+  </div>
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colegiolibre-logo-transparent.png" alt="ColegioLibre" width="2048" height="704" fetchpriority="high"></a>
+ </div>
+ <div class="cl-site-subnav"><div class="cl-site-subnav-inner">
+  <details class="cl-site-categories"><summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-site-text="all">Todo</span></summary><nav class="cl-site-menu-panel" aria-label="Categorías">
+   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
+   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
+   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
+   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
+   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
+   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
+   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
+   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
+  </nav></details>
+  <nav class="cl-site-nav-scroll" aria-label="Navegación principal">
+   <a href="/explorar" data-site-nav="explorar" data-site-text="explore">Explorar</a><a href="/?sort=newest#productos" data-site-text="newest">Recién publicados</a><a href="/apuntes" data-site-nav="apuntes" data-site-text="notes">Apuntes y exámenes</a><a href="/busco" data-site-nav="busco" data-site-text="alerts">Alertas</a><a href="/colegio" data-site-nav="colegio" data-site-text="school">Mi colegio</a><a href="/ayuda" data-site-nav="ayuda" data-site-text="help">Ayuda</a><a href="/publicar" id="header-publish-link" data-requires-auth data-site-nav="publicar" data-site-text="sell">Publicar</a>
+  </nav><div class="cl-site-language"></div>
+ </div></div>
+</header>
+
+    <main class="site-shell public-profile-page">
+      <section class="profile-hero" id="profile-hero" aria-labelledby="profile-name">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-main">
+          <div class="profile-title-row">
+            <div>
+              <p class="section-kicker">Perfil público</p>
+              <h1 id="profile-name">Cargando perfil...</h1>
+            </div>
+            <div class="profile-actions" id="profile-actions" hidden>
+              <button id="report-user-button" type="button">Reportar</button>
+              <button id="block-profile-button" type="button">Bloquear</button>
+            </div>
+          </div>
+          <div class="profile-meta">
+            <span id="profile-school">Colegio no especificado</span>
+            <span id="profile-zone">Zona no especificada</span>
+            <span id="profile-member-since">Miembro de ColegioLibre</span>
+          </div>
+          <span class="verified-badge" id="verified-badge" hidden>
+            Colegio verificado
+          </span>
+        </div>
+      </section>
+
+      <section class="trust-summary" aria-label="Resumen de reputación">
+        <article>
+          <span>Reputación</span>
+          <strong id="profile-rating">Sin calificaciones</strong>
+        </article>
+        <article>
+          <span>Calificaciones</span>
+          <strong id="profile-rating-count">0</strong>
+        </article>
+        <article>
+          <span>Ventas completadas</span>
+          <strong id="profile-sales-count">0</strong>
+        </article>
+        <article>
+          <span>Publicaciones activas</span>
+          <strong id="profile-product-count">0</strong>
+        </article>
+      </section>
+
+      <section class="profile-section" aria-labelledby="products-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Marketplace</p>
+            <h2 id="products-title">Publicaciones</h2>
+          </div>
+        </div>
+        <div class="product-grid" id="public-products"></div>
+        <p class="empty-state" id="products-empty" hidden>
+          Este usuario no tiene publicaciones disponibles.
+        </p>
+      </section>
+
+      <section class="profile-section" aria-labelledby="reviews-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Experiencias verificadas</p>
+            <h2 id="reviews-title">Calificaciones recibidas</h2>
+          </div>
+        </div>
+        <div class="reviews-list" id="reviews-list"></div>
+        <p class="empty-state" id="reviews-empty" hidden>
+          Todavía no recibió calificaciones.
+        </p>
+      </section>
+    </main>
+
+    <div class="toast" id="public-profile-toast" hidden></div>
+
+    <div class="report-modal" id="user-report-modal" hidden>
+      <button
+        class="report-modal__backdrop"
+        id="user-report-backdrop"
+        type="button"
+        aria-label="Cerrar"
+      ></button>
+      <section class="report-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="user-report-title">
+        <div class="report-modal__head">
+          <div>
+            <p class="section-kicker">Seguridad</p>
+            <h2 id="user-report-title">Reportar usuario</h2>
+          </div>
+          <button id="user-report-close" type="button" aria-label="Cerrar">×</button>
+        </div>
+        <form id="user-report-form">
+          <label>
+            <span>Motivo</span>
+            <select id="user-report-reason" required>
+              <option value="">Seleccioná un motivo</option>
+              <option value="fraud">Posible fraude</option>
+              <option value="harassment">Acoso o conducta ofensiva</option>
+              <option value="unsafe">Conducta insegura</option>
+              <option value="spam">Spam</option>
+              <option value="inappropriate">Contenido inapropiado</option>
+              <option value="other">Otro motivo</option>
+            </select>
+          </label>
+          <label>
+            <span>Detalles</span>
+            <textarea id="user-report-details" maxlength="1000" rows="5"></textarea>
+          </label>
+          <div class="report-modal__actions">
+            <button id="user-report-cancel" type="button">Cancelar</button>
+            <button class="report-submit" type="submit">Enviar reporte</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <script src="./vendor/supabase.js?v=20261109-release25"></script>
+    <script src="./supabase.js?v=20261110-recovery31"></script>
+<script src="./telemetry.js?v=20261109-release25"></script>
+    <script src="./perfil-publico.js?v=20261110-shell32"></script>
+    <script src="./native-bridge.js?v=20261110-recovery31"></script>
+    <script src="./mobile-ui.js?v=20261109-transfer27"></script>
+    <script src="./pwa.js?v=20261109-release25"></script>
+    <script src="/global-search.js?v=20261109-release25"></script>
+<script src="/notifications.js?v=20261110-shell32"></script>
+<script src="/site-header.js?v=20261110-shell32"></script>
+</body>
+</html>

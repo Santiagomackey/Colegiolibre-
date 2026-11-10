@@ -92,7 +92,7 @@
       return;
     }
 
-    elements.accountLink.href = "/perfil";
+    if (elements.accountLink) elements.accountLink.href = "/perfil";
     await refreshConversations({ preserveSelection: false });
 
     if (requestedConversationId) {

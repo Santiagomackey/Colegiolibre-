@@ -1,6 +1,6 @@
 {
   "name": "colegiolibre-web",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,8 @@
     "release:national": "npm run validate && npm run validate:national && npm test",
     "check:auth": "node scripts/check-auth-settings.mjs",
     "prelaunch": "npm run release:national && npm run check:auth && npm run smoke:production",
-    "android:apk": "npm --prefix mobile-app run android:apk"
+    "android:apk": "npm --prefix mobile-app run android:apk",
+    "sync:header": "node scripts/sync-site-header.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.16"

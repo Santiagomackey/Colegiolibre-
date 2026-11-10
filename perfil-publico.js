@@ -113,7 +113,7 @@
   }
 
   function bindEvents() {
-    elements.searchForm.addEventListener("submit", (event) => {
+    elements.searchForm?.addEventListener("submit", (event) => {
       event.preventDefault();
       const term = elements.searchInput.value.trim();
       window.location.href = term

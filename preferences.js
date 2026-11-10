@@ -8,11 +8,10 @@
   const readPreference = key => {try{return localStorage.getItem(key)}catch(_){return null}};
   const storedTheme = readPreference(STORAGE_THEME);
   const storedLanguage = readPreference(STORAGE_LANGUAGE);
-  let theme = storedTheme === "dark" || storedTheme === "light"
-    ? storedTheme
-    : systemDark?.matches
-      ? "dark"
-      : "light";
+  // ColegioLibre now has one light appearance. Clear a retained dark choice
+  // before the first paint, including on installed phones.
+  let theme = "light";
+  try { localStorage.setItem(STORAGE_THEME, "light"); } catch (_) {}
   let language = storedLanguage === "en" ? "en" : "es";
   let observer = null;
   let translating = false;
@@ -1126,7 +1125,7 @@
   }
 
   function applyTheme(nextTheme, persist = true) {
-    theme = nextTheme === "dark" ? "dark" : "light";
+    theme = "light";
     root.dataset.theme = theme;
     window.dispatchEvent(new CustomEvent("colegiolibre:themechange", {detail:{theme}}));
 
@@ -1190,12 +1189,6 @@
     );
     controls.setAttribute("data-no-translate", "");
     controls.innerHTML = `
-      <button class="preference-controls__button" id="preference-theme" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.4 14.3A8.5 8.5 0 0 1 9.7 3.6 8.5 8.5 0 1 0 20.4 14.3Z"></path>
-        </svg>
-        <span class="preference-controls__theme-label">Oscuro</span>
-      </button>
       <button class="preference-controls__button preference-controls__language" id="preference-language" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="9"></circle>
@@ -1209,9 +1202,6 @@
     const languageButton=controls.querySelector("#preference-language");
     languageButton.querySelector("span").textContent=language==="en"?"ES":"EN";
     languageButton.setAttribute("aria-label",language==="en"?"Cambiar a español":"Switch to English");
-    document.getElementById("preference-theme").addEventListener("click", () => {
-      applyTheme(theme === "dark" ? "light" : "dark");
-    });
     document.getElementById("preference-language").addEventListener("click", () => {
       const nextLanguage = language === "en" ? "es" : "en";
       applyLanguage(nextLanguage);

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v73";
+const CACHE_VERSION = "colegiolibre-pwa-v74";
 const APP_SHELL = [
   "/",
   "/404.html",
@@ -16,6 +16,9 @@ const APP_SHELL = [
   "/preferences.js",
   "/social-auth.js",
   "/auth-routing.js",
+  "/site-header.js",
+  "/site-header.css",
+  "/images/colegiolibre-logo-transparent.png",
   "/alerts-enhancements.js",
   "/telemetry.js",
   "/products.js",

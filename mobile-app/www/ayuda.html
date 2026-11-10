@@ -1,0 +1,91 @@
+<!doctype html>
+<html data-theme="light" lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./preferences.js?v=20261110-shell32"></script>
+  <title>Centro de ayuda | ColegioLibre</title>
+  <meta name="description" content="Respuestas y ayuda para utilizar ColegioLibre.">
+  <link rel="canonical" href="https://www.colegiolibre.com/ayuda">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="legal.css?v=20261109-release25">
+  <link rel="stylesheet" href="polish.css?v=20261109-release25">
+  <link rel="stylesheet" href="./preferences.css?v=20261109-release25" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./pwa.css?v=20261109-release25" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ColegioLibre" />
+    <meta name="theme-color" content="#0B2E6B" />
+    <link rel="stylesheet" href="./institution-theme.css?v=20261109-release25" />
+    <script defer src="./institution-theme.js?v=20261109-release25"></script>
+    <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
+<link rel="stylesheet" href="./opening.css?v=20261109-release25" />
+<link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
+<link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
+<link rel="stylesheet" href="/site-header.css?v=20261110-shell32b">
+<link rel="stylesheet" href="/notifications.css?v=20261109-release25">
+</head>
+<body>
+<div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
+<script src="/opening.js?v=20261109-release25"></script>
+  <header class="cl-site-header" data-no-translate>
+ <div class="cl-site-top">
+  <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
+   <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
+   <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
+   <button type="submit" data-site-label="searchLabel" aria-label="Buscar material escolar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+  </form>
+  <div class="cl-site-actions header-actions" aria-label="Acciones de tu cuenta">
+   <a class="cl-site-action cl-site-desktop-action" id="header-messages-link" href="/mensajes" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4Z"/><path d="M8 8h8M8 12h5"/></svg><span data-site-text="messages">Mensajes</span></a>
+   <a class="cl-site-action cl-site-desktop-action" id="header-favorites-link" href="/favoritos" data-requires-auth><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg><span data-site-text="favorites">Favoritos</span></a>
+   <a class="cl-site-action cl-site-account" id="accountButton" href="/login"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg><span id="accountText">Iniciar sesión</span></a>
+   <details class="cl-site-account-menu"><summary data-site-label="accountMenu" aria-label="Abrir menú de cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><nav class="cl-site-menu-panel" aria-label="Mi cuenta">
+    <a href="/perfil" data-site-text="profile">Mi perfil</a><a href="/perfil?view=settings" data-site-text="settings">Configuración</a><a href="/pedidos" data-site-text="orders">Mis compras y ventas</a><a href="/mensajes" data-site-text="messages">Mensajes</a><a href="/favoritos" data-site-text="favorites">Favoritos</a><button type="button" data-site-logout hidden data-site-text="logout">Cerrar sesión</button>
+   </nav></details>
+  </div>
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colegiolibre-logo-transparent.png" alt="ColegioLibre" width="2048" height="704" fetchpriority="high"></a>
+ </div>
+ <div class="cl-site-subnav"><div class="cl-site-subnav-inner">
+  <details class="cl-site-categories"><summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-site-text="all">Todo</span></summary><nav class="cl-site-menu-panel" aria-label="Categorías">
+   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
+   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
+   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
+   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
+   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
+   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
+   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
+   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
+  </nav></details>
+  <nav class="cl-site-nav-scroll" aria-label="Navegación principal">
+   <a href="/explorar" data-site-nav="explorar" data-site-text="explore">Explorar</a><a href="/?sort=newest#productos" data-site-text="newest">Recién publicados</a><a href="/apuntes" data-site-nav="apuntes" data-site-text="notes">Apuntes y exámenes</a><a href="/busco" data-site-nav="busco" data-site-text="alerts">Alertas</a><a href="/colegio" data-site-nav="colegio" data-site-text="school">Mi colegio</a><a href="/ayuda" data-site-nav="ayuda" data-site-text="help">Ayuda</a><a href="/publicar" id="header-publish-link" data-requires-auth data-site-nav="publicar" data-site-text="sell">Publicar</a>
+  </nav><div class="cl-site-language"></div>
+ </div></div>
+</header>
+  <main class="legal-main">
+    <div class="legal-hero"><p class="legal-kicker">Estamos para ayudarte</p><h1>Centro de ayuda</h1><p class="legal-lead">Respuestas rápidas para publicar, comprar, vender y utilizar tu comunidad escolar.</p></div>
+    <div class="legal-grid">
+      <article class="legal-document">
+        <section class="legal-section" id="cuenta"><h2>Cuenta e inicio de sesión</h2><h3>¿Cómo creo una cuenta?</h3><p>Entrá en “Iniciar sesión”, elegí “Crear cuenta” y completá el registro. Después seleccioná tu colegio para ingresar a tu comunidad.</p><h3>Olvidé mi contraseña</h3><p>Utilizá “¿Olvidaste tu contraseña?” en el acceso. Recibirás las instrucciones en el email registrado.</p></section>
+        <section class="legal-section" id="publicar"><h2>Publicar y editar</h2><h3>¿Qué puedo publicar?</h3><p>Libros, apuntes, cuadernos, útiles, mochilas, tecnología y uniformes permitidos. Revisá la lista de <a href="/productos-prohibidos">productos prohibidos</a>.</p><h3>¿Por qué quedó en revisión?</h3><p>El sistema revisa la publicación. Los casos dudosos se mantienen pausados hasta que un administrador pueda decidir.</p><h3>¿Cómo la edito o pauso?</h3><p>Ingresá en tu perfil, abrí “Mis publicaciones” y utilizá el menú de la tarjeta.</p></section>
+        <section class="legal-section" id="comprar"><h2>Comprar y reservar</h2><p>Abrí un producto y tocá “Contactar vendedor”. Usá el chat para consultar, reservar y coordinar. ColegioLibre no procesa pagos.</p></section>
+        <section class="legal-section" id="mensajes"><h2>Mensajes</h2><p>Las conversaciones están asociadas al producto. Si no podés escribir, comprobá que la publicación siga disponible y que ninguna de las cuentas esté bloqueada o restringida.</p></section>
+        <section class="legal-section" id="problemas"><h2>Reportes y problemas</h2><p>Podés reportar una publicación o una cuenta desde los botones correspondientes. Para errores técnicos, indicá qué estabas haciendo, en qué dispositivo ocurrió y adjuntá una captura sin datos privados.</p><a class="legal-cta" href="mailto:ayuda@colegiolibre.com?subject=Ayuda%20con%20ColegioLibre">Escribir a soporte</a></section>
+        <section class="legal-section" id="beta"><h2>Probá la aplicación</h2><p>Si participás de la beta, completá el recorrido desde tu celular. Podrás marcar cada prueba y enviar errores o sugerencias sin incluir datos privados.</p><a class="legal-cta" href="/beta">Abrir prueba guiada</a></section>
+      </article>
+      <aside class="legal-aside"><strong>Temas</strong><a href="#cuenta">Cuenta</a><a href="#publicar">Publicaciones</a><a href="#comprar">Comprar y reservar</a><a href="#mensajes">Mensajes</a><a href="#problemas">Reportes</a><a href="#beta">Prueba beta</a></aside>
+    </div>
+  </main>
+  <footer class="legal-footer"><div class="legal-footer__inner"><span>© 2026 ColegioLibre</span><nav><a href="/terminos">Términos</a><a href="/privacidad">Privacidad</a><a href="/seguridad">Seguridad</a></nav></div></footer>
+    <script src="./pwa.js?v=20261109-release25"></script>
+  <script src="/global-search.js?v=20261109-release25"></script>
+<script src="/vendor/supabase.js?v=20261109-release25"></script>
+<script src="/supabase.js?v=20261110-recovery31"></script>
+<script src="/notifications.js?v=20261110-shell32"></script>
+<script src="/site-header.js?v=20261110-shell32"></script>
+</body>
+</html>
