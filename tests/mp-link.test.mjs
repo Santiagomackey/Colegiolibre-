@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {setupTransferDb} from './helpers/transfer-db.mjs';
-import {challenge,authorizationUrl,configuration,cookie,digest,validNonce} from '../server/mp-link.js';
+import {challenge,authorizationUrl,configuration,cookie,digest,validNonce,db} from '../server/mp-link.js';
 import handler from '../api/mercadopago-link.js';
 const ids={seller:'10000000-0000-0000-0000-000000000001',buyer:'20000000-0000-0000-0000-000000000002',other:'30000000-0000-0000-0000-000000000003',product:'40000000-0000-0000-0000-000000000004'};
 test('MP linking uses PKCE, a private cookie, and read-only authorization',()=>{
@@ -47,16 +47,16 @@ test('OAuth server binds verified seller identity and never returns or persists 
  const keys=['MERCADOPAGO_CLIENT_ID','MERCADOPAGO_CLIENT_SECRET','MERCADOPAGO_REDIRECT_URI','SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY'];const previous=Object.fromEntries(keys.map(k=>[k,process.env[k]]));const saved=globalThis.fetch;
  Object.assign(process.env,{MERCADOPAGO_CLIENT_ID:'test-app',MERCADOPAGO_CLIENT_SECRET:'private-test-secret',MERCADOPAGO_REDIRECT_URI:'https://www.colegiolibre.com/api/mercadopago-link',SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'service-test'});
  const calls=[];let prepared;
- const response=body=>({ok:true,json:async()=>body});
+ const response=body=>new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
  globalThis.fetch=async(url,options={})=>{
   const body=options.body?JSON.parse(options.body):null;calls.push({url,body});
   if(url.endsWith('/auth/v1/user'))return response({id:ids.seller});
-  if(url.endsWith('/prepare_mp_link')){prepared=body;return response(null)}
+  if(url.endsWith('/prepare_mp_link')){prepared=body;return new Response(null,{status:204})}
   if(url.endsWith('/launch_mp_link'))return response({verifier:prepared.p_verifier});
   if(url.endsWith('/consume_mp_link'))return response({seller_id:ids.seller,verifier:prepared.p_verifier,source:'web'});
   if(url.endsWith('/oauth/token'))return response({access_token:'private-access',refresh_token:'private-refresh',user_id:123456});
   if(url.endsWith('/users/me'))return response({id:123456,first_name:'Titular',last_name:'Prueba'});
-  if(url.endsWith('/complete_mp_link'))return response(null);
+  if(url.endsWith('/complete_mp_link'))return new Response(null,{status:204});
   throw Error('Unexpected URL');
  };
  const res=()=>({headers:{},status(value){this.code=value},setHeader(k,v){this.headers[k]=v},end(value){this.body=value?JSON.parse(value):null}});
@@ -69,4 +69,18 @@ test('OAuth server binds verified seller identity and never returns or persists 
   const complete=calls.find(call=>call.url.endsWith('/complete_mp_link'));assert.equal(complete.body.p_seller_id,ids.seller);assert.equal(complete.body.p_mp_user_id,'123456');
   assert.equal(JSON.stringify(complete).includes('private-access'),false);assert.equal(JSON.stringify(returned).includes('private-access'),false);assert.equal(JSON.stringify(complete).includes('private-refresh'),false);
  }finally{globalThis.fetch=saved;for(const key of keys)if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key];}
+});
+
+test('database transport accepts empty successful writes and preserves JSON reads',async()=>{
+ const original=globalThis.fetch,config={supabase:'https://example.supabase.co',key:'private-test'};
+ try{
+  for(const response of [new Response(null,{status:204}),new Response('',{status:200}),new Response('null',{status:200})]){
+   globalThis.fetch=async()=>response;assert.equal(await db(config,'prepare_mp_link',{}),null);
+  }
+  globalThis.fetch=async()=>new Response(JSON.stringify({verifier:'test'}));assert.deepEqual(await db(config,'launch_mp_link',{}),{verifier:'test'});
+  globalThis.fetch=async()=>new Response('not-json');await assert.rejects(db(config,'launch_mp_link',{}),/LINK_STORAGE_RESPONSE_INVALID/);
+  for(const [status,body,code]of [[404,{code:'PGRST202'},'LINK_STORAGE_MISSING'],[403,{code:'42501'},'LINK_STORAGE_DENIED'],[400,{message:'TOO_MANY_ATTEMPTS'},'LINK_RATE_LIMIT'],[401,{message:'private-details'},'LINK_SERVER_AUTH_FAILED']]){
+   globalThis.fetch=async()=>new Response(JSON.stringify(body),{status});await assert.rejects(db(config,'prepare_mp_link',{}),error=>error.message===code);
+  }
+ }finally{globalThis.fetch=original;}
 });

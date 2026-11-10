@@ -181,11 +181,14 @@
         const next = safeDestination(url.searchParams.get("next"));
         const authType = url.searchParams.get("type") || values.get("type") || "verification";
         if (accessToken && refreshToken && window.colegioLibreSupabase?.auth?.setSession) {
-          const { error } = await window.colegioLibreSupabase.auth.setSession({
+          const { data, error } = await window.colegioLibreSupabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken
           });
           if (error) throw error;
+          if(authType === "recovery" && data?.session?.user){
+            window.sessionStorage.setItem("colegiolibre-password-recovery",JSON.stringify({createdAt:Date.now(),userId:data.session.user.id,next}));
+          }
         }
         if (authType !== "recovery") {
           window.localStorage.removeItem("colegiolibre-pending-verification");

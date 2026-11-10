@@ -13,7 +13,13 @@ export default async function handler(req,res){
    await db(config,'prepare_mp_link',{p_seller_id:user.id,p_state_hash:digest(state),p_launch_hash:digest(launch),p_verifier:verifier,p_source:req.body?.source==='app'?'app':'web'});
    const url=new URL(config.redirect);url.searchParams.set('launch',launch);url.searchParams.set('state',state);
    return json(res,200,{url:url.href});
-  }catch(_){return json(res,502,{error:'LINK_START_FAILED'});}
+  }catch(error){
+   const allowed=['LINK_STORAGE_MISSING','LINK_STORAGE_DENIED','LINK_RATE_LIMIT','LINK_SERVER_AUTH_FAILED','LINK_STORAGE_FAILED','LINK_STORAGE_RESPONSE_INVALID'];
+   const code=allowed.includes(error.message)?error.message:'LINK_START_FAILED';
+   // Log only a fixed diagnostic code, never tokens, identities, or request URLs.
+   console.error('MP_LINK_START',code);
+   return json(res,code==='LINK_RATE_LIMIT'?429:502,{error:code});
+  }
  }
  const url=new URL(req.url,config.origin),state=url.searchParams.get('state'),launch=url.searchParams.get('launch');
  if(!validNonce(state))return json(res,400,{error:'INVALID_LINK_ATTEMPT'});
