@@ -1,0 +1,12 @@
+/* ColegioLibre mobile fixes - load after existing styles */
+@media(max-width:700px){
+ .cl-site-account-menu{position:relative!important;min-width:22px;margin-left:0!important}
+ .cl-site-account-menu .cl-site-menu-panel{position:absolute!important;left:auto!important;right:0!important;width:min(230px,calc(100vw - 28px))!important;max-width:calc(100vw - 28px)!important;max-height:min(65dvh,420px)!important;overflow-y:auto!important;overscroll-behavior:contain;box-sizing:border-box!important;z-index:9999!important}
+ .cl-site-account-menu>summary{width:26px!important;min-width:26px!important}
+ .cl-site-header .cl-site-actions{min-width:0!important}
+}
+@media(max-width:980px){
+ .content-header .mobile-profile-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important;margin:16px 0!important}
+ .content-header .mobile-profile-actions>:is(button,a){display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:100%!important;min-height:44px!important;height:auto!important;padding:11px 9px!important;margin:0!important;border-radius:12px!important;border:1px solid #d6e1ee!important;background:#fff!important;color:#12366d!important;font-size:13px!important;font-weight:700!important;line-height:1.3!important;text-align:center!important;text-decoration:none!important;box-shadow:none!important}
+ .content-header .mobile-profile-actions .mobile-profile-action--logout{grid-column:1/-1!important;background:#fff6f6!important;color:#a22d35!important;border-color:#f1cfd1!important}
+}
