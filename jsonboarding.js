@@ -421,6 +421,15 @@
 
     if (!formValues) return;
 
+    const aliasInput = byId("onboarding-mp-alias");
+    const mercadoPagoAlias = String(aliasInput?.value || "").trim();
+    if (mercadoPagoAlias && !/^[a-zA-Z0-9._-]{3,80}$/.test(mercadoPagoAlias)) {
+      setOnboardingMessage("El alias de Mercado Pago tiene un formato inválido.", "error");
+      aliasInput?.focus();
+      return;
+    }
+
+
     setSubmitBusy(submitButton, true);
     setOnboardingMessage("Comprobando el colegio…", "loading");
 
@@ -468,15 +477,6 @@
         "No se pudo guardar tu perfil. Probá nuevamente.",
         "error"
       );
-      return;
-    }
-
-    const aliasInput = byId("onboarding-mp-alias");
-    const mercadoPagoAlias = String(aliasInput?.value || "").trim();
-    if (mercadoPagoAlias && !/^[a-zA-Z0-9._-]{3,80}$/.test(mercadoPagoAlias)) {
-      setSubmitBusy(submitButton, false);
-      setOnboardingMessage("El alias de Mercado Pago tiene un formato inválido.", "error");
-      aliasInput?.focus();
       return;
     }
 
