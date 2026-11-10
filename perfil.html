@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20261109-transfer27"></script>
+    <script src="./preferences.js?v=20261109-mp28"></script>
     <title>ColegioLibre | Mi perfil</title>
     <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
     <meta
@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
-<link rel="stylesheet" href="/transfer.css?v=20261109-transfer27"></head>
+<link rel="stylesheet" href="/transfer.css?v=20261109-mp28"></head>
   <body class="mobile-subpage mobile-profile" data-sidebar-open="false">
 <div id="cl-opening" role="status" aria-label="Abriendo ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="851" height="293"><span>Abriendo ColegioLibre…</span></div>
 <script src="/opening.js?v=20261109-release25"></script>
@@ -404,7 +404,7 @@
             </div>
           </form>
 
-<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title"><span class="pay-kicker">VENTAS POR TRANSFERENCIA</span><h2 id="payment-settings-title">Datos de cobro</h2><p class="pay-muted">Los compradores verán estos datos solo en el pedido. No se publican en tu perfil.</p><form id="seller-payment-form" autocomplete="off"><div class="pay-form-grid"><label><span>Método de cobro</span><select name="method" required><option value="mercado_pago">Mercado Pago</option><option value="bank">Transferencia bancaria</option></select></label><label><span>Alias</span><input name="alias" minlength="6" maxlength="20" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias"></label><label><span>CBU / CVU</span><input name="account_number" type="text" inputmode="numeric" maxlength="30" required autocomplete="off" placeholder="22 dígitos"></label><label><span>Nombre del titular</span><input name="holder_name" minlength="2" maxlength="100" required autocomplete="off"></label></div><p class="pay-small">Comprobamos el formato, no la titularidad de la cuenta. Revisá los datos en tu banco antes de guardarlos.</p><button class="pay-button" type="submit">Guardar datos de cobro</button><p class="pay-message" id="seller-payment-message" role="status"></p><button class="pay-button pay-button--secondary" type="button" data-payment-retry>Volver a cargar</button></form><a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a></section>
+<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title"><span class="pay-kicker">COBRÁ TUS VENTAS</span><h2 id="payment-settings-title">Vinculá tu Mercado Pago</h2><p class="pay-muted">Conectá tu cuenta con ColegioLibre. La autorización se realiza en Mercado Pago.</p><div class="pay-mp-card" id="mp-link-card"><span class="pay-mp-brand">Mercado Pago</span><p id="mp-link-status" data-no-translate>Vinculá tu cuenta para empezar.</p><button id="mp-link-connect" class="pay-button" type="button" data-no-translate>Vincular Mercado Pago</button><button id="mp-link-remove" class="pay-button pay-button--secondary" type="button" hidden>Quitar vínculo en ColegioLibre</button></div><form id="mp-alias-form" class="pay-mp-alias" hidden><h3>Tu alias para recibir transferencias</h3><p class="pay-small">Agregalo una sola vez. Las transferencias siguen siendo manuales y el vendedor confirma el dinero recibido.</p><label>Alias de Mercado Pago<input name="alias" required minlength="6" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias"></label><label data-mp-holder hidden>Nombre del titular<input name="holder_name" maxlength="100" autocomplete="off"></label><button type="submit" class="pay-button">Guardar alias</button><p class="pay-small">Verificá que el alias y el titular correspondan a tu cuenta. Vincular Mercado Pago no verifica un pago.</p></form><p id="mp-link-message" class="pay-message" role="status" data-no-translate></p><details class="pay-manual-details" id="bank-payment-details"><summary>Usar datos de cobro manuales</summary><p class="pay-small">También podés recibir transferencias en una cuenta bancaria.</p><form id="seller-payment-form" autocomplete="off"><div class="pay-form-grid"><label><span>Método de cobro</span><select name="method" required><option value="mercado_pago">Mercado Pago</option><option value="bank">Transferencia bancaria</option></select></label><label><span>Alias</span><input name="alias" minlength="6" maxlength="20" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias"></label><label><span>CBU / CVU</span><input name="account_number" type="text" inputmode="numeric" maxlength="30" required autocomplete="off" placeholder="22 dígitos"></label><label><span>Nombre del titular</span><input name="holder_name" minlength="2" maxlength="100" required autocomplete="off"></label></div><p class="pay-small">Comprobamos el formato, no la titularidad de la cuenta. Revisá los datos en tu banco antes de guardarlos.</p><button class="pay-button" type="submit">Guardar datos de cobro</button><p class="pay-message" id="seller-payment-message" role="status"></p><button class="pay-button pay-button--secondary" type="button" data-payment-retry>Volver a cargar</button></form></details><a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a></section>
         </section>
       </main>
     </div>
@@ -473,5 +473,5 @@
     <script src="./mobile-ui.js?v=20261109-transfer27"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-<script src="/transfer-common.js?v=20261109-transfer27"></script><script src="/payment-settings.js?v=20261109-transfer27"></script></body>
+<script src="/transfer-common.js?v=20261109-transfer27"></script><script src="/payment-settings.js?v=20261109-mp28"></script><script src="/mp-link-settings.js?v=20261109-mp28"></script></body>
 </html>

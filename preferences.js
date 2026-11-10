@@ -35,6 +35,18 @@
   ].join(", ");
 
   const translations = new Map(Object.entries({
+    "COBRÁ TUS VENTAS": "GET PAID FOR YOUR SALES",
+    "Vinculá tu Mercado Pago": "Link your Mercado Pago",
+    "Conectá tu cuenta con ColegioLibre. La autorización se realiza en Mercado Pago.": "Connect your account to ColegioLibre. Authorization takes place on Mercado Pago.",
+    "Quitar vínculo en ColegioLibre": "Remove ColegioLibre link",
+    "Tu alias para recibir transferencias": "Your alias for incoming transfers",
+    "Agregalo una sola vez. Las transferencias siguen siendo manuales y el vendedor confirma el dinero recibido.": "Add it once. Transfers remain manual and the seller confirms receipt of the money.",
+    "Alias de Mercado Pago": "Mercado Pago alias",
+    "Guardar alias": "Save alias",
+    "Verificá que el alias y el titular correspondan a tu cuenta. Vincular Mercado Pago no verifica un pago.": "Check that the alias and holder match your account. Linking Mercado Pago does not verify a payment.",
+    "Usar datos de cobro manuales": "Use manual payment details",
+    "También podés recibir transferencias en una cuenta bancaria.": "You can also receive transfers in a bank account.",
+
     "Mis pedidos": "My orders",
     "← Mis pedidos": "← My orders",
     "Compra por transferencia | ColegioLibre": "Transfer checkout | ColegioLibre",

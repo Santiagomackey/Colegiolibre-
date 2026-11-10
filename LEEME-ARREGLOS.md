@@ -110,3 +110,7 @@ Datos de cobro privados en Perfil, Comprar desde Producto, checkout con alias/CB
 Aplicá database/10_direct_transfer_orders.sql antes de desplegar. Leé docs/DIRECT_TRANSFER_PAYMENTS.md para permisos, pruebas de staging y límites. El dinero se mueve externamente: el aviso del comprador nunca confirma el pago. No se ejecutó la migración en producción ni se compiló un APK.
 
 Validación de transferencias: 44 pruebas correctas (incluye PostgreSQL/PGlite), validación general, auditoría, PWA y 13 comprobaciones nacionales. La migración y la configuración real deben verificarse en Supabase staging antes de publicar.
+
+## Versión 1.0.28 — Vincular Mercado Pago
+
+La pantalla de cobro ahora prioriza Vincular Mercado Pago, con autorización OAuth/PKCE en el servidor, identidad privada y un alias ingresado una vez. Los datos bancarios manuales quedan en un desplegable. No modifica la confirmación manual de pagos. Aplicar database/11_mercadopago_link.sql después de la 10, configurar la aplicación OAuth y las variables privadas una sola vez. Guía: docs/MERCADOPAGO_ACCOUNT_LINK.md. No se configuró ni probó una vinculación real.

@@ -36,9 +36,9 @@
    add(payment,'p','pay-muted',order.status==='awaiting_confirmation'&&buyer?T.text('Ya avisaste que transferiste. No vuelvas a enviar dinero.','You reported a transfer. Do not send the money again.'):T.text('Usá Mercado Pago o tu banco. El dinero se transfiere fuera de ColegioLibre.','Use Mercado Pago or your bank. The money is transferred outside ColegioLibre.'));
    const details=add(payment,'dl','pay-details');
    const fields=[[T.text('Método','Method'),order.payment.method==='mercado_pago'?'Mercado Pago':T.text('Transferencia bancaria','Bank transfer')],[T.text('Titular','Account holder'),order.payment.holder_name],['Alias',order.payment.alias],['CBU / CVU',order.payment.account_number]];
-   for(const [label,value] of fields){add(details,'dt','',label);const data=add(details,'dd','',value);data.dataset.noTranslate='';}
+   for(const [label,value] of fields.filter(([,value])=>value)){add(details,'dt','',label);const data=add(details,'dd','',value);data.dataset.noTranslate='';}
    if(buyer&&order.status==='payment_pending'){button(payment,T.text('Copiar alias','Copy alias'),()=>copy(order.payment.alias),true);
-   button(payment,T.text('Copiar CBU / CVU','Copy CBU / CVU'),()=>copy(order.payment.account_number),true);}
+   if(order.payment.account_number)button(payment,T.text('Copiar CBU / CVU','Copy CBU / CVU'),()=>copy(order.payment.account_number),true);}
    add(payment,'p','pay-small',T.text('Antes de transferir, verificá en tu banco el titular y el importe. ColegioLibre no verifica automáticamente el movimiento.','Before transferring, check the recipient and amount in your bank. ColegioLibre does not verify the transfer automatically.'));
   }else{
    add(payment,'h2','',T.status(order.status));

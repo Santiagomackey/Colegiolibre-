@@ -3,8 +3,9 @@
  const T=window.colegioLibreTransfers,message=document.querySelector('#seller-payment-message'),save=form.querySelector('[type="submit"]');
  let saved=false,lastError=null;
  async function load(){try{
-  const user=await window.colegioLibreApi.getCurrentUser();if(!user)return;
+  const user=await window.colegioLibreApi.getCurrentUser(true);if(!user){form.reset();save.disabled=true;return;}save.disabled=false;
   const data=await T.rpc('get_my_payment_details');
+  if(data?.method==='bank')document.querySelector('#bank-payment-details').open=true;
   if(data)Object.entries(data).forEach(([key,value])=>{if(form.elements[key])form.elements[key].value=value||''});
   lastError=null;
  }catch(error){message.textContent=T.errorMessage(error);message.dataset.state='error';}}
@@ -20,5 +21,6 @@
  document.querySelector('[data-payment-retry]')?.addEventListener('click',()=>void load());
  window.addEventListener('pageshow',event=>{if(event.persisted)void load()});
  window.addEventListener('colegiolibre:languagechange',()=>{if(lastError)message.textContent=T.errorMessage(lastError);else if(saved)message.textContent=T.text('Datos guardados. Los pedidos ya iniciados conservan los datos anteriores.','Details saved. Existing orders keep their original payment details.');});
+ window.addEventListener('pagehide',()=>form.reset());
  void load();
 })();

@@ -49,3 +49,7 @@ Use at least three staging accounts: seller, buyer, unrelated user.
 - Test cancellation before a transfer, network failures, repeated clicks, a paused listing, both languages, both themes and narrow phone screens.
 
 The automated PostgreSQL tests cover role checks, blocked direct writes, isolated bank details, fixed amount/account snapshots, competing buyers, cancellation, state transitions and notification recipients. Live Supabase policies/triggers from the existing application and real phone delivery still need the staging checks above.
+
+## Vinculación opcional desde 1.0.28
+
+La transferencia manual no necesita una API de pagos. La nueva opción de vincular Mercado Pago sí necesita configurar una aplicación OAuth una sola vez para ColegioLibre. Ver `MERCADOPAGO_ACCOUNT_LINK.md`; el vendedor después usa el botón y guarda su alias una vez.
