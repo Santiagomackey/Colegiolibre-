@@ -471,11 +471,24 @@
       return;
     }
 
+    const aliasInput = byId("onboarding-mp-alias");
+    const mercadoPagoAlias = String(aliasInput?.value || "").trim();
+    if (mercadoPagoAlias && !/^[a-zA-Z0-9._-]{3,80}$/.test(mercadoPagoAlias)) {
+      setSubmitBusy(submitButton, false);
+      setOnboardingMessage("El alias de Mercado Pago tiene un formato inválido.", "error");
+      aliasInput?.focus();
+      return;
+    }
+
     const { error: metadataError } =
       await window.colegioLibreSupabase.auth.updateUser({
         data: {
           name: formValues.name,
-          school_level: formValues.schoolLevel
+          school_level: formValues.schoolLevel,
+          mercadopago_alias: mercadoPagoAlias || null,
+          mercadopago_connection_status: "not_connected",
+          identity_verification_status: "not_verified",
+          school_verification_status: "not_verified"
         }
       });
 
