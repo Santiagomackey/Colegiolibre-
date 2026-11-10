@@ -36,3 +36,18 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
 .cl-site-header.cl-header-hidden{transform:translateY(-110%)!important;pointer-events:none}
 .cl-site-header:focus-within{transform:translateY(0)!important;pointer-events:auto}
 @media(prefers-reduced-motion:reduce){.cl-site-header{transition:none!important}}
+
+/* Mobile account dropdown: anchor to right edge and keep within viewport. */
+@media(max-width:700px){
+ .cl-site-account-menu{position:relative!important;min-width:22px;margin-left:0!important}
+ .cl-site-account-menu .cl-site-menu-panel{
+  position:absolute!important;left:auto!important;right:0!important;
+  width:min(230px,calc(100vw - 28px))!important;
+  max-width:calc(100vw - 28px)!important;
+  max-height:min(65dvh,420px)!important;
+  overflow-y:auto!important;overscroll-behavior:contain;
+  box-sizing:border-box!important;z-index:9999!important;
+ }
+ .cl-site-account-menu>summary{width:26px!important;min-width:26px!important}
+ .cl-site-header .cl-site-actions{min-width:0!important}
+}
