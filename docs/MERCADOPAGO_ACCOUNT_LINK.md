@@ -27,7 +27,7 @@ No se presupone una API que importe alias/CVU: la vinculación conserva la ident
    Nunca pongas el Client Secret o la clave service-role en archivos públicos, JavaScript del navegador o GitHub. Los vendedores no deben introducir estas credenciales.
 
 5. Desplegá la versión completa. No alcanza con cambiar el texto de un botón: el endpoint, la migración y las variables deben estar activos. Si faltan las credenciales, el botón informa que falta completar la configuración del servidor. Los fallos de carga de Supabase se distinguen de los fallos del servidor y se limpian al recuperarse.
-6. Para Android recompilá/reinstalá la versión 1.0.29. Incluye el enlace `colegiolibre://open` para volver desde el navegador externo. Requiere la dependencia Capacitor Browser ya incluida desde 1.0.26. No se incluye APK compilado.
+6. Para Android recompilá/reinstalá la versión 1.0.30. Incluye el enlace `colegiolibre://open` para volver desde el navegador externo. Requiere la dependencia Capacitor Browser ya incluida desde 1.0.26. No se incluye APK compilado.
 
 No se configuró una aplicación real de Mercado Pago, no se cargaron credenciales de producción y no se realizó una autorización real desde este entorno. El despliegue de Vercel tampoco se realizó; el CLI disponible pidió iniciar sesión.
 
@@ -57,3 +57,7 @@ Documentación oficial consultada:
 ## Diagnóstico del sitio — 10 de noviembre de 2026
 
 Se confirmó que los RPC de lectura funcionan. El endpoint de producción devuelve HTTP 503 `LINK_NOT_CONFIGURED`. La lista de variables del proyecto de Vercel incluye `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`, pero no `MERCADOPAGO_CLIENT_ID` ni `MERCADOPAGO_CLIENT_SECRET`. El dueño debe obtenerlas de su aplicación de Mercado Pago y añadirlas de forma privada en Vercel para producción. Registrar el retorno HTTPS exacto y habilitar PKCE según los pasos anteriores; después redeplegar. No compartir secretos en el chat ni en GitHub. No se completó ninguna autorización real.
+
+## Corrección 1.0.30
+
+El transporte de RPC acepta HTTP 204 y cuerpos vacíos en operaciones que devuelven void, como prepare_mp_link y complete_mp_link. Antes intentaba interpretar siempre JSON y fallaba incluso tras una escritura correcta. Se añadieron pruebas con objetos Response reales y respuestas vacías tanto al iniciar como al completar OAuth. Los errores de preparación muestran categorías específicas y el servidor registra solo códigos fijos, sin datos personales ni tokens. No requiere nueva migración SQL. La autorización real debe comprobarse con el titular desde el botón Vincular Mercado Pago.

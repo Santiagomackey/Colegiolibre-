@@ -12,7 +12,22 @@ export function configuration(env=process.env){
 export function authorizationUrl(config,state,verifier){const url=new URL('https://auth.mercadopago.com/authorization');Object.entries({client_id:config.clientId,response_type:'code',platform_id:'mp',state,redirect_uri:config.redirect,code_challenge:challenge(verifier),code_challenge_method:'S256',scope:'read'}).forEach(([key,value])=>url.searchParams.set(key,value));return url.href;}
 export function getCookie(header){return String(header||'').split(';').map(value=>value.trim()).find(value=>value.startsWith('__Host-cl-mp='))?.slice('__Host-cl-mp='.length)||'';}
 export function cookie(value,clear=false){return `__Host-cl-mp=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${clear?0:600}`;}
-export async function db(config,name,args){const response=await fetch(config.supabase+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:config.key,Authorization:'Bearer '+config.key,'Content-Type':'application/json'},body:JSON.stringify(args)});if(!response.ok)throw Error('LINK_STORAGE_FAILED');return response.json();}
+export async function db(config,name,args){
+ const response=await fetch(config.supabase+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:config.key,Authorization:'Bearer '+config.key,'Content-Type':'application/json'},body:JSON.stringify(args)});
+ // PostgREST returns HTTP 204 with no body for functions returning void.
+ // Parsing that response as JSON incorrectly turns successful writes into errors.
+ const body=await response.text();
+ if(!response.ok){
+  let reason={};try{reason=JSON.parse(body);}catch(_){}
+  const code=['PGRST202','42883'].includes(reason.code)?'LINK_STORAGE_MISSING'
+   :reason.code==='42501'?'LINK_STORAGE_DENIED'
+   :reason.message==='TOO_MANY_ATTEMPTS'?'LINK_RATE_LIMIT'
+   :[401,403].includes(response.status)?'LINK_SERVER_AUTH_FAILED':'LINK_STORAGE_FAILED';
+  throw Error(code);
+ }
+ if(!body.trim())return null;
+ try{return JSON.parse(body);}catch(_){throw Error('LINK_STORAGE_RESPONSE_INVALID');}
+}
 export async function authenticatedUser(config,request){const match=/^Bearer ([A-Za-z0-9._-]+)$/.exec(String(request.headers.authorization||''));if(!match)return null;const response=await fetch(config.supabase+'/auth/v1/user',{headers:{apikey:config.key,Authorization:'Bearer '+match[1]}});if(!response.ok)return null;const user=await response.json();return user?.id?user:null;}
 export async function exchangeIdentity(config,code,verifier){
  const response=await fetch('https://api.mercadopago.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_id:config.clientId,client_secret:config.clientSecret,grant_type:'authorization_code',code,code_verifier:verifier,redirect_uri:config.redirect})});
