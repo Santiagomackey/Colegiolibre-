@@ -1,0 +1,3 @@
+Correccion aplicada directamente a mensajes.html y mobile-app/www/mensajes.html.
+La hoja mensajes-layout-fix.css ahora se carga al final del head para tener prioridad.
+Subi el contenido de esta carpeta a tu proyecto y desplega.

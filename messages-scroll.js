@@ -1,51 +1,35 @@
+/* Middle-panel scrolling: one small, non-animated wheel forwarder. */
 (() => {
-  const selector = '.messages-list, .conversation-list';
-  const interactive = 'a, button, input, textarea, select, option, label, [contenteditable="true"]';
-
-  document.querySelectorAll(selector).forEach((scroller) => {
-    let active = false;
-    let moved = false;
-    let startY = 0;
-    let startScroll = 0;
-    let pointerId = null;
-
-    scroller.addEventListener('pointerdown', (event) => {
-      // Touch already has native kinetic scrolling; add grab-to-scroll for mouse/pen.
-      if (event.pointerType === 'touch' || event.button !== 0 || event.target.closest(interactive)) return;
-      active = true;
-      moved = false;
-      pointerId = event.pointerId;
-      startY = event.clientY;
-      startScroll = scroller.scrollTop;
-      scroller.setPointerCapture?.(pointerId);
-      scroller.classList.add('is-drag-scrolling');
-    });
-
-    scroller.addEventListener('pointermove', (event) => {
-      if (!active || event.pointerId !== pointerId) return;
-      const delta = event.clientY - startY;
-      if (Math.abs(delta) > 3) moved = true;
-      if (!moved) return;
+  const panel = document.querySelector('.chat-panel');
+  const inbox = document.getElementById('conversation-list');
+  const history = document.getElementById('messages-list');
+  if (!panel || !inbox || !history) return;
+  panel.addEventListener('wheel', event => {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || !event.deltaY) return;
+    if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+    const open = !document.getElementById('message-form')?.hidden;
+    // Native scrolling handles the open message history with momentum.
+    if (open && history.contains(event.target)) return;
+    const amount = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+    const target = open ? history : inbox;
+    const max = Math.max(0, target.scrollHeight - target.clientHeight);
+    const next = Math.max(0, Math.min(max, target.scrollTop + amount));
+    if (Math.abs(next - target.scrollTop) > 0.5) {
+      target.scrollTop = next;
       event.preventDefault();
-      scroller.scrollTop = startScroll - delta;
-    });
+      return;
+    }
+    if (open) return;
 
-    const stop = (event) => {
-      if (!active || (event.pointerId != null && event.pointerId !== pointerId)) return;
-      active = false;
-      scroller.classList.remove('is-drag-scrolling');
-      try { scroller.releasePointerCapture?.(pointerId); } catch (_) {}
-      pointerId = null;
-    };
-    scroller.addEventListener('pointerup', stop);
-    scroller.addEventListener('pointercancel', stop);
-
-    // Prevent a click after a real drag, while preserving normal conversation clicks.
-    scroller.addEventListener('click', (event) => {
-      if (!moved) return;
+    // Empty chat panes have no history to scroll. Continue on the page
+    // when the inbox is short or has reached its edge.
+    const page = document.scrollingElement;
+    if (!page) return;
+    const pageMax = Math.max(0, page.scrollHeight - page.clientHeight);
+    const pageNext = Math.max(0, Math.min(pageMax, page.scrollTop + amount));
+    if (Math.abs(pageNext - page.scrollTop) > 0.5) {
+      page.scrollTop = pageNext;
       event.preventDefault();
-      event.stopPropagation();
-      moved = false;
-    }, true);
-  });
+    }
+  }, { passive: false });
 })();
