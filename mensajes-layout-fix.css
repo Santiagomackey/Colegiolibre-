@@ -85,3 +85,34 @@
   body.mobile-messages .conversation-item { grid-template-columns: 48px minmax(0, 1fr); gap: 10px; }
   body.mobile-messages .conversation-avatar { width: 48px; height: 48px; }
 }
+
+/* Final height/scroll correction: independent of header or footer heights. */
+@media (min-width: 881px) {
+  body.mobile-messages .messages-app {
+    block-size: max(680px, calc(100dvh - 190px)) !important;
+    height: max(680px, calc(100dvh - 190px)) !important;
+    min-height: 680px !important;
+  }
+  body.mobile-messages .messages-page { padding-top: 16px; }
+  body.mobile-messages .conversation-list,
+  body.mobile-messages .messages-list { overflow-y: auto !important; min-height: 0 !important; }
+}
+@media (max-width: 880px) {
+  body.mobile-messages .messages-app {
+    block-size: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  body.mobile-messages[data-view="list"] .inbox-panel { height: max(520px, calc(100dvh - 150px)); }
+  body.mobile-messages[data-view="chat"] .chat-panel { height: max(520px, calc(100dvh - 150px)); }
+}
+
+/* Allow wheel scrolling from the center, including the empty-chat state. */
+body.mobile-messages { overflow-y: auto !important; }
+body.mobile-messages .messages-app,
+body.mobile-messages .chat-panel,
+body.mobile-messages .messages-list,
+body.mobile-messages .conversation-list { overscroll-behavior-y: auto !important; }
+@media (min-width: 881px) {
+  body.mobile-messages .messages-page { padding-bottom: 48px !important; }
+}

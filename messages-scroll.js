@@ -1,51 +1,40 @@
+/* ColegioLibre — scroll from anywhere in the central conversation panel. */
 (() => {
-  const selector = '.messages-list, .conversation-list';
-  const interactive = 'a, button, input, textarea, select, option, label, [contenteditable="true"]';
+  const chat = document.querySelector('.chat-panel');
+  const inbox = document.getElementById('conversation-list');
+  const history = document.getElementById('messages-list');
+  if (!chat || !inbox || !history) return;
 
-  document.querySelectorAll(selector).forEach((scroller) => {
-    let active = false;
-    let moved = false;
-    let startY = 0;
-    let startScroll = 0;
-    let pointerId = null;
+  function scrollElement(el, delta) {
+    if (!el) return false;
+    const max = Math.max(0, el.scrollHeight - el.clientHeight);
+    if (max < 1) return false;
+    const before = el.scrollTop;
+    el.scrollTop = Math.max(0, Math.min(max, before + delta));
+    return Math.abs(el.scrollTop - before) > 0.5;
+  }
 
-    scroller.addEventListener('pointerdown', (event) => {
-      // Touch already has native kinetic scrolling; add grab-to-scroll for mouse/pen.
-      if (event.pointerType === 'touch' || event.button !== 0 || event.target.closest(interactive)) return;
-      active = true;
-      moved = false;
-      pointerId = event.pointerId;
-      startY = event.clientY;
-      startScroll = scroller.scrollTop;
-      scroller.setPointerCapture?.(pointerId);
-      scroller.classList.add('is-drag-scrolling');
-    });
-
-    scroller.addEventListener('pointermove', (event) => {
-      if (!active || event.pointerId !== pointerId) return;
-      const delta = event.clientY - startY;
-      if (Math.abs(delta) > 3) moved = true;
-      if (!moved) return;
+  // Capture wheel input even over the empty chat, header and safety banner.
+  document.addEventListener('wheel', (event) => {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
+    if (!(event.target instanceof Element) || !chat.contains(event.target)) return;
+    if (event.target.closest('textarea, input, select, [contenteditable]')) return;
+    const factor = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
+    const delta = event.deltaY * factor;
+    if (!delta) return;
+    const chatOpen = !!document.querySelector('.message-form:not([hidden])');
+    const target = chatOpen ? history : inbox;
+    if (scrollElement(target, delta)) {
       event.preventDefault();
-      scroller.scrollTop = startScroll - delta;
-    });
-
-    const stop = (event) => {
-      if (!active || (event.pointerId != null && event.pointerId !== pointerId)) return;
-      active = false;
-      scroller.classList.remove('is-drag-scrolling');
-      try { scroller.releasePointerCapture?.(pointerId); } catch (_) {}
-      pointerId = null;
-    };
-    scroller.addEventListener('pointerup', stop);
-    scroller.addEventListener('pointercancel', stop);
-
-    // Prevent a click after a real drag, while preserving normal conversation clicks.
-    scroller.addEventListener('click', (event) => {
-      if (!moved) return;
+      event.stopImmediatePropagation();
+      return;
+    }
+    // If the conversation list/history cannot scroll (e.g. only two chats),
+    // move the entire document. This is what the blank central area needs.
+    const root = document.scrollingElement || document.documentElement;
+    if (scrollElement(root, delta)) {
       event.preventDefault();
-      event.stopPropagation();
-      moved = false;
-    }, true);
-  });
+      event.stopImmediatePropagation();
+    }
+  }, {capture:true, passive:false});
 })();
