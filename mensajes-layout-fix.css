@@ -103,3 +103,13 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
   body.mobile-messages .conversation-item { grid-template-columns: 48px minmax(0, 1fr); gap: 10px; }
   body.mobile-messages .conversation-avatar { width: 48px; height: 48px; }
 }
+
+
+/* Single consistent panel sizing; native scrolling within long lists. */
+@media (min-width: 881px) {
+  body.mobile-messages .messages-app {
+    height: clamp(540px, calc(100dvh - 190px), 1000px) !important;
+    min-height: 540px !important;
+    block-size: auto !important;
+  }
+}

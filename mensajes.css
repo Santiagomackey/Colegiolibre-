@@ -1136,3 +1136,11 @@ a:focus-visible {
 
 /* QA: inactive chat controls must never render in the empty state. */
 .chat-avatar[hidden], .message-form[hidden], .chat-safety-actions[hidden], .typing-indicator[hidden] { display: none !important; }
+
+/* Smooth native scrolling: avoid drag-to-scroll pointer capture and layout shifts. */
+.messages-list, .conversation-list {
+  cursor: auto !important;
+  scrollbar-gutter: auto !important;
+  overscroll-behavior-y: contain;
+  scroll-behavior: auto;
+}
