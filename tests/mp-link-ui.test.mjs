@@ -4,22 +4,29 @@ import vm from 'node:vm';
 import fs from 'node:fs';
 const script=fs.readFileSync(new URL('../mp-link-settings.js',import.meta.url),'utf8');
 async function fixture({rpc=async()=>null,response={ok:false,status:503,json:async()=>({error:'LINK_NOT_CONFIGURED'})},search=''}={}){
- const nodes=new Map(),events={},calls=[],navigations=[];
+ const nodes=new Map(),events={},calls=[],navigations=[],aliases=[];
  const node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:false,disabled:false,dataset:{},listeners:{},addEventListener(k,fn){this.listeners[k]=fn;},reset(){this.elements.alias.value='';this.elements.holder_name.value='';},elements:{alias:{value:''},holder_name:{value:''}},querySelector:selector=>node(id+selector)});return nodes.get(id);};
  let language='es';
- const window={addEventListener:(name,fn)=>{events[name]=fn;},fetch:async()=>response,colegioLibreSupabase:{auth:{getSession:async()=>({data:{session:{user:{id:'test-seller'},access_token:'test-session'}}})}},colegioLibreTransfers:{text:(es,en)=>language==='es'?es:en,errorMessage:error=>error.message,rpc:async name=>{calls.push(name);return rpc(name);}}};
+ const window={addEventListener:(name,fn)=>{events[name]=fn;},fetch:async()=>response,colegioLibreSupabase:{auth:{getSession:async()=>({data:{session:{user:{id:'test-seller'},access_token:'test-session'}}})}},colegioLibreTransfers:{text:(es,en)=>language==='es'?es:en,saveMercadoPagoAlias:async (alias,holder_name)=>{aliases.push({alias,holder_name});return {alias,holder_name};},errorMessage:error=>error.message,rpc:async name=>{calls.push(name);return rpc(name);}}};
  const document={hidden:false,querySelector:selector=>selector==='#settings-panel'?null:node(selector),addEventListener:(name,fn)=>{events[name]=fn;}};
  vm.runInNewContext(script,{window,document,URL,URLSearchParams,location:{search,origin:'https://www.colegiolibre.com',assign:url=>navigations.push(url)}});
  const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
- return {node,events,calls,navigations,settle,language:value=>{language=value;events['colegiolibre:languagechange']();}};
+ return {node,events,calls,navigations,aliases,settle,language:value=>{language=value;events['colegiolibre:languagechange']();}};
 }
-test('unlinked seller sees only OAuth action; no transfer details are required',async()=>{
- const f=await fixture();assert.deepEqual(f.calls,['get_my_mp_link']);assert.equal(f.node('#mp-alias-form').hidden,true);assert.equal(f.node('#mp-link-message').textContent,'');
- const page=fs.readFileSync(new URL('../perfil.html',import.meta.url),'utf8');assert.equal(page.includes('id="seller-payment-form"'),false);assert.equal(page.includes('id="bank-payment-details"'),false);
+test('an unlinked seller can save an alias even when account linking cannot load',async()=>{
+ const f=await fixture({rpc:async name=>{if(name==='get_my_mp_link')throw Error('network');return null;}});
+ assert.deepEqual(f.calls,['get_my_mp_link','get_my_payment_details']);
+ const form=f.node('#mp-alias-form');
+ assert.equal(form.hidden,false);
+ form.elements.alias.value='libros.prueba';form.elements.holder_name.value='Titular de Prueba';
+ await form.listeners.submit({preventDefault(){}});
+ assert.deepEqual(f.aliases,[{alias:'libros.prueba',holder_name:'Titular de Prueba'}]);
+ assert.equal(f.node('#mp-link-message').dataset.code,'saved');
+ assert.deepEqual(f.navigations,[]);
 });
 test('a successful reload clears an earlier load error',async()=>{
  let broken=true;const f=await fixture({rpc:async()=>{if(broken)throw {code:'PGRST202'};return null;}});
- assert.equal(f.node('#mp-link-message').dataset.code,'LINK_STORAGE_MISSING');broken=false;f.events.visibilitychange();await f.settle();assert.equal(f.node('#mp-link-message').textContent,'');
+ assert.equal(f.node('#mp-link-message').dataset.code,'LINK_DETAILS_FAILED');broken=false;f.events.visibilitychange();await f.settle();assert.equal(f.node('#mp-link-message').textContent,'');
 });
 test('server configuration failure remains accurate and translates on language change',async()=>{
  const f=await fixture();await f.node('#mp-link-connect').listeners.click();assert.equal(f.node('#mp-link-message').dataset.code,'LINK_NOT_CONFIGURED');assert.doesNotMatch(f.node('#mp-link-message').textContent,/manual/i);
@@ -38,12 +45,12 @@ test('optional alias failure does not prevent OAuth and saved input survives tra
  assert.equal(loaded.node('#mp-alias-form').hidden,false);assert.equal(loaded.node('#mp-alias-form').elements.alias.value,'test.alias');loaded.node('#mp-alias-form').elements.alias.value='edited.alias';loaded.node('#mp-alias-form').listeners.input();loaded.language('en');assert.equal(loaded.node('#mp-alias-form').elements.alias.value,'edited.alias');
 });
 test('optional callback scroll cannot produce an account-load failure',async()=>{
- const f=await fixture({search:'?mp_link=cancelled'});assert.equal(f.node('#mp-link-message').dataset.code,'cancelled');assert.deepEqual(f.calls,['get_my_mp_link']);
+ const f=await fixture({search:'?mp_link=cancelled'});assert.equal(f.node('#mp-link-message').dataset.code,'cancelled');assert.deepEqual(f.calls,['get_my_mp_link','get_my_payment_details']);
 });
 
 
 test('a rejected provider credential is distinguished from cancellation and remains bilingual',async()=>{
  const f=await fixture({search:'?mp_link=error&mp_reason=PROVIDER_INVALID_CLIENT'});
  assert.equal(f.node('#mp-link-message').dataset.code,'PROVIDER_INVALID_CLIENT');assert.match(f.node('#mp-link-message').textContent,/credenciales/);
- f.language('en');assert.match(f.node('#mp-link-message').textContent,/credentials/);assert.equal(f.node('#mp-alias-form').hidden,true);
+ f.language('en');assert.match(f.node('#mp-link-message').textContent,/credentials/);assert.equal(f.node('#mp-alias-form').hidden,false);
 });

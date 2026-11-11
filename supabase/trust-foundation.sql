@@ -37,3 +37,4 @@ create policy "reporter submits report" on public.trust_reports for insert to au
 -- Admin review and provider callbacks must use a server-side privileged service role,
 -- never client-side credentials. Do not accept verification statuses from browser metadata.
 -- Identity documents and selfies must be handled by an approved KYC provider, not these tables.
+

@@ -88,3 +88,4 @@
  window.addEventListener('pagehide',()=>root.querySelector('.pay-instructions')?.replaceChildren());
  void refresh();
 })();
+

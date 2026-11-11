@@ -4,6 +4,9 @@
  const T=window.colegioLibreTransfers,status=document.querySelector('#mp-link-status'),button=document.querySelector('#mp-link-connect'),remove=document.querySelector('#mp-link-remove'),form=document.querySelector('#mp-alias-form'),message=document.querySelector('#mp-link-message');
  const t=T.text;
  const messages={
+  INVALID_ALIAS:['El alias debe tener entre 6 y 20 letras, números, puntos o guiones.','Use 6–20 letters, numbers, dots or hyphens for the alias.'],
+  INVALID_HOLDER:['Ingresá el nombre del titular de la cuenta.','Enter the account holder’s name.'],
+  ALIAS_SAVE_FAILED:['No pudimos guardar el alias. Volvé a intentar.','We could not save the alias. Try again.'],
   opening:['Abriendo Mercado Pago…','Opening Mercado Pago…'],
   AUTH_REQUIRED:['Iniciá sesión nuevamente para vincular tu cuenta.','Sign in again to link your account.'],
   LINK_NOT_CONFIGURED:['ColegioLibre todavía no habilitó Mercado Pago. Falta completar la configuración del servidor.','ColegioLibre has not enabled Mercado Pago yet. Server setup must be completed.'],
@@ -11,7 +14,7 @@
   LINK_STORAGE_MISSING:['Falta actualizar la base de datos de vinculación de ColegioLibre.','The ColegioLibre account-linking database needs an update.'],
   LINK_STORAGE_DENIED:['No pudimos acceder al vínculo de tu cuenta. Volvé a iniciar sesión.','We could not access your account link. Sign in again.'],
   LINK_LOAD_FAILED:['No pudimos cargar tu cuenta vinculada. Volvé a intentar.','We could not load your linked account. Try again.'],
-  LINK_DETAILS_FAILED:['Tu cuenta está vinculada, pero no pudimos cargar el alias. Volvé a intentar antes de editarlo.','Your account is linked, but we could not load your alias. Try again before editing it.'],
+  LINK_DETAILS_FAILED:['No pudimos cargar tus datos de cobro. Volvé a intentar antes de editarlos.','We could not load your payment details. Try again before editing them.'],
   LINK_RATE_LIMIT:['Hay varios intentos de vinculación pendientes. Esperá 10 minutos y volvé a intentar.','Several linking attempts are pending. Wait 10 minutes and try again.'],
   LINK_SERVER_AUTH_FAILED:['El servidor de ColegioLibre no pudo acceder a la base de datos. Es necesario revisar su configuración.','The ColegioLibre server could not access the database. Its configuration needs to be checked.'],
   LINK_STORAGE_FAILED:['No pudimos preparar la vinculación en la base de datos. Volvé a intentar.','We could not prepare account linking in the database. Try again.'],
@@ -26,21 +29,21 @@
   error:['No se completó la vinculación. Volvé a intentar.','Linking did not complete. Try again.'],
   cancelled:['Vinculación cancelada. No cambiamos tu cuenta.','Linking cancelled. Your account was not changed.'],
   removed:['Vínculo eliminado de ColegioLibre. También podés retirar el permiso desde Mercado Pago. Tus pedidos existentes no cambian.','Link removed from ColegioLibre. You can also revoke access in Mercado Pago. Existing orders are unchanged.'],
-  saved:['Listo para recibir transferencias. Los pedidos ya iniciados no cambian.','Ready to receive transfers. Existing orders are unchanged.']
+  saved:['Alias guardado. Los pedidos ya iniciados conservan los datos anteriores.','Alias saved. Existing orders keep their original payment details.']
  };
- let link=null,details=null,pending=false,dirty=false,detailsLoaded=false,generation=0,messageCode='',messageSource='';
+ let link=null,details=null,legacyAlias='',pending=false,dirty=false,detailsLoaded=false,generation=0,messageCode='',messageSource='';
  function show(code='',source='action'){
   messageCode=code;messageSource=source;message.dataset.code=code;
   message.textContent=messages[code]?t(...messages[code]):'';
  }
  function render(fill=false){
-  status.textContent=link?t('Cuenta vinculada: ','Linked account: ')+link.display_name:t('Vinculá tu cuenta para empezar.','Link your account to get started.');
+  status.textContent=link?t('Cuenta vinculada: ','Linked account: ')+link.display_name:t('La vinculación es opcional para guardar tu alias.','Linking is optional when saving your alias.');
   button.textContent=link?t('Vincular otra cuenta','Link another account'):t('Vincular Mercado Pago','Link Mercado Pago');
-  remove.hidden=!link;form.hidden=!link||!detailsLoaded;
-  if(link&&fill){
-   form.elements.alias.value=details?.method==='mercado_pago'&&new URLSearchParams(location.search).get('mp_link')!=='linked'?details.alias:'';
-   form.elements.holder_name.value=link.holder_name||details?.holder_name||'';
-   const needsName=!link.holder_name;form.querySelector('[data-mp-holder]').hidden=!needsName;form.elements.holder_name.required=needsName;
+  remove.hidden=!link;
+  form.hidden=!detailsLoaded;
+  if(fill){
+   form.elements.alias.value=details?.method==='mercado_pago'?details.alias:legacyAlias;
+   form.elements.holder_name.value=details?.method==='mercado_pago'?details.holder_name:'';
   }
  }
  function loadError(error){
@@ -55,24 +58,27 @@
   try{
    const {data,error}=await window.colegioLibreSupabase.auth.getSession();
    if(run!==generation)return;
-   if(error||!data?.session?.user){link=null;details=null;form.reset();render();show('AUTH_REQUIRED','load');return;}
-   const account=await T.rpc('get_my_mp_link');
-   if(run!==generation)return;
-   link=account;details=null;detailsLoaded=false;render();
-   // A saved alias is not needed to authorize an account. A failure loading
-   // optional transfer details must never prevent the OAuth button working.
-   if(link){
-    try{details=await T.rpc('get_my_payment_details');detailsLoaded=true;}
-    catch(_){if(run===generation){show('LINK_DETAILS_FAILED','load');form.hidden=true;}return;}
+   if(error||!data?.session?.user){
+    link=null;details=null;legacyAlias='';detailsLoaded=false;form.reset();render();show('AUTH_REQUIRED','load');return;
    }
+   const [account,payment]=await Promise.allSettled([T.rpc('get_my_mp_link'),T.rpc('get_my_payment_details')]);
    if(run!==generation)return;
-   render(!dirty);
+   link=account.status==='fulfilled'?account.value:null;
+   detailsLoaded=payment.status==='fulfilled';
+   details=detailsLoaded?payment.value:null;
+   const previousAlias=String(data.session.user.user_metadata?.mercadopago_alias||'').trim().toLowerCase();
+   legacyAlias=!details&&/^[a-z0-9.-]{6,20}$/.test(previousAlias)?previousAlias:'';
+   render(detailsLoaded&&!dirty);
+   if(!detailsLoaded){show('LINK_DETAILS_FAILED','load');return;}
+   if(account.status==='rejected')status.textContent=t('No pudimos cargar el vínculo de tu cuenta.','We could not load your account link.');
    if(messageSource==='load')show('','load');
   }catch(error){if(run===generation)show(loadError(error),'load');}
  }
  // Scrolling is presentation work and cannot turn a successful database read
  // into an account-linking error.
  if(new URLSearchParams(location.search).has('mp_link')){
+  const options=document.querySelector('#mp-authorization-options');
+  if(options)options.open=true;
   const panel=document.querySelector('#settings-panel');
   const scroll=()=>card.scrollIntoView?.({block:'nearest'});
   if(!panel||!panel.hidden)scroll();
@@ -100,23 +106,32 @@
  });
  remove.addEventListener('click',async()=>{
   if(pending)return;pending=true;++generation;remove.disabled=true;
-  try{await T.rpc('remove_my_mp_link');link=null;details=null;dirty=false;form.reset();render();show('removed');}
+  try{await T.rpc('remove_my_mp_link');link=null;render();show('removed');}
   catch(error){show(loadError(error));}finally{pending=false;remove.disabled=false;}
  });
  form.addEventListener('input',()=>{dirty=true;});
  form.addEventListener('submit',async event=>{
-  event.preventDefault();if(pending||!link)return;
-  const alias=form.elements.alias.value.trim().toLowerCase(),name=form.elements.holder_name.value.trim();
-  if(!/^[a-z0-9.-]{6,20}$/.test(alias)){message.textContent=T.errorMessage(Error('INVALID_ALIAS'));return;}
-  if(!link.holder_name&&(name.length<2||name.length>100)){message.textContent=T.errorMessage(Error('INVALID_HOLDER'));return;}
-  pending=true;++generation;const save=form.querySelector('[type="submit"]');save.disabled=true;
-  try{await T.rpc('save_linked_mp_alias',{p_alias:alias,p_holder_name:name});details={method:'mercado_pago',alias,holder_name:link.holder_name||name};dirty=false;show('saved');}
-  catch(error){message.textContent=T.errorMessage(error);}finally{pending=false;save.disabled=false;}
+  event.preventDefault();
+  if(pending||!detailsLoaded)return;
+  pending=true;
+  ++generation;
+  const save=form.querySelector('[type="submit"]');
+  save.disabled=true;
+  try{
+   const recipient=await T.saveMercadoPagoAlias(form.elements.alias.value,form.elements.holder_name.value);
+   details={method:'mercado_pago',...recipient};
+   dirty=false;
+   render(true);
+   show('saved');
+  }catch(error){
+   const code=['INVALID_ALIAS','INVALID_HOLDER','AUTH_REQUIRED'].find(key=>String(error.message||'').includes(key));
+   show(code||'ALIAS_SAVE_FAILED');
+  }finally{pending=false;save.disabled=false;}
  });
  window.addEventListener('pageshow',event=>{if(event.persisted)void load();});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void load();});
  window.addEventListener('colegiolibre:languagechange',()=>{render();show(messageCode,messageSource);});
- window.addEventListener('pagehide',()=>{++generation;form.reset();status.textContent='';link=null;details=null;dirty=false;});
+ window.addEventListener('pagehide',()=>{++generation;form.reset();status.textContent='';link=null;details=null;legacyAlias='';detailsLoaded=false;dirty=false;render();});
  const result=new URLSearchParams(location.search).get('mp_link');
  const reason=new URLSearchParams(location.search).get('mp_reason');
  if(result==='error'||result==='cancelled')show(result==='error'&&messages[reason]?reason:result,'callback');
