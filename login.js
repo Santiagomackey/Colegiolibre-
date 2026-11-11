@@ -17,7 +17,7 @@
     "/favoritos",
     "/mensajes",
     "/colegio",
-    "/busco", "/compra", "/pedidos"
+    "/busco", "/compra", "/pedidos", "/mas"
   ]);
   const params = new URLSearchParams(window.location.search);
 

@@ -95,14 +95,38 @@ test('bottom navigation switches both ways from an English startup without chang
  const window={location:{pathname:'/favoritos'},addEventListener:(key,fn)=>{handlers[key]=fn}};
  vm.runInNewContext(read('mobile-ui.js'),{window,document});
  const nav=body.children[0],items=nav.children,routes=items.map(link=>link.href);
- assert.deepEqual(items.map(link=>link.querySelector('span').textContent),['Home','Favorites','Sell','Messages','Profile']);
+ assert.deepEqual(items.map(link=>link.querySelector('span').textContent),['Home','Favorites','Sell','Messages','More']);
+ assert.equal(items[4].href,'/mas');
+ assert.equal(items[4].dataset.requiresAuth,undefined);
  assert.equal(nav.attributes['data-no-translate'],'');
  for(const language of ['es','en','es']){
   root.dataset.language=language;handlers['colegiolibre:languagechange']();
-  const expected=language==='en'?['Home','Favorites','Sell','Messages','Profile']:['Inicio','Favoritos','Publicar','Mensajes','Mi perfil'];
+  const expected=language==='en'?['Home','Favorites','Sell','Messages','More']:['Inicio','Favoritos','Publicar','Mensajes','Más'];
   assert.deepEqual(items.map(link=>link.querySelector('span').textContent),expected);
   assert.deepEqual(items.map(link=>link.attributes['aria-label']),expected);
   assert.equal(items[2].attributes.title,expected[2]);assert.deepEqual(items.map(link=>link.href),routes);
   assert.equal(items[1].attributes['aria-current'],'page');
  }
+});
+
+test('the footer is hidden in native and installed phone apps while More stays available to guests', () => {
+ for (const [native, standalone, iOS, expected] of [
+  [true, false, false, true],
+  [false, true, false, true],
+  [false, false, true, true],
+  [false, false, false, false]
+ ]) {
+  const root = {dataset:{}};
+  const window = {
+   location:{protocol:'https:'},
+   Capacitor:{isNativePlatform:()=>native,getPlatform:()=> 'android'},
+   matchMedia:()=>({matches:standalone})
+  };
+  vm.runInNewContext(read('app-shell.js'),{window,document:{documentElement:root},navigator:{standalone:iOS}});
+  assert.equal(root.dataset.appShell === 'true', expected);
+ }
+ const more = read('mas.html');
+ assert.match(more, /href="\/login\?next=%2Fmas"/);
+ assert.match(more, /href="\/ayuda"/);
+ assert.match(more, /href="\/perfil\?view=settings&amp;section=cobro"/);
 });

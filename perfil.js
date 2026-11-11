@@ -20,8 +20,6 @@ const {
 const listElement = document.querySelector("#publication-list");
 const template = document.querySelector("#publication-card-template");
 const tabs = Array.from(document.querySelectorAll(".publication-tab"));
-const accountToggle = document.querySelector("#account-toggle");
-const overlay = document.querySelector("#layout-overlay");
 const sectionTitle = document.querySelector("#profile-section-title");
 const sectionDescription = document.querySelector("#profile-section-description");
 const publishButton = document.querySelector("#publish-product-link");
@@ -93,7 +91,7 @@ const sectionMeta = {
     title: "Mensajes"
   },
   publications: {
-    description: "Administrá tus materiales, revisá métricas reales y seguí el estado de cada publicación.",
+    description: "Administrá tus publicaciones y revisá su estado.",
     title: "Mis publicaciones"
   },
   purchases: {
@@ -143,6 +141,11 @@ async function initPerfil() {
   renderDashboard();
   renderSettingsForm();
   renderCurrentSection();
+
+  if (state.currentSection === "settings" &&
+      new URLSearchParams(window.location.search).get("section") === "cobro") {
+    document.getElementById("datos-cobro")?.scrollIntoView({ block: "start" });
+  }
 
   if (state.pendingNotice) {
     showToast(state.pendingNotice);
@@ -1063,9 +1066,9 @@ function activateSection(nextSection) {
   } else {
     url.searchParams.set("view", state.currentSection);
   }
+  url.searchParams.delete("section");
 
   history.replaceState(null, "", url.pathname + url.search + url.hash);
-  setSidebarOpen(false);
   renderCurrentSection();
 }
 
@@ -1079,12 +1082,6 @@ function closeMenusExcept(exception) {
     menu.closest(".publication-card")?.classList.toggle("is-menu-open", isException);
     trigger.setAttribute("aria-expanded", String(isException));
   });
-}
-
-function setSidebarOpen(isOpen) {
-  document.body.dataset.sidebarOpen = String(isOpen);
-  if (overlay) overlay.hidden = !isOpen;
-  accountToggle?.setAttribute("aria-expanded", String(isOpen));
 }
 
 function bindEvents() {
@@ -1103,20 +1100,6 @@ function bindEvents() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeMenusExcept(null);
-      setSidebarOpen(false);
-    }
-  });
-
-  accountToggle?.addEventListener("click", () => {
-    const nextValue = document.body.dataset.sidebarOpen !== "true";
-    setSidebarOpen(nextValue);
-  });
-
-  overlay?.addEventListener("click", () => setSidebarOpen(false));
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 980) {
-      setSidebarOpen(false);
     }
   });
 

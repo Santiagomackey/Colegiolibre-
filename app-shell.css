@@ -1,0 +1,3 @@
+html[data-app-shell="true"] :is(footer.site-footer, footer.legal-footer, footer.ib-footer) {
+  display: none !important;
+}

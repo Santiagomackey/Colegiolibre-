@@ -37,14 +37,29 @@ test('the sign-in screen provides a way home without marketplace navigation',()=
 });
 
 test('the community alerts panel only loads on the public homepage',()=>{
- for(const [pathname,portal,expected] of [['/',false,true],['/index.html',false,true],['/colegio/eccleston',false,false],['/',true,false],['/explorar',false,false]]){
+ for(const [pathname,portal,expected] of [['/',false,true],['/index',false,true],['/index.html',false,true],['/colegio/eccleston',false,false],['/',true,false],['/explorar',false,false],['/busco',false,false]]){
   const panel={hidden:true},list={setAttribute(){}};
   let requests=0;
+  const listeners=new Map();
   const query={select(){return this},eq(){return this},order(){return this},limit(){return this},abortSignal(){return new Promise(()=>{});}};
-  const window={location:{pathname},ColegioLibreInstitution:{enabled:portal},colegioLibreSupabase:{from(){requests++;return query;}}};
+  const window={location:{pathname},ColegioLibreInstitution:{enabled:portal},colegioLibreSupabase:{from(){requests++;return query;}},addEventListener:(name,fn)=>listeners.set(name,fn)};
   const document={getElementById:id=>id==='pedidos-comunidad'?panel:list};
   vm.runInNewContext(source('home-wanted.js'),{window,document,AbortController,setTimeout:()=>0,clearTimeout(){}});
+  const setView=showCommunityAlerts=>listeners.get('colegiolibre:home-view')?.({detail:{showCommunityAlerts}});
+  setView(false);
+  assert.equal(panel.hidden,true,pathname);
+  assert.equal(requests,0,pathname);
+  setView(true);
+  assert.equal(panel.hidden,!expected,pathname);
+  assert.equal(requests,expected?1:0,pathname);
+  setView(false);
+  assert.equal(panel.hidden,true,pathname);
+  setView(true);
   assert.equal(panel.hidden,!expected,pathname);
   assert.equal(requests,expected?1:0,pathname);
  }
+ const alertsPage=source('busco.html');
+ assert.doesNotMatch(alertsPage,/id="pedidos-comunidad"|home-wanted\.js/);
+ assert.match(alertsPage,/id="wanted-form"/);
+ assert.match(alertsPage,/id="wanted-list"/);
 });
