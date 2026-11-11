@@ -16,14 +16,17 @@ test('a retained dark preference cannot activate dark mode or restore its remove
  assert.equal(root.dataset.theme,'light');assert.equal(store.get('colegiolibre-theme'),'light');window.colegioLibrePreferences.setTheme('dark');assert.equal(root.dataset.theme,'light');assert.equal(source('preferences.js').includes('id="preference-theme"'),false);
 });
 test('shared account labels preserve the seller name across language changes and clear on sign-out',async()=>{
- const events={},nodes=new Map(),navigations=[];let currentUser={id:'test-seller'},onAuth;
- function node(id){if(!nodes.has(id))nodes.set(id,{textContent:'',dataset:{},listeners:{},attrs:{},setAttribute(k,v){this.attrs[k]=v},removeAttribute(k){delete this.attrs[k]},addEventListener(k,v){this.listeners[k]=v}});return nodes.get(id);}
+ const events={},nodes=new Map(),navigations=[],menuLinks=[];let currentUser={id:'test-seller'},onAuth;
+ function node(id){if(!nodes.has(id))nodes.set(id,{textContent:'',dataset:{},listeners:{},attrs:{},setAttribute(k,v){this.attrs[k]=v},removeAttribute(k){delete this.attrs[k]},addEventListener(k,v){this.listeners[k]=v},insertAdjacentHTML(position,html){menuLinks.push({id,position,html});}});return nodes.get(id);}
  const message=node('message');message.dataset.siteText='messages';
  const header={querySelector:node,querySelectorAll:selector=>selector==='[data-site-text]'?[message]:[],contains:()=>false};
  const document={readyState:'complete',documentElement:{dataset:{language:'es'}},querySelector:selector=>selector==='.cl-site-header'?header:null,addEventListener(){}};
  const window={addEventListener:(k,v)=>events[k]=v,colegioLibreApi:{getCurrentUser:async()=>currentUser,getCurrentProfile:async()=>({name:'Santiago Pérez'})},colegioLibreSupabase:{auth:{onAuthStateChange:fn=>{onAuth=fn},signOut:async()=>({error:null})}}};
  vm.runInNewContext(source('site-header.js'),{document,window,URL,URLSearchParams,location:{pathname:'/mensajes',assign:p=>navigations.push(p)},queueMicrotask});
  const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
+ assert.equal(menuLinks.length,2);
+ assert.match(menuLinks[0].html,/href="\/mas#mercado-pago"/);
+ assert.match(menuLinks[1].html,/href="\/explorar"/);
  assert.equal(node('#accountText').textContent,'Santiago');assert.equal(node('#accountButton').href,'/perfil');
  document.documentElement.dataset.language='en';events['colegiolibre:languagechange']();assert.equal(message.textContent,'Messages');assert.equal(node('#accountText').textContent,'Santiago');
  currentUser=null;onAuth();await settle();assert.equal(node('#accountText').textContent,'Sign in');assert.equal(node('#accountButton').href,'/login');assert.equal(node('[data-site-logout]').hidden,true);

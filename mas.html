@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/pwa.css?v=20261109-release25">
   <link rel="stylesheet" href="/preferences.css?v=20261111-more42">
   <link rel="stylesheet" href="/mobile.css?v=20261109-release25">
-  <link rel="stylesheet" href="/mas.css?v=20261111-more42">
+  <link rel="stylesheet" href="/mas.css?v=20261111-menu43">
   <script src="/preferences.js?v=20261111-more42"></script>
   <script src="/app-shell.js?v=20261111-more42"></script>
 </head>
@@ -42,6 +42,18 @@
       <a class="more-account-action" id="more-profile" href="/perfil" hidden>Mi perfil</a>
       <a class="more-account-action" id="more-login" href="/login?next=%2Fmas">Iniciar sesión</a>
     </div>
+
+    <section class="more-mp-card" id="mercado-pago" aria-labelledby="more-mp-title">
+      <div class="more-avatar" aria-hidden="true"><svg><use href="#more-card"></use></svg></div>
+      <div id="mp-link-card">
+        <h2 id="more-mp-title">Vinculá tu Mercado Pago</h2>
+        <p>Conectá tu cuenta con ColegioLibre. La autorización se realiza en Mercado Pago.</p>
+        <p id="mp-link-status" data-no-translate></p>
+        <p id="mp-link-message" role="status" data-no-translate></p>
+        <a class="more-mp-action" id="mp-link-sign-in" href="/login?next=%2Fmas" hidden>Iniciar sesión</a>
+        <button class="more-mp-action" id="mp-link-connect" type="button" hidden data-no-translate>Vincular Mercado Pago</button>
+      </div>
+    </section>
 
     <section class="more-group" aria-labelledby="more-activity-title">
       <h2 id="more-activity-title">Actividad</h2>
@@ -75,6 +87,9 @@
   </main>
   <script src="/vendor/supabase.js?v=20261109-release25"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
+  <script src="/transfer-common.js?v=20261111-alias36"></script>
+  <script src="/mp-link-settings.js?v=20261111-menu43"></script>
+  <script src="/native-bridge.js?v=20261111-more42"></script>
   <script src="/mas.js?v=20261111-more42"></script>
   <script src="/mobile-ui.js?v=20261111-more42"></script>
   <script src="/pwa.js?v=20261109-release25"></script>
