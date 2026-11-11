@@ -1,32 +1,76 @@
 (() => {
  'use strict';
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
- let order=null,busy=false,action=null;
+ let order=null,product=null,busy=false,action=null;
  const params=new URLSearchParams(location.search);
+ const productId=params.get('product');
+ const listingUrl=productId?'/producto?id='+encodeURIComponent(productId):'/pedidos';
+ const retry=document.querySelector('#transfer-retry');
  const note=(value,error=false)=>{message.textContent=value;message.dataset.state=error?'error':'info'};
  const add=(parent,tag,cls,text)=>{const node=T.el(tag,cls,text);parent.append(node);return node};
- async function refresh(){
+ async function refresh({reserve=false}={}){
   try{
    const user=await window.colegioLibreApi.getCurrentUser(true);
    if(!user){location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));return;}
    let id=params.get('id');
-   if(!id&&params.get('product')){id=await T.rpc('start_transfer_order',{p_product_id:params.get('product')});params.set('id',id);history.replaceState(null,'','/compra?id='+encodeURIComponent(id));}
+   if(!id&&productId&&reserve){
+    id=await T.rpc('start_transfer_order',{p_product_id:productId});
+    params.set('id',id);
+    history.replaceState(null,'','/compra?id='+encodeURIComponent(id));
+   }
+   if(!id&&productId){
+    const {data,error}=await window.colegioLibreSupabase.from('products')
+     .select('id,title,price,status,moderation_status,user_id').eq('id',productId).maybeSingle();
+    if(error)throw error;
+    if(!data||!data.user_id||!Number.isFinite(Number(data.price))||Number(data.price)<=0||
+       (data.status||'available')!=='available'||(data.moderation_status||'approved')!=='approved'){
+     throw Error('PRODUCT_UNAVAILABLE');
+    }
+    if(data.user_id===user.id)throw Error('OWN_PRODUCT');
+    product=data;retry.hidden=true;renderReview();note('');return;
+   }
    if(!id)throw Error('ORDER_NOT_FOUND');
-   order=await T.rpc('get_transfer_order',{p_order_id:id});document.querySelector('#transfer-retry').hidden=true;render();note('');
-  }catch(error){document.querySelector('#transfer-retry').hidden=false;note(T.errorMessage(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
+   order=await T.rpc('get_transfer_order',{p_order_id:id});product=null;retry.hidden=true;render();note('');
+  }catch(error){product=null;order=null;retry.hidden=false;note(T.errorMessage(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
    if(rawError.includes('PRODUCT_IN_CHECKOUT')){
     const box=add(root,'section','pay-card');
-    add(box,'h2','',T.text('Este producto está reservado','This item is reserved'));
-    add(box,'p','pay-muted',T.text('Hay una compra en curso. No envíes dinero ni intentes pagar por fuera de ColegioLibre. Podés consultar al vendedor si vuelve a estar disponible.','Another purchase is in progress. Do not send money or pay outside ColegioLibre. You can ask the seller if it becomes available again.'));
-    const productId=params.get('product');
-    if(productId){const link=add(box,'a','pay-button',T.text('Ver publicación y contactar al vendedor','View listing and contact seller'));link.href='/producto?id='+encodeURIComponent(productId);}
-    const orders=add(box,'a','pay-link',T.text('Ver mis pedidos','View my orders'));orders.href='/pedidos';
-    document.querySelector('#transfer-retry').hidden=true;
+    add(box,'h1','',T.text('Este producto está reservado','This item is reserved'));
+    add(box,'p','pay-muted',T.text('Otra persona ya inició la compra. Si cancela antes de transferir, el producto vuelve a estar disponible.','Someone else started checkout. If they cancel before transferring, the item becomes available again.'));
+    const actions=add(box,'div','pay-actions');
+    button(actions,T.text('Intentar reservar de nuevo','Try reserving again'),reserveProduct);
+    add(actions,'a','pay-link',T.text('Volver a la publicación','Back to listing')).href=listingUrl;
+    retry.hidden=true;note('');
    }else{
-    const back=add(root,'a','pay-link',T.text('Volver al producto','Back to listing'));back.href=params.get('product')?'/producto?id='+encodeURIComponent(params.get('product')):'/pedidos';
+    add(root,'a','pay-link',productId?T.text('Volver al producto','Back to listing'):T.text('Ver mis pedidos','View my orders')).href=listingUrl;
    }}
  }
  function button(parent,label,fn,secondary=false){const node=add(parent,'button',secondary?'pay-button pay-button--secondary':'pay-button',label);node.type='button';node.addEventListener('click',fn);return node;}
+ async function reserveProduct(event){
+  if(busy)return;
+  const reserve=event.currentTarget;
+  busy=true;reserve.disabled=true;
+  try{await refresh({reserve:true});}
+  finally{busy=false;reserve.disabled=false;}
+ }
+ function renderReview(){
+  root.replaceChildren();
+  const review=add(root,'section','pay-card');
+  add(review,'span','pay-kicker',T.text('TU COMPRA','YOUR PURCHASE'));
+  add(review,'h1','',T.text('Revisá tu compra','Review your purchase'));
+  add(review,'p','',product.title).dataset.noTranslate='';
+  add(review,'strong','pay-total',T.money(product.price));
+  add(review,'span','pay-price-note',T.text('Total del producto · ARS','Item total · ARS'));
+  const details=add(review,'dl','pay-details pay-review-details');
+  add(details,'dt','',T.text('Pago','Payment'));
+  add(details,'dd','',T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
+  add(details,'dt','',T.text('Entrega','Delivery'));
+  add(details,'dd','',T.text('Coordiná el encuentro en el colegio','Arrange pickup at school'));
+  add(review,'p','pay-muted',T.text('Al continuar, reservás el producto y accedés al alias. Podés cancelar antes de transferir.','Continuing reserves the item and reveals the payment alias. You can cancel before transferring.'));
+  const actions=add(review,'div','pay-actions');
+  const reserve=button(actions,T.text('Reservar y ver datos de pago','Reserve and view payment details'),reserveProduct);
+  reserve.disabled=busy;
+  add(actions,'a','pay-link',T.text('Volver a la publicación','Back to listing')).href=listingUrl;
+ }
  function render(){
   root.replaceChildren();
   const buyer=order.role==='buyer';
@@ -82,9 +126,9 @@
  });
  document.querySelector('#transfer-confirm-cancel').addEventListener('click',()=>dialog.close());
  async function openChat(){try{const {conversation,error}=await window.colegioLibreApi.ensureConversation({buyerId:order.buyer_id,sellerId:order.seller_id,productId:order.product_id});if(error||!conversation)throw error||Error('chat');location.assign('/mensajes?id='+encodeURIComponent(conversation.id));}catch(error){note(T.errorMessage(error),true)}}
- document.querySelector('#transfer-retry').addEventListener('click',()=>void refresh());
- window.addEventListener('colegiolibre:languagechange',()=>{if(order){render();note('')}});
- window.addEventListener('pageshow',event=>{if(event.persisted)void refresh()});
+ retry.addEventListener('click',()=>void refresh());
+ window.addEventListener('colegiolibre:languagechange',()=>{if(busy)return;if(order){render();note('')}else if(product){renderReview();note('')}});
+ window.addEventListener('pageshow',event=>{if(event.persisted&&!busy)void refresh()});
  window.addEventListener('pagehide',()=>root.querySelector('.pay-instructions')?.replaceChildren());
  void refresh();
 })();
