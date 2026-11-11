@@ -1,0 +1,1 @@
+Corrección: la rueda del mouse y el trackpad funcionan desde el panel central de Mensajes, incluso cuando no hay chat abierto. Se actualizó el versionado de messages-scroll.js para evitar caché.
