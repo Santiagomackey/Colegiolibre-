@@ -11,6 +11,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.view.View;
 import android.view.Gravity;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,11 +22,15 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     private View navigationSurface;
 
-    private void configurePhoneViewport() {
-        if (getBridge() == null || getBridge().getWebView() == null) return;
-        // Never shrink a wide document into a desktop overview on a phone.
-        getBridge().getWebView().getSettings().setUseWideViewPort(false);
-        getBridge().getWebView().getSettings().setLoadWithOverviewMode(false);
+    @Override
+    protected void load() {
+        // Configure the viewport before Capacitor starts loading the website.
+        WebView webView = findViewById(com.getcapacitor.android.R.id.webview);
+        if (webView != null) {
+            webView.getSettings().setUseWideViewPort(false);
+            webView.getSettings().setLoadWithOverviewMode(false);
+        }
+        super.load();
     }
 
     private void paintNavigationInset(int surface) {
@@ -67,14 +72,12 @@ public class MainActivity extends BridgeActivity {
             channel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PRIVATE);
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
-        configurePhoneViewport();
         applySystemTheme(currentTheme());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        configurePhoneViewport();
         applySystemTheme(currentTheme());
     }
 

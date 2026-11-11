@@ -317,8 +317,8 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
   );
   assert.match(preferences, /-webkit-text-fill-color:\s*#071109 !important/);
   assert.match(
-    preferences,
-    /\.mobile-profile \.profile-sidebar\s*\{[\s\S]*?min-height:\s*0 !important/
+    read("perfil.css"),
+    /\.mobile-profile \.profile-sidebar\s*\{[^}]*min-height:\s*0;/
   );
   assert.match(home, /images\/favicon(?:-32\.png|\.svg)/);
   assert.match(profile, /preferences\.css\?v=[\w-]+/);

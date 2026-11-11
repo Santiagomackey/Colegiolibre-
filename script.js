@@ -376,6 +376,7 @@ async function init() {
   bindEvents();
   setupReveal();
   hydrateUrlState();
+  updateCommunityAlertsVisibility(state.requestedScope || state.activeScope);
 
   if (state.showOnlyFavorites) {
     window.location.replace("/favoritos");
@@ -1669,11 +1670,21 @@ function getCurrentProductLimit() {
   return hasActiveDiscoveryFilters() ? HOME_FILTERED_LIMIT : HOME_RECOMMENDED_LIMIT;
 }
 
+function updateCommunityAlertsVisibility(scope = state.activeScope) {
+  window.dispatchEvent(new CustomEvent("colegiolibre:home-view", {
+    detail: {
+      showCommunityAlerts:
+        scope === "country" && state.sortBy === "random" && !hasActiveDiscoveryFilters()
+    }
+  }));
+}
+
 function renderHome() {
   if (clearIncompatibleCategoryFilters()) {
     syncFavoritesUrl();
   }
 
+  updateCommunityAlertsVisibility();
   renderCategoryPills();
   renderConditionPills();
   renderYearPills();

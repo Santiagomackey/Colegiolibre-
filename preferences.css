@@ -1448,33 +1448,6 @@ html[data-theme="dark"] .footer-contact-btn:is(:hover, :focus-visible) {
   background: #8be368 !important;
 }
 
-/* El panel azul termina junto con sus opciones, sin columna infinita. */
-@media (min-width: 981px) {
-  .mobile-profile .page-layout {
-    align-items: start !important;
-  }
-
-  .mobile-profile .profile-sidebar {
-    position: relative !important;
-    top: auto !important;
-    align-self: start !important;
-    width: 100%;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    padding: 28px 22px 22px !important;
-    overflow: visible !important;
-    border: 1px solid rgba(255, 255, 255, 0.09) !important;
-    border-radius: 24px !important;
-    background: linear-gradient(165deg, #0b2e6b 0%, #082657 100%) !important;
-    box-shadow: 0 22px 52px rgba(6, 28, 67, 0.2) !important;
-  }
-
-  .mobile-profile .profile-sidebar .help-card {
-    margin-top: 4px !important;
-  }
-}
-
 @media (max-width: 860px) {
   :root {
     --cl-header-height: 70px;
