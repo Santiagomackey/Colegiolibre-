@@ -2,6 +2,8 @@
  'use strict';
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
  let order=null,product=null,busy=false,action=null;
+ const MP=window.colegioLibreMercadoPago;
+ let mpAvailable=false,providerState='',paymentMode='transfer';
  const params=new URLSearchParams(location.search);
  const productId=params.get('product');
  const listingUrl=productId?'/producto?id='+encodeURIComponent(productId):'/pedidos';
@@ -14,9 +16,14 @@
    if(!user){location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));return;}
    let id=params.get('id');
    if(!id&&productId&&reserve){
-    id=await T.rpc('start_transfer_order',{p_product_id:productId});
+    let hosted;
+    if(paymentMode==='mercado_pago'){
+     const checkout=await MP.request('',{action:'start',id:productId});
+     id=checkout.orderId;hosted=checkout.url;
+    }else id=await T.rpc('start_transfer_order',{p_product_id:productId});
     params.set('id',id);
     history.replaceState(null,'','/compra?id='+encodeURIComponent(id));
+    if(hosted)await MP.open(hosted);
    }
    if(!id&&productId){
     const {data,error}=await window.colegioLibreSupabase.from('products')
@@ -27,11 +34,25 @@
      throw Error('PRODUCT_UNAVAILABLE');
     }
     if(data.user_id===user.id)throw Error('OWN_PRODUCT');
+    const status=await MP?.request('?product='+encodeURIComponent(productId)).catch(()=>null);
+    mpAvailable=Boolean(status?.available);
+    paymentMode=mpAvailable?'mercado_pago':'transfer';
     product=data;retry.hidden=true;renderReview();note('');return;
    }
    if(!id)throw Error('ORDER_NOT_FOUND');
-   order=await T.rpc('get_transfer_order',{p_order_id:id});product=null;retry.hidden=true;render();note('');
-  }catch(error){product=null;order=null;retry.hidden=false;note(T.errorMessage(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
+   order=await T.rpc('get_transfer_order',{p_order_id:id});
+   providerState='';
+   let statusError;
+   if(order.payment_provider==='mercado_pago'){
+    try{
+     const result=await MP.request('',{action:'status',id});
+     providerState=result.state;
+     if(['accredited','canceled'].includes(providerState))order=await T.rpc('get_transfer_order',{p_order_id:id});
+    }catch(error){statusError=error;}
+   }
+   product=null;retry.hidden=true;render();
+   if(statusError)note(mpError(statusError),true);else note('');
+  }catch(error){product=null;order=null;retry.hidden=false;note(mpError(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
    if(rawError.includes('PRODUCT_IN_CHECKOUT')){
     const box=add(root,'section','pay-card');
     add(box,'h1','',T.text('Este producto está reservado','This item is reserved'));
@@ -62,12 +83,17 @@
   add(review,'span','pay-price-note',T.text('Total del producto · ARS','Item total · ARS'));
   const details=add(review,'dl','pay-details pay-review-details');
   add(details,'dt','',T.text('Pago','Payment'));
-  add(details,'dd','',T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
+  add(details,'dd','',mpAvailable?'Mercado Pago':T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
   add(details,'dt','',T.text('Entrega','Delivery'));
   add(details,'dd','',T.text('Coordiná el encuentro en el colegio','Arrange pickup at school'));
-  add(review,'p','pay-muted',T.text('Al continuar, reservás el producto y accedés al alias. Podés cancelar antes de transferir.','Continuing reserves the item and reveals the payment alias. You can cancel before transferring.'));
+  add(review,'p','pay-muted',mpAvailable?
+   T.text('Al continuar, reservás el producto y abrís el checkout de Mercado Pago.','Continue to reserve the item and open Mercado Pago checkout.'):
+   T.text('Al continuar, reservás el producto y accedés al alias. Podés cancelar antes de transferir.','Continuing reserves the item and reveals the payment alias. You can cancel before transferring.'));
   const actions=add(review,'div','pay-actions');
-  const reserve=button(actions,T.text('Reservar y ver datos de pago','Reserve and view payment details'),reserveProduct);
+  const reserve=button(actions,mpAvailable?
+   T.text('Pagar con Mercado Pago','Pay with Mercado Pago'):
+   T.text('Reservar y ver datos de pago','Reserve and view payment details'),reserveProduct);
+  if(mpAvailable)reserve.classList.add('pay-button--mercado-pago');
   reserve.disabled=busy;
   add(actions,'a','pay-link',T.text('Volver a la publicación','Back to listing')).href=listingUrl;
  }
@@ -79,10 +105,11 @@
   const counterpart=buyer?order.seller_name:order.buyer_name;
   if(counterpart){const person=add(head,'p','pay-muted',(buyer?T.text('Vendedor: ','Seller: '):T.text('Comprador: ','Buyer: '))+counterpart);person.dataset.noTranslate='';}
   add(head,'p','pay-order-reference',T.text('Pedido ','Order ')+order.id.slice(0,8));
-  add(head,'strong','pay-total',T.money(order.amount));add(head,'span','pay-price-note',order.status==='payment_pending'&&order.listing_available!==false?T.text('Importe exacto a transferir · ARS','Exact transfer amount · ARS'):T.text('Total del pedido · ARS','Order total · ARS'));
+  add(head,'strong','pay-total',T.money(order.amount));add(head,'span','pay-price-note',order.payment_provider!=='mercado_pago'&&order.status==='payment_pending'&&order.listing_available!==false?T.text('Importe exacto a transferir · ARS','Exact transfer amount · ARS'):T.text('Total del pedido · ARS','Order total · ARS'));
   const steps=add(head,'ol','pay-progress');steps.setAttribute('aria-label',T.text('Estado del pedido','Order status'));
   const sequence=['payment_pending','awaiting_confirmation','paid','delivered'];
   sequence.forEach((state,index)=>{const step=add(steps,'li',index<=sequence.indexOf(order.status)?'is-complete':'',T.status(state));if(state===order.status)step.setAttribute('aria-current','step')});
+  if(order.payment_provider==='mercado_pago'){renderMercadoPago(head,buyer);return;}
   if(order.status==='cancelled')add(head,'p','pay-notice',T.text('Pedido cancelado. No realices una transferencia para este pedido.','Order cancelled. Do not send a transfer for this order.'));
   const content=add(root,'div','pay-checkout-grid');
   const payment=add(content,'section','pay-card pay-instructions');
@@ -111,6 +138,58 @@
   if(order.status!=='cancelled'&&order.status!=='delivered')button(actions,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat,true);
   if(order.status==='payment_pending')button(actions,T.text('Cancelar sin transferencia','Cancel before transferring'),()=>confirm('cancel'),true);
   button(actions,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
+ }
+ function mpError(error){
+  const message=String(error?.message||'');
+  if(message==='MP_SELLER_RECONNECT'||message==='MP_SELLER_NOT_LINKED'){
+   return T.text('El vendedor tiene que volver a vincular su cuenta de Mercado Pago.','The seller needs to reconnect their Mercado Pago account.');
+  }
+  if(message==='MP_CANNOT_CANCEL')return T.text('Mercado Pago todavía no confirmó la cancelación. Actualizá el estado.','Mercado Pago has not confirmed cancellation. Refresh the status.');
+  if(message.startsWith('MP_'))return T.text('No pudimos completar la solicitud de Mercado Pago. Volvé a intentar.','We could not complete the Mercado Pago request. Try again.');
+  return T.errorMessage(error);
+ }
+ async function actOnMercadoPago(event,action){
+  if(busy)return;
+  const control=event.currentTarget;
+  busy=true;control.disabled=true;
+  try{
+   if(action==='start'){
+    const checkout=await MP.request('',{action:'resume',id:order.id});
+    if(checkout.url){await MP.open(checkout.url);return;}
+   }else await MP.request('',{action,id:order.id});
+   await refresh();
+  }catch(error){note(mpError(error),true);}
+  finally{busy=false;control.disabled=false;}
+ }
+ function renderMercadoPago(head,buyer){
+  const panel=add(root,'section','pay-card');
+  add(panel,'h2','','Mercado Pago');
+  if(['refunded','partially_refunded'].includes(providerState)){
+   add(panel,'p','pay-notice',providerState==='refunded'?
+    T.text('Mercado Pago registró un reembolso.','Mercado Pago recorded a refund.'):
+    T.text('Mercado Pago registró un reembolso parcial.','Mercado Pago recorded a partial refund.'));
+  }else if(order.status==='cancelled'){
+   add(panel,'p','pay-notice',T.text('Mercado Pago confirmó la cancelación.','Mercado Pago confirmed cancellation.'));
+  }else if(order.status==='payment_pending'){
+   const waiting=providerState==='processing';
+   add(panel,'p','pay-muted',waiting?
+    T.text('Mercado Pago está procesando el pago.','Mercado Pago is processing the payment.'):
+    T.text('El pedido se actualiza cuando Mercado Pago confirma el pago.','The order updates when Mercado Pago confirms payment.'));
+   if(buyer&&!waiting&&providerState){
+    const pay=button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),event=>actOnMercadoPago(event,'start'));
+    pay.classList.add('pay-button--mercado-pago');
+   }
+   if(!waiting&&providerState)button(panel,T.text('Cancelar pedido','Cancel order'),event=>actOnMercadoPago(event,'cancel'),true);
+  }else if(order.status==='paid'&&providerState==='accredited'){
+   add(panel,'p','pay-notice',T.text('Pago confirmado por Mercado Pago.','Payment confirmed by Mercado Pago.'));
+   if(buyer)button(panel,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'));
+   button(panel,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat,true);
+  }else if(order.status==='paid'){
+   add(panel,'p','pay-muted',T.text('Actualizá el estado para confirmar el pago con Mercado Pago.','Refresh to verify the payment with Mercado Pago.'));
+  }else if(order.status==='delivered'){
+   add(panel,'p','pay-muted',T.text('El comprador confirmó la entrega.','The buyer confirmed pickup.'));
+  }
+  button(panel,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
  }
  async function copy(value){try{await navigator.clipboard.writeText(value);note(T.text('Copiado.','Copied.'));}catch(_){note(T.text('No pudimos copiar. Seleccioná el dato y copialo manualmente.','Could not copy. Select the value and copy it manually.'),true)}}
  function confirm(next){

@@ -4,3 +4,8 @@
 .pay-mp-card{padding:20px;border:1px solid var(--pay-line);border-radius:16px;background:var(--pay-soft);max-width:520px;margin-top:20px}.pay-mp-brand{display:inline-block;color:var(--pay-ink);font-size:18px;font-weight:750;letter-spacing:-.03em}.pay-mp-card p{font-size:13px;color:var(--pay-muted);margin:10px 0 16px}.pay-mp-card .pay-button{max-width:none}.pay-mp-alias{display:grid;gap:14px;max-width:520px;margin-top:20px}.pay-mp-alias h3{font-size:16px;line-height:1.4;margin:0}.pay-mp-alias p{margin:0}.pay-mp-alias label{display:grid;gap:7px;font-size:13px;font-weight:650}.pay-mp-alias input{width:100%;min-height:46px;border:1px solid var(--pay-line);border-radius:11px;padding:10px 12px;background:var(--pay-surface);color:var(--pay-ink);font:inherit;font-size:16px}.pay-manual-details{border-top:1px solid var(--pay-line);padding-top:18px;margin-top:26px}.pay-manual-details summary{cursor:pointer;min-height:44px;display:list-item;align-content:center;font-size:13px;font-weight:650;color:var(--pay-muted)}.pay-mp-alias [hidden]{display:none!important}
 
 .pay-actions{display:grid;gap:12px;margin-top:20px}.pay-actions .pay-link{justify-self:start;padding:4px 0}.pay-review-details dd:last-child{font:inherit;font-weight:650}
+
+.pay-button--mercado-pago{background:#0077ab;color:#fff}
+.pay-button--mercado-pago:hover{background:#005e87}
+.pay-mercado-pago-settings{padding:16px;border:1px solid var(--pay-line);border-radius:14px;margin:16px 0}
+.pay-mercado-pago-settings p{margin:0}
