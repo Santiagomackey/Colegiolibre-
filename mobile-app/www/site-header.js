@@ -40,20 +40,23 @@
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
  function followScroll(){
   if(!header.classList||!window.requestAnimationFrame)return;
-  let previous=0,travel=0,direction=0,pending=false;
-  const position=()=>Math.max(0,window.scrollY||0,document.documentElement.scrollTop||0,document.body?.scrollTop||0);
-  const show=()=>header.classList.remove('cl-header-hidden');
+  let pending=false;
   const update=()=>{
-   pending=false;const y=position(),delta=y-previous;previous=y;
-   if(y<32||header.contains(document.activeElement)||header.querySelector('details[open]')){show();travel=0;return;}
-   const next=Math.sign(delta);if(!next)return;
-   if(next!==direction){travel=0;direction=next;}travel+=Math.abs(delta);
-   if(travel<12)return;
-   header.classList.toggle('cl-header-hidden',next>0&&y>header.offsetHeight);
+   pending=false;
+   const scrollTop=Math.max(0,window.scrollY||0,document.documentElement.scrollTop||0,document.body?.scrollTop||0);
+   const hidden=scrollTop>4;
+   if(header.inert===hidden)return;
+   header.inert=hidden;
+   header.classList.toggle('cl-header-hidden',hidden);
+   if(hidden)header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);
   };
-  document.addEventListener('scroll',()=>{if(!pending){pending=true;window.requestAnimationFrame(update);}},{capture:true,passive:true});
-  header.addEventListener('focusin',show);
-  window.addEventListener('pageshow',()=>{previous=position();travel=0;show();});
+  document.addEventListener('scroll',()=>{
+   if(pending)return;
+   pending=true;
+   window.requestAnimationFrame(update);
+  },{capture:true,passive:true});
+  window.addEventListener('pageshow',update);
+  update();
  }
  function initialize(){followScroll();placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();

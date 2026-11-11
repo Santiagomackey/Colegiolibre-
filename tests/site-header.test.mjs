@@ -29,3 +29,45 @@ test('shared account labels preserve the seller name across language changes and
  currentUser=null;onAuth();await settle();assert.equal(node('#accountText').textContent,'Sign in');assert.equal(node('#accountButton').href,'/login');assert.equal(node('[data-site-logout]').hidden,true);
  currentUser={id:'test-seller'};window.colegioLibreApi.getCurrentProfile=async()=>{throw Error('network')};onAuth();await settle();assert.equal(node('#accountButton').href,'/perfil');assert.equal(node('#accountText').textContent,'My profile');
 });
+
+test('the header stays hidden when scrolling upward until the page reaches the top',()=>{
+ const events={},frames=[],nodes=new Map();
+ const node=selector=>{
+  if(!nodes.has(selector))nodes.set(selector,{dataset:{},setAttribute(){},addEventListener(){}});
+  return nodes.get(selector);
+ };
+ let hidden=false;
+ const menu={open:true};
+ const header={
+  inert:false,
+  classList:{toggle(name,value){if(name==='cl-header-hidden')hidden=value;}},
+  querySelector:node,
+  querySelectorAll:selector=>selector==='details[open]'?[menu]:[]
+ };
+ const document={
+  readyState:'complete',documentElement:{dataset:{}},
+  querySelector:selector=>selector==='.cl-site-header'?header:null,
+  addEventListener:(name,fn)=>events[name]=fn
+ };
+ const window={scrollY:0,requestAnimationFrame:fn=>frames.push(fn),addEventListener:(name,fn)=>events[name]=fn};
+ vm.runInNewContext(source('site-header.js'),{document,window,URLSearchParams,location:{pathname:'/'},queueMicrotask});
+ const scrollTo=y=>{window.scrollY=y;events.scroll();frames.shift()();};
+ assert.equal(hidden,false);
+ scrollTo(440);assert.equal(hidden,true);assert.equal(menu.open,false);assert.equal(header.inert,true);
+ scrollTo(90);assert.equal(hidden,true);
+ events.pageshow({persisted:true});assert.equal(hidden,true);
+ scrollTo(0);assert.equal(hidden,false);assert.equal(header.inert,false);
+});
+
+test('the community alerts panel only loads on the public homepage',()=>{
+ for(const [pathname,portal,expected] of [['/',false,true],['/index.html',false,true],['/colegio/eccleston',false,false],['/',true,false],['/explorar',false,false]]){
+  const panel={hidden:true},list={setAttribute(){}};
+  let requests=0;
+  const query={select(){return this},eq(){return this},order(){return this},limit(){return this},abortSignal(){return new Promise(()=>{});}};
+  const window={location:{pathname},ColegioLibreInstitution:{enabled:portal},colegioLibreSupabase:{from(){requests++;return query;}}};
+  const document={getElementById:id=>id==='pedidos-comunidad'?panel:list};
+  vm.runInNewContext(source('home-wanted.js'),{window,document,AbortController,setTimeout:()=>0,clearTimeout(){}});
+  assert.equal(panel.hidden,!expected,pathname);
+  assert.equal(requests,expected?1:0,pathname);
+ }
+});

@@ -9,11 +9,11 @@ for(const name of pages){
  // establish a containing block while scrolling.
  if(html.includes('<header class="cl-site-header"')||name!=='login')html=html.replace(header,'');
  html=html.replace(/(<body\b[^>]*>)/,'$1\n'+template);
- if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261110-release35f">\n</head>');
+ if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261111-top37">\n</head>');
  const add=[];
  if(!/src=["'](?:\.\/|\/)?supabase\.js/.test(html))add.push('<script src="/vendor/supabase.js?v=20261109-release25"></script>','<script src="/supabase.js?v=20261110-recovery31"></script>');
  if(!/src=["'](?:\.\/|\/)?notifications\.js/.test(html))add.push('<script src="/notifications.js?v=20261110-shell32"></script>');
- if(!html.includes('site-header.js?'))add.push('<script src="/site-header.js?v=20261110-release35f"></script>');
+ if(!html.includes('site-header.js?'))add.push('<script src="/site-header.js?v=20261111-top37"></script>');
  if(add.length)html=html.replace('</body>',add.join('\n')+'\n</body>');
  if(!html.includes('notifications.css'))html=html.replace('</head>','<link rel="stylesheet" href="/notifications.css?v=20261109-release25">\n</head>');
  html=html.replace(/<html\b(?![^>]*data-theme)/,'<html data-theme="light"');
