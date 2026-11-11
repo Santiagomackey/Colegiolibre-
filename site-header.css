@@ -92,3 +92,35 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
   color: #0b2e6b;
   font-weight: 700;
 }
+
+@media (min-width: 701px) {
+  html body .cl-site-header .cl-site-actions {
+    --header-action-width: clamp(44px, calc((100vw - 472px) / 5), 76px);
+    gap: 6px;
+  }
+
+  html body .cl-site-header .cl-site-actions > :is(.cl-site-action, .cl-notification-trigger, .cl-site-account-menu) {
+    flex: 0 0 var(--header-action-width);
+    min-width: 0;
+    max-width: var(--header-action-width);
+    margin-inline: 0;
+  }
+
+  .cl-site-header .cl-site-actions :is(.cl-site-action span, .cl-notification-trigger__label) {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cl-site-header .cl-site-account-menu > summary {
+    width: 100%;
+    height: 46px;
+    padding-top: 4px;
+    align-content: start;
+  }
+
+  .cl-site-header .cl-site-account-menu > summary svg {
+    height: 20px;
+  }
+}
