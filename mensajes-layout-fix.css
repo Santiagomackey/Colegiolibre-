@@ -1,0 +1,87 @@
+/* ColegioLibre — Messages layout repair, 2026-11-11.
+   Load after all other page stylesheets. */
+@media (min-width: 881px) {
+  body.mobile-messages { min-height: 100dvh; }
+  body.mobile-messages .messages-page {
+    padding-block: 20px 28px;
+    display: block;
+  }
+  body.mobile-messages .messages-app {
+    --messages-panel-height: clamp(560px, calc(100dvh - 210px), 1100px);
+    height: var(--messages-panel-height) !important;
+    min-height: 560px;
+    grid-template-rows: minmax(0, 1fr);
+    overflow: hidden;
+  }
+  body.mobile-messages .inbox-panel,
+  body.mobile-messages .chat-panel,
+  body.mobile-messages .product-panel {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body.mobile-messages .product-panel { overflow-y: auto; }
+  body.mobile-messages .conversation-list,
+  body.mobile-messages .messages-list {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  body.mobile-messages .inbox-header { flex: 0 0 auto; }
+  body.mobile-messages .chat-header,
+  body.mobile-messages .message-form { flex: 0 0 auto; }
+  body.mobile-messages .empty-chat {
+    min-height: 100%;
+    align-content: center;
+    padding: 24px;
+  }
+  body.mobile-messages .product-empty {
+    min-height: 100%;
+    align-content: center;
+    gap: 12px;
+  }
+}
+@media (min-width: 881px) and (max-width: 1240px) {
+  body.mobile-messages .messages-app { grid-template-columns: minmax(275px, 34%) minmax(0, 1fr); }
+}
+@media (min-width: 1241px) {
+  body.mobile-messages .messages-app {
+    grid-template-columns: minmax(285px, 29%) minmax(0, 1fr) minmax(245px, 25%);
+  }
+}
+@media (max-width: 880px) {
+  body.mobile-messages .messages-page { padding-top: 12px; }
+  body.mobile-messages .messages-app {
+    --messages-panel-height: max(480px, calc(100dvh - 145px));
+    min-height: 0;
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, var(--messages-panel-height));
+    overflow: hidden;
+  }
+  body.mobile-messages .inbox-panel,
+  body.mobile-messages .chat-panel { min-height: 0; overflow: hidden; }
+  body.mobile-messages .conversation-list,
+  body.mobile-messages .messages-list {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.mobile-messages[data-view="chat"] .messages-app {
+    grid-template-rows: minmax(0, var(--messages-panel-height)) auto;
+    overflow: visible;
+  }
+  body.mobile-messages[data-view="chat"] .chat-panel {
+    min-height: var(--messages-panel-height);
+    max-height: var(--messages-panel-height);
+  }
+}
+@media (max-width: 560px) {
+  body.mobile-messages .messages-page { width: min(calc(100% - 20px), 1500px); }
+  body.mobile-messages .inbox-header h1 { font-size: clamp(1.35rem, 6vw, 1.85rem); }
+  body.mobile-messages .conversation-item { grid-template-columns: 48px minmax(0, 1fr); gap: 10px; }
+  body.mobile-messages .conversation-avatar { width: 48px; height: 48px; }
+}
