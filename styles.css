@@ -4881,7 +4881,8 @@ body.menu-open {
   text-transform: uppercase;
 }
 
-.onboarding-card > p:not(.onboarding-eyebrow) {
+.onboarding-card > p:not(.onboarding-eyebrow),
+#onboarding-profile-step > p:not(.onboarding-eyebrow) {
   margin: 10px auto 22px;
   max-width: 360px;
 }
@@ -5587,3 +5588,34 @@ body.has-blocking-modal {
 
 /* Preserve the official dark-lettered logo on the blue footer. */
 .cl-editorial-footer .cl-footer-logo-link{background:#fff!important;border-radius:12px;padding:10px 12px;}
+
+
+#onboarding-modal .onboarding-card {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+
+#onboarding-payment-step .onboarding-form {
+  gap: 12px;
+}
+#onboarding-payment-help {
+  color: #52647d;
+  line-height: 1.5;
+}
+#onboarding-payment-message {
+  margin: 0;
+}
+#onboarding-payment-message:empty {
+  display: none;
+}
+.onboarding-payment-skip {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #0b2e6b;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

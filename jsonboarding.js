@@ -20,6 +20,7 @@
   let searchTimer = null;
   let searchRequestId = 0;
   let eventsBound = false;
+  let paymentBusy = false;
 
   const byId = (id) => document.getElementById(id);
 
@@ -140,6 +141,9 @@
     const modal = byId("onboarding-modal");
     const nameInput = byId("onboarding-name");
 
+    byId("onboarding-profile-step").hidden = false;
+    byId("onboarding-payment-step").hidden = true;
+    modal.querySelector('[role="dialog"]').setAttribute("aria-labelledby", "onboarding-title");
     modal.hidden = false;
     document.body.classList.add("has-blocking-modal");
     window.setTimeout(() => nameInput?.focus(), 40);
@@ -219,7 +223,17 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      await saveOnboardingProfile();
+      if (byId("onboarding-submit").disabled) return;
+      try {
+        await saveOnboardingProfile();
+      } catch (_error) {
+        setSubmitBusy(byId("onboarding-submit"), false);
+        setOnboardingMessage("No se pudo guardar tu perfil. Probá nuevamente.", "error");
+      }
+    });
+    byId("onboarding-payment-form").addEventListener("submit", saveOnboardingAlias);
+    byId("onboarding-payment-skip").addEventListener("click", () => {
+      if (!paymentBusy) finishOnboarding();
     });
   }
 
@@ -421,15 +435,6 @@
 
     if (!formValues) return;
 
-    const aliasInput = byId("onboarding-mp-alias");
-    const mercadoPagoAlias = String(aliasInput?.value || "").trim();
-    if (mercadoPagoAlias && !/^[a-zA-Z0-9._-]{3,80}$/.test(mercadoPagoAlias)) {
-      setOnboardingMessage("El alias de Mercado Pago tiene un formato inválido.", "error");
-      aliasInput?.focus();
-      return;
-    }
-
-
     setSubmitBusy(submitButton, true);
     setOnboardingMessage("Comprobando el colegio…", "loading");
 
@@ -480,46 +485,69 @@
       return;
     }
 
-    const { error: metadataError } =
-      await window.colegioLibreSupabase.auth.updateUser({
-        data: {
-          name: formValues.name,
-          school_level: formValues.schoolLevel,
-          mercadopago_alias: mercadoPagoAlias || null,
-          mercadopago_connection_status: "not_connected",
-          identity_verification_status: "not_verified",
-          school_verification_status: "not_verified"
-        }
+    try {
+      const { error } = await window.colegioLibreSupabase.auth.updateUser({
+        data: { name: formValues.name, school_level: formValues.schoolLevel }
       });
-
-    if (metadataError) {
-      console.warn("El perfil se guardó, pero no sus metadatos:", metadataError);
+      if (error) console.warn("El perfil se guardó, pero no sus metadatos.");
+    } catch (_error) {
+      console.warn("El perfil se guardó, pero no sus metadatos.");
     }
 
-    const completedProfile = {
-      ...profile,
-      account_status: "active"
-    };
+    const firstSchool = !onboardingProfile?.school_code;
+    onboardingProfile = { ...profile, account_status: "active" };
+    if (!firstSchool) {
+      finishOnboarding();
+      return;
+    }
 
-    window.dispatchEvent(
-      new CustomEvent("colegiolibre:profile-ready", {
-        detail: { destination: pendingDestination, profile: completedProfile }
-      })
-    );
+    // An existing payment method already covers this optional setup step.
+    const { data: payment } = await Promise.resolve(window.colegioLibreSupabase.rpc("get_my_payment_details")).catch(() => ({}));
+    if (payment) {
+      finishOnboarding();
+      return;
+    }
+    byId("onboarding-profile-step").hidden = true;
+    byId("onboarding-payment-step").hidden = false;
+    byId("onboarding-modal").querySelector('[role="dialog"]')
+      .setAttribute("aria-labelledby", "onboarding-payment-title");
+    byId("onboarding-payment-form").elements.alias.focus();
+  }
 
-    setOnboardingMessage("¡Listo! Ya podés usar ColegioLibre.", "success");
-    window.setTimeout(() => {
-      const destination = getPostOnboardingDestination(
-        pendingDestination,
-        completedProfile
-      );
+  async function saveOnboardingAlias(event) {
+    event.preventDefault();
+    if (paymentBusy) return;
+    const form = event.currentTarget;
+    const save = byId("onboarding-payment-submit");
+    const skip = byId("onboarding-payment-skip");
+    const message = byId("onboarding-payment-message");
+    const transfers = window.colegioLibreTransfers;
+    paymentBusy = true;
+    save.disabled = true;
+    skip.disabled = true;
+    message.textContent = "Guardando alias…";
+    message.dataset.state = "loading";
+    try {
+      const { data } = await window.colegioLibreSupabase.auth.getUser();
+      if (data?.user?.id !== onboardingUser?.id) throw Error("AUTH_REQUIRED");
+      await transfers.saveMercadoPagoAlias(form.elements.alias.value, form.elements.holder_name.value);
+      finishOnboarding();
+    } catch (error) {
+      message.textContent = transfers.errorMessage(error);
+      message.dataset.state = "error";
+    } finally {
+      paymentBusy = false;
+      save.disabled = false;
+      skip.disabled = false;
+    }
+  }
 
-      if (destination && destination !== "/") {
-        window.location.assign(destination);
-      } else {
-        window.location.assign("/");
-      }
-    }, 650);
+  function finishOnboarding() {
+    byId("onboarding-payment-form").reset();
+    window.dispatchEvent(new CustomEvent("colegiolibre:profile-ready", {
+      detail: { destination: pendingDestination, profile: onboardingProfile }
+    }));
+    window.location.assign(getPostOnboardingDestination(pendingDestination, onboardingProfile));
   }
 
   function getPostOnboardingDestination(destination, profile) {

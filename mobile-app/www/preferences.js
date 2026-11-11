@@ -1699,6 +1699,25 @@
     "tu@email.com": "you@email.com"
   }));
 
+  for (const [es,en] of Object.entries({
+  "Recibí transferencias": "Receive transfers",
+  "Agregá tu alias de Mercado Pago para recibir el pago de tus ventas. También podés hacerlo más tarde desde Configuración.": "Add your Mercado Pago alias to receive payments for your sales. You can also do this later in Settings.",
+  "Copiá el alias y el nombre tal como aparecen en tu cuenta. Confirmá cada pago después de verlo acreditado.": "Copy the alias and name exactly as shown in your account. Confirm each payment after you see the money arrive.",
+  "Guardar alias y continuar": "Save alias and continue",
+  "Ahora no": "Not now",
+  "Guardando alias…": "Saving alias…",
+  "Usá tu alias de Mercado Pago para recibir transferencias. El comprador verá tus datos al iniciar un pedido.": "Use your Mercado Pago alias to receive transfers. The buyer sees your payment details when they start an order.",
+  "Vinculación de cuenta con Mercado Pago": "Mercado Pago account linking"
+})) translations.set(es,en);
+
+  for (const [es,en] of Object.entries({
+    "Protección ColegioLibre": "ColegioLibre protections",
+    "Para vender con pagos integrados, será necesaria la verificación de identidad y de la cuenta de cobro cuando esté disponible. Elegir un colegio no verifica tu pertenencia a él.": "Integrated payments will require identity and payment account verification when available. Choosing a school does not verify your enrolment.",
+    "No envíes dinero por enlaces externos. Reportá publicaciones o mensajes sospechosos. Si sos menor, puede requerirse intervención de una persona adulta responsable.": "Avoid payment links sent by other users. Report suspicious listings or messages. If you are underage, you may need help from a responsible adult.",
+    "Consejos de seguridad": "Safety tips",
+    "Reportar actividad sospechosa": "Report suspicious activity"
+  })) translations.set(es,en);
+
   const reverseTranslations=new Map([...translations].map(([es,en])=>[en,es]));
   function sourceText(value){
     const clean=String(value||'').trim().replace(/\s+/g,' ');

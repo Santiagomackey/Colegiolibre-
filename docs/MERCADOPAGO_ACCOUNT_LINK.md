@@ -2,7 +2,7 @@
 
 ## Qué cambió para los vendedores
 
-Perfil → Configuración ahora muestra **Vincular Mercado Pago**. El vendedor autoriza a ColegioLibre en la página oficial de Mercado Pago. Después agrega su alias una vez; no necesita copiar un CVU de 22 dígitos en esta opción. Si Mercado Pago no devuelve un nombre, se solicita el titular. Se eliminó el formulario manual de banco/CBU/CVU del perfil. Antes de autorizar solo se muestra el botón de vinculación. El alias se pide después de vincular porque esta integración no importa datos de transferencias desde Mercado Pago.
+Después de guardar su primer colegio, el usuario puede cargar el alias de Mercado Pago y el nombre del titular o elegir **Ahora no**. La misma opción está en **Perfil → Configuración → Datos de cobro**. El alias se guarda con el RPC privado de transferencias, que admite un alias de Mercado Pago sin CVU desde la migración 11. El comprador ve el alias y el titular al iniciar un pedido y puede copiarlo para transferir desde su billetera. La sección de vinculación de cuenta sigue disponible por separado en la configuración.
 
 Se conservan las transferencias externas y la confirmación manual del vendedor. Vincular la cuenta o pulsar Ya transferí **no** confirma un pago. No se implementó Mercado Pago Checkout ni aprobación automática.
 

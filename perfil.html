@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./preferences.js?v=20261110-release35f"></script>
+    <script src="./preferences.js?v=20261111-alias36"></script>
     <title>ColegioLibre | Mi perfil</title>
     <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png" />
     <meta
@@ -395,7 +395,30 @@
             </div>
           </form>
 
-<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title"><span class="pay-kicker">COBRÁ TUS VENTAS</span><h2 id="payment-settings-title">Vinculá tu Mercado Pago</h2><p class="pay-muted">Conectá tu cuenta con ColegioLibre. La autorización se realiza en Mercado Pago.</p><div class="pay-mp-card" id="mp-link-card"><span class="pay-mp-brand">Mercado Pago</span><p id="mp-link-status" data-no-translate>Vinculá tu cuenta para empezar.</p><button id="mp-link-connect" class="pay-button" type="button" data-no-translate>Vincular Mercado Pago</button><button id="mp-link-remove" class="pay-button pay-button--secondary" type="button" hidden>Quitar vínculo en ColegioLibre</button></div><form id="mp-alias-form" class="pay-mp-alias" hidden><h3>Tu alias para recibir transferencias</h3><p class="pay-small">Agregalo una sola vez. Las transferencias siguen siendo manuales y el vendedor confirma el dinero recibido.</p><label>Alias de Mercado Pago<input name="alias" required minlength="6" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias"></label><label data-mp-holder hidden>Nombre del titular<input name="holder_name" maxlength="100" autocomplete="off"></label><button type="submit" class="pay-button">Guardar alias</button><p class="pay-small">Verificá que el alias y el titular correspondan a tu cuenta. Vincular Mercado Pago no verifica un pago.</p></form><p id="mp-link-message" class="pay-message" role="status" data-no-translate></p><a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a></section>
+<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title">
+  <h2 id="payment-settings-title">Datos de cobro</h2>
+  <p class="pay-muted">Usá tu alias de Mercado Pago para recibir transferencias. El comprador verá tus datos al iniciar un pedido.</p>
+  <form id="mp-alias-form" class="pay-mp-alias" hidden novalidate>
+    <label>Alias de Mercado Pago
+      <input name="alias" type="text" required minlength="6" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias" />
+    </label>
+    <label>Nombre del titular
+      <input name="holder_name" type="text" required minlength="2" maxlength="100" autocomplete="off" />
+    </label>
+    <p class="pay-small">Copiá el alias y el nombre tal como aparecen en tu cuenta. Confirmá cada pago después de verlo acreditado.</p>
+    <button type="submit" class="pay-button">Guardar alias</button>
+  </form>
+  <p id="mp-link-message" class="pay-message" role="status" data-no-translate></p>
+  <details id="mp-authorization-options" class="pay-mp-card">
+    <summary>Vinculación de cuenta con Mercado Pago</summary>
+    <div id="mp-link-card">
+      <p id="mp-link-status" data-no-translate></p>
+      <button id="mp-link-connect" class="pay-button" type="button" data-no-translate>Vincular Mercado Pago</button>
+      <button id="mp-link-remove" class="pay-button pay-button--secondary" type="button" hidden>Quitar vínculo en ColegioLibre</button>
+    </div>
+  </details>
+  <a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a>
+</section>
         </section>
       </main>
     </div>
@@ -464,6 +487,6 @@
     <script src="./mobile-ui.js?v=20261109-transfer27"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-<script src="/transfer-common.js?v=20261109-transfer27"></script><script src="/mp-link-settings.js?v=20261110-release35f"></script><script src="/site-header.js?v=20261110-release35f"></script>
+<script src="/transfer-common.js?v=20261111-alias36"></script><script src="/mp-link-settings.js?v=20261111-alias36"></script><script src="/site-header.js?v=20261110-release35f"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ const ids={seller:'10000000-0000-0000-0000-000000000001',buyer:'20000000-0000-00
 test('direct transfer orders enforce privacy, snapshots and seller-only payment confirmation in PostgreSQL',async t=>{
  const db=new PGlite();
  try{
- await db.exec(`create role anon;create role authenticated;create schema auth;
+ await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;
  create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
  grant usage on schema auth to authenticated;
  create table auth.users(id uuid primary key);
@@ -19,11 +19,13 @@ test('direct transfer orders enforce privacy, snapshots and seller-only payment 
  insert into profiles(id,account_status) select id,'active' from auth.users;
  insert into products values('${ids.product}','${ids.seller}','Libro de Matemática',1250.50,'available','approved',null);`);
  await db.exec(fs.readFileSync(new URL('../database/10_direct_transfer_orders.sql',import.meta.url),'utf8'));
+ await db.exec(fs.readFileSync(new URL('../database/11_mercadopago_link.sql',import.meta.url),'utf8'));
  const as=async id=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated')};
  const rpc=async(sql,args=[])=> (await db.query(sql,args)).rows[0]?.value;
  await as(ids.seller);
  await assert.rejects(db.query("select save_my_payment_details('bank','bad','123','A')"));
- await db.query("select save_my_payment_details('mercado_pago','libros.santi','0000003100012345678901','Santiago Pérez')");
+ await db.query("select save_my_payment_details('mercado_pago','Libros.Santi',null,'Santiago Pérez')");
+ assert.equal(await rpc('select get_my_mp_link() as value'),null);
  await as(ids.buyer);
  assert.equal(await rpc('select get_my_payment_details() as value'),null);
  const order=await rpc('select start_transfer_order($1) as value',[ids.product]);
@@ -31,7 +33,7 @@ test('direct transfer orders enforce privacy, snapshots and seller-only payment 
  await t.test('private details are available only to the actual order participants',async()=>{
   await assert.rejects(db.query('select * from seller_payment_details'));
   await assert.rejects(db.query('select * from order_payment_instructions'));
-  const checkout=await rpc('select get_transfer_order($1) as value',[order]);assert.equal(checkout.payment.alias,'libros.santi');assert.equal(checkout.amount,1250.50);assert.ok(checkout.conversation_id);
+  const checkout=await rpc('select get_transfer_order($1) as value',[order]);assert.equal(checkout.payment.alias,'libros.santi');assert.equal(checkout.payment.account_number,null);assert.equal(checkout.amount,1250.50);assert.ok(checkout.conversation_id);
   await as(ids.other);await assert.rejects(rpc('select get_transfer_order($1) as value',[order]),/ORDER_NOT_FOUND/);await assert.rejects(rpc('select start_transfer_order($1) as value',[ids.product]),/PRODUCT_IN_CHECKOUT/);
  });
  await t.test('price and payment instructions remain fixed when the seller changes settings',async()=>{
