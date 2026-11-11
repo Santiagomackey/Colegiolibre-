@@ -106,6 +106,7 @@
   body.mobile-messages[data-view="list"] .inbox-panel { height: max(520px, calc(100dvh - 150px)); }
   body.mobile-messages[data-view="chat"] .chat-panel { height: max(520px, calc(100dvh - 150px)); }
 }
+<<<<<<< HEAD
 
 /* Allow wheel scrolling from the center, including the empty-chat state. */
 body.mobile-messages { overflow-y: auto !important; }
@@ -116,3 +117,5 @@ body.mobile-messages .conversation-list { overscroll-behavior-y: auto !important
 @media (min-width: 881px) {
   body.mobile-messages .messages-page { padding-bottom: 48px !important; }
 }
+=======
+>>>>>>> 73b10109584bb85cbd6e1c6d45ff1742b93131c8
