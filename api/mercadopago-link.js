@@ -1,11 +1,12 @@
 import {configuration,random,digest,validNonce,authorizationUrl,cookie,getCookie,db,authenticatedUser,exchangeIdentity} from '../server/mp-link.js';
+import {checkoutConfig,encryptToken} from '../server/mp-checkout.js';
 function json(res,status,body){res.status(status);res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(body));}
 function redirect(res,url){res.status(303);res.setHeader('Location',url);res.end();}
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Robots-Tag','noindex, nofollow');
  if(!['GET','POST'].includes(req.method)){res.setHeader('Allow','GET, POST');return json(res,405,{error:'METHOD_NOT_ALLOWED'});}
- let config;
- try{config=configuration();}catch(_){return json(res,503,{error:'LINK_NOT_CONFIGURED'});}
+ let config, checkout;
+ try{config=configuration();checkout=checkoutConfig();}catch(_){return json(res,503,{error:'LINK_NOT_CONFIGURED'});}
  if(req.method==='POST'){
   try{
    const user=await authenticatedUser(config,req);if(!user)return json(res,401,{error:'AUTH_REQUIRED'});
@@ -29,7 +30,7 @@ export default async function handler(req,res){
   try{
    const value=random();const attempt=await db(config,'launch_mp_link',{p_state_hash:digest(state),p_launch_hash:digest(launch),p_cookie_hash:digest(value)});
    console.info('MP_LINK_LAUNCH','ready');
-   res.setHeader('Set-Cookie',cookie(value));return redirect(res,authorizationUrl(config,state,attempt.verifier));
+   res.setHeader('Set-Cookie',cookie(value));return redirect(res,authorizationUrl(config,state,attempt.verifier,Boolean(checkout)));
   }catch(_){return json(res,400,{error:'INVALID_OR_EXPIRED_LINK'});}
  }
  let attempt,stage='session';
@@ -43,9 +44,11 @@ export default async function handler(req,res){
   }
   const code=url.searchParams.get('code');if(!code||code.length>2000)throw Error('INVALID_CODE');
   stage='provider';
-  const identity=await exchangeIdentity(config,code,attempt.verifier);
+  const identity=await exchangeIdentity(config,code,attempt.verifier,Boolean(checkout));
   stage='save';
-  await db(config,'complete_mp_link',{p_state_hash:digest(state),p_seller_id:attempt.seller_id,p_mp_user_id:identity.userId,p_display_name:identity.display,p_holder_name:identity.holder});
+  const link={p_state_hash:digest(state),p_seller_id:attempt.seller_id,p_mp_user_id:identity.userId,p_display_name:identity.display,p_holder_name:identity.holder};
+  if(checkout)await db(config,'save_mp_checkout_link',{...link,p_encrypted_token:encryptToken(checkout,attempt.seller_id,identity.checkoutToken)});
+  else await db(config,'complete_mp_link',link);
   console.info('MP_LINK_CALLBACK','linked');
   return redirect(res,returnUrl(config,attempt.source,'linked'));
  }catch(error){
