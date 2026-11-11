@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const source=name=>fs.readFileSync(new URL('../'+name,import.meta.url),'utf8');
 test('public sections ship the same header with one search and one account action',()=>{
  const template=source('templates/site-header.html');
- const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','login','beta'];
+ const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','beta'];
  for(const page of pages){const html=source(page+'.html');assert.equal(html.match(/<header class="cl-site-header"[\s\S]*?<\/header>/)?.[0],template,page);assert.equal((html.match(/id="accountButton"/g)||[]).length,1,page);assert.equal((html.match(/id="search-form-desktop"/g)||[]).length,1,page);}
 });
 test('a retained dark preference cannot activate dark mode or restore its removed control',()=>{
@@ -30,33 +30,10 @@ test('shared account labels preserve the seller name across language changes and
  currentUser={id:'test-seller'};window.colegioLibreApi.getCurrentProfile=async()=>{throw Error('network')};onAuth();await settle();assert.equal(node('#accountButton').href,'/perfil');assert.equal(node('#accountText').textContent,'My profile');
 });
 
-test('the header stays hidden when scrolling upward until the page reaches the top',()=>{
- const events={},frames=[],nodes=new Map();
- const node=selector=>{
-  if(!nodes.has(selector))nodes.set(selector,{dataset:{},setAttribute(){},addEventListener(){}});
-  return nodes.get(selector);
- };
- let hidden=false;
- const menu={open:true};
- const header={
-  inert:false,
-  classList:{toggle(name,value){if(name==='cl-header-hidden')hidden=value;}},
-  querySelector:node,
-  querySelectorAll:selector=>selector==='details[open]'?[menu]:[]
- };
- const document={
-  readyState:'complete',documentElement:{dataset:{}},
-  querySelector:selector=>selector==='.cl-site-header'?header:null,
-  addEventListener:(name,fn)=>events[name]=fn
- };
- const window={scrollY:0,requestAnimationFrame:fn=>frames.push(fn),addEventListener:(name,fn)=>events[name]=fn};
- vm.runInNewContext(source('site-header.js'),{document,window,URLSearchParams,location:{pathname:'/'},queueMicrotask});
- const scrollTo=y=>{window.scrollY=y;events.scroll();frames.shift()();};
- assert.equal(hidden,false);
- scrollTo(440);assert.equal(hidden,true);assert.equal(menu.open,false);assert.equal(header.inert,true);
- scrollTo(90);assert.equal(hidden,true);
- events.pageshow({persisted:true});assert.equal(hidden,true);
- scrollTo(0);assert.equal(hidden,false);assert.equal(header.inert,false);
+test('the sign-in screen provides a way home without marketplace navigation',()=>{
+ const login=source('login.html');
+ assert.doesNotMatch(login,/cl-site-header|search-form-desktop|site-header\.js/);
+ assert.match(login,/<a class="back-home" href="\/">/);
 });
 
 test('the community alerts panel only loads on the public homepage',()=>{

@@ -38,26 +38,6 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  window.addEventListener('colegiolibre:languagechange',()=>{render();placeLanguage();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function followScroll(){
-  if(!header.classList||!window.requestAnimationFrame)return;
-  let pending=false;
-  const update=()=>{
-   pending=false;
-   const scrollTop=Math.max(0,window.scrollY||0,document.documentElement.scrollTop||0,document.body?.scrollTop||0);
-   const hidden=scrollTop>4;
-   if(header.inert===hidden)return;
-   header.inert=hidden;
-   header.classList.toggle('cl-header-hidden',hidden);
-   if(hidden)header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);
-  };
-  document.addEventListener('scroll',()=>{
-   if(pending)return;
-   pending=true;
-   window.requestAnimationFrame(update);
-  },{capture:true,passive:true});
-  window.addEventListener('pageshow',update);
-  update();
- }
- function initialize(){followScroll();placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initialize(){placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();
