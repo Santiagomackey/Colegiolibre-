@@ -14,7 +14,8 @@
     "/explorar",
     "/apuntes",
     "/materia",
-    "/curso", "/compra", "/pedidos"
+    "/curso", "/compra", "/pedidos", "/mas", "/ayuda", "/seguridad",
+    "/terminos", "/privacidad", "/productos-prohibidos"
   ]);
 
   const icons = {
@@ -22,7 +23,7 @@
     heart: '<path d="M12 20.4 4.9 13.5a4.9 4.9 0 0 1 7-7l.1 1 .9-1a4.9 4.9 0 0 1 7 7Z"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     message: '<path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="M8 9h8M8 13h5"/>',
-    user: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a8.5 8.5 0 0 1 15 0"/>'
+    menu: '<path d="M4 6h16M4 12h16M4 18h16"/>'
   };
 
   const lastSegment = window.location.pathname.split("/").filter(Boolean).pop() || "";
@@ -38,7 +39,7 @@
         favorites: "Favorites",
         publish: "Sell",
         messages: "Messages",
-        profile: "Profile",
+        more: "More",
         nav: "Main navigation"
       }
     : {
@@ -46,7 +47,7 @@
         favorites: "Favoritos",
         publish: "Publicar",
         messages: "Mensajes",
-        profile: "Mi perfil",
+        more: "Más",
         nav: "Navegación principal"
       };
   }
@@ -56,8 +57,14 @@
     "/favoritos": "favorites",
     "/publicar": "publish",
     "/mensajes": "messages",
-    "/perfil": "profile",
-    "/busco": "home", "/compra": "profile", "/pedidos": "profile"
+    "/perfil": "more",
+    "/mas": "more",
+    "/ayuda": "more",
+    "/seguridad": "more",
+    "/terminos": "more",
+    "/privacidad": "more",
+    "/productos-prohibidos": "more",
+    "/busco": "home", "/compra": "more", "/pedidos": "more"
   };
 
   const links = [
@@ -65,7 +72,7 @@
     { href: "/favoritos", icon: "heart", key: "favorites", requiresAuth: true },
     { href: "/publicar", icon: "plus", key: "publish", primary: true, requiresAuth: true },
     { href: "/mensajes", icon: "message", key: "messages", requiresAuth: true },
-    { href: "/perfil", icon: "user", key: "profile", requiresAuth: true }
+    { href: "/mas", icon: "menu", key: "more" }
   ];
 
   function updateNavigationLabels() {

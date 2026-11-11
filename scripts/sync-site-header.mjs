@@ -1,19 +1,17 @@
 import fs from 'node:fs';
 const root=new URL('../',import.meta.url);
 const template=fs.readFileSync(new URL('templates/site-header.html',root),'utf8');
-const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','login','beta'];
+const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','beta'];
 for(const name of pages){
  const file=new URL(name+'.html',root);let html=fs.readFileSync(file,'utf8');
  const header=/<header\b[^>]*>[\s\S]*?<\/header>/;
- // Keep the fixed header outside page-specific wrappers that may clip or
- // establish a containing block while scrolling.
- if(html.includes('<header class="cl-site-header"')||name!=='login')html=html.replace(header,'');
+ html=html.replace(header,'');
  html=html.replace(/(<body\b[^>]*>)/,'$1\n'+template);
- if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261110-release35f">\n</head>');
+ if(!html.includes('site-header.css?'))html=html.replace('</head>','<link rel="stylesheet" href="/site-header.css?v=20261111-flow38">\n</head>');
  const add=[];
  if(!/src=["'](?:\.\/|\/)?supabase\.js/.test(html))add.push('<script src="/vendor/supabase.js?v=20261109-release25"></script>','<script src="/supabase.js?v=20261110-recovery31"></script>');
  if(!/src=["'](?:\.\/|\/)?notifications\.js/.test(html))add.push('<script src="/notifications.js?v=20261110-shell32"></script>');
- if(!html.includes('site-header.js?'))add.push('<script src="/site-header.js?v=20261110-release35f"></script>');
+ if(!html.includes('site-header.js?'))add.push('<script src="/site-header.js?v=20261111-flow38"></script>');
  if(add.length)html=html.replace('</body>',add.join('\n')+'\n</body>');
  if(!html.includes('notifications.css'))html=html.replace('</head>','<link rel="stylesheet" href="/notifications.css?v=20261109-release25">\n</head>');
  html=html.replace(/<html\b(?![^>]*data-theme)/,'<html data-theme="light"');

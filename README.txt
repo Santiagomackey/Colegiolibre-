@@ -16,3 +16,4 @@ Instructions:
 4. Deploy the updated source. Keep a backup first.
 
 The reserved-product checkout fix improves the error display. It does not remove the active-order restriction.
+

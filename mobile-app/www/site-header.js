@@ -38,23 +38,6 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  window.addEventListener('colegiolibre:languagechange',()=>{render();placeLanguage();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function followScroll(){
-  if(!header.classList||!window.requestAnimationFrame)return;
-  let previous=0,travel=0,direction=0,pending=false;
-  const position=()=>Math.max(0,window.scrollY||0,document.documentElement.scrollTop||0,document.body?.scrollTop||0);
-  const show=()=>header.classList.remove('cl-header-hidden');
-  const update=()=>{
-   pending=false;const y=position(),delta=y-previous;previous=y;
-   if(y<32||header.contains(document.activeElement)||header.querySelector('details[open]')){show();travel=0;return;}
-   const next=Math.sign(delta);if(!next)return;
-   if(next!==direction){travel=0;direction=next;}travel+=Math.abs(delta);
-   if(travel<12)return;
-   header.classList.toggle('cl-header-hidden',next>0&&y>header.offsetHeight);
-  };
-  document.addEventListener('scroll',()=>{if(!pending){pending=true;window.requestAnimationFrame(update);}},{capture:true,passive:true});
-  header.addEventListener('focusin',show);
-  window.addEventListener('pageshow',()=>{previous=position();travel=0;show();});
- }
- function initialize(){followScroll();placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initialize(){placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();

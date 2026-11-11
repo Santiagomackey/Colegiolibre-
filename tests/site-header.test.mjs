@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const source=name=>fs.readFileSync(new URL('../'+name,import.meta.url),'utf8');
 test('public sections ship the same header with one search and one account action',()=>{
  const template=source('templates/site-header.html');
- const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','login','beta'];
+ const pages=['index','explorar','producto','publicar','favoritos','mensajes','perfil','perfil-publico','colegio','busco','compra','pedidos','apuntes','materia','curso','ayuda','seguridad','terminos','privacidad','productos-prohibidos','instituciones','beta'];
  for(const page of pages){const html=source(page+'.html');assert.equal(html.match(/<header class="cl-site-header"[\s\S]*?<\/header>/)?.[0],template,page);assert.equal((html.match(/id="accountButton"/g)||[]).length,1,page);assert.equal((html.match(/id="search-form-desktop"/g)||[]).length,1,page);}
 });
 test('a retained dark preference cannot activate dark mode or restore its removed control',()=>{
@@ -28,4 +28,38 @@ test('shared account labels preserve the seller name across language changes and
  document.documentElement.dataset.language='en';events['colegiolibre:languagechange']();assert.equal(message.textContent,'Messages');assert.equal(node('#accountText').textContent,'Santiago');
  currentUser=null;onAuth();await settle();assert.equal(node('#accountText').textContent,'Sign in');assert.equal(node('#accountButton').href,'/login');assert.equal(node('[data-site-logout]').hidden,true);
  currentUser={id:'test-seller'};window.colegioLibreApi.getCurrentProfile=async()=>{throw Error('network')};onAuth();await settle();assert.equal(node('#accountButton').href,'/perfil');assert.equal(node('#accountText').textContent,'My profile');
+});
+
+test('the sign-in screen provides a way home without marketplace navigation',()=>{
+ const login=source('login.html');
+ assert.doesNotMatch(login,/cl-site-header|search-form-desktop|site-header\.js/);
+ assert.match(login,/<a class="back-home" href="\/">/);
+});
+
+test('the community alerts panel only loads on the public homepage',()=>{
+ for(const [pathname,portal,expected] of [['/',false,true],['/index',false,true],['/index.html',false,true],['/colegio/eccleston',false,false],['/',true,false],['/explorar',false,false],['/busco',false,false]]){
+  const panel={hidden:true},list={setAttribute(){}};
+  let requests=0;
+  const listeners=new Map();
+  const query={select(){return this},eq(){return this},order(){return this},limit(){return this},abortSignal(){return new Promise(()=>{});}};
+  const window={location:{pathname},ColegioLibreInstitution:{enabled:portal},colegioLibreSupabase:{from(){requests++;return query;}},addEventListener:(name,fn)=>listeners.set(name,fn)};
+  const document={getElementById:id=>id==='pedidos-comunidad'?panel:list};
+  vm.runInNewContext(source('home-wanted.js'),{window,document,AbortController,setTimeout:()=>0,clearTimeout(){}});
+  const setView=showCommunityAlerts=>listeners.get('colegiolibre:home-view')?.({detail:{showCommunityAlerts}});
+  setView(false);
+  assert.equal(panel.hidden,true,pathname);
+  assert.equal(requests,0,pathname);
+  setView(true);
+  assert.equal(panel.hidden,!expected,pathname);
+  assert.equal(requests,expected?1:0,pathname);
+  setView(false);
+  assert.equal(panel.hidden,true,pathname);
+  setView(true);
+  assert.equal(panel.hidden,!expected,pathname);
+  assert.equal(requests,expected?1:0,pathname);
+ }
+ const alertsPage=source('busco.html');
+ assert.doesNotMatch(alertsPage,/id="pedidos-comunidad"|home-wanted\.js/);
+ assert.match(alertsPage,/id="wanted-form"/);
+ assert.match(alertsPage,/id="wanted-list"/);
 });

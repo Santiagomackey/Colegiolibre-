@@ -33,6 +33,7 @@ const pages = [
   "producto.html",
   "publicar.html",
   "perfil.html",
+  "mas.html",
   "favoritos.html",
   "mensajes.html",
   "colegio.html",

@@ -39,3 +39,4 @@ if path.exists():
         print('Checkout already patched or source differs; no changes')
 else:
     print('SKIP transfer-checkout.js: not found')
+

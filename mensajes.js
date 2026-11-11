@@ -56,6 +56,7 @@
     currentUser: null,
     databaseChannel: null,
     readAtSupported: true,
+    renderedConversationId: null,
     searchTerm: "",
     sending: false,
     typingChannel: null,
@@ -1091,7 +1092,7 @@
     `;
   }
 
-  async function loadMessages(conversationId) {
+  async function loadMessages(conversationId, { scrollToLatest = false } = {}) {
     const columns = state.readAtSupported ? "*" : "id, conversation_id, sender_id, body, created_at";
     const { data, error } = await window.colegioLibreSupabase
       .from("messages")
@@ -1099,13 +1100,15 @@
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: true });
 
+    if (state.activeConversationId !== conversationId) return;
+
     if (
       error &&
       state.readAtSupported &&
       isMissingColumnError(error, "read_at")
     ) {
       state.readAtSupported = false;
-      await loadMessages(conversationId);
+      await loadMessages(conversationId, { scrollToLatest });
       return;
     }
 
@@ -1115,9 +1118,11 @@
       return;
     }
 
-    state.activeMessages = data || [];
     await markConversationRead(conversationId);
-    renderMessages();
+    if (state.activeConversationId !== conversationId) return;
+
+    state.activeMessages = data || [];
+    renderMessages(scrollToLatest);
   }
 
   async function markConversationRead(conversationId) {
@@ -1173,8 +1178,14 @@
     window.colegioLibreNotifications?.refresh?.();
   }
 
-  function renderMessages() {
-    elements.messagesList.innerHTML = "";
+  function renderMessages(scrollToLatest) {
+    const list = elements.messagesList;
+    const previousTop = list.scrollTop;
+    const nearBottom = list.scrollHeight - list.clientHeight - previousTop <= 48;
+    const shouldFollowLatest = scrollToLatest || nearBottom ||
+      state.renderedConversationId !== state.activeConversationId;
+    state.renderedConversationId = state.activeConversationId;
+    list.innerHTML = "";
 
     if (!state.activeMessages.length) {
       elements.messagesList.innerHTML = `
@@ -1213,13 +1224,14 @@
       stream.appendChild(article);
     });
 
-    elements.messagesList.appendChild(stream);
-    elements.messagesList.scrollTop = elements.messagesList.scrollHeight;
+    list.appendChild(stream);
+    list.scrollTop = shouldFollowLatest ? list.scrollHeight : previousTop;
   }
 
   function renderEmptyChat(
     message = "Elegí un chat de la izquierda para empezar."
   ) {
+    state.renderedConversationId = null;
     elements.chatAvatar.hidden = true;
     elements.messageForm.hidden = true;
     elements.chatAvatar.textContent = "";
@@ -1293,7 +1305,7 @@
 
     elements.messageInput.value = "";
     updateComposerUi();
-    await loadMessages(state.activeConversationId);
+    await loadMessages(state.activeConversationId, { scrollToLatest: true });
     await refreshConversations();
     elements.messageInput.focus();
   }

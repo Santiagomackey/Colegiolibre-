@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v78";
+const CACHE_VERSION = "colegiolibre-pwa-v84";
 const APP_SHELL = [
   "/",
   "/404.html",
@@ -87,7 +87,7 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
+      fetch(request, {cache: "no-cache"})
         .then((response) => {
           if (response.ok) {
             const copy = response.clone();

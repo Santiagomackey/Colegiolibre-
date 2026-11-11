@@ -10,7 +10,8 @@
     "/publicar",
     "/mensajes",
     "/favoritos",
-    "/colegio"
+    "/colegio",
+    "/mas"
   ]);
 
   let selectedOnboardingSchool = null;

@@ -38,3 +38,4 @@ create policy "reporter submits report" on public.trust_reports for insert to au
 -- never client-side credentials. Do not accept verification statuses from browser metadata.
 -- Identity documents and selfies must be handled by an approved KYC provider, not these tables.
 
+
