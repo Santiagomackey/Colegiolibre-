@@ -1,6 +1,10 @@
 /* Load after the shared page styles. */
-body.mobile-messages {
+html[data-theme] body.mobile-messages {
   background: #fff;
+}
+
+body.mobile-messages .cl-site-subnav {
+  display: none;
 }
 
 body.mobile-messages .messages-page {
@@ -47,8 +51,31 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
 
 @media (min-width: 881px) {
   body.mobile-messages .messages-app {
-    block-size: clamp(500px, calc(100dvh - 150px), 1100px);
+    --messages-panel-height: clamp(500px, calc(100dvh - 110px), 1100px);
+    block-size: var(--messages-panel-height);
     grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* With no chat open, the inbox grows with the page so wheel and touch
+     gestures over the empty middle pane use the same document scroll. */
+  body.mobile-messages .messages-app:has(.message-form[hidden]) {
+    block-size: auto;
+    min-block-size: var(--messages-panel-height);
+    grid-template-rows: auto;
+  }
+
+  body.mobile-messages .messages-app:has(.message-form[hidden]) .conversation-list {
+    flex: 1 0 auto;
+    overflow: visible;
+  }
+
+  body.mobile-messages .messages-app:has(.message-form[hidden]) :is(.chat-panel, .product-panel) {
+    align-self: start;
+    block-size: var(--messages-panel-height);
+  }
+
+  body.mobile-messages .messages-app:has(.message-form[hidden]) .messages-list {
+    overflow: visible;
   }
 
   body.mobile-messages .product-panel {
@@ -94,6 +121,16 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
 
   body.mobile-messages[data-view="chat"] .messages-app {
     grid-template-rows: var(--messages-panel-height) auto;
+  }
+
+  body.mobile-messages[data-view="list"] .messages-app {
+    min-block-size: var(--messages-panel-height);
+    grid-template-rows: auto;
+  }
+
+  body.mobile-messages[data-view="list"] .conversation-list {
+    flex: 1 0 auto;
+    overflow: visible;
   }
 }
 
