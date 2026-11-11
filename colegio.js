@@ -22,6 +22,8 @@ const schoolCode = (
 const elements = {
   categoriesCount: document.getElementById("school-categories-count"),
   emptyState: document.getElementById("school-empty-state"),
+  loadError: document.getElementById("school-load-error"),
+  retry: document.getElementById("school-retry-products"),
   globalSearchForm: document.getElementById("school-global-search-form"),
   globalSearchInput: document.getElementById("school-global-search"),
   grid: document.getElementById("school-products-grid"),
@@ -43,6 +45,7 @@ const elements = {
 const state = {
   favoriteIds: new Set(),
   products: [],
+  productsLoadFailed: false,
   school: null,
   searchTerm: "",
   selectedCategory: ""
@@ -99,10 +102,7 @@ async function initSchoolPage() {
     return;
   }
 
-  await loadSchoolProducts();
-  renderHero();
-  renderProducts();
-  renderPublishers();
+  await refreshSchoolProducts();
 }
 
 async function ensureSchoolAccess() {
@@ -174,6 +174,14 @@ async function resolveSchoolFromAccount() {
 }
 
 function bindEvents() {
+  elements.retry?.addEventListener("click", async () => {
+    elements.retry.disabled = true;
+    try {
+      await refreshSchoolProducts();
+    } finally {
+      elements.retry.disabled = false;
+    }
+  });
   elements.globalSearchForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     const term = elements.globalSearchInput?.value.trim();
@@ -196,25 +204,49 @@ async function loadSchool() {
   state.school = await getSchoolByCode(schoolCode);
 }
 
-async function loadSchoolProducts() {
-  const { data, error } = await window.colegioLibreSupabase
-    .from("products")
-    .select("*")
-    .eq("school_code", schoolCode)
-    .not("user_id", "is", null)
-    .order("created_at", { ascending: false });
+async function refreshSchoolProducts() {
+  await loadSchoolProducts();
+  renderHero();
+  renderProducts();
+  renderPublishers();
+}
 
-  if (error) {
+async function loadSchoolProducts() {
+  const client = window.colegioLibreSupabase;
+  const codes = [schoolCode, state.school.code, state.school.database_code, state.school.community_code];
+  try {
+    if (state.school.community_code) {
+      const { data: schools, error } = await client.from("schools")
+        .select("code")
+        .eq("community_code", state.school.community_code)
+        .eq("is_active", true);
+      if (error) throw error;
+      codes.push(...(schools || []).map((school) => school.code));
+    }
+    const schoolCodes = [...new Set(codes.filter(Boolean).flatMap((code) => {
+      const value = String(code).trim();
+      return [value, value.toUpperCase(), value.toLowerCase()];
+    }).filter(Boolean))];
+    const { data, error } = await client.from("products")
+      .select("*")
+      .in("school_code", schoolCodes)
+      .not("user_id", "is", null)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    state.products = (data || []).map(safeProductRecord).filter((product) =>
+      product.moderation_status === "approved" &&
+      (product.status === "available" || product.status === "reserved")
+    );
+    state.productsLoadFailed = false;
+  } catch (error) {
     console.error("Error cargando productos del colegio:", error);
     state.products = [];
-    return;
+    state.productsLoadFailed = true;
   }
 
-  state.products = (data || [])
-    .map(safeProductRecord)
-    .filter((product) => product.status === "available" || product.status === "reserved");
-
-  state.favoriteIds = await fetchFavoriteIds(state.products.map((product) => product.id));
+  state.favoriteIds = state.products.length
+    ? await fetchFavoriteIds(state.products.map((product) => product.id))
+    : new Set();
 }
 
 function renderHero() {
@@ -357,9 +389,10 @@ function getFilteredProducts() {
 function renderProducts() {
   const products = getFilteredProducts();
   elements.grid.innerHTML = "";
+  elements.loadError.hidden = !state.productsLoadFailed;
 
   if (!products.length) {
-    elements.emptyState.hidden = false;
+    elements.emptyState.hidden = state.productsLoadFailed;
     return;
   }
 
@@ -453,6 +486,8 @@ async function toggleFavoriteState(productId, button) {
 function renderPublishers() {
   const publishers = getUniquePublishers();
   elements.publishersList.innerHTML = "";
+
+  if (state.productsLoadFailed) return;
 
   if (!publishers.length) {
     elements.publishersList.innerHTML = `
