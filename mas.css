@@ -105,7 +105,20 @@ body.more-page {
   overflow-wrap: anywhere;
 }
 .more-mp-card p:empty { display: none; }
-.more-mp-card #mp-link-status { color: #0b2e6b; font-weight: 600; }
+.more-mp-form { display: grid; gap: 12px; justify-items: start; }
+.more-mp-form label { display: grid; gap: 5px; width: 100%; font-size: .875rem; font-weight: 600; }
+.more-mp-form input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #ccd9eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #17263f;
+  font: inherit;
+  font-size: 1rem;
+}
+.more-mp-card #mp-alias-message:not(:empty) { margin-top: 10px; }
 .more-mp-action {
   display: inline-flex;
   min-height: 44px;

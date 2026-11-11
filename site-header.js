@@ -4,11 +4,11 @@
  const labels={searchLabel:['Buscar material escolar','Search school supplies'],searchPlaceholder:['¿Qué material estás buscando?','What school supplies are you looking for?'],messages:['Mensajes','Messages'],favorites:['Favoritos','Favorites'],profile:['Mi perfil','My profile'],settings:['Configuración','Settings'],orders:['Mis compras y ventas','My purchases and sales'],logout:['Cerrar sesión','Sign out'],accountMenu:['Abrir menú de cuenta','Open account menu'],categories:['Categorías','Categories'],accountActions:['Acciones de tu cuenta','Account actions'],all:['Todo','All'],explore:['Explorar','Browse'],newest:['Recién publicados','New arrivals'],notes:['Apuntes y exámenes','Notes and exams'],alerts:['Alertas','Alerts'],school:['Mi colegio','My school'],help:['Ayuda','Help'],sell:['Publicar','Sell'],home:['Inicio','Home'],login:['Iniciar sesión','Sign in'],Libros:['Libros','Books'],Apuntes:['Apuntes','Notes'],Cuadernos:['Cuadernos','Notebooks'],'Útiles':['Útiles','Supplies'],Mochilas:['Mochilas','Backpacks'],'Tecnología':['Tecnología','Technology'],Uniformes:['Uniformes','Uniforms'],Otros:['Otros','Other']};
  let user=null,profile=null,run=0;
  const text=key=>(labels[key]||[key,key])[document.documentElement.dataset.language==='en'?1:0];
- labels.linkMercadoPago=['Vincular Mercado Pago','Link Mercado Pago'];
+ labels.mercadoPagoAlias=['Alias de Mercado Pago','Mercado Pago alias'];
  labels.browseCategories=['Ver todas las categorías','Browse all categories'];
  function addMenuLinks(){
   header.querySelector('.cl-site-account-menu [data-site-text="settings"]')?.insertAdjacentHTML(
-   'afterend','<a class="cl-site-mp-link" href="/mas#mercado-pago" data-site-text="linkMercadoPago">Vincular Mercado Pago</a>'
+   'afterend','<a class="cl-site-mp-link" href="/mas#mercado-pago" data-site-text="mercadoPagoAlias">Alias de Mercado Pago</a>'
   );
   header.querySelector('.cl-site-categories .cl-site-menu-panel')?.insertAdjacentHTML(
    'beforeend','<a class="cl-site-all-categories" href="/explorar" data-site-text="browseCategories">Ver todas las categorías</a>'
