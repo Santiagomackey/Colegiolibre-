@@ -2,71 +2,137 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import fs from 'node:fs';
-const script=fs.readFileSync(new URL('../mp-link-settings.js',import.meta.url),'utf8');
-async function fixture({rpc=async()=>null,response={ok:false,status:503,json:async()=>({error:'LINK_NOT_CONFIGURED'})},search='',linkOnly=false,signedIn=true}={}){
- const nodes=new Map(),events={},calls=[],navigations=[],aliases=[];
- const node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:false,disabled:false,dataset:{},listeners:{},addEventListener(k,fn){this.listeners[k]=fn;},reset(){this.elements.alias.value='';this.elements.holder_name.value='';},elements:{alias:{value:''},holder_name:{value:''}},querySelector:selector=>node(id+selector)});return nodes.get(id);};
- let language='es';
- const window={addEventListener:(name,fn)=>{events[name]=fn;},fetch:async()=>response,colegioLibreSupabase:{auth:{getSession:async()=>({data:{session:signedIn?{user:{id:'test-seller'},access_token:'test-session'}:null}})}},colegioLibreTransfers:{text:(es,en)=>language==='es'?es:en,saveMercadoPagoAlias:async (alias,holder_name)=>{aliases.push({alias,holder_name});return {alias,holder_name};},errorMessage:error=>error.message,rpc:async name=>{calls.push(name);return rpc(name);}}};
- const absent=['#settings-panel',...(linkOnly?['#mp-alias-form','#mp-link-remove']:['#mp-link-sign-in'])];
- const document={hidden:false,querySelector:selector=>absent.includes(selector)?null:node(selector),addEventListener:(name,fn)=>{events[name]=fn;}};
- vm.runInNewContext(script,{window,document,URL,URLSearchParams,location:{search,origin:'https://www.colegiolibre.com',assign:url=>navigations.push(url)}});
- const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
- return {node,events,calls,navigations,aliases,settle,language:value=>{language=value;events['colegiolibre:languagechange']();}};
+
+const read = (name) => fs.readFileSync(new URL('../' + name, import.meta.url), 'utf8');
+
+async function fixture({
+  user = { id: 'seller' },
+  details = null,
+  readError = null,
+  hasSignIn = true
+} = {}) {
+  const events = {};
+  const handlers = {};
+  const calls = [];
+  const message = {};
+  const signIn = { hidden: true };
+  const submit = {};
+  const form = {
+    hidden: true,
+    elements: { alias: { value: '' }, holder_name: { value: '' } },
+    reset() { this.elements.alias.value = this.elements.holder_name.value = ''; },
+    querySelector: () => submit,
+    addEventListener(name, fn) { handlers[name] = fn; }
+  };
+  const nodes = {
+    'mp-alias-form': form,
+    'mp-alias-message': message,
+    'mp-alias-sign-in': hasSignIn ? signIn : null
+  };
+  let language = 'es';
+  const document = {
+    documentElement: { dataset: { language } },
+    getElementById: (id) => nodes[id],
+    addEventListener: (name, fn) => { events[name] = fn; }
+  };
+  const window = {
+    addEventListener: (name, fn) => { events[name] = fn; },
+    colegioLibreSupabase: {
+      auth: { getSession: async () => ({ data: { session: user ? { user } : null } }) },
+      rpc: async (name, args) => {
+        calls.push({ name, args });
+        return name === 'get_my_payment_details'
+          ? { data: details, error: readError }
+          : { data: null, error: null };
+      }
+    }
+  };
+  const context = { window, document };
+  vm.runInNewContext(read('transfer-common.js'), context);
+  vm.runInNewContext(read('mp-link-settings.js'), context);
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+  await settle();
+  return {
+    form, message, signIn, calls, submit, settle, events,
+    setUser: (next) => { user = next; },
+    setReadError: (next) => { readError = next; },
+    setLanguage: (next) => {
+      language = next;
+      document.documentElement.dataset.language = language;
+      events['colegiolibre:languagechange']();
+    },
+    edit(alias, holder) {
+      form.elements.alias.value = alias;
+      form.elements.holder_name.value = holder;
+      handlers.input();
+    },
+    save: () => handlers.submit({ preventDefault() {} })
+  };
 }
-test('the standalone linking card launches authorization without reading the alias form',async()=>{
- const url='https://www.colegiolibre.com/api/mercadopago-link?launch=test&state=test';
- const f=await fixture({linkOnly:true,response:{ok:true,status:200,json:async()=>({url})}});
- assert.deepEqual(f.calls,['get_my_mp_link']);
- assert.equal(f.node('#mp-link-sign-in').hidden,true);
- assert.equal(f.node('#mp-link-connect').hidden,false);
- await f.node('#mp-link-connect').listeners.click();
- assert.deepEqual(f.navigations,[url]);
-});
-test('the standalone linking card asks guests to sign in before querying their link',async()=>{
- const f=await fixture({linkOnly:true,signedIn:false});
- assert.deepEqual(f.calls,[]);
- assert.equal(f.node('#mp-link-sign-in').hidden,false);
- assert.equal(f.node('#mp-link-connect').hidden,true);
-});
-test('an unlinked seller can save an alias even when account linking cannot load',async()=>{
- const f=await fixture({rpc:async name=>{if(name==='get_my_mp_link')throw Error('network');return null;}});
- assert.deepEqual(f.calls,['get_my_mp_link','get_my_payment_details']);
- const form=f.node('#mp-alias-form');
- assert.equal(form.hidden,false);
- form.elements.alias.value='libros.prueba';form.elements.holder_name.value='Titular de Prueba';
- await form.listeners.submit({preventDefault(){}});
- assert.deepEqual(f.aliases,[{alias:'libros.prueba',holder_name:'Titular de Prueba'}]);
- assert.equal(f.node('#mp-link-message').dataset.code,'saved');
- assert.deepEqual(f.navigations,[]);
-});
-test('a successful reload clears an earlier load error',async()=>{
- let broken=true;const f=await fixture({rpc:async()=>{if(broken)throw {code:'PGRST202'};return null;}});
- assert.equal(f.node('#mp-link-message').dataset.code,'LINK_DETAILS_FAILED');broken=false;f.events.visibilitychange();await f.settle();assert.equal(f.node('#mp-link-message').textContent,'');
-});
-test('server configuration failure remains accurate and translates on language change',async()=>{
- const f=await fixture();await f.node('#mp-link-connect').listeners.click();assert.equal(f.node('#mp-link-message').dataset.code,'LINK_NOT_CONFIGURED');assert.doesNotMatch(f.node('#mp-link-message').textContent,/manual/i);
- f.events.visibilitychange();await f.settle();assert.equal(f.node('#mp-link-message').dataset.code,'LINK_NOT_CONFIGURED');f.language('en');assert.match(f.node('#mp-link-message').textContent,/Server setup/);assert.equal(f.node('#mp-link-connect').disabled,false);
-});
-test('successful authorization navigates to the bound launch URL and rejects other hosts',async()=>{
- const url='https://www.colegiolibre.com/api/mercadopago-link?launch=test&state=test';
- const f=await fixture({response:{ok:true,status:200,json:async()=>({url})}});await f.node('#mp-link-connect').listeners.click();assert.deepEqual(f.navigations,[url]);
- const unsafe=await fixture({response:{ok:true,status:200,json:async()=>({url:'https://other.example/api/mercadopago-link'})}});await unsafe.node('#mp-link-connect').listeners.click();assert.deepEqual(unsafe.navigations,[]);
-});
-test('optional alias failure does not prevent OAuth and saved input survives translation',async()=>{
- const link={display_name:'Test',holder_name:'Test Seller'};
- const f=await fixture({rpc:async name=>{if(name==='get_my_mp_link')return link;throw Error('network');}});
- assert.equal(f.node('#mp-link-message').dataset.code,'LINK_DETAILS_FAILED');assert.equal(f.node('#mp-link-connect').disabled,false);assert.equal(f.node('#mp-alias-form').hidden,true);
- const loaded=await fixture({rpc:async name=>name==='get_my_mp_link'?link:{method:'mercado_pago',alias:'test.alias'}});
- assert.equal(loaded.node('#mp-alias-form').hidden,false);assert.equal(loaded.node('#mp-alias-form').elements.alias.value,'test.alias');loaded.node('#mp-alias-form').elements.alias.value='edited.alias';loaded.node('#mp-alias-form').listeners.input();loaded.language('en');assert.equal(loaded.node('#mp-alias-form').elements.alias.value,'edited.alias');
-});
-test('optional callback scroll cannot produce an account-load failure',async()=>{
- const f=await fixture({search:'?mp_link=cancelled'});assert.equal(f.node('#mp-link-message').dataset.code,'cancelled');assert.deepEqual(f.calls,['get_my_mp_link','get_my_payment_details']);
+
+test('Más and Profile use the same alias form', () => {
+  for (const name of ['mas.html', 'perfil.html']) {
+    const html = read(name);
+    assert.match(html, /<form id="mp-alias-form"[^>]*hidden/);
+    assert.match(html, /mp-link-settings\.js\?v=20261111-alias44/);
+    assert.doesNotMatch(html, /id="mp-link-connect"|id="mp-authorization-options"/);
+  }
+  assert.match(read('site-header.js'), /href="\/mas#mercado-pago"[^>]*>Alias de Mercado Pago/);
 });
 
+test('saves a normalized alias and account holder directly, without OAuth', async () => {
+  const ui = await fixture();
+  assert.equal(ui.form.hidden, false);
+  ui.edit(' Mi.Alias ', ' Titular de Prueba ');
+  await ui.save();
+  assert.deepEqual(ui.calls.map(({ name }) => name), ['get_my_payment_details', 'save_my_payment_details']);
+  assert.deepEqual({ ...ui.calls[1].args }, {
+    p_method: 'mercado_pago', p_alias: 'mi.alias',
+    p_holder_name: 'Titular de Prueba', p_account_number: null
+  });
+  assert.equal(ui.form.elements.alias.value, 'mi.alias');
+  assert.equal(ui.message.textContent, 'Alias guardado.');
+  ui.setLanguage('en');
+  assert.equal(ui.message.textContent, 'Alias saved.');
+  assert.equal(ui.submit.disabled, false);
+});
 
-test('a rejected provider credential is distinguished from cancellation and remains bilingual',async()=>{
- const f=await fixture({search:'?mp_link=error&mp_reason=PROVIDER_INVALID_CLIENT'});
- assert.equal(f.node('#mp-link-message').dataset.code,'PROVIDER_INVALID_CLIENT');assert.match(f.node('#mp-link-message').textContent,/credenciales/);
- f.language('en');assert.match(f.node('#mp-link-message').textContent,/credentials/);assert.equal(f.node('#mp-alias-form').hidden,false);
+test('loads a saved alias and preserves edits on refresh', async () => {
+  const ui = await fixture({ details: { method: 'mercado_pago', alias: 'mi.alias', holder_name: 'Titular' }, hasSignIn: false });
+  assert.equal(ui.form.elements.alias.value, 'mi.alias');
+  assert.equal(ui.form.elements.holder_name.value, 'Titular');
+  ui.edit('nuevo.alias', 'Titular');
+  ui.events.visibilitychange();
+  await ui.settle();
+  assert.equal(ui.form.elements.alias.value, 'nuevo.alias');
+});
+
+test('shows sign-in for guests and never submits details across a session change', async () => {
+  const guest = await fixture({ user: null });
+  assert.equal(guest.form.hidden, true);
+  assert.equal(guest.signIn.hidden, false);
+  assert.equal(guest.calls.length, 0);
+  const ui = await fixture();
+  ui.edit('mi.alias', 'Titular');
+  ui.setUser(null);
+  await ui.save();
+  await ui.settle();
+  assert.deepEqual(ui.calls.map(({ name }) => name), ['get_my_payment_details']);
+  assert.equal(ui.form.hidden, true);
+  assert.equal(ui.signIn.hidden, false);
+  assert.equal(ui.form.elements.alias.value, '');
+});
+
+test('blocks invalid aliases and recovers after a read error', async () => {
+  const ui = await fixture({ readError: new Error('offline') });
+  assert.equal(ui.form.hidden, true);
+  assert.match(ui.message.textContent, /No pudimos cargar/);
+  ui.setReadError(null);
+  ui.events.visibilitychange();
+  await ui.settle();
+  assert.equal(ui.form.hidden, false);
+  ui.edit('bad', 'Titular');
+  await ui.save();
+  assert.match(ui.message.textContent, /6 y 20/);
+  assert.equal(ui.calls.some(({ name }) => name === 'save_my_payment_details'), false);
 });
