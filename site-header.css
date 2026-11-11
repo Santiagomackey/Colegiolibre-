@@ -43,3 +43,52 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
  .cl-site-header .cl-site-actions{min-width:0!important}
 }
 
+
+/* The account menu and category picker share the same interaction states. */
+.cl-site-header :is(.cl-site-account-menu, .cl-site-categories) .cl-site-menu-panel {
+  gap: 4px;
+  padding: 8px;
+}
+.cl-site-header .cl-site-account-menu .cl-site-menu-panel {
+  width: min(256px, calc(100vw - 24px));
+}
+.cl-site-header .cl-site-menu-panel > :is(a, button) {
+  border-radius: 8px;
+  min-height: 42px;
+  font-weight: 550;
+}
+.cl-site-header .cl-site-menu-panel > :is(a, button):focus-visible {
+  outline: 2px solid #1d56a4;
+  outline-offset: -2px;
+}
+.cl-site-header .cl-site-menu-panel > a[aria-current="page"] {
+  background: #e9f1fc;
+  color: #0b2e6b;
+  font-weight: 700;
+}
+.cl-site-header .cl-site-account-menu .cl-site-mp-link {
+  background: #edf5ff;
+  color: #0b2e6b;
+  font-weight: 700;
+}
+.cl-site-header .cl-site-account-menu .cl-site-mp-link:hover {
+  background: #dfedff;
+}
+.cl-site-header .cl-site-account-menu [data-site-logout]:not([hidden]) {
+  border-top: 1px solid #e8edf4;
+  color: #a12c36;
+}
+.cl-site-header .cl-site-categories .cl-site-menu-panel {
+  width: min(360px, calc(100vw - 28px));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.cl-site-header .cl-site-categories .cl-site-menu-panel > a:not(.cl-site-all-categories) {
+  border: 1px solid #e7edf5;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cl-site-header .cl-site-categories .cl-site-all-categories {
+  grid-column: 1 / -1;
+  color: #0b2e6b;
+  font-weight: 700;
+}

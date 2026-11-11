@@ -2,6 +2,7 @@
  'use strict';
  const card=document.querySelector('#mp-link-card');if(!card)return;
  const T=window.colegioLibreTransfers,status=document.querySelector('#mp-link-status'),button=document.querySelector('#mp-link-connect'),remove=document.querySelector('#mp-link-remove'),form=document.querySelector('#mp-alias-form'),message=document.querySelector('#mp-link-message');
+ const signIn=document.querySelector('#mp-link-sign-in');
  const t=T.text;
  const messages={
   INVALID_ALIAS:['El alias debe tener entre 6 y 20 letras, números, puntos o guiones.','Use 6–20 letters, numbers, dots or hyphens for the alias.'],
@@ -31,17 +32,22 @@
   removed:['Vínculo eliminado de ColegioLibre. También podés retirar el permiso desde Mercado Pago. Tus pedidos existentes no cambian.','Link removed from ColegioLibre. You can also revoke access in Mercado Pago. Existing orders are unchanged.'],
   saved:['Alias guardado. Los pedidos ya iniciados conservan los datos anteriores.','Alias saved. Existing orders keep their original payment details.']
  };
- let link=null,details=null,legacyAlias='',pending=false,dirty=false,detailsLoaded=false,generation=0,messageCode='',messageSource='';
+ let link=null,details=null,legacyAlias='',pending=false,dirty=false,detailsLoaded=false,generation=0,messageCode='',messageSource='',signedIn=false;
  function show(code='',source='action'){
   messageCode=code;messageSource=source;message.dataset.code=code;
   message.textContent=messages[code]?t(...messages[code]):'';
  }
  function render(fill=false){
-  status.textContent=link?t('Cuenta vinculada: ','Linked account: ')+link.display_name:t('La vinculación es opcional para guardar tu alias.','Linking is optional when saving your alias.');
+  status.textContent=link?t('Cuenta vinculada: ','Linked account: ')+link.display_name:
+   form?t('La vinculación es opcional para guardar tu alias.','Linking is optional when saving your alias.'):'';
   button.textContent=link?t('Vincular otra cuenta','Link another account'):t('Vincular Mercado Pago','Link Mercado Pago');
-  remove.hidden=!link;
-  form.hidden=!detailsLoaded;
-  if(fill){
+  if(signIn){
+   signIn.hidden=signedIn;
+   button.hidden=!signedIn;
+  }
+  if(remove)remove.hidden=!link;
+  if(form)form.hidden=!detailsLoaded;
+  if(form&&fill){
    form.elements.alias.value=details?.method==='mercado_pago'?details.alias:legacyAlias;
    form.elements.holder_name.value=details?.method==='mercado_pago'?details.holder_name:'';
   }
@@ -58,10 +64,11 @@
   try{
    const {data,error}=await window.colegioLibreSupabase.auth.getSession();
    if(run!==generation)return;
+   signedIn=Boolean(data?.session?.user)&&!error;
    if(error||!data?.session?.user){
-    link=null;details=null;legacyAlias='';detailsLoaded=false;form.reset();render();show('AUTH_REQUIRED','load');return;
+    link=null;details=null;legacyAlias='';detailsLoaded=false;form?.reset();render();show(form?'AUTH_REQUIRED':'','load');return;
    }
-   const [account,payment]=await Promise.allSettled([T.rpc('get_my_mp_link'),T.rpc('get_my_payment_details')]);
+   const [account,payment]=await Promise.allSettled([T.rpc('get_my_mp_link'),form?T.rpc('get_my_payment_details'):null]);
    if(run!==generation)return;
    link=account.status==='fulfilled'?account.value:null;
    detailsLoaded=payment.status==='fulfilled';
@@ -69,7 +76,8 @@
    const previousAlias=String(data.session.user.user_metadata?.mercadopago_alias||'').trim().toLowerCase();
    legacyAlias=!details&&/^[a-z0-9.-]{6,20}$/.test(previousAlias)?previousAlias:'';
    render(detailsLoaded&&!dirty);
-   if(!detailsLoaded){show('LINK_DETAILS_FAILED','load');return;}
+   if(form&&!detailsLoaded){show('LINK_DETAILS_FAILED','load');return;}
+   if(!form&&account.status==='rejected'){show(loadError(account.reason),'load');return;}
    if(account.status==='rejected')status.textContent=t('No pudimos cargar el vínculo de tu cuenta.','We could not load your account link.');
    if(messageSource==='load')show('','load');
   }catch(error){if(run===generation)show(loadError(error),'load');}
@@ -104,13 +112,13 @@
   }catch(error){show(messages[error.message]?error.message:'LINK_START_FAILED');}
   finally{pending=false;button.disabled=false;}
  });
- remove.addEventListener('click',async()=>{
+ remove?.addEventListener('click',async()=>{
   if(pending)return;pending=true;++generation;remove.disabled=true;
   try{await T.rpc('remove_my_mp_link');link=null;render();show('removed');}
   catch(error){show(loadError(error));}finally{pending=false;remove.disabled=false;}
  });
- form.addEventListener('input',()=>{dirty=true;});
- form.addEventListener('submit',async event=>{
+ form?.addEventListener('input',()=>{dirty=true;});
+ form?.addEventListener('submit',async event=>{
   event.preventDefault();
   if(pending||!detailsLoaded)return;
   pending=true;
@@ -129,9 +137,10 @@
   }finally{pending=false;save.disabled=false;}
  });
  window.addEventListener('pageshow',event=>{if(event.persisted)void load();});
+ if(!form)window.addEventListener('colegiolibre:auth-state',()=>void load());
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void load();});
  window.addEventListener('colegiolibre:languagechange',()=>{render();show(messageCode,messageSource);});
- window.addEventListener('pagehide',()=>{++generation;form.reset();status.textContent='';link=null;details=null;legacyAlias='';detailsLoaded=false;dirty=false;render();});
+ window.addEventListener('pagehide',()=>{++generation;form?.reset();status.textContent='';link=null;details=null;legacyAlias='';detailsLoaded=false;dirty=false;signedIn=false;render();if(signIn)signIn.hidden=true;});
  const result=new URLSearchParams(location.search).get('mp_link');
  const reason=new URLSearchParams(location.search).get('mp_reason');
  if(result==='error'||result==='cancelled')show(result==='error'&&messages[reason]?reason:result,'callback');
