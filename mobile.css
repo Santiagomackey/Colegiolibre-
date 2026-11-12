@@ -1028,15 +1028,6 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     margin-bottom: 14px;
   }
 
-  .product-detail-body .gallery-stage,
-  .product-detail-body .gallery-stage__media {
-    min-height: min(88vw, 390px) !important;
-  }
-
-  .product-detail-body .gallery-stage {
-    border-radius: 22px;
-  }
-
   /* Home: una sola búsqueda. Antes convivían la versión desktop y mobile. */
   body:not(.mobile-subpage) .site-header .search-bar--desktop {
     display: none !important;
