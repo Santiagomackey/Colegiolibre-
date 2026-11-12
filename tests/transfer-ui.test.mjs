@@ -28,6 +28,7 @@ test('viewing checkout leaves stock free, and a competing reservation hides paym
  }
  const selectors = new Map();
  const document = {
+  addEventListener() {},
   querySelector(selector) {
    if (!selectors.has(selector)) selectors.set(selector, element());
    return selectors.get(selector);
@@ -50,6 +51,7 @@ test('viewing checkout leaves stock free, and a competing reservation hides paym
    money(value) { return String(value); },
    errorMessage(error) { return error.message; },
    async rpc(name, params) {
+    if(name==='pickup_checkout_ready')return true;
     calls.push([name, params.p_product_id]);
     throw Error('PRODUCT_IN_CHECKOUT');
    }
@@ -62,11 +64,11 @@ test('viewing checkout leaves stock free, and a competing reservation hides paym
  await new Promise(setImmediate);
  const root = document.querySelector('#transfer-checkout');
  const all = node => [node, ...node.children.flatMap(all)];
- const reserve = all(root).find(node => node.textContent === 'Reservar y ver datos de pago');
+ const reserve = all(root).find(node => node.textContent === 'Reservar y pagar al retirar');
  assert.ok(reserve);
  assert.deepEqual(calls, []);
  await Promise.all([reserve.events.click({ currentTarget: reserve }), reserve.events.click({ currentTarget: reserve })]);
- assert.deepEqual(calls, [['start_transfer_order', 'book']]);
+ assert.deepEqual(calls, [['start_pickup_order', 'book']]);
  assert.ok(all(root).some(node => node.textContent === 'Este producto está reservado'));
  assert.ok(all(root).every(node => node.textContent !== 'Copiar alias'));
 });
