@@ -9,3 +9,7 @@
 .pay-button--mercado-pago:hover{background:#005e87}
 .pay-mercado-pago-settings{padding:16px;border:1px solid var(--pay-line);border-radius:14px;margin:16px 0}
 .pay-mercado-pago-settings p{margin:0}
+
+.pay-pickup-link-form{margin-top:16px}
+.pay-pickup-link-form label{display:grid;gap:6px;font-weight:650}
+.pay-pickup-link-form input{box-sizing:border-box;width:100%;min-height:44px;border:1px solid var(--pay-line);border-radius:10px;padding:8px 12px;font:inherit;color:var(--pay-ink);background:var(--pay-surface)}

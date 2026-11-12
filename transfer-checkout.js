@@ -3,7 +3,7 @@
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
  let order=null,product=null,busy=false,action=null;
  const MP=window.colegioLibreMercadoPago;
- let mpAvailable=false,providerState='',paymentMode='transfer';
+ let mpAvailable=false,pickupAvailable=false,providerState='',paymentMode='transfer';
  const params=new URLSearchParams(location.search);
  const productId=params.get('product');
  const listingUrl=productId?'/producto?id='+encodeURIComponent(productId):'/pedidos';
@@ -20,7 +20,10 @@
     if(paymentMode==='mercado_pago'){
      const checkout=await MP.request('',{action:'start',id:productId});
      id=checkout.orderId;hosted=checkout.url;
-    }else id=await T.rpc('start_transfer_order',{p_product_id:productId});
+    }else{
+     const rpc=paymentMode==='pickup'?'start_pickup_order':'start_transfer_order';
+     id=await T.rpc(rpc,{p_product_id:productId});
+    }
     params.set('id',id);
     history.replaceState(null,'','/compra?id='+encodeURIComponent(id));
     if(hosted)await MP.open(hosted);
@@ -34,9 +37,13 @@
      throw Error('PRODUCT_UNAVAILABLE');
     }
     if(data.user_id===user.id)throw Error('OWN_PRODUCT');
-    const status=await MP?.request('?product='+encodeURIComponent(productId)).catch(()=>null);
+    pickupAvailable=await T.rpc('pickup_checkout_ready').catch(error=>{
+     if(error?.code==='PGRST202'||error?.code==='42883')return false;
+     throw error;
+    });
+    const status=pickupAvailable?null:await MP?.request('?product='+encodeURIComponent(productId)).catch(()=>null);
     mpAvailable=Boolean(status?.available);
-    paymentMode=mpAvailable?'mercado_pago':'transfer';
+    paymentMode=pickupAvailable?'pickup':mpAvailable?'mercado_pago':'transfer';
     product=data;retry.hidden=true;renderReview();note('');return;
    }
    if(!id)throw Error('ORDER_NOT_FOUND');
@@ -56,7 +63,7 @@
    if(rawError.includes('PRODUCT_IN_CHECKOUT')){
     const box=add(root,'section','pay-card');
     add(box,'h1','',T.text('Este producto está reservado','This item is reserved'));
-    add(box,'p','pay-muted',T.text('Otra persona ya inició la compra. Si cancela antes de transferir, el producto vuelve a estar disponible.','Someone else started checkout. If they cancel before transferring, the item becomes available again.'));
+    add(box,'p','pay-muted',T.text('Otra persona ya tiene un pedido abierto. Si lo cancela, el producto vuelve a estar disponible.','Someone else has an open order. If they cancel it, the item becomes available again.'));
     const actions=add(box,'div','pay-actions');
     button(actions,T.text('Intentar reservar de nuevo','Try reserving again'),reserveProduct);
     add(actions,'a','pay-link',T.text('Volver a la publicación','Back to listing')).href=listingUrl;
@@ -83,14 +90,16 @@
   add(review,'span','pay-price-note',T.text('Total del producto · ARS','Item total · ARS'));
   const details=add(review,'dl','pay-details pay-review-details');
   add(details,'dt','',T.text('Pago','Payment'));
-  add(details,'dd','',mpAvailable?'Mercado Pago':T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
+  add(details,'dd','',pickupAvailable?T.text('Al retirar','At pickup'):mpAvailable?'Mercado Pago':T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
   add(details,'dt','',T.text('Entrega','Delivery'));
   add(details,'dd','',T.text('Coordiná el encuentro en el colegio','Arrange pickup at school'));
-  add(review,'p','pay-muted',mpAvailable?
+  add(review,'p','pay-muted',pickupAvailable?
+   T.text('Reservá el producto y coordiná el encuentro por chat. Revisá el material antes de pagar.','Reserve the item and arrange pickup in chat. Check the item before paying.'):mpAvailable?
    T.text('Al continuar, reservás el producto y abrís el checkout de Mercado Pago.','Continue to reserve the item and open Mercado Pago checkout.'):
    T.text('Al continuar, reservás el producto y accedés al alias. Podés cancelar antes de transferir.','Continuing reserves the item and reveals the payment alias. You can cancel before transferring.'));
   const actions=add(review,'div','pay-actions');
-  const reserve=button(actions,mpAvailable?
+  const reserve=button(actions,pickupAvailable?
+   T.text('Reservar y pagar al retirar','Reserve and pay at pickup'):mpAvailable?
    T.text('Pagar con Mercado Pago','Pay with Mercado Pago'):
    T.text('Reservar y ver datos de pago','Reserve and view payment details'),reserveProduct);
   if(mpAvailable)reserve.classList.add('pay-button--mercado-pago');
@@ -105,10 +114,16 @@
   const counterpart=buyer?order.seller_name:order.buyer_name;
   if(counterpart){const person=add(head,'p','pay-muted',(buyer?T.text('Vendedor: ','Seller: '):T.text('Comprador: ','Buyer: '))+counterpart);person.dataset.noTranslate='';}
   add(head,'p','pay-order-reference',T.text('Pedido ','Order ')+order.id.slice(0,8));
-  add(head,'strong','pay-total',T.money(order.amount));add(head,'span','pay-price-note',order.payment_provider!=='mercado_pago'&&order.status==='payment_pending'&&order.listing_available!==false?T.text('Importe exacto a transferir · ARS','Exact transfer amount · ARS'):T.text('Total del pedido · ARS','Order total · ARS'));
+  add(head,'strong','pay-total',T.money(order.amount));add(head,'span','pay-price-note',(!order.payment_provider||order.payment_provider==='transfer')&&order.status==='payment_pending'&&order.listing_available!==false?T.text('Importe exacto a transferir · ARS','Exact transfer amount · ARS'):T.text('Total del pedido · ARS','Order total · ARS'));
   const steps=add(head,'ol','pay-progress');steps.setAttribute('aria-label',T.text('Estado del pedido','Order status'));
+  const pickup=order.payment_provider==='pickup';
   const sequence=['payment_pending','awaiting_confirmation','paid','delivered'];
-  sequence.forEach((state,index)=>{const step=add(steps,'li',index<=sequence.indexOf(order.status)?'is-complete':'',T.status(state));if(state===order.status)step.setAttribute('aria-current','step')});
+  sequence.forEach((state,index)=>{
+   const label=pickup&&state==='payment_pending'?T.text('Reservado','Reserved'):T.status(state);
+   const step=add(steps,'li',index<=sequence.indexOf(order.status)?'is-complete':'',label);
+   if(state===order.status)step.setAttribute('aria-current','step');
+  });
+  if(pickup){renderPickup(buyer);return;}
   if(order.payment_provider==='mercado_pago'){renderMercadoPago(head,buyer);return;}
   if(order.status==='cancelled')add(head,'p','pay-notice',T.text('Pedido cancelado. No realices una transferencia para este pedido.','Order cancelled. Do not send a transfer for this order.'));
   const content=add(root,'div','pay-checkout-grid');
@@ -139,12 +154,106 @@
   if(order.status==='payment_pending')button(actions,T.text('Cancelar sin transferencia','Cancel before transferring'),()=>confirm('cancel'),true);
   button(actions,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
  }
+ function renderPickup(buyer){
+  const grid=add(root,'div','pay-checkout-grid');
+  const pickup=add(grid,'section','pay-card');
+  add(pickup,'h2','',T.text('Retiro en el colegio','Pickup at school'));
+  const pending=order.status==='payment_pending';
+  if(order.status==='cancelled'){
+   add(pickup,'p','pay-notice',T.text('Reserva cancelada.','Reservation cancelled.'));
+  }else if(order.status==='delivered'){
+   add(pickup,'p','pay-muted',T.text('El comprador confirmó la entrega.','The buyer confirmed pickup.'));
+  }else{
+   if(pending)add(pickup,'p','pay-muted',T.text('Coordiná el encuentro por chat y revisá el material antes de pagar.','Arrange pickup in chat and check the item before paying.'));
+   if(order.status==='paid')add(pickup,'p','pay-notice',T.text('El vendedor confirmó que recibió el pago.','The seller confirmed receipt of payment.'));
+   if(order.status==='awaiting_confirmation')add(pickup,'p','pay-notice',buyer?
+    T.text('Avisaste que pagaste. Esperá la confirmación del vendedor.','You reported the payment. Wait for the seller to confirm.'):
+    T.text('El comprador avisó que pagó. Revisá si el importe figura en tu cuenta.','The buyer reported the payment. Check that the amount appears in your account.'));
+   button(pickup,T.text('Coordinar entrega en el colegio','Arrange pickup at school'),openChat,true);
+   if(!buyer&&(pending||order.status==='awaiting_confirmation')){
+    button(pickup,T.text('Confirmar pago recibido','Confirm payment received'),()=>confirm('confirm_received'));
+   }
+   if(buyer&&order.status==='paid'){
+    button(pickup,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'));
+   }
+   if(pending){
+    if(!order.pickup_link_opened)button(pickup,T.text('Cancelar reserva','Cancel reservation'),()=>confirm('cancel'),true);
+    else if(!buyer)button(pickup,T.text('Cancelar después de cerrar el link','Cancel after closing the link'),()=>confirm('cancel_pickup_link'),true);
+    else add(pickup,'p','pay-small',T.text('Si abriste el link y querés cancelar, avisale al vendedor para que lo cierre.','If you opened the link and want to cancel, ask the seller to close it.'));
+   }
+  }
+  button(pickup,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
+
+  if(!pending)return;
+  const payment=add(grid,'section','pay-card');
+  add(payment,'h2','','Mercado Pago');
+  add(payment,'p','pay-muted',T.text('Pago opcional al retirar. El vendedor confirma el cobro en ColegioLibre.','Optional payment at pickup. The seller confirms the payment in ColegioLibre.'));
+  if(!buyer){
+   if(order.pickup_link_ready){
+    add(payment,'p','pay-notice',T.text('El comprador tiene disponible el link de este pedido.','The link for this order is available to the buyer.'));
+   }else if(order.listing_available!==false){
+    renderPickupLinkForm(payment);
+   }
+   return;
+  }
+  if(order.pickup_link_ready&&order.listing_available!==false){
+   const pay=button(payment,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),openPickupLink);
+   pay.classList.add('pay-button--mercado-pago');
+   add(payment,'p','pay-small',T.text('En Mercado Pago, verificá el vendedor y el importe del pedido antes de pagar.','In Mercado Pago, verify the seller and order amount before paying.'));
+  }else if(!order.pickup_link_opened){
+   add(payment,'p','pay-small',T.text('Si querés pagar con tarjeta, podés pedirle un link al vendedor por chat.','If you want to pay by card, ask the seller for a link in chat.'));
+  }
+  if(order.pickup_link_opened)button(payment,T.text('Ya pagué con el link','I paid with the link'),()=>confirm('claim_pickup_link_payment'),true);
+ }
+ function renderPickupLinkForm(panel){
+  const form=add(panel,'form','pay-pickup-link-form');
+  const label=add(form,'label','',T.text('Link de pago de este pedido','Payment link for this order'));
+  const input=add(label,'input','');
+  input.type='url';
+  input.placeholder='https://mpago.la/…';
+  input.required=true;
+  input.maxLength=81;
+  add(form,'p','pay-small',T.text('Creá un link corto en Mercado Pago por '+T.money(order.amount)+' para este pedido.','Create a short link in Mercado Pago for '+T.money(order.amount)+' for this order.'));
+  const submit=add(form,'button','pay-button pay-button--secondary',T.text('Compartir link con el comprador','Share link with the buyer'));
+  submit.type='submit';
+  form.addEventListener('submit',async event=>{
+   event.preventDefault();
+   await runPickupAction(submit,async()=>{
+    const url=input.value.trim();
+    if(!/^https:\/\/mpago[.]la\/[A-Za-z0-9]{4,64}$/.test(url))throw Error('INVALID_PICKUP_LINK');
+    await T.rpc('save_pickup_order_link',{p_order_id:order.id,p_url:url});
+    await refresh();
+   });
+  });
+ }
+ async function openPickupLink(event){
+  await runPickupAction(event.currentTarget,async()=>{
+   const url=await T.rpc('open_pickup_order_link',{p_order_id:order.id});
+   await refresh();
+   await MP.open(url);
+  });
+ }
+ async function runPickupAction(control,task){
+  if(busy)return;
+  busy=true;
+  control.disabled=true;
+  try{await task();}
+  catch(error){note(mpError(error),true);}
+  finally{busy=false;control.disabled=false;}
+ }
  function mpError(error){
   const message=String(error?.message||'');
   if(message==='MP_SELLER_RECONNECT'||message==='MP_SELLER_NOT_LINKED'){
    return T.text('El vendedor tiene que volver a vincular su cuenta de Mercado Pago.','The seller needs to reconnect their Mercado Pago account.');
   }
   if(message==='MP_CANNOT_CANCEL')return T.text('Mercado Pago todavía no confirmó la cancelación. Actualizá el estado.','Mercado Pago has not confirmed cancellation. Refresh the status.');
+  const pickupMessages={
+   INVALID_PICKUP_LINK:['Pegá el link corto que generó Mercado Pago (https://mpago.la/…).','Paste the short link generated by Mercado Pago (https://mpago.la/…).'],
+   PICKUP_LINK_ALREADY_SHARED:['Ya compartiste un link para este pedido.','You already shared a link for this order.'],
+   PICKUP_LINK_IN_USE:['Generá un link nuevo para este pedido.','Generate a new link for this order.'],
+   PICKUP_LINK_CANCEL_REQUIRED:['El comprador abrió el link. El vendedor tiene que cerrarlo antes de cancelar.','The buyer opened the link. The seller must close it before cancelling.']
+  };
+  if(pickupMessages[message])return T.text(...pickupMessages[message]);
   if(message.startsWith('MP_'))return T.text('No pudimos completar la solicitud de Mercado Pago. Volvé a intentar.','We could not complete the Mercado Pago request. Try again.');
   return T.errorMessage(error);
  }
@@ -195,18 +304,41 @@
  function confirm(next){
   action=next;
   const copy={claim_transfer:[T.text('¿Ya hiciste la transferencia?','Have you made the transfer?'),T.text('El vendedor deberá verificar que el dinero llegó a su cuenta. Tu aviso no marca el pedido como pagado.','The seller must verify the money arrived. Reporting a transfer does not mark the order paid.'),T.text('Transferí el importe exacto a la cuenta indicada.','I transferred the exact amount to the specified account.')],confirm_received:[T.text('Verificá tu cuenta antes de confirmar','Check your account before confirming'),T.text('Confirmá solo si viste el dinero acreditado en tu cuenta. No alcanza con el aviso del comprador o una captura.','Confirm only after seeing the money credited to your account. A buyer claim or screenshot is not enough.'),T.text('Verifiqué en mi cuenta que recibí el importe completo.','I checked my account and received the full amount.')],confirm_delivered:[T.text('¿Recibiste el material?','Did you receive the item?'),T.text('El pedido quedará marcado como entregado.','The order will be marked delivered.'),T.text('Ya recibí el material acordado.','I received the agreed item.')],cancel:[T.text('Cancelar este pedido','Cancel this order'),T.text('Si hubo una transferencia, no canceles: contactá a la otra persona.','If money was transferred, do not cancel: contact the other person.'),T.text('No se transfirió ni recibió dinero por este pedido.','No money was transferred or received for this order.')]};
+  if(order.payment_provider==='pickup'){
+   copy.confirm_received=[
+    T.text('¿Recibiste el pago?','Did you receive the payment?'),
+    T.text('Si fue digital, verificá que el importe esté acreditado en tu cuenta.','For a digital payment, verify the amount is credited in your account.'),
+    T.text('Recibí el importe completo.','I received the full amount.')
+   ];
+   copy.claim_pickup_link_payment=[
+    T.text('¿Pagaste con el link de Mercado Pago?','Did you pay using the Mercado Pago link?'),
+    T.text('El vendedor tiene que verificar el cobro.','The seller needs to verify the payment.'),
+    T.text('Pagué el importe del pedido.','I paid the order amount.')
+   ];
+   copy.cancel=[
+    T.text('¿Cancelar la reserva?','Cancel the reservation?'),
+    T.text('El producto quedará disponible para otra persona.','The item will become available to someone else.'),
+    T.text('Confirmo que no hubo un pago.','I confirm there was no payment.')
+   ];
+   copy.cancel_pickup_link=[
+    T.text('¿Cerrar este pedido?','Close this order?'),
+    T.text('Antes de cancelar, comprobá que el link ya no acepte pagos y revisá tus cobros.','Before cancelling, check that the link no longer accepts payments and review your payments.'),
+    T.text('El link ya no acepta pagos y no recibí dinero.','The link no longer accepts payments and I received no money.')
+   ];
+  }
   document.querySelector('#transfer-confirm-title').textContent=copy[next][0];document.querySelector('#transfer-confirm-copy').textContent=copy[next][1];document.querySelector('#transfer-confirm-label').textContent=copy[next][2];document.querySelector('#transfer-confirm-check').checked=false;dialog.showModal();
  }
  dialog.querySelector('form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;busy=true;const submit=dialog.querySelector('[type="submit"]');submit.disabled=true;
   try{await T.rpc('transition_transfer_order',{p_order_id:order.id,p_action:action});dialog.close();await refresh();}
-  catch(error){dialog.close();note(T.errorMessage(error),true);await refresh();note(T.errorMessage(error),true);}
+  catch(error){dialog.close();await refresh();note(mpError(error),true);}
   finally{busy=false;submit.disabled=false;}
  });
  document.querySelector('#transfer-confirm-cancel').addEventListener('click',()=>dialog.close());
  async function openChat(){try{const {conversation,error}=await window.colegioLibreApi.ensureConversation({buyerId:order.buyer_id,sellerId:order.seller_id,productId:order.product_id});if(error||!conversation)throw error||Error('chat');location.assign('/mensajes?id='+encodeURIComponent(conversation.id));}catch(error){note(T.errorMessage(error),true)}}
  retry.addEventListener('click',()=>void refresh());
  window.addEventListener('colegiolibre:languagechange',()=>{if(busy)return;if(order){render();note('')}else if(product){renderReview();note('')}});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&order?.payment_provider==='pickup'&&!busy)void refresh()});
  window.addEventListener('pageshow',event=>{if(event.persisted&&!busy)void refresh()});
  window.addEventListener('pagehide',()=>root.querySelector('.pay-instructions')?.replaceChildren());
  void refresh();

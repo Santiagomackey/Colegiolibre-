@@ -484,7 +484,7 @@
   window.addEventListener('colegiolibre:languagechange',()=>{if(state.panel)renderNotifications()});
   function transferNotificationBody(notification) {
     if(document.documentElement.dataset.language!=='en')return notification.body||'';
-    const messages={payment_claim:'The buyer reported a transfer. Check your account before confirming receipt.',payment_confirmed:'The seller confirmed receiving your payment. Arrange delivery at school.',order_delivered:'The buyer confirmed receiving the item.',order_cancelled:'This order is no longer active.'};
+    const messages={pickup_reserved:'Arrange pickup with the buyer.',pickup_link_ready:'The seller added a Mercado Pago link to your reservation.',pickup_payment_claim:'The buyer reported a payment. Check your Mercado Pago account before confirming.',payment_claim:'The buyer reported a transfer. Check your account before confirming receipt.',payment_confirmed:'The seller confirmed receiving your payment. Arrange delivery at school.',order_delivered:'The buyer confirmed receiving the item.',order_cancelled:'This order is no longer active.'};
     return messages[notification.type]||notification.body||'';
   }
 
@@ -503,8 +503,14 @@
   }
 
   function getNotificationTitle(notification) {
-    const baseTitle =
-      notification.title || getDefaultTitle(notification.type);
+    const pickupTitles = {
+      pickup_reserved: 'New pickup reservation',
+      pickup_link_ready: 'You can pay with Mercado Pago',
+      pickup_payment_claim: 'The buyer reported a payment'
+    };
+    const title = document.documentElement.dataset.language === 'en'
+      ? pickupTitles[notification.type] : '';
+    const baseTitle = title || notification.title || getDefaultTitle(notification.type);
     const count = Number(notification.metadata?.count || 1);
     return count > 1 ? `${baseTitle} (${count})` : baseTitle;
   }
