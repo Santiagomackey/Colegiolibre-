@@ -17,11 +17,11 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./producto.css?v=20261112-listing-actions" />
+    <link rel="stylesheet" href="./producto.css?v=20261112-listing-layout" />
     <link rel="stylesheet" href="./notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
-    <link rel="stylesheet" href="./mobile.css?v=20261109-release25" />
+    <link rel="stylesheet" href="./mobile.css?v=20261112-listing-layout" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" />
     <link rel="stylesheet" href="./pwa.css?v=20261109-release25" />
@@ -135,8 +135,6 @@
       <section class="product-layout" aria-labelledby="product-title">
         <div class="gallery-column">
           <div class="gallery-wrap">
-            <div class="gallery-thumbs" id="gallery-thumbs" aria-label="Miniaturas del producto"></div>
-
             <figure class="gallery-stage">
               <button
                 class="favorite-fab"
@@ -152,6 +150,7 @@
                 <img id="main-product-image" alt="" />
               </div>
             </figure>
+            <div class="gallery-thumbs" id="gallery-thumbs" aria-label="Miniaturas del producto"></div>
           </div>
         </div>
 
@@ -252,24 +251,20 @@
 
         <aside class="seller-column">
           <section class="seller-card" aria-labelledby="seller-title">
-            <h2 id="seller-title">Vendedor</h2>
-
-            <div class="seller-profile">
-  <div class="seller-avatar" id="seller-avatar" aria-hidden="true">?</div>
-
-  <div class="seller-profile__copy">
-    <h3 id="seller-name">Cargando...</h3>
-    <p id="seller-school">Cargando colegio...</p>
-
-    <div class="seller-rating" id="seller-rating-summary" aria-label="Reputación del vendedor">
-      <span>Cargando reputación...</span>
-    </div>
-  </div>
-</div>
-
-            <a class="seller-link" id="seller-profile-link" href="#">Ver perfil</a>
-
-            <div class="seller-divider"></div>
+            <div class="seller-identity">
+              <h2 id="seller-title">Vendedor</h2>
+              <div class="seller-profile">
+                <div class="seller-avatar" id="seller-avatar" aria-hidden="true">?</div>
+                <div class="seller-profile__copy">
+                  <h3 id="seller-name">Cargando...</h3>
+                  <p id="seller-school">Cargando colegio...</p>
+                  <div class="seller-rating" id="seller-rating-summary" aria-label="Reputación del vendedor">
+                    <span>Cargando reputación...</span>
+                  </div>
+                  <a class="seller-link" id="seller-profile-link" href="#">Ver perfil</a>
+                </div>
+              </div>
+            </div>
 
             <div class="seller-feature">
               <div class="seller-feature__icon">
