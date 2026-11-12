@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./producto.css?v=20261112-gallery" />
+    <link rel="stylesheet" href="./producto.css?v=20261112-listing-actions" />
     <link rel="stylesheet" href="./notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
@@ -174,7 +174,40 @@
             <a id="product-school-link" href="#">Ver comunidad del colegio</a>
           </p>
 
-          <p class="product-price" id="product-price">—</p>
+          <div class="product-purchase">
+            <p class="product-price" id="product-price">—</p>
+            <div class="availability-notice" id="availability-notice" hidden></div>
+            <div class="detail-actions">
+              <div class="product-action-row">
+                <button class="primary-action" id="buy-transfer-button" type="button" hidden>Comprar</button>
+                <button class="secondary-action" id="contact-button" type="button">Contactar vendedor</button>
+                <a class="primary-action owner-edit-action" id="owner-edit-button" href="#" hidden>
+                  Editar publicación
+                </a>
+              </div>
+              <div class="product-utility-row">
+                <button
+                  class="secondary-action"
+                  id="save-button"
+                  type="button"
+                  aria-pressed="false"
+                >
+                  <span>Guardar en favoritos</span>
+                  <svg class="icon"><use href="#icon-heart"></use></svg>
+                </button>
+                <button class="secondary-action" id="share-button" type="button">
+                  <span>Compartir</span>
+                </button>
+                <button class="secondary-action" id="whatsapp-share-button" type="button">
+                  <span>Compartir por WhatsApp</span>
+                </button>
+                <button class="report-action" id="report-product-button" type="button">
+                  <svg class="icon"><use href="#icon-flag"></use></svg>
+                  <span>Reportar publicación</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
           <div class="product-meta">
             <p>
@@ -199,8 +232,6 @@
             </p>
           </div>
 
-          <div class="availability-notice" id="availability-notice" hidden></div>
-
           <section class="attributes-section" id="attributes-section" aria-labelledby="attributes-title" hidden>
             <h2 id="attributes-title">Detalles del producto</h2>
             <dl class="attributes-grid" id="product-attributes"></dl>
@@ -217,33 +248,6 @@
               <p>Cargando información del producto…</p>
             </div>
           </section>
-
-          <div class="detail-actions">
-            <button class="primary-action" id="buy-transfer-button" type="button" hidden>Comprar</button>
-            <button class="primary-action" id="contact-button" type="button">Contactar vendedor</button>
-            <a class="primary-action owner-edit-action" id="owner-edit-button" href="#" hidden>
-              Editar publicación
-            </a>
-            <button
-              class="secondary-action"
-              id="save-button"
-              type="button"
-              aria-pressed="false"
-            >
-              <span>Guardar en favoritos</span>
-              <svg class="icon"><use href="#icon-heart"></use></svg>
-            </button>
-            <button class="secondary-action" id="share-button" type="button">
-              <span>Compartir</span>
-            </button>
-            <button class="secondary-action" id="whatsapp-share-button" type="button">
-              <span>Compartir por WhatsApp</span>
-            </button>
-            <button class="report-action" id="report-product-button" type="button">
-              <svg class="icon"><use href="#icon-flag"></use></svg>
-              <span>Reportar publicación</span>
-            </button>
-          </div>
         </section>
 
         <aside class="seller-column">

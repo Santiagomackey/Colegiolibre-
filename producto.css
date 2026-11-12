@@ -477,8 +477,19 @@ img {
   text-underline-offset: 3px;
 }
 
-.product-price {
+.product-purchase {
+  display: grid;
+  gap: 0.9rem;
   margin: 1rem 0 1.05rem;
+  padding: clamp(0.85rem, 2vw, 1.2rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+.product-price {
+  margin: 0;
+  line-height: 1.1;
   color: var(--color-primary);
   font-size: clamp(2.1rem, 3.3vw, 3rem);
   font-weight: 800;
@@ -507,7 +518,7 @@ img {
 }
 
 .availability-notice {
-  margin: 0 0 1.35rem;
+  margin: 0;
   padding: 0.95rem 1.1rem;
   border: 1px solid rgba(255, 199, 44, 0.4);
   border-radius: 16px;
@@ -622,10 +633,44 @@ img {
 }
 
 .detail-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1.9rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.product-action-row,
+.product-utility-row {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.product-action-row {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+}
+
+.product-utility-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.product-action-row :is(.primary-action, .secondary-action),
+.product-utility-row :is(.secondary-action, .report-action) {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.65rem;
+  text-align: center;
+}
+
+.product-utility-row :is(.secondary-action, .report-action) {
+  min-height: 44px;
+  gap: 0.4rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+.product-utility-row .icon {
+  flex: 0 0 auto;
 }
 
 .primary-action,
@@ -679,12 +724,12 @@ img {
   box-shadow: none;
 }
 
-.primary-action.is-loading {
+#contact-button.is-loading {
   position: relative;
   padding-left: 3rem;
 }
 
-.primary-action.is-loading::before {
+#contact-button.is-loading::before {
   position: absolute;
   left: 1.15rem;
   width: 18px;
@@ -1097,10 +1142,6 @@ input:focus-visible {
 
   .gallery-stage__media {
     min-height: 318px;
-  }
-
-  .detail-actions {
-    flex-direction: column;
   }
 
   .attributes-grid {
