@@ -1,7 +1,7 @@
 (() => {
  'use strict';
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
- let order=null,product=null,busy=false,action=null;
+ let order=null,product=null,busy=false,action=null,pickupAlias=null;
  const MP=window.colegioLibreMercadoPago;
  let providerState='',paymentMode='transfer';
  const params=new URLSearchParams(location.search);
@@ -52,7 +52,13 @@
    if(!id)throw Error('ORDER_NOT_FOUND');
    order=await T.rpc('get_transfer_order',{p_order_id:id});
    providerState='';
+   pickupAlias=null;
    let statusError;
+   if(order.payment_provider==='pickup'&&order.role==='buyer'&&order.status==='payment_pending'&&
+      order.listing_available!==false&&!order.pickup_link_ready){
+    try{pickupAlias=await T.rpc('pickup_alias_payment',{p_order_id:id,p_action:'status'});}
+    catch(error){if(!['PGRST202','42883'].includes(error?.code))statusError=error;}
+   }
    if(order.payment_provider==='mercado_pago'){
     try{
      const result=await MP.request('',{action:'status',id});
@@ -189,20 +195,24 @@
   }else if(!buyer){
    if(order.pickup_link_ready){
     add(panel,'p','pay-notice',T.text('El comprador ya tiene el link de Mercado Pago de este pedido.','The buyer has the Mercado Pago link for this order.'));
+   }else if(order.payment?.alias){
+    add(panel,'p','pay-muted',T.text('El comprador ya tiene el alias de cobro de este pedido.','The buyer has the payment alias for this order.'));
    }else{
     renderPickupLinkForm(panel);
    }
+  }else if(pickupAlias?.recipient){
+   renderPickupAlias(panel,pickupAlias.recipient);
   }else{
-   const ready=Boolean(order.pickup_link_ready);
-   const pay=button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),openPickupLink);
+   const linked=Boolean(order.pickup_link_ready);
+   const pay=button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),linked?openPickupLink:showPickupAlias);
    pay.classList.add('pay-button--mercado-pago');
-   pay.disabled=!ready;
-   const help=add(panel,'p','pay-small',ready?
-    T.text('Verificá el vendedor y el importe en Mercado Pago. La entrega se coordina después de confirmar el pago.','Check the seller and amount in Mercado Pago. Arrange pickup once payment is confirmed.'):
-    T.text('El botón se habilita cuando el vendedor agrega el link de pago de este pedido.','The button becomes available when the seller adds the payment link for this order.'));
+   pay.disabled=!linked&&!pickupAlias?.available;
+   const help=add(panel,'p','pay-small',linked?
+    T.text('Verificá el vendedor y el importe en Mercado Pago.','Check the seller and amount in Mercado Pago.'):pickupAlias?.available?
+    T.text('Transferí al alias del vendedor desde Mercado Pago.','Transfer to the seller’s alias from Mercado Pago.'):
+    T.text('El vendedor todavía tiene que cargar su alias de cobro.','The seller still needs to add their payment alias.'));
    help.id='pickup-payment-help';
    pay.setAttribute('aria-describedby',help.id);
-   if(!ready)button(panel,T.text('Pedir link de pago al vendedor','Ask the seller for a payment link'),openChat,true);
   }
   if(!awaiting&&buyer&&order.pickup_link_opened){
    button(panel,T.text('Ya pagué con el link','I paid with the link'),()=>confirm('claim_pickup_link_payment'),true);
@@ -218,6 +228,28 @@
   }else{
    button(panel,T.text('Consultar al vendedor','Contact the seller'),openChat,true);
   }
+ }
+ async function showPickupAlias(event){
+  await runPickupAction(event.currentTarget,async()=>{
+   const id=order.id;
+   pickupAlias=await T.rpc('pickup_alias_payment',{p_order_id:id,p_action:'open'});
+   if(order?.id===id){render();document.querySelector('#pickup-alias-heading')?.focus();}
+  });
+ }
+ function renderPickupAlias(panel,recipient){
+  const heading=add(panel,'h3','',T.text('Datos para transferir','Transfer details'));
+  heading.id='pickup-alias-heading';
+  heading.tabIndex=-1;
+  const details=add(panel,'dl','pay-details');
+  for(const [label,value] of [['Alias',recipient.alias],[T.text('Titular','Account holder'),recipient.holder_name],
+   [T.text('Importe exacto','Exact amount'),T.money(order.amount)]]){
+   add(details,'dt','',label);
+   add(details,'dd','',value).dataset.noTranslate='';
+  }
+  add(panel,'p','pay-muted',T.text('En Mercado Pago, elegí Transferir, pegá el alias y verificá el titular y el importe antes de confirmar.','In Mercado Pago, select Transfer, paste the alias, and check the account holder and amount before confirming.'));
+  button(panel,T.text('Copiar alias','Copy alias'),()=>copy(recipient.alias),true);
+  button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),event=>runPickupAction(event.currentTarget,()=>MP.open('https://www.mercadopago.com.ar/'))).classList.add('pay-button--mercado-pago');
+  button(panel,T.text('Ya transferí','I’ve transferred'),()=>confirm('claim_pickup_alias_payment'),true);
  }
  function renderPickupLinkForm(panel){
   const form=add(panel,'form','pay-pickup-link-form');
@@ -324,6 +356,7 @@
     T.text('Si fue digital, verificá que el importe esté acreditado en tu cuenta.','For a digital payment, verify the amount is credited in your account.'),
     T.text('Recibí el importe completo.','I received the full amount.')
    ];
+   copy.claim_pickup_alias_payment=copy.claim_transfer;
    copy.claim_pickup_link_payment=[
     T.text('¿Pagaste con el link de Mercado Pago?','Did you pay using the Mercado Pago link?'),
     T.text('El vendedor tiene que verificar el cobro.','The seller needs to verify the payment.'),
@@ -344,7 +377,11 @@
  }
  dialog.querySelector('form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;busy=true;const submit=dialog.querySelector('[type="submit"]');submit.disabled=true;
-  try{await T.rpc('transition_transfer_order',{p_order_id:order.id,p_action:action});dialog.close();await refresh();}
+  try{
+   const aliasClaim=action==='claim_pickup_alias_payment';
+   await T.rpc(aliasClaim?'pickup_alias_payment':'transition_transfer_order',{p_order_id:order.id,p_action:aliasClaim?'claim':action});
+   dialog.close();await refresh();
+  }
   catch(error){dialog.close();await refresh();note(mpError(error),true);}
   finally{busy=false;submit.disabled=false;}
  });
