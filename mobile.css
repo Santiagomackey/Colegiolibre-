@@ -159,7 +159,7 @@ html {
 
   .product-media,
   .product-skeleton .skeleton-media {
-    aspect-ratio: 4 / 5 !important;
+    aspect-ratio: 1 / 1 !important;
   }
 
   .product-media img {
