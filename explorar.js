@@ -162,5 +162,6 @@
   const resize = () => { $('#catalog-filters').open = !media.matches; };
   resize();
   media.addEventListener('change', resize);
+  window.addEventListener('pageshow', event => { if (event.persisted) refresh(); });
   void load();
 })();
