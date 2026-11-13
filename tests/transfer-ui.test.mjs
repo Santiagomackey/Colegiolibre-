@@ -64,11 +64,68 @@ test('viewing checkout leaves stock free, and a competing reservation hides paym
  await new Promise(setImmediate);
  const root = document.querySelector('#transfer-checkout');
  const all = node => [node, ...node.children.flatMap(all)];
- const reserve = all(root).find(node => node.textContent === 'Reservar y pagar al retirar');
+ const reserve = all(root).find(node => node.textContent === 'Reservar y continuar al pago');
  assert.ok(reserve);
  assert.deepEqual(calls, []);
  await Promise.all([reserve.events.click({ currentTarget: reserve }), reserve.events.click({ currentTarget: reserve })]);
  assert.deepEqual(calls, [['start_pickup_order', 'book']]);
  assert.ok(all(root).some(node => node.textContent === 'Este producto está reservado'));
  assert.ok(all(root).every(node => node.textContent !== 'Copiar alias'));
+});
+
+test('pickup orders show payment before delivery coordination', async () => {
+ const checkout = fs.readFileSync(new URL('../transfer-checkout.js', import.meta.url), 'utf8');
+ function element(textContent = '') {
+  return {
+   textContent, children: [], dataset: {},
+   classList: { add() {} },
+   setAttribute() {},
+   append(child) { this.children.push(child); },
+   replaceChildren() { this.children = []; },
+   addEventListener() {},
+   querySelector() { return element(); }
+  };
+ }
+ const labelsFor = async order => {
+  const selectors = new Map();
+  const document = {
+   addEventListener() {},
+   querySelector(selector) {
+    if (!selectors.has(selector)) selectors.set(selector, element());
+    return selectors.get(selector);
+   }
+  };
+  const window = {
+   addEventListener() {},
+   colegioLibreApi: { async getCurrentUser() { return { id: 'buyer' }; } },
+   colegioLibreTransfers: {
+    el(_tag, _cls, text) { return element(text); },
+    text(es) { return es; },
+    money(value) { return String(value); },
+    status(value) { return value; },
+    errorMessage(error) { return error.message; },
+    async rpc(name) {
+     assert.equal(name, 'get_transfer_order');
+     return { id: 'pickup-order', payment_provider: 'pickup', role: 'buyer', ...order };
+    }
+   }
+  };
+  vm.runInNewContext(checkout, { window, document, URLSearchParams, location: { search: '?id=pickup-order' } });
+  await new Promise(setImmediate);
+  const labels = node => [node.textContent, ...node.children.flatMap(labels)];
+  return labels(document.querySelector('#transfer-checkout'));
+ };
+ const coordinate = 'Coordinar entrega en el colegio';
+ const pay = 'Pagar con Mercado Pago';
+ const pending = await labelsFor({ status: 'payment_pending', pickup_link_ready: true });
+ assert.ok(pending.includes(pay));
+ assert.ok(!pending.includes(coordinate));
+ const missing = await labelsFor({ status: 'payment_pending' });
+ assert.ok(missing.includes('Pedir link de pago al vendedor'));
+ assert.ok(!missing.includes(pay) && !missing.includes(coordinate));
+ const awaiting = await labelsFor({ status: 'awaiting_confirmation', pickup_link_ready: true, pickup_link_opened: true });
+ assert.ok(!awaiting.includes(pay) && !awaiting.includes(coordinate));
+ const paid = await labelsFor({ status: 'paid' });
+ assert.ok(paid.includes(coordinate) && paid.includes('Confirmar que lo recibí'));
+ assert.ok(!paid.includes(pay));
 });
