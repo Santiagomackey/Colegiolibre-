@@ -760,10 +760,12 @@ img {
 
 .seller-card {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr));
   align-items: start;
-  gap: 1rem;
-  padding: 1.15rem;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.35;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);
@@ -775,32 +777,30 @@ img {
 }
 
 .seller-card h2 {
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.25rem;
   color: var(--color-primary);
-  font-size: 1rem;
+  font-size: inherit;
 }
 
 .seller-profile {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .seller-avatar {
   display: inline-flex;
-  flex: 0 0 58px;
+  flex: 0 0 34px;
   align-items: center;
   justify-content: center;
-  width: 58px;
-  height: 58px;
-  min-width: 58px;
-  min-height: 58px;
+  width: 34px;
+  height: 34px;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 50%;
   background: linear-gradient(180deg, #163f83 0%, #0b2e6b 100%);
   color: #fff;
-  font-size: 2rem;
+  font-size: 0.95rem;
   font-weight: 800;
   line-height: 1;
 }
@@ -808,7 +808,7 @@ img {
 .seller-profile__copy h3 {
   margin: 0 0 0.2rem;
   color: var(--color-primary);
-  font-size: 1.05rem;
+  font-size: inherit;
 }
 
 .seller-profile__copy p {
@@ -820,7 +820,7 @@ img {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 0.45rem;
+  margin-top: 0.2rem;
   color: var(--color-primary);
   font-size: 0.95rem;
 }
@@ -840,14 +840,14 @@ img {
 
 .seller-link {
   display: inline-block;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   color: #0d5bd7;
   font-weight: 600;
 }
 
 .seller-school-link {
   display: inline-block;
-  margin-top: 0.45rem;
+  margin-top: 0.2rem;
   color: #0d5bd7;
   font-weight: 700;
   text-decoration: underline;
@@ -858,7 +858,7 @@ img {
 .seller-feature {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.95rem;
+  gap: 0.4rem;
   align-items: start;
 }
 
@@ -866,21 +866,20 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 1rem;
+  height: 1.2rem;
   color: var(--color-primary);
 }
 
 .seller-feature h3 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.2rem;
   color: var(--color-primary);
-  font-size: 1rem;
+  font-size: inherit;
 }
 
 .seller-feature p {
   margin: 0;
   color: var(--color-primary);
-  line-height: 1.45;
 }
 
 .similar-section {
@@ -1154,7 +1153,7 @@ input:focus-visible {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 0.2rem 0.35rem;
 }
 
 #seller-rating-summary strong {
@@ -1169,7 +1168,7 @@ input:focus-visible {
 
 #seller-rating-summary .verified-school-badge {
   display: inline-flex;
-  padding: 4px 8px;
+  padding: 2px 5px;
   border-radius: 999px;
   background: #eaf7e3;
   color: #36791f;
