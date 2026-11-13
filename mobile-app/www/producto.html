@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./producto.css?v=20261112-listing-market" />
+    <link rel="stylesheet" href="./producto.css?v=20261113-listing-refined" />
     <link rel="stylesheet" href="./notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
@@ -160,6 +160,7 @@
               <h1 id="product-title" data-product-title data-no-translate>Cargando publicación…</h1>
               <div class="product-badges">
                 <span class="condition-badge" id="product-condition-badge">Cargando</span>
+                <span class="availability-badge" id="product-status-badge" data-status="available">Cargando</span>
               </div>
             </div>
 
@@ -169,16 +170,12 @@
               <span id="product-classification">ColegioLibre</span>
             </div>
 
-            <p class="product-school-row">
-              <a id="product-school-link" href="#">Ver comunidad del colegio</a>
-            </p>
 
             <p class="product-price" id="product-price">—</p>
           </div>
 
-          <aside class="product-side-panel">
+          <div class="product-side-panel">
             <div class="product-purchase">
-              <span class="availability-badge" id="product-status-badge" data-status="available">Cargando</span>
               <div class="availability-notice" id="availability-notice" hidden></div>
               <div class="detail-actions">
                 <div class="product-action-row">
@@ -211,76 +208,70 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <section class="seller-card" aria-labelledby="seller-title">
-              <div class="seller-identity">
-                <h2 id="seller-title">Vendedor</h2>
-                <div class="seller-profile">
-                  <div class="seller-avatar" id="seller-avatar" aria-hidden="true">?</div>
-                  <div class="seller-profile__copy">
-                    <h3 id="seller-name">Cargando...</h3>
-                    <p id="seller-school">Cargando colegio...</p>
-                    <div class="seller-rating" id="seller-rating-summary" aria-label="Reputación del vendedor">
-                      <span>Cargando reputación...</span>
-                    </div>
-                    <a class="seller-link" id="seller-profile-link" href="#">Ver perfil</a>
-                  </div>
-                </div>
-              </div>
+          <div class="product-meta">
+            <p>
+              <svg class="icon"><use href="#icon-pin"></use></svg>
+              <span id="product-location">Cargando ubicación…</span>
+            </p>
+            <p>
+              <svg class="icon"><use href="#icon-clock"></use></svg>
+              <span id="product-published-date">Publicado recientemente</span>
+            </p>
+            <p>
+              <svg class="icon"><use href="#icon-eye"></use></svg>
+              <span id="product-views">0 vistas</span>
+            </p>
+            <p>
+              <svg class="icon"><use href="#icon-heart"></use></svg>
+              <span id="product-favorites-count">0 guardados</span>
+            </p>
+            <p id="product-updated-row" hidden>
+              <svg class="icon"><use href="#icon-clock"></use></svg>
+              <span id="product-updated-date"></span>
+            </p>
+          </div>
+        </section>
 
-              <div class="seller-feature">
-                <div class="seller-feature__icon">
-                  <svg class="icon"><use href="#icon-pin"></use></svg>
-                </div>
-                <div>
-                  <h3>Colegio y zona</h3>
-                  <p id="seller-zone">Cargando...</p>
-                  <a class="seller-school-link" id="seller-school-link" href="#">Ir al colegio</a>
-                </div>
-              </div>
-            </section>
-          </aside>
-
-          <div class="product-information">
-            <div class="product-meta">
-              <p>
-                <svg class="icon"><use href="#icon-pin"></use></svg>
-                <span id="product-location">Cargando ubicación…</span>
-              </p>
-              <p>
-                <svg class="icon"><use href="#icon-clock"></use></svg>
-                <span id="product-published-date">Publicado recientemente</span>
-              </p>
-              <p>
-                <svg class="icon"><use href="#icon-eye"></use></svg>
-                <span id="product-views">0 vistas</span>
-              </p>
-              <p>
-                <svg class="icon"><use href="#icon-heart"></use></svg>
-                <span id="product-favorites-count">0 guardados</span>
-              </p>
-              <p id="product-updated-row" hidden>
-                <svg class="icon"><use href="#icon-clock"></use></svg>
-                <span id="product-updated-date"></span>
-              </p>
+        <div class="product-information">
+          <section class="description-section" aria-labelledby="description-title">
+            <h2 id="description-title">Descripción</h2>
+            <div class="description-copy" id="description-copy">
+              <p>Cargando información del producto…</p>
             </div>
+          </section>
 
-            <section class="attributes-section" id="attributes-section" aria-labelledby="attributes-title" hidden>
-              <h2 id="attributes-title">Detalles del producto</h2>
-              <dl class="attributes-grid" id="product-attributes"></dl>
-            </section>
+          <section class="attributes-section" id="attributes-section" aria-labelledby="attributes-title" hidden>
+            <h2 id="attributes-title">Detalles del producto</h2>
+            <dl class="attributes-grid" id="product-attributes"></dl>
+          </section>
+        </div>
 
-            <section class="condition-section" aria-labelledby="condition-title">
-              <h2 id="condition-title">Estado del producto</h2>
-              <div class="condition-pills" id="condition-pills" aria-label="Estado del producto"></div>
-            </section>
-
-            <section class="description-section" aria-labelledby="description-title">
-              <h2 id="description-title">Descripción</h2>
-              <div class="description-copy" id="description-copy">
-                <p>Cargando información del producto…</p>
+        <section class="seller-card" aria-labelledby="seller-title">
+          <div class="seller-identity">
+            <h2 id="seller-title">Vendedor</h2>
+            <div class="seller-profile">
+              <div class="seller-avatar" id="seller-avatar" aria-hidden="true">?</div>
+              <div class="seller-profile__copy">
+                <h3 id="seller-name">Cargando...</h3>
+                <div class="seller-rating" id="seller-rating-summary" aria-label="Reputación del vendedor">
+                  <span>Cargando reputación...</span>
+                </div>
+                <a class="seller-link" id="seller-profile-link" href="#">Ver perfil</a>
               </div>
-            </section>
+            </div>
+          </div>
+
+          <div class="seller-feature">
+            <div class="seller-feature__icon">
+              <svg class="icon"><use href="#icon-pin"></use></svg>
+            </div>
+            <div>
+              <h3>Colegio y zona</h3>
+              <p id="seller-zone">Cargando...</p>
+              <a class="seller-school-link" id="seller-school-link" href="#">Ir al colegio</a>
+            </div>
           </div>
         </section>
       </section>
@@ -383,7 +374,7 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./producto.js?v=20261109-transfer27"></script>
+<script src="./producto.js?v=20261113-listing-refined"></script>
 <script src="./native-bridge.js?v=20261110-recovery31"></script>
 <script src="./notifications.js?v=20261109-transfer27"></script>
     <script src="./mobile-ui.js?v=20261109-transfer27"></script>
