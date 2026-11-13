@@ -3,7 +3,7 @@
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
  let order=null,product=null,busy=false,action=null;
  const MP=window.colegioLibreMercadoPago;
- let mpAvailable=false,pickupAvailable=false,providerState='',paymentMode='transfer';
+ let providerState='',paymentMode='transfer';
  const params=new URLSearchParams(location.search);
  const productId=params.get('product');
  const listingUrl=productId?'/producto?id='+encodeURIComponent(productId):'/pedidos';
@@ -37,13 +37,16 @@
      throw Error('PRODUCT_UNAVAILABLE');
     }
     if(data.user_id===user.id)throw Error('OWN_PRODUCT');
-    pickupAvailable=await T.rpc('pickup_checkout_ready').catch(error=>{
-     if(error?.code==='PGRST202'||error?.code==='42883')return false;
-     throw error;
-    });
-    const status=pickupAvailable?null:await MP?.request('?product='+encodeURIComponent(productId)).catch(()=>null);
-    mpAvailable=Boolean(status?.available);
-    paymentMode=pickupAvailable?'pickup':mpAvailable?'mercado_pago':'transfer';
+    const status=await MP?.request('?product='+encodeURIComponent(productId)).catch(()=>null);
+    if(status?.available){
+     paymentMode='mercado_pago';
+    }else{
+     const pickupAvailable=await T.rpc('pickup_checkout_ready').catch(error=>{
+      if(error?.code==='PGRST202'||error?.code==='42883')return false;
+      throw error;
+     });
+     paymentMode=pickupAvailable?'pickup':'transfer';
+    }
     product=data;retry.hidden=true;renderReview();note('');return;
    }
    if(!id)throw Error('ORDER_NOT_FOUND');
@@ -81,6 +84,8 @@
   finally{busy=false;reserve.disabled=false;}
  }
  function renderReview(){
+  const mpAvailable=paymentMode==='mercado_pago';
+  const pickupAvailable=paymentMode==='pickup';
   root.replaceChildren();
   const review=add(root,'section','pay-card');
   add(review,'span','pay-kicker',T.text('TU COMPRA','YOUR PURCHASE'));
@@ -124,7 +129,7 @@
    if(state===order.status)step.setAttribute('aria-current','step');
   });
   if(pickup){renderPickup(buyer);return;}
-  if(order.payment_provider==='mercado_pago'){renderMercadoPago(head,buyer);return;}
+  if(order.payment_provider==='mercado_pago'){renderMercadoPago(buyer);return;}
   if(order.status==='cancelled')add(head,'p','pay-notice',T.text('Pedido cancelado. No realices una transferencia para este pedido.','Order cancelled. Do not send a transfer for this order.'));
   const content=add(root,'div','pay-checkout-grid');
   const payment=add(content,'section','pay-card pay-instructions');
@@ -275,7 +280,7 @@
   }catch(error){note(mpError(error),true);}
   finally{busy=false;control.disabled=false;}
  }
- function renderMercadoPago(head,buyer){
+ function renderMercadoPago(buyer){
   const panel=add(root,'section','pay-card');
   add(panel,'h2','','Mercado Pago');
   if(['refunded','partially_refunded'].includes(providerState)){
@@ -296,8 +301,8 @@
    if(!waiting&&providerState)button(panel,T.text('Cancelar pedido','Cancel order'),event=>actOnMercadoPago(event,'cancel'),true);
   }else if(order.status==='paid'&&providerState==='accredited'){
    add(panel,'p','pay-notice',T.text('Pago confirmado por Mercado Pago.','Payment confirmed by Mercado Pago.'));
-   if(buyer)button(panel,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'));
-   button(panel,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat,true);
+   button(panel,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat);
+   if(buyer)button(panel,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'),true);
   }else if(order.status==='paid'){
    add(panel,'p','pay-muted',T.text('Actualizá el estado para confirmar el pago con Mercado Pago.','Refresh to verify the payment with Mercado Pago.'));
   }else if(order.status==='delivered'){
