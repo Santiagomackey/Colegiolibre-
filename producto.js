@@ -199,7 +199,6 @@ const {
   getCurrentProfile,
   getCurrentUser,
   getInitials,
-  getSchoolLabel,
   getStatusLabel,
   getZoneLabel,
   incrementProductViews,
@@ -207,7 +206,6 @@ const {
   toggleFavorite
 } = colegioLibreApi;
 
-const CONDITION_OPTIONS = ["Nuevo", "Como nuevo", "Usado", "Muy usado"];
 const VIEW_COOLDOWN_MS = 12 * 60 * 60 * 1000;
 const productId = new URLSearchParams(window.location.search).get("id");
 
@@ -288,7 +286,6 @@ const elements = {
   attributesSection: document.querySelector("#attributes-section"),
   availabilityNotice: document.querySelector("#availability-notice"),
   breadcrumbList: document.querySelector("#breadcrumb-list"),
-  conditionPills: document.querySelector("#condition-pills"),
   conditionBadge: document.querySelector("#product-condition-badge"),
   contactButton: document.querySelector("#contact-button"),
   descriptionCopy: document.querySelector("#description-copy"),
@@ -309,7 +306,6 @@ const elements = {
   reportForm: document.querySelector("#product-report-form"),
   reportReason: document.querySelector("#product-report-reason"),
   reportDetails: document.querySelector("#product-report-details"),
-  productSchoolLink: document.querySelector("#product-school-link"),
   productTitle: document.querySelector("#product-title"),
   productUpdatedDate: document.querySelector("#product-updated-date"),
   productUpdatedRow: document.querySelector("#product-updated-row"),
@@ -322,7 +318,6 @@ const elements = {
   sellerName: document.querySelector("#seller-name"),
   sellerProfileLink: document.querySelector("#seller-profile-link"),
   sellerRatingSummary: document.querySelector("#seller-rating-summary"),
-  sellerSchool: document.querySelector("#seller-school"),
   sellerSchoolLink: document.querySelector("#seller-school-link"),
   sellerZone: document.querySelector("#seller-zone"),
   similarEmpty: document.querySelector("#similar-empty"),
@@ -635,7 +630,6 @@ function renderProduct(product) {
   renderBreadcrumbs(product);
   renderStatus(product);
   renderAttributes(product);
-  renderCondition(product.condition);
   renderDescription(product.description);
   renderGallery(product);
   renderSchoolLinks(product);
@@ -771,27 +765,6 @@ function renderAttributes(product) {
     .join("");
 }
 
-function renderCondition(activeCondition) {
-  const conditions = CONDITION_OPTIONS.includes(activeCondition)
-    ? CONDITION_OPTIONS
-    : [...CONDITION_OPTIONS, activeCondition].filter(Boolean);
-
-  elements.conditionPills.innerHTML = conditions
-    .map((condition) => {
-      const isActive = condition === activeCondition;
-      return `
-        <span
-          class="condition-pill${isActive ? " is-active" : ""}"
-          data-condition="${escapeHtml(condition)}"
-          ${isActive ? 'aria-current="true"' : ""}
-        >
-          ${escapeHtml(condition)}
-        </span>
-      `;
-    })
-    .join("");
-}
-
 function renderDescription(description) {
   elements.descriptionCopy.innerHTML = "";
 
@@ -860,8 +833,6 @@ function renderGallery(product) {
 
 function renderSchoolLinks(product) {
   if (!product.school_code) {
-    elements.productSchoolLink.textContent = "Colegio no especificado";
-    elements.productSchoolLink.removeAttribute("href");
     elements.sellerSchoolLink.textContent = "Colegio no disponible";
     elements.sellerSchoolLink.removeAttribute("href");
     return;
@@ -870,15 +841,12 @@ function renderSchoolLinks(product) {
   const href = `/colegio?code=${encodeURIComponent(product.school_code)}`;
   const label = product.school_name || "Ver colegio";
 
-  elements.productSchoolLink.href = href;
-  elements.productSchoolLink.textContent = `Ver comunidad de ${label}`;
   elements.sellerSchoolLink.href = href;
   elements.sellerSchoolLink.textContent = label;
 }
 
 function renderSeller(product) {
   elements.sellerName.textContent = product.seller_name;
-  elements.sellerSchool.textContent = getSchoolLabel(product);
   elements.sellerZone.textContent = getZoneLabel(product);
   elements.sellerAvatar.textContent = getInitials(product.seller_name);
 
