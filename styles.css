@@ -1250,7 +1250,7 @@ button {
 }
 
 .product-skeleton .skeleton-media {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
 }
 
 .product-skeleton .skeleton-pill {
@@ -4362,7 +4362,7 @@ body.menu-open {
 
 .product-media {
   width: 100% !important;
-  aspect-ratio: 4 / 5 !important;
+  aspect-ratio: 1 / 1 !important;
   overflow: hidden !important;
   background: #eef2f7 !important;
 }
@@ -4380,7 +4380,7 @@ body.menu-open {
 }
 
 .product-body {
-  padding: 14px 16px 17px !important;
+  padding: 11px 14px 13px !important;
 }
 
 .product-title {
