@@ -22,14 +22,14 @@ export default async function handler(req, res) {
       if (!id) return send(res, 401, { error: 'INVALID_SIGNATURE' });
       return send(res, await reconcileNotification(config, id) ? 200 : 503, {});
     }
-    const user = await authenticatedUser(config, req);
-    if (!user) return send(res, 401, { error: 'AUTH_REQUIRED' });
-    if (req.method === 'GET') {
-      if (req.query?.seller === '1') return send(res, 200, { enabled: true, linked: await linked(config, user.id) });
+    if (req.method === 'GET' && req.query?.seller !== '1') {
       const product = req.query?.product;
       if (typeof product !== 'string' || !UUID.test(product)) return send(res, 400, { error: 'INVALID_PRODUCT' });
       return send(res, 200, { enabled: true, available: await available(config, product) });
     }
+    const user = await authenticatedUser(config, req);
+    if (!user) return send(res, 401, { error: 'AUTH_REQUIRED' });
+    if (req.method === 'GET') return send(res, 200, { enabled: true, linked: await linked(config, user.id) });
     const { action, id } = req.body || {};
     if (typeof id !== 'string' || !UUID.test(id)) return send(res, 400, { error: 'INVALID_ORDER' });
     if (action === 'resume') return send(res, 200, await resume(config, id, user));

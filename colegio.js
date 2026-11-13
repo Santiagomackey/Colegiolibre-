@@ -255,13 +255,11 @@ function renderHero() {
     state.school?.name ||
     state.products[0]?.school_name ||
     `Colegio ${schoolCode}`;
-  const schoolLocation = [
+  const schoolLocation = [...new Set([
     state.school?.zone,
     state.school?.city,
     state.school?.province
-  ]
-    .filter(Boolean)
-    .join(" · ") || state.products[0]?.zone_code || "Ubicación no especificada";
+  ].filter(Boolean))].join(" · ") || state.products[0]?.zone_code || "Ubicación no especificada";
   const publishers = getUniquePublishers();
   const categories = new Set(state.products.map((product) => product.category).filter(Boolean));
 
