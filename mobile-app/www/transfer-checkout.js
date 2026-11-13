@@ -192,13 +192,17 @@
    }else{
     renderPickupLinkForm(panel);
    }
-  }else if(order.pickup_link_ready){
+  }else{
+   const ready=Boolean(order.pickup_link_ready);
    const pay=button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),openPickupLink);
    pay.classList.add('pay-button--mercado-pago');
-   add(panel,'p','pay-small',T.text('Verificá el vendedor y el importe en Mercado Pago. La entrega se coordina después de confirmar el pago.','Check the seller and amount in Mercado Pago. Arrange pickup once payment is confirmed.'));
-  }else{
-   add(panel,'p','pay-muted',T.text('El vendedor todavía tiene que compartir el link de pago de este pedido.','The seller still needs to share a payment link for this order.'));
-   button(panel,T.text('Pedir link de pago al vendedor','Ask the seller for a payment link'),openChat);
+   pay.disabled=!ready;
+   const help=add(panel,'p','pay-small',ready?
+    T.text('Verificá el vendedor y el importe en Mercado Pago. La entrega se coordina después de confirmar el pago.','Check the seller and amount in Mercado Pago. Arrange pickup once payment is confirmed.'):
+    T.text('El botón se habilita cuando el vendedor agrega el link de pago de este pedido.','The button becomes available when the seller adds the payment link for this order.'));
+   help.id='pickup-payment-help';
+   pay.setAttribute('aria-describedby',help.id);
+   if(!ready)button(panel,T.text('Pedir link de pago al vendedor','Ask the seller for a payment link'),openChat,true);
   }
   if(!awaiting&&buyer&&order.pickup_link_opened){
    button(panel,T.text('Ya pagué con el link','I paid with the link'),()=>confirm('claim_pickup_link_payment'),true);
