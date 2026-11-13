@@ -90,16 +90,16 @@
   add(review,'span','pay-price-note',T.text('Total del producto · ARS','Item total · ARS'));
   const details=add(review,'dl','pay-details pay-review-details');
   add(details,'dt','',T.text('Pago','Payment'));
-  add(details,'dd','',pickupAvailable?T.text('Al retirar','At pickup'):mpAvailable?'Mercado Pago':T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
+  add(details,'dd','',pickupAvailable?T.text('Antes de coordinar la entrega','Before arranging pickup'):mpAvailable?'Mercado Pago':T.text('Transferencia directa al vendedor','Direct transfer to the seller'));
   add(details,'dt','',T.text('Entrega','Delivery'));
   add(details,'dd','',T.text('Coordiná el encuentro en el colegio','Arrange pickup at school'));
   add(review,'p','pay-muted',pickupAvailable?
-   T.text('Reservá el producto y coordiná el encuentro por chat. Revisá el material antes de pagar.','Reserve the item and arrange pickup in chat. Check the item before paying.'):mpAvailable?
+   T.text('Reservá el producto. Una vez confirmado el pago, coordiná la entrega con el vendedor.','Reserve the item. Once payment is confirmed, arrange pickup with the seller.'):mpAvailable?
    T.text('Al continuar, reservás el producto y abrís el checkout de Mercado Pago.','Continue to reserve the item and open Mercado Pago checkout.'):
    T.text('Al continuar, reservás el producto y accedés al alias. Podés cancelar antes de transferir.','Continuing reserves the item and reveals the payment alias. You can cancel before transferring.'));
   const actions=add(review,'div','pay-actions');
   const reserve=button(actions,pickupAvailable?
-   T.text('Reservar y pagar al retirar','Reserve and pay at pickup'):mpAvailable?
+   T.text('Reservar y continuar al pago','Reserve and continue to payment'):mpAvailable?
    T.text('Pagar con Mercado Pago','Pay with Mercado Pago'):
    T.text('Reservar y ver datos de pago','Reserve and view payment details'),reserveProduct);
   if(mpAvailable)reserve.classList.add('pay-button--mercado-pago');
@@ -155,55 +155,60 @@
   button(actions,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
  }
  function renderPickup(buyer){
-  const grid=add(root,'div','pay-checkout-grid');
-  const pickup=add(grid,'section','pay-card');
-  add(pickup,'h2','',T.text('Retiro en el colegio','Pickup at school'));
-  const pending=order.status==='payment_pending';
-  if(order.status==='cancelled'){
-   add(pickup,'p','pay-notice',T.text('Reserva cancelada.','Reservation cancelled.'));
-  }else if(order.status==='delivered'){
-   add(pickup,'p','pay-muted',T.text('El comprador confirmó la entrega.','The buyer confirmed pickup.'));
+  const panel=add(root,'section','pay-card');
+  const {status}=order;
+  if(status==='cancelled'){
+   add(panel,'h2','',T.text('Reserva cancelada','Reservation cancelled'));
+  }else if(status==='delivered'){
+   add(panel,'h2','',T.text('Entrega confirmada','Pickup confirmed'));
+  }else if(status==='paid'){
+   add(panel,'h2','',T.text('Coordiná la entrega','Arrange pickup'));
+   add(panel,'p','pay-muted',T.text('El vendedor confirmó el pago. Acordá por chat cuándo retirar el producto en el colegio.','The seller confirmed payment. Use the chat to arrange pickup at school.'));
+   button(panel,T.text('Coordinar entrega en el colegio','Arrange pickup at school'),openChat);
+   if(buyer)button(panel,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'),true);
   }else{
-   if(pending)add(pickup,'p','pay-muted',T.text('Coordiná el encuentro por chat y revisá el material antes de pagar.','Arrange pickup in chat and check the item before paying.'));
-   if(order.status==='paid')add(pickup,'p','pay-notice',T.text('El vendedor confirmó que recibió el pago.','The seller confirmed receipt of payment.'));
-   if(order.status==='awaiting_confirmation')add(pickup,'p','pay-notice',buyer?
-    T.text('Avisaste que pagaste. Esperá la confirmación del vendedor.','You reported the payment. Wait for the seller to confirm.'):
-    T.text('El comprador avisó que pagó. Revisá si el importe figura en tu cuenta.','The buyer reported the payment. Check that the amount appears in your account.'));
-   button(pickup,T.text('Coordinar entrega en el colegio','Arrange pickup at school'),openChat,true);
-   if(!buyer&&(pending||order.status==='awaiting_confirmation')){
-    button(pickup,T.text('Confirmar pago recibido','Confirm payment received'),()=>confirm('confirm_received'));
-   }
-   if(buyer&&order.status==='paid'){
-    button(pickup,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'));
-   }
-   if(pending){
-    if(!order.pickup_link_opened)button(pickup,T.text('Cancelar reserva','Cancel reservation'),()=>confirm('cancel'),true);
-    else if(!buyer)button(pickup,T.text('Cancelar después de cerrar el link','Cancel after closing the link'),()=>confirm('cancel_pickup_link'),true);
-    else add(pickup,'p','pay-small',T.text('Si abriste el link y querés cancelar, avisale al vendedor para que lo cierre.','If you opened the link and want to cancel, ask the seller to close it.'));
-   }
+   renderPickupPayment(panel,buyer,status==='awaiting_confirmation');
   }
-  button(pickup,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
-
-  if(!pending)return;
-  const payment=add(grid,'section','pay-card');
-  add(payment,'h2','','Mercado Pago');
-  add(payment,'p','pay-muted',T.text('Pago opcional al retirar. El vendedor confirma el cobro en ColegioLibre.','Optional payment at pickup. The seller confirms the payment in ColegioLibre.'));
-  if(!buyer){
+  if(status!=='cancelled'&&status!=='delivered')button(panel,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
+ }
+ function renderPickupPayment(panel,buyer,awaiting){
+  add(panel,'h2','',awaiting?
+   T.text('Confirmación del pago','Payment confirmation'):
+   T.text('Pagá tu pedido','Pay for your order'));
+  if(awaiting){
+   add(panel,'p','pay-notice',buyer?
+    T.text('Avisaste que pagaste. Cuando el vendedor confirme el cobro, vas a poder coordinar la entrega.','You reported the payment. You can arrange pickup once the seller confirms receipt.'):
+    T.text('El comprador avisó que pagó. Revisá que el importe figure en tu cuenta.','The buyer reported payment. Check that the amount appears in your account.'));
+  }else if(order.listing_available===false){
+   add(panel,'p','pay-notice',T.text('La publicación ya no está disponible para pagar.','This listing is no longer available for payment.'));
+  }else if(!buyer){
    if(order.pickup_link_ready){
-    add(payment,'p','pay-notice',T.text('El comprador tiene disponible el link de este pedido.','The link for this order is available to the buyer.'));
-   }else if(order.listing_available!==false){
-    renderPickupLinkForm(payment);
+    add(panel,'p','pay-notice',T.text('El comprador ya tiene el link de Mercado Pago de este pedido.','The buyer has the Mercado Pago link for this order.'));
+   }else{
+    renderPickupLinkForm(panel);
    }
-   return;
-  }
-  if(order.pickup_link_ready&&order.listing_available!==false){
-   const pay=button(payment,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),openPickupLink);
+  }else if(order.pickup_link_ready){
+   const pay=button(panel,T.text('Pagar con Mercado Pago','Pay with Mercado Pago'),openPickupLink);
    pay.classList.add('pay-button--mercado-pago');
-   add(payment,'p','pay-small',T.text('En Mercado Pago, verificá el vendedor y el importe del pedido antes de pagar.','In Mercado Pago, verify the seller and order amount before paying.'));
-  }else if(!order.pickup_link_opened){
-   add(payment,'p','pay-small',T.text('Si querés pagar con tarjeta, podés pedirle un link al vendedor por chat.','If you want to pay by card, ask the seller for a link in chat.'));
+   add(panel,'p','pay-small',T.text('Verificá el vendedor y el importe en Mercado Pago. La entrega se coordina después de confirmar el pago.','Check the seller and amount in Mercado Pago. Arrange pickup once payment is confirmed.'));
+  }else{
+   add(panel,'p','pay-muted',T.text('El vendedor todavía tiene que compartir el link de pago de este pedido.','The seller still needs to share a payment link for this order.'));
+   button(panel,T.text('Pedir link de pago al vendedor','Ask the seller for a payment link'),openChat);
   }
-  if(order.pickup_link_opened)button(payment,T.text('Ya pagué con el link','I paid with the link'),()=>confirm('claim_pickup_link_payment'),true);
+  if(!awaiting&&buyer&&order.pickup_link_opened){
+   button(panel,T.text('Ya pagué con el link','I paid with the link'),()=>confirm('claim_pickup_link_payment'),true);
+  }
+  if(!buyer&&(awaiting||order.listing_available!==false||order.pickup_link_opened)){
+   button(panel,T.text('Confirmar pago recibido','Confirm payment received'),()=>confirm('confirm_received'),!awaiting);
+  }
+  if(awaiting)return;
+  if(!order.pickup_link_opened){
+   button(panel,T.text('Cancelar reserva','Cancel reservation'),()=>confirm('cancel'),true);
+  }else if(!buyer){
+   button(panel,T.text('Cancelar después de cerrar el link','Cancel after closing the link'),()=>confirm('cancel_pickup_link'),true);
+  }else{
+   button(panel,T.text('Consultar al vendedor','Contact the seller'),openChat,true);
+  }
  }
  function renderPickupLinkForm(panel){
   const form=add(panel,'form','pay-pickup-link-form');
