@@ -1679,6 +1679,18 @@ function renderHome() {
   renderProductGrid(limited, filtered.length, productLimit);
 }
 
+function updateCategoryLinks() {
+  elements.categoryLinks.forEach((link) => {
+    const category = link.getAttribute("data-category-link");
+    const isActive =
+      Boolean(state.activeCategory) &&
+      normalizeText(category) === normalizeText(state.activeCategory);
+
+    link.classList.toggle("is-category-active", isActive);
+    link.setAttribute("aria-current", isActive ? "true" : "false");
+  });
+}
+
 function updateScopeButtons() {
   const catalog = document.getElementById("home-catalog-link");
   if (catalog) {
