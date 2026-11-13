@@ -3,14 +3,21 @@
  const T=window.colegioLibreTransfers,root=document.querySelector('#transfer-checkout'),message=document.querySelector('#transfer-message'),dialog=document.querySelector('#transfer-confirmation');
  let order=null,product=null,busy=false,action=null,pickupAlias=null;
  const MP=window.colegioLibreMercadoPago;
- let providerState='',paymentMode='transfer';
+ let providerState='',paymentMode='transfer',refreshing;
  const params=new URLSearchParams(location.search);
  const productId=params.get('product');
  const listingUrl=productId?'/producto?id='+encodeURIComponent(productId):'/pedidos';
  const retry=document.querySelector('#transfer-retry');
  const note=(value,error=false)=>{message.textContent=value;message.dataset.state=error?'error':'info'};
  const add=(parent,tag,cls,text)=>{const node=T.el(tag,cls,text);parent.append(node);return node};
- async function refresh({reserve=false}={}){
+ async function refresh({reserve=false,background=false}={}){
+  if(background&&(refreshing||dialog.open))return;
+  if(refreshing)await refreshing;
+  const request=loadOrder({reserve,background});
+  refreshing=request;
+  try{await request;}finally{if(refreshing===request)refreshing=null;}
+ }
+ async function loadOrder({reserve,background}){
   try{
    const user=await window.colegioLibreApi.getCurrentUser(true);
    if(!user){location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));return;}
@@ -50,6 +57,7 @@
     product=data;retry.hidden=true;renderReview();note('');return;
    }
    if(!id)throw Error('ORDER_NOT_FOUND');
+   const previousOrder=order,previousProvider=providerState,previousAlias=pickupAlias;
    order=await T.rpc('get_transfer_order',{p_order_id:id});
    providerState='';
    pickupAlias=null;
@@ -66,9 +74,17 @@
      if(['accredited','canceled'].includes(providerState))order=await T.rpc('get_transfer_order',{p_order_id:id});
     }catch(error){statusError=error;}
    }
+   if(background&&statusError&&order.status===previousOrder?.status){
+    order=previousOrder;providerState=previousProvider;pickupAlias=previousAlias;return;
+   }
+   if(background&&JSON.stringify(order)===JSON.stringify(previousOrder)&&providerState===previousProvider&&
+      JSON.stringify(pickupAlias)===JSON.stringify(previousAlias))return;
+   if(['paid','delivered'].includes(order.status)){
+    try{localStorage.removeItem('colegiolibre-home-products-v2');}catch(_){}
+   }
    product=null;retry.hidden=true;render();
    if(statusError)note(mpError(statusError),true);else note('');
-  }catch(error){product=null;order=null;retry.hidden=false;note(mpError(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
+  }catch(error){if(background)return;product=null;order=null;retry.hidden=false;note(mpError(error),true);root.replaceChildren();const rawError=String(error?.message||error||'');
    if(rawError.includes('PRODUCT_IN_CHECKOUT')){
     const box=add(root,'section','pay-card');
     add(box,'h1','',T.text('Este producto está reservado','This item is reserved'));
@@ -159,9 +175,11 @@
    add(actions,'p','pay-notice',buyer?T.text('Esperando al vendedor. No vuelvas a transferir: el pago todavía no está confirmado.','Waiting for the seller. Do not transfer again: payment is not confirmed yet.'):T.text('El comprador indicó que transfirió. Revisá los movimientos de tu cuenta; un aviso o comprobante no confirma que recibiste el dinero.','The buyer reported a transfer. Check your account transactions; a claim or receipt does not confirm that the money arrived.'));
    if(!buyer)button(actions,T.text('Confirmar pago recibido','Confirm payment received'),()=>confirm('confirm_received'));
   }
-  if(order.status==='paid'&&buyer)button(actions,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'));
+  if(order.status==='paid'){
+   button(actions,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat);
+   if(buyer)button(actions,T.text('Confirmar que lo recibí','Confirm I received the item'),()=>confirm('confirm_delivered'),true);
+  }
   if(order.status==='paid'&&!buyer)add(actions,'p','pay-muted',T.text('Coordiná la entrega. El comprador confirmará cuando reciba el material.','Arrange delivery. The buyer will confirm receiving the item.'));
-  if(order.status!=='cancelled'&&order.status!=='delivered')button(actions,T.text('Coordinar entrega en el colegio','Arrange delivery at school'),openChat,true);
   if(order.status==='payment_pending')button(actions,T.text('Cancelar sin transferencia','Cancel before transferring'),()=>confirm('cancel'),true);
   button(actions,T.text('Actualizar estado','Refresh status'),()=>void refresh(),true);
  }
@@ -378,6 +396,7 @@
  dialog.querySelector('form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;busy=true;const submit=dialog.querySelector('[type="submit"]');submit.disabled=true;
   try{
+   if(refreshing)await refreshing;
    const aliasClaim=action==='claim_pickup_alias_payment';
    await T.rpc(aliasClaim?'pickup_alias_payment':'transition_transfer_order',{p_order_id:order.id,p_action:aliasClaim?'claim':action});
    dialog.close();await refresh();
@@ -386,13 +405,19 @@
   finally{busy=false;submit.disabled=false;}
  });
  document.querySelector('#transfer-confirm-cancel').addEventListener('click',()=>dialog.close());
- async function openChat(){try{const {conversation,error}=await window.colegioLibreApi.ensureConversation({buyerId:order.buyer_id,sellerId:order.seller_id,productId:order.product_id});if(error||!conversation)throw error||Error('chat');location.assign('/mensajes?id='+encodeURIComponent(conversation.id));}catch(error){note(T.errorMessage(error),true)}}
+ async function openChat(){
+  if(order.conversation_id){location.assign('/mensajes?id='+encodeURIComponent(order.conversation_id));return;}
+  try{const {conversation,error}=await window.colegioLibreApi.ensureConversation({buyerId:order.buyer_id,sellerId:order.seller_id,productId:order.product_id});if(error||!conversation)throw error||Error('chat');location.assign('/mensajes?id='+encodeURIComponent(conversation.id));}catch(error){note(T.errorMessage(error),true)}}
  retry.addEventListener('click',()=>void refresh());
  window.addEventListener('colegiolibre:languagechange',()=>{if(busy)return;if(order){render();note('')}else if(product){renderReview();note('')}});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&order?.payment_provider==='pickup'&&!busy)void refresh()});
+ function refreshPendingOrder(){
+  if(!document.hidden&&!busy&&['payment_pending','awaiting_confirmation'].includes(order?.status)){
+   void refresh({background:true});
+  }
+ }
+ document.addEventListener('visibilitychange',refreshPendingOrder);
+ window.setInterval(refreshPendingOrder,15000);
  window.addEventListener('pageshow',event=>{if(event.persisted&&!busy)void refresh()});
  window.addEventListener('pagehide',()=>root.querySelector('.pay-instructions')?.replaceChildren());
  void refresh();
 })();
-
-

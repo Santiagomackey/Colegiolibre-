@@ -1402,6 +1402,10 @@ async function refreshAccountButton(force = false) {
   }
 }
 
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted && !state.loading) void loadProducts();
+});
+
 async function loadProducts() {
   const PRODUCT_CACHE_KEY = "colegiolibre-home-products-v2";
   const QUERY_TIMEOUT_MS = 12000;
@@ -1485,7 +1489,7 @@ async function loadProducts() {
     console.warn("No se pudieron cargar los productos reales:", error);
     state.loadError = "No pudimos conectarnos con las publicaciones.";
     sourceProducts = staticProducts;
-  } else if (sourceProducts.length) {
+  } else {
     try {
       localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(sourceProducts));
     } catch (_cacheError) {
