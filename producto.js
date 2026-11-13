@@ -291,11 +291,12 @@ const elements = {
   descriptionCopy: document.querySelector("#description-copy"),
   galleryThumbs: document.querySelector("#gallery-thumbs"),
   mainFavoriteButton: document.querySelector("#main-favorite-button"),
+  paymentHint: document.querySelector("#product-payment-hint"),
+  shareMenu: document.querySelector("#product-share-menu"),
   mainImage: document.querySelector("#main-product-image"),
   ownerEditButton: document.querySelector("#owner-edit-button"),
   productCategory: document.querySelector("#product-category"),
   productClassification: document.querySelector("#product-classification"),
-  productLocation: document.querySelector("#product-location"),
   productPrice: document.querySelector("#product-price"),
   productPublishedDate: document.querySelector("#product-published-date"),
   reportButton: document.querySelector("#report-product-button"),
@@ -311,7 +312,6 @@ const elements = {
   productUpdatedRow: document.querySelector("#product-updated-row"),
   productViews: document.querySelector("#product-views"),
   productFavoritesCount: document.querySelector("#product-favorites-count"),
-  saveButton: document.querySelector("#save-button"),
   shareButton: document.querySelector("#share-button"),
   whatsappShareButton: document.querySelector("#whatsapp-share-button"),
   sellerAvatar: document.querySelector("#seller-avatar"),
@@ -353,14 +353,16 @@ function bindEvents() {
       event.preventDefault();
       const input = form.querySelector('input[type="search"]');
       const term = input?.value.trim();
-      const url = term ? `/?search=${encodeURIComponent(term)}` : "/";
+      const url = term ? `/explorar?q=${encodeURIComponent(term)}` : "/explorar";
       window.location.href = url;
     });
   });
 
+  window.addEventListener("colegiolibre:languagechange", () => {
+    if (currentProduct) void renderPaymentHint(currentProduct);
+  });
   bindHeaderNavigation();
   elements.mainFavoriteButton?.addEventListener("click", () => handleFavoriteToggle(productId));
-  elements.saveButton?.addEventListener("click", () => handleFavoriteToggle(productId));
   elements.contactButton?.addEventListener("click", handleContactSeller);
   document.querySelector('#buy-transfer-button')?.addEventListener('click',()=>{if(currentProduct?.id)window.location.href='/compra?product='+encodeURIComponent(currentProduct.id)});
   elements.reportButton?.addEventListener("click", openProductReport);
@@ -368,10 +370,27 @@ function bindEvents() {
   elements.reportClose?.addEventListener("click", closeProductReport);
   elements.reportCancel?.addEventListener("click", closeProductReport);
   elements.reportForm?.addEventListener("submit", submitProductReport);
-  elements.shareButton?.addEventListener("click", shareCurrentProduct);
-  elements.whatsappShareButton?.addEventListener("click", shareCurrentProductOnWhatsApp);
+  elements.shareButton?.addEventListener("click", () => {
+    elements.shareMenu.open = false;
+    elements.shareMenu.querySelector("summary").focus();
+    void shareCurrentProduct();
+  });
+  elements.whatsappShareButton?.addEventListener("click", () => {
+    elements.shareMenu.open = false;
+    elements.shareMenu.querySelector("summary").focus();
+    shareCurrentProductOnWhatsApp();
+  });
+  document.addEventListener("click", (event) => {
+    if (elements.shareMenu?.open && !elements.shareMenu.contains(event.target)) {
+      elements.shareMenu.open = false;
+    }
+  });
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && elements.shareMenu?.open) {
+      elements.shareMenu.open = false;
+      elements.shareMenu.querySelector("summary").focus();
+    }
     if (event.key === "Escape" && !elements.reportModal?.hidden) {
       closeProductReport();
     }
@@ -618,7 +637,6 @@ function renderProduct(product) {
 
   elements.productTitle.textContent = product.title;
   elements.productPrice.textContent = formatPrice(product.price);
-  elements.productLocation.textContent = product.location;
   elements.productPublishedDate.textContent = formatPublishedDate(product.created_at);
   renderUpdatedDate(product);
   elements.productViews.textContent = formatViews(product.views);
@@ -635,6 +653,7 @@ function renderProduct(product) {
   renderSchoolLinks(product);
   setFavoriteState(favoriteIds.has(product.id));
   updateProductActions(product);
+  void renderPaymentHint(product);
   loadFavoriteCount(product.id);
 }
 
@@ -693,16 +712,31 @@ function shareCurrentProductOnWhatsApp() {
   window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
 }
 
+function getCatalogReturnUrl() {
+  const value = new URLSearchParams(location.search).get("from");
+  if (!value) return null;
+  try {
+    const url = new URL(value, location.origin);
+    return url.origin === location.origin && url.pathname === "/explorar"
+      ? url.pathname + url.search
+      : null;
+  } catch (_) {
+    return null;
+  }
+}
+
 function renderBreadcrumbs(product) {
   const classification = getProductClassification(product);
+  const returnUrl = getCatalogReturnUrl();
   const items = [
     {
       label: "Inicio",
       href: "/"
     },
+    returnUrl ? { label: "Resultados", href: returnUrl } : null,
     {
       label: product.category || "Producto",
-      href: `/?category=${encodeURIComponent(product.category || "Otros")}#productos`
+      href: `/explorar?category=${encodeURIComponent(product.category || "Otros")}`
     },
     classification && classification !== getStatusLabel(product.status)
       ? { label: classification }
@@ -901,7 +935,6 @@ function updateProductActions(product) {
   elements.ownerEditButton.href = isOwner
     ? `/publicar?edit=${encodeURIComponent(product.id)}`
     : "#";
-  elements.saveButton.hidden = isOwner;
   elements.mainFavoriteButton.hidden = isOwner;
   elements.reportButton.hidden = isOwner;
 
@@ -927,12 +960,41 @@ function updateProductActions(product) {
   elements.contactButton.textContent = "Contactar vendedor";
 }
 
+async function renderPaymentHint(product) {
+  const hint = elements.paymentHint;
+  const button = document.querySelector("#buy-transfer-button");
+  if (!hint) return;
+  hint.hidden = true;
+  if (!button || button.hidden || button.disabled || !product.user_id || Number(product.price) <= 0) return;
+  const messages = {
+    direct: ["Pago con Mercado Pago", "Pay with Mercado Pago"],
+    manual: ["El vendedor te envía un link de pago", "The seller sends you a payment link"],
+    unknown: ["Consultá el medio de pago al continuar", "See the payment method when you continue"]
+  };
+  function show(key) {
+    hint.textContent = messages[key][document.documentElement.dataset.language === "en" ? 1 : 0];
+    hint.dataset.paymentMode = key;
+    hint.hidden = false;
+  }
+  show("unknown");
+  try {
+    const response = await fetch("/api/mercadopago-checkout?product=" + encodeURIComponent(product.id), {
+      signal: AbortSignal.timeout(5000)
+    });
+    if (!response.ok) return;
+    const { available } = await response.json();
+    if (currentProduct?.id === product.id) show(available ? "direct" : "manual");
+  } catch (_) {
+    // The purchase screen checks availability again.
+  }
+}
+
 async function renderSimilarProducts(product) {
   let similarProducts = [];
 
   if (elements.similarViewAll) {
     elements.similarViewAll.href =
-      `/?category=${encodeURIComponent(product.category || "Otros")}#productos`;
+      `/explorar?category=${encodeURIComponent(product.category || "Otros")}`;
   }
 
   try {
@@ -1045,10 +1107,8 @@ async function renderSimilarProducts(product) {
 }
 
 function setFavoriteState(isActive) {
-  [elements.mainFavoriteButton, elements.saveButton].forEach((element) => {
-    element?.setAttribute("aria-pressed", String(isActive));
-    element?.classList.toggle("is-active", isActive);
-  });
+  elements.mainFavoriteButton?.setAttribute("aria-pressed", String(isActive));
+  elements.mainFavoriteButton?.classList.toggle("is-active", isActive);
 }
 
 async function handleFavoriteToggle(id) {

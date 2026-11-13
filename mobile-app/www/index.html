@@ -1683,6 +1683,7 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
    <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
   </nav></details>
   <nav class="cl-site-nav-scroll" aria-label="Categorías" data-site-label="categories">
+   <a href="/colegio" data-site-text="school" data-site-nav="colegio">Mi colegio</a>
    <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
    <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
    <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
@@ -1901,66 +1902,7 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
                   </button>
                 </div>
               </div>
-              <nav class="home-category-nav reveal" aria-label="Explorar productos por categoría">
-                <span class="home-category-title">Explorá por categoría</span>
-                <div class="category-pills" id="category-pills"></div>
-              </nav>
-              <div class="filter-panel reveal">
-                <div class="filter-row filter-row--split">
-                  <p>Filtrar por estado:</p>
-                  <div class="condition-pills" id="condition-pills"></div>
-                  <label class="sort-control" for="sort-select">
-                    Ordenar por
-                    <select id="sort-select">
-                      <option value="random">Recomendados</option>
-                      <option value="recent">Más recientes</option>
-                      <option value="price-asc">Menor precio</option>
-                      <option value="price-desc">Mayor precio</option>
-                    </select>
-                  </label>
-                </div>
-                <div
-                  class="category-specific-filters"
-                  id="category-specific-filters"
-                  aria-label="Filtros específicos de la categoría"
-                  hidden
-                >
-                  <label class="academic-level-control" id="level-filter-group" for="school-level-filter" hidden>
-                    <span>Nivel:</span>
-                    <select id="school-level-filter">
-                      <option value="">Todos</option>
-                      <option value="Primaria">Primaria</option>
-                      <option value="Secundaria">Secundaria</option>
-                    </select>
-                  </label>
-
-                  <div class="academic-year-filter" id="year-filter-group" hidden>
-                    <span class="academic-filter-label">Año:</span>
-                    <div class="year-pills" id="year-pills"></div>
-                  </div>
-
-                  <label class="dynamic-select-filter" id="subject-filter-group" for="subject-filter" hidden>
-                    <span>Materia:</span>
-                    <select id="subject-filter">
-                      <option value="">Todas</option>
-                    </select>
-                  </label>
-
-                  <label class="dynamic-select-filter" id="subcategory-filter-group" for="subcategory-filter" hidden>
-                    <span id="subcategory-filter-label">Tipo:</span>
-                    <select id="subcategory-filter">
-                      <option value="">Todos</option>
-                    </select>
-                  </label>
-
-                  <div class="dynamic-pill-filter" id="size-filter-group" hidden>
-                    <span class="academic-filter-label" id="size-filter-label">Talle:</span>
-                    <div class="size-pills" id="size-pills"></div>
-                  </div>
-                </div>
-                <div class="filter-summary" id="filter-summary" aria-live="polite"></div>
-              </div>
-              
+              <p class="home-catalog-link"><a class="text-link text-link--dark" id="home-catalog-link" href="/explorar">Explorar catálogo <span aria-hidden="true">→</span></a></p><div id="filter-summary" aria-live="polite"></div>
               <div class="product-grid" id="product-grid" aria-live="polite"></div>
               <div class="empty-state" id="empty-state" hidden>
                 <h3>No encontramos productos para esa búsqueda.</h3>
@@ -1969,26 +1911,6 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
               </div>
             </div>
 
-          </div>
-        </section>
-
-        <section
-          class="category-marketplace-section"
-          id="category-marketplace"
-          aria-labelledby="category-marketplace-title"
-        >
-          <div class="container">
-            <header class="category-marketplace-heading reveal">
-              <div>
-                <p class="section-kicker">Explorá el marketplace</p>
-                <h2 id="category-marketplace-title">Todo para el colegio, ordenado por categoría</h2>
-              </div>
-              <p>
-                Cada estantería muestra una selección breve. Entrá en “Ver todos” para explorar la categoría completa.
-              </p>
-            </header>
-
-            <div class="category-shelves" id="category-shelves"></div>
           </div>
         </section>
 

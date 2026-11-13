@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./producto.css?v=20261113-listing-display" />
+    <link rel="stylesheet" href="./producto.css?v=20261113-listing-actions" />
     <link rel="stylesheet" href="./notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
@@ -67,6 +67,7 @@
    <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
   </nav></details>
   <nav class="cl-site-nav-scroll" aria-label="Categorías" data-site-label="categories">
+   <a href="/colegio" data-site-text="school" data-site-nav="colegio">Mi colegio</a>
    <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
    <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
    <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
@@ -183,22 +184,15 @@
                     Editar publicación
                   </a>
                 </div>
+                <p class="product-payment-hint" id="product-payment-hint" hidden></p>
                 <div class="product-utility-row">
-                  <button
-                    class="secondary-action"
-                    id="save-button"
-                    type="button"
-                    aria-pressed="false"
-                  >
-                    <span>Guardar en favoritos</span>
-                    <svg class="icon"><use href="#icon-heart"></use></svg>
-                  </button>
-                  <button class="secondary-action" id="share-button" type="button">
-                    <span>Compartir</span>
-                  </button>
-                  <button class="secondary-action" id="whatsapp-share-button" type="button">
-                    <span>Compartir por WhatsApp</span>
-                  </button>
+                  <details class="product-share-menu" id="product-share-menu">
+                    <summary>Compartir</summary>
+                    <div class="product-share-menu__options">
+                      <button class="secondary-action" id="share-button" type="button">Compartir enlace</button>
+                      <button class="secondary-action" id="whatsapp-share-button" type="button">WhatsApp</button>
+                    </div>
+                  </details>
                   <button class="report-action" id="report-product-button" type="button">
                     <svg class="icon"><use href="#icon-flag"></use></svg>
                     <span>Reportar publicación</span>
@@ -237,10 +231,6 @@
 
           <div class="product-meta">
             <p>
-              <svg class="icon"><use href="#icon-pin"></use></svg>
-              <span id="product-location">Cargando ubicación…</span>
-            </p>
-            <p>
               <svg class="icon"><use href="#icon-clock"></use></svg>
               <span id="product-published-date">Publicado recientemente</span>
             </p>
@@ -277,7 +267,7 @@
       <section class="similar-section" aria-labelledby="similar-title">
         <div class="section-head">
           <h2 id="similar-title">Productos similares</h2>
-          <a id="similar-view-all" href="/#productos">
+          <a id="similar-view-all" href="/explorar">
             <span>Ver todos</span>
             <svg class="icon"><use href="#icon-chevron-right"></use></svg>
           </a>
@@ -372,7 +362,7 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./producto.js?v=20261113-listing-refined"></script>
+<script src="./producto.js?v=20261113-listing-actions"></script>
 <script src="./native-bridge.js?v=20261111-more42"></script>
 <script src="./notifications.js?v=20261109-transfer27"></script>
     <script src="./mobile-ui.js?v=20261111-more42"></script>

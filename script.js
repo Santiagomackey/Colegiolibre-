@@ -146,8 +146,6 @@ const {
 
 const HOME_RECOMMENDED_LIMIT = 5;
 const HOME_FILTERED_LIMIT = 10;
-const CATEGORY_SHELF_LIMIT = 5;
-const CATEGORY_SHELF_MAX = 4;
 const HOME_QUERY_LIMIT = 150;
 const conditionOptions = ["Nuevo", "Como nuevo", "Usado", "Muy usado"];
 const categoryOptions = ["Libros", "Apuntes", "Cuadernos", "Útiles", "Mochilas", "Tecnología", "Uniformes", "Otros"];
@@ -203,42 +201,6 @@ const categoryFilterConfig = {
   }
 };
 
-const categoryShelfDetails = {
-  Libros: {
-    icon: "book",
-    description: "Manuales, novelas, diccionarios y libros para todas las materias."
-  },
-  Apuntes: {
-    icon: "notebook",
-    description: "Resúmenes, guías, modelos de examen y material de estudio por materia."
-  },
-  Cuadernos: {
-    icon: "notebook",
-    description: "Cuadernos nuevos o con pocas hojas usadas, carpetas y repuestos."
-  },
-  "Útiles": {
-    icon: "pencil",
-    description: "Cartucheras, reglas, compases, calculadoras y materiales de clase."
-  },
-  Mochilas: {
-    icon: "backpack",
-    description: "Mochilas, bolsos y accesorios escolares listos para seguir usándose."
-  },
-  "Tecnología": {
-    icon: "laptop",
-    description: "Calculadoras, tablets, accesorios y tecnología para estudiar."
-  },
-  Uniformes: {
-    icon: "users",
-    description: "Remeras, buzos, pantalones y prendas escolares filtradas por talle."
-  },
-  Otros: {
-    icon: "tag",
-    description: "Todo lo demás que puede servirle a otro estudiante."
-  }
-};
-
-
 const popularCategories = [
   { icon: "book", label: "Libros" },
   { icon: "notebook", label: "Apuntes" },
@@ -286,11 +248,9 @@ const elements = {
   accountText: document.getElementById("accountText"),
   categoryDrawer: document.getElementById("category-drawer"),
   categoryLinks: document.querySelectorAll("[data-category-link]"),
-  categoryMarketplace: document.getElementById("category-marketplace"),
   categoryOverlay: document.getElementById("category-overlay"),
   categoryPills: document.getElementById("category-pills"),
   categorySpecificFilters: document.getElementById("category-specific-filters"),
-  categoryShelves: document.getElementById("category-shelves"),
   clearFilters: document.getElementById("clear-filters"),
   closeCategories: document.getElementById("close-categories"),
   closeMenuLinks: document.querySelectorAll("[data-close-menu]"),
@@ -380,6 +340,12 @@ async function init() {
 
   if (state.showOnlyFavorites) {
     window.location.replace("/favoritos");
+    return;
+  }
+
+  const catalog = getLegacyCatalogUrl();
+  if (catalog) {
+    window.location.replace(catalog);
     return;
   }
 
@@ -876,10 +842,6 @@ function bindEvents() {
     elements.productGrid.addEventListener("click", handleFavoriteClick);
   }
 
-  if (elements.categoryShelves) {
-    elements.categoryShelves.addEventListener("click", handleFavoriteClick);
-  }
-
   if (elements.menuToggle) {
     elements.menuToggle.addEventListener("click", () => {
       const expanded = elements.menuToggle.getAttribute("aria-expanded") === "true";
@@ -1121,15 +1083,31 @@ async function handleLogout() {
   window.setTimeout(() => window.location.assign("/"), 350);
 }
 
+function getLegacyCatalogUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (INSTITUTION_PORTAL.enabled || params.has("onboarding") || params.get("scope") === "school") return "";
+  const catalog = new URLSearchParams();
+  for (const key of ["category", "condition", "level", "year", "subject", "type", "size"]) {
+    if (params.get(key)) catalog.set(key, params.get(key));
+  }
+  const term = params.get("q") || params.get("search");
+  if (term) catalog.set("q", term);
+  const sort = { recent: "newest", "price-asc": "price", "price-desc": "price_desc" }[params.get("sort")];
+  if (sort) catalog.set("sort", sort);
+  if (!catalog.size || params.get("scope") === "zone") return "";
+  return "/explorar?" + catalog;
+}
+
 function handleSearchSubmit(event) {
   event.preventDefault();
-  const desktopValue = elements.desktopSearchInput ? elements.desktopSearchInput.value : "";
-  const mobileValue = elements.mobileSearchInput ? elements.mobileSearchInput.value : "";
-  state.searchTerm = (desktopValue || mobileValue || "").trim();
-  syncSearchInputs(state.searchTerm);
-  syncFavoritesUrl();
-  renderHome();
-  scrollToProducts();
+  const term = event.currentTarget.querySelector('input[type="search"]')?.value.trim();
+  const params = new URLSearchParams();
+  if (term) params.set("q", term);
+  if (state.activeScope === "zone" && state.profile?.zone_code) {
+    params.set("scope", "zone");
+    params.set("zone", state.profile.zone_code);
+  }
+  window.location.assign(params.size ? "/explorar?" + params : "/explorar");
 }
 
 function syncSearchInputs(value) {
@@ -1699,123 +1677,15 @@ function renderHome() {
   const limited = filtered.slice(0, productLimit);
 
   renderProductGrid(limited, filtered.length, productLimit);
-  renderCategoryShelves();
-  
-}
-
-function buildCategoryUrl(category) {
-  const url = new URL(window.location.href);
-  url.searchParams.set("category", category);
-  url.searchParams.delete("condition");
-  url.searchParams.delete("level");
-  url.searchParams.delete("year");
-  url.searchParams.delete("subject");
-  url.searchParams.delete("type");
-  url.searchParams.delete("size");
-  url.searchParams.delete("search");
-  url.searchParams.delete("favorites");
-  url.hash = "productos";
-  return `${url.pathname}${url.search}${url.hash}`;
-}
-
-function renderCategoryShelves() {
-  if (!elements.categoryMarketplace || !elements.categoryShelves) return;
-
-  if (hasActiveDiscoveryFilters()) {
-    elements.categoryMarketplace.hidden = true;
-    elements.categoryShelves.innerHTML = "";
-    return;
-  }
-
-  const scopedProducts = sortProducts(
-    state.products.filter((product) => matchesActiveScope(product))
-  );
-  const featuredIds = new Set(
-    scopedProducts
-      .slice(0, HOME_RECOMMENDED_LIMIT)
-      .map((product) => String(product.id || ""))
-  );
-
-  const shelves = categoryOptions
-    .map((category) => {
-      const categoryProducts = scopedProducts
-        .filter(
-          (product) =>
-            normalizeText(product.category) === normalizeText(category)
-        );
-      const productsWithoutFeatured = categoryProducts.filter(
-        (product) => !featuredIds.has(String(product.id || ""))
-      );
-      const products = (
-        productsWithoutFeatured.length ? productsWithoutFeatured : categoryProducts
-      ).slice(0, CATEGORY_SHELF_LIMIT);
-
-      return { category, products };
-    })
-    .filter(({ products }) => products.length)
-    .slice(0, CATEGORY_SHELF_MAX);
-
-  elements.categoryMarketplace.hidden = shelves.length === 0;
-  elements.categoryShelves.innerHTML = shelves
-    .map(({ category, products }) => {
-      const details = categoryShelfDetails[category] || categoryShelfDetails.Otros;
-      const productsContent = products.length
-        ? `
-            <div class="category-shelf-grid">
-              ${products.map((product) => productCard(product)).join("")}
-            </div>
-          `
-        : `
-            <div class="category-shelf-empty">
-              <div>
-                <strong>Todavía no hay publicaciones en ${escapeHtml(category)}.</strong>
-                <span>Podés ser la primera persona en publicar algo en esta categoría.</span>
-              </div>
-              <a
-                href="/publicar?category=${encodeURIComponent(category)}"
-                data-requires-auth
-              >Publicar en ${escapeHtml(category)}</a>
-            </div>
-          `;
-
-      return `
-        <section class="category-shelf${products.length ? "" : " is-empty"} reveal is-visible" aria-labelledby="shelf-${normalizeText(category)}">
-          <header class="category-shelf__header">
-            <div class="category-shelf__title-group">
-              <span class="category-shelf__icon">${icon(details.icon)}</span>
-              <div>
-                <p class="category-shelf__eyebrow">Categoría</p>
-                <h3 id="shelf-${normalizeText(category)}">${escapeHtml(category)}</h3>
-                <p>${escapeHtml(details.description)}</p>
-              </div>
-            </div>
-            <a class="category-shelf__link" href="${escapeHtml(buildCategoryUrl(category))}">
-              Ver todos
-              ${icon("chevron")}
-            </a>
-          </header>
-          ${productsContent}
-        </section>
-      `;
-    })
-    .join("");
-
-  window.colegioLibrePreferences?.refresh?.(elements.categoryShelves);
-}
-
-function updateCategoryLinks() {
-  elements.categoryLinks.forEach((link) => {
-    const category = link.getAttribute("data-category-link");
-    const isActive =
-      Boolean(state.activeCategory) &&
-      normalizeText(category) === normalizeText(state.activeCategory);
-
-    link.classList.toggle("is-category-active", isActive);
-    link.setAttribute("aria-current", isActive ? "true" : "false");
-  });
 }
 
 function updateScopeButtons() {
+  const catalog = document.getElementById("home-catalog-link");
+  if (catalog) {
+    catalog.href = state.activeScope === "zone" && state.profile?.zone_code
+      ? "/explorar?" + new URLSearchParams({ scope: "zone", zone: state.profile.zone_code })
+      : "/explorar";
+  }
   elements.scopeButtons.forEach((button) => {
     const isActive = button.dataset.scope === state.activeScope;
     button.classList.toggle("is-active", isActive);
