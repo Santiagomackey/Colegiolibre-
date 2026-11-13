@@ -21,7 +21,8 @@
     const checkout = url.origin === 'https://www.mercadopago.com.ar' && url.pathname.startsWith('/checkout/');
     const link = url.origin === location.origin && url.pathname === '/api/mercadopago-link';
     const sellerLink = /^https:\/\/mpago[.]la\/[A-Za-z0-9]{4,64}$/.test(raw);
-    if (!checkout && !link && !sellerLink) throw Error('MP_INVALID_REDIRECT');
+    const wallet = url.href === 'https://www.mercadopago.com.ar/';
+    if (!checkout && !link && !sellerLink && !wallet) throw Error('MP_INVALID_REDIRECT');
     const capacitor = window.Capacitor;
     const browser = capacitor?.isNativePlatform?.()
       ? capacitor.Plugins?.Browser || capacitor.registerPlugin?.('Browser') : null;
