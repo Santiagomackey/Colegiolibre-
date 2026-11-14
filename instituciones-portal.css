@@ -37,3 +37,69 @@
   .institution-features { grid-template-columns: 1fr; }
   .institution-features article + article { border-left: 0; border-top: 1px solid #d8e3ef; }
 }
+
+.institution-request {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 300px);
+  align-items: start;
+  gap: clamp(1rem, 3vw, 2.25rem);
+  margin: 2.5rem 0 1.3rem;
+  color: #182d48;
+  --request-border: #d7e2ed;
+}
+.institution-request .request-main {
+  min-width: 0;
+  padding: clamp(1.2rem, 4vw, 2.5rem);
+  border: 1px solid var(--request-border);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: none;
+  scroll-margin-top: 1rem;
+}
+.request-heading { padding-bottom: 1.35rem; border-bottom: 1px solid var(--request-border); margin-bottom: 1.6rem; }
+.request-heading h2 { color: #102b50; font-size: clamp(1.65rem, 3.4vw, 2.35rem); line-height: 1.1; letter-spacing: -.045em; margin: 0 0 .6rem; }
+.request-heading p, .request-next li, #payment-explanation, .request-address { color: #4a6079; font-size: .93rem; line-height: 1.55; margin: 0; }
+.request-fields { min-width: 0; border: 0; padding: 0; margin: 0 0 1.5rem; }
+.request-fields legend { margin: 0 0 .75rem; padding: 0; color: #102b50; font-size: 1.1rem; font-weight: 750; }
+.institution-request form label { font-size: .9rem; color: #243d5d; }
+.institution-request form :is(input[type=search],input[type=text],input[type=email],input:not([type])) {
+  min-height: 46px;
+  border: 1px solid #bacadc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 16px;
+}
+.request-address { margin: -.25rem 0 .9rem; font-size: .81rem; overflow-wrap: anywhere; }
+.request-selection { display: flex; justify-content: space-between; align-items: center; gap: .75rem; background: #f0f5fb; border: 1px solid #d8e3ef; border-radius: 9px; padding: .8rem 1rem; }
+.request-selection span, .request-selection small { display: block; color: #476079; font-size: .82rem; }
+.request-selection strong { display: block; margin: .28rem 0; overflow-wrap: anywhere; }
+.request-selection button, .request-plan button { color: #0b2e6b; background: transparent; border: 0; font: inherit; font-size: .86rem; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; min-height: 40px; cursor: pointer; }
+.request-colors { padding: .75rem 0 1rem; border-top: 1px solid var(--request-border); }
+.request-colors summary { color: #18365d; font-size: .92rem; font-weight: 700; cursor: pointer; padding: .4rem 0; }
+.request-colors .ib-colors { margin-top: .65rem; }
+.request-submit { display: grid; justify-items: start; gap: .7rem; border-top: 1px solid var(--request-border); padding-top: 1rem; }
+.institution-request .request-confirm { display: flex; align-items: flex-start; gap: .6rem; margin: 0; line-height: 1.5; }
+.institution-request .request-confirm input { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 2px; accent-color: #0b2e6b; }
+.institution-request .ib-submit, .request-sign-in a { width: auto; min-height: 44px; border-radius: 8px; box-shadow: none; padding: .65rem 1.15rem; background: #0b2e6b; color: #fff; font-size: .93rem; }
+.request-sign-in a { display: inline-flex; align-items: center; text-decoration: none; font-weight: 700; }
+.request-sign-in p { margin: 0 0 .75rem; }
+.request-submit .ib-status { margin: 0; min-height: 0; }
+.request-submit .ib-status:empty, .institution-request .ib-results:empty { display: none; }
+.request-side { display: grid; gap: 1.25rem; }
+.request-plan { padding: 1.05rem 1.15rem; background: #ecf3fb; border: 1px solid var(--request-border); border-radius: 11px; }
+.request-plan header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.request-side h2 { margin: 0; color: #173555; font-size: 1rem; }
+.request-plan > strong { display: block; margin-top: .5rem; font-size: 1.25rem; letter-spacing: -.025em; }
+#selected-plan-copy { margin: .25rem 0 .65rem; font-size: .95rem; font-weight: 700; }
+.request-next { padding: .2rem .65rem 0; }
+.request-next ol { padding-inline-start: 1.15rem; margin: .65rem 0 .8rem; }
+.request-next li + li { margin-top: .45rem; }
+.request-next a { color: #0b2e6b; text-underline-offset: .2em; font-weight: 650; }
+.institution-request :focus-visible { outline: 2px solid #245caf; outline-offset: 3px; }
+@media (max-width: 830px) {
+  .institution-request { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 520px) {
+  .institution-request .ib-two { grid-template-columns: 1fr; }
+  .institution-request .ib-submit { width: 100%; }
+}
