@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColegioLibre</title>
   <link rel="icon" href="/images/favicon-32.png">
-  <link rel="stylesheet" href="/portal-colegio.css?v=4">
+  <link rel="stylesheet" href="/portal-colegio.css?v=5">
 </head>
 <body>
   <header class="masthead" id="platform-header">
@@ -20,55 +20,87 @@
     <a id="portal-verification" class="button" href="/perfil?view=settings" hidden>Revisar mi colegio</a>
     <div id="portal-content" hidden>
       <div id="workspace" class="workspace" hidden>
-        <div><h1>Panel del colegio</h1><p id="plan-status"></p><p id="publication-status"></p></div>
-        <div class="toolbar"><a id="published-site-link" class="button secondary" target="_blank" rel="noopener">Abrir sitio del colegio</a><a class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a></div>
+        <div>
+          <p class="workspace-kicker" id="editor-school"></p>
+          <h1>Editor del sitio</h1>
+          <p id="plan-status"></p>
+        </div>
+        <div class="toolbar">
+          <a id="published-site-link" class="button secondary" target="_blank" rel="noopener">Abrir sitio ↗</a>
+          <a id="manage-plan" class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a>
+        </div>
       </div>
-      <nav id="editor-nav" aria-label="Secciones del editor" hidden>
-        <a href="#identity-panel">Identidad</a><a href="#announcements-panel">Comunicados</a><a href="#resources-panel">Recursos</a><a href="#membership">Accesos</a>
-      </nav>
       <div id="layout" class="layout">
-        <form id="editor" hidden>
-          <section class="panel" id="identity-panel">
-            <h2>Identidad y bienvenida</h2>
-            <label>Nombre visible <input name="name" maxlength="80"></label>
-            <label>Título de bienvenida <input name="title" maxlength="110"></label>
-            <label>Presentación <textarea name="description" rows="3" maxlength="650"></textarea></label>
-            <div class="colors">
-              <label>Color principal <input name="primary" type="color"></label>
-              <label>Color de acento <input name="accent" type="color"></label>
-            </div>
-            <label>URL HTTPS del logo <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
-            <label>URL HTTPS de la foto de portada <input name="cover" type="url" maxlength="600" placeholder="https://"></label>
-            <label>Diseño de portada <select name="layout"><option value="split">Foto y texto</option><option value="banner">Imagen panorámica</option></select></label>
-            <label>Correo de contacto <input name="contact" type="email" maxlength="140"></label>
+        <aside id="editor-sidebar" class="editor-sidebar" hidden>
+          <div id="editor-nav" role="tablist" aria-label="Secciones del editor">
+            <button type="button" role="tab" id="tab-identity" aria-controls="identity-panel" aria-selected="true">Identidad</button>
+            <button type="button" role="tab" id="tab-appearance" aria-controls="appearance-panel" aria-selected="false" tabindex="-1">Diseño</button>
+            <button type="button" role="tab" id="tab-announcements" aria-controls="announcements-panel" aria-selected="false" tabindex="-1">Comunicados</button>
+            <button type="button" role="tab" id="tab-resources" aria-controls="resources-panel" aria-selected="false" tabindex="-1">Recursos</button>
+            <button type="button" role="tab" id="tab-members" aria-controls="membership" aria-selected="false" tabindex="-1">Accesos</button>
+          </div>
+          <form id="editor">
+            <section class="panel" id="identity-panel" role="tabpanel" aria-labelledby="tab-identity">
+              <h2>Identidad del colegio</h2>
+              <label>Nombre visible <input name="name" maxlength="80" autocomplete="off"></label>
+              <label>Título de bienvenida <input name="title" maxlength="110"></label>
+              <label>Presentación <textarea name="description" rows="4" maxlength="650"></textarea></label>
+              <label>Correo de contacto <input name="contact" type="email" maxlength="140"></label>
+            </section>
+            <section class="panel" id="appearance-panel" role="tabpanel" aria-labelledby="tab-appearance" hidden>
+              <h2>Diseño del sitio</h2>
+              <div class="colors">
+                <label>Color principal <input name="primary" type="color"></label>
+                <label>Color de acento <input name="accent" type="color"></label>
+              </div>
+              <label>Logo <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
+              <label>Imagen de portada <input name="cover" type="url" maxlength="600" placeholder="https://"></label>
+              <p class="field-help">Usá enlaces HTTPS directos a las imágenes.</p>
+              <label>Diseño de portada <select name="layout"><option value="split">Imagen a la derecha</option><option value="banner">Imagen panorámica</option><option value="compact">Portada compacta</option></select></label>
+              <label>Debajo de la portada <select name="sectionOrder"><option value="catalog">Catálogo primero</option><option value="community">Comunicados y recursos primero</option></select></label>
+            </section>
+            <section class="panel" id="announcements-panel" role="tabpanel" aria-labelledby="tab-announcements" hidden>
+              <h2>Comunicados</h2><div id="edit-announcements"></div>
+              <button type="button" data-add="announcements" class="button secondary">Agregar comunicado</button>
+            </section>
+            <section class="panel" id="resources-panel" role="tabpanel" aria-labelledby="tab-resources" hidden>
+              <h2>Recursos y enlaces</h2><div id="edit-resources"></div>
+              <button type="button" data-add="resources" class="button secondary">Agregar recurso</button>
+            </section>
+          </form>
+          <section class="panel membership" id="membership" role="tabpanel" aria-labelledby="tab-members" hidden>
+            <h2>Acceso al portal</h2>
+            <p>Autorizá el correo con el que cada familia inicia sesión. Los miembros con pertenencia verificada también pueden entrar.</p>
+            <form id="member-form"><label>Correo autorizado <input type="email" name="email" maxlength="160" required></label><button class="button" type="submit">Autorizar acceso</button></form>
+            <p id="member-status" role="status" aria-live="polite"></p>
+            <label id="member-filter-label">Buscar correo <input id="member-filter" type="search"></label>
+            <ul id="member-list"></ul>
           </section>
-          <section class="panel" id="announcements-panel"><h2>Comunicados</h2><div id="edit-announcements"></div><button type="button" data-add="announcements" class="button secondary">Agregar comunicado</button></section>
-          <section class="panel" id="resources-panel"><h2>Enlaces y recursos</h2><div id="edit-resources"></div><button type="button" data-add="resources" class="button secondary">Agregar recurso</button></section>
-          <div class="toolbar editor-actions"><button type="submit" value="draft" class="button secondary">Guardar borrador</button><button type="submit" value="publish" class="button">Publicar cambios</button></div>
-        </form>
+          <div class="editor-actions">
+            <p id="publication-status"></p>
+            <p id="editor-feedback" role="status" aria-live="polite"></p>
+            <div class="toolbar">
+              <button form="editor" type="submit" value="draft" class="button secondary" id="save-draft">Guardar borrador</button>
+              <button form="editor" type="submit" value="publish" class="button" id="publish-site">Publicar cambios</button>
+            </div>
+          </div>
+        </aside>
         <div class="preview">
           <div id="preview-tools" class="preview-tools" hidden>
-            <p id="preview-label">Vista previa del borrador</p>
+            <p id="preview-label">Vista previa en vivo</p>
             <div class="device-switch" role="group" aria-label="Tamaño de vista previa">
-              <button type="button" data-device="wide" aria-pressed="true">Escritorio</button>
+              <button type="button" data-device="wide" aria-pressed="true">Amplia</button>
               <button type="button" data-device="phone" aria-pressed="false">Celular</button>
             </div>
           </div>
           <div id="school-site"></div>
         </div>
       </div>
-      <section class="panel membership" id="membership" hidden>
-        <h2>Acceso de la comunidad</h2>
-        <p>Autorizá correos para que sus titulares puedan entrar con una cuenta verificada. Los miembros ya verificados de tu colegio también pueden acceder.</p>
-        <form id="member-form" class="toolbar"><label>Correo autorizado <input type="email" name="email" maxlength="160" required></label><button class="button" type="submit">Autorizar acceso</button></form>
-        <p id="member-status" role="status" aria-live="polite"></p>
-        <ul id="member-list"></ul>
-      </section>
     </div>
   </main>
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
-  <script src="/school-marketplace.js?v=1"></script>
-  <script src="/portal-colegio.js?v=4"></script>
+  <script src="/school-marketplace.js?v=2"></script>
+  <script src="/portal-colegio.js?v=5"></script>
 </body>
 </html>

@@ -321,7 +321,7 @@
       }
       if (plan.active) {
         const link = document.createElement("a");
-        link.href = "/portal-colegio?code=" + encodeURIComponent(request.official_school_code) + "&edit=1";
+        link.href = "/comunidad/" + encodeURIComponent(request.official_school_code.toLowerCase()) + "/editor";
         link.textContent = "Abrir panel privado";
         controls.append(link);
       }
