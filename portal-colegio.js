@@ -1,10 +1,12 @@
 (() => {
   'use strict';
   const $ = selector => document.querySelector(selector);
-  const code = new URLSearchParams(location.search).get('code');
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  const demo = params.get('demo') === '1' && !code;
   const form = $('#editor');
   const status = $('#portal-status');
-  const fields = ['name','title','description','primary','accent','logo','contact'];
+  const fields = ['name','title','description','primary','accent','logo','cover','layout','contact'];
   const lists = { announcements: { max:8, key:'body' }, resources: { max:12, key:'url' } };
   let portal, editing = false, saving = false, dirty = false, boot = 0;
 
@@ -42,6 +44,20 @@
     hero.style.setProperty('--school-color',color);
     hero.style.setProperty('--hero-ink',ink(color));
     hero.style.setProperty('--school-accent',/^#[0-9a-f]{6}$/i.test(content.accent) ? content.accent : '#67C23A');
+    const cover = urlFor(content.cover);
+    if (cover) {
+      hero.classList.add('has-cover', content.layout === 'banner' ? 'cover-banner' : 'cover-split');
+      const photo = element('img','','school-cover');
+      photo.alt = '';
+      photo.referrerPolicy = 'no-referrer';
+      photo.src = cover.href;
+      photo.addEventListener('error',() => {
+        photo.remove();
+        hero.classList.remove('has-cover','cover-banner','cover-split');
+      });
+      hero.append(photo);
+    }
+    const copy = element('div','','school-hero-copy');
     const identity = element('div','','school-identity');
     const logo = urlFor(content.logo);
     if (logo) {
@@ -53,8 +69,9 @@
       identity.append(img);
     }
     identity.append(element('span',content.name || portal.school.name));
-    hero.append(identity,element(editing ? 'h2' : 'h1', content.title || portal.school.name));
-    if (content.description) hero.append(element('p',content.description));
+    copy.append(identity,element(editing ? 'h2' : 'h1', content.title || portal.school.name));
+    if (content.description) copy.append(element('p',content.description));
+    hero.append(copy);
     host.append(hero);
     if (content.announcements?.length) {
       const block = element('section','','school-block');
@@ -82,8 +99,8 @@
     }
     const block = element('section','','school-block');
     block.append(element('h2','Comunidad'));
-    const catalog = element('a','Ver publicaciones públicas del colegio');
-    catalog.href = '/colegio?code=' + encodeURIComponent(portal.school.code);
+    const catalog = element('a',demo ? 'Ver planes para mi colegio' : 'Ver publicaciones públicas del colegio');
+    catalog.href = demo ? '/instituciones#planes' : '/colegio?code=' + encodeURIComponent(portal.school.code);
     block.append(catalog);
     if (content.contact && /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(content.contact)) {
       const link = element('a','Escribir al colegio');
@@ -124,36 +141,48 @@
     }
     return content;
   }
-  function changed() { dirty = true; draw(read()); }
+  function publicationStatus() {
+    $('#publication-status').textContent = dirty ? 'Cambios sin guardar' :
+      portal.publishedAt ? 'Publicado el ' + new Date(portal.publishedAt).toLocaleDateString('es-AR') : 'Pendiente de publicación';
+  }
+  function changed() { dirty = true; publicationStatus(); draw(read()); }
   function setMode(value) {
     editing = value;
     form.hidden = !editing;
     $('#layout').classList.toggle('editing',editing);
-    $('#preview-label').hidden = !editing;
+    $('#preview-tools').hidden = $('#editor-nav').hidden = !editing;
+    if (!editing) $('#school-site').classList.remove('phone-preview');
+    else $('#school-site').classList.toggle('phone-preview', $('#preview-tools [data-device=phone]').getAttribute('aria-pressed') === 'true');
     $('#mode').textContent = editing ? 'Ver portal publicado' : 'Editar portal';
     draw(editing ? read() : portal.content);
   }
   form.addEventListener('input',changed);
   form.querySelectorAll('[data-add]').forEach(button => button.addEventListener('click',() => { addRow(button.dataset.add); changed(); }));
   $('#mode').addEventListener('click',() => setMode(!editing));
+  const deviceButtons = [...document.querySelectorAll('[data-device]')];
+  deviceButtons.forEach(button => button.addEventListener('click',() => {
+    for (const option of deviceButtons) option.setAttribute('aria-pressed',String(option === button));
+    $('#school-site').classList.toggle('phone-preview',button.dataset.device === 'phone');
+  }));
   form.addEventListener('submit',async event => {
     event.preventDefault();
     if (saving) return;
     const publish = event.submitter?.value === 'publish';
     const content = read();
-    if ((content.logo && !urlFor(content.logo)) || content.resources.some(item => !urlFor(item.url))) {
-      status.textContent = 'Usá enlaces HTTPS para el logo y los recursos.';
+    if ([content.logo,content.cover].some(value => value && !urlFor(value)) || content.resources.some(item => !urlFor(item.url))) {
+      status.textContent = 'Usá enlaces HTTPS para el logo, la portada y los recursos.';
       return;
     }
     saving = true;
-    const controls = [...form.querySelectorAll('button,input,textarea')];
+    const controls = [...form.querySelectorAll('button,input,textarea,select')];
     controls.forEach(control => control.disabled = true);
     status.textContent = publish ? 'Publicando…' : 'Guardando…';
     try {
       const result = await api({ revision:portal.revision, content, publish });
       portal.revision = result.revision;
-      if (publish) portal.content = content;
+      if (publish) { portal.content = content; portal.publishedAt = new Date().toISOString(); }
       dirty = false;
+      publicationStatus();
       status.textContent = publish ? 'Cambios publicados para tu comunidad.' : 'Borrador guardado.';
     } catch (error) { status.textContent = error.message; }
     finally { saving = false; controls.forEach(control => control.disabled = false); }
@@ -197,6 +226,21 @@
 
   async function load() {
     const current = ++boot;
+    if (demo) {
+      portal = {
+        school: { name:'Instituto del Parque' },
+        content: {
+          name:'Instituto del Parque', title:'Bienvenidos al colegio', primary:'#1d493d', accent:'#c4edac',
+          description:'Materiales, novedades y recursos para las familias del Instituto del Parque. Esta vista muestra contenido de ejemplo.',
+          announcements:[{title:'Feria de intercambio',body:'El viernes nos encontramos en la biblioteca para intercambiar libros y útiles.'}],
+          resources:[{title:'Ver herramientas y planes institucionales',url:'https://www.colegiolibre.com/instituciones#planes'}]
+        }
+      };
+      $('#portal-content').hidden = false;
+      status.textContent = 'Vista de ejemplo';
+      setMode(false);
+      return;
+    }
     if (!code) { status.textContent = 'Entrá desde la página de tu colegio.'; return; }
     $('#portal-content').hidden = $('#portal-login').hidden = $('#portal-verification').hidden = true;
     try {
@@ -208,10 +252,11 @@
       $('#workspace').hidden = $('#membership').hidden = !portal.manager;
       if (portal.manager) {
         drawMembers();
+        publicationStatus();
         const { plan,billing_cycle,paid_through } = portal.subscription;
         const until = new Date(paid_through).toLocaleDateString('es-AR',{ timeZone:'America/Argentina/Buenos_Aires' });
         $('#plan-status').textContent = plan + ' · ' + (billing_cycle === 'annual' ? 'Anual' : 'Mensual') + ' · Pago hasta el ' + until;
-        fields.forEach(key => { form.elements[key].value = portal.draft[key] || ''; });
+        fields.forEach(key => { form.elements[key].value = portal.draft[key] || (key === 'layout' ? 'split' : ''); });
         for (const kind of Object.keys(lists)) {
           $('#edit-'+kind).replaceChildren();
           for (const item of portal.draft[kind] || []) addRow(kind,item);
@@ -230,7 +275,7 @@
       if (error.status === 403) $('#portal-verification').hidden = false;
     }
   }
-  window.colegioLibreSupabase.auth.onAuthStateChange(event => {
+  window.colegioLibreSupabase?.auth.onAuthStateChange(event => {
     if (event !== 'SIGNED_OUT') return;
     dirty = false;
     $('#school-site').replaceChildren();

@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColegioLibre</title>
   <link rel="icon" href="/images/favicon-32.png">
-  <link rel="stylesheet" href="/portal-colegio.css?v=1">
+  <link rel="stylesheet" href="/portal-colegio.css?v=2">
 </head>
 <body>
   <header class="masthead">
@@ -20,12 +20,15 @@
     <a id="portal-verification" class="button" href="/perfil?view=settings" hidden>Revisar mi colegio</a>
     <div id="portal-content" hidden>
       <div id="workspace" class="workspace" hidden>
-        <div><h1>Panel del colegio</h1><p id="plan-status"></p></div>
+        <div><h1>Panel del colegio</h1><p id="plan-status"></p><p id="publication-status"></p></div>
         <div class="toolbar"><button type="button" id="mode" class="button secondary">Ver portal publicado</button><a class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a></div>
       </div>
+      <nav id="editor-nav" aria-label="Secciones del editor" hidden>
+        <a href="#identity-panel">Identidad</a><a href="#announcements-panel">Comunicados</a><a href="#resources-panel">Recursos</a><a href="#membership">Accesos</a>
+      </nav>
       <div id="layout" class="layout">
         <form id="editor" hidden>
-          <section class="panel">
+          <section class="panel" id="identity-panel">
             <h2>Identidad y bienvenida</h2>
             <label>Nombre visible <input name="name" maxlength="80"></label>
             <label>Título de bienvenida <input name="title" maxlength="110"></label>
@@ -35,14 +38,22 @@
               <label>Color de acento <input name="accent" type="color"></label>
             </div>
             <label>URL HTTPS del logo <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
+            <label>URL HTTPS de la foto de portada <input name="cover" type="url" maxlength="600" placeholder="https://"></label>
+            <label>Diseño de portada <select name="layout"><option value="split">Foto y texto</option><option value="banner">Imagen panorámica</option></select></label>
             <label>Correo de contacto <input name="contact" type="email" maxlength="140"></label>
           </section>
-          <section class="panel"><h2>Comunicados</h2><div id="edit-announcements"></div><button type="button" data-add="announcements" class="button secondary">Agregar comunicado</button></section>
-          <section class="panel"><h2>Enlaces y recursos</h2><div id="edit-resources"></div><button type="button" data-add="resources" class="button secondary">Agregar recurso</button></section>
+          <section class="panel" id="announcements-panel"><h2>Comunicados</h2><div id="edit-announcements"></div><button type="button" data-add="announcements" class="button secondary">Agregar comunicado</button></section>
+          <section class="panel" id="resources-panel"><h2>Enlaces y recursos</h2><div id="edit-resources"></div><button type="button" data-add="resources" class="button secondary">Agregar recurso</button></section>
           <div class="toolbar editor-actions"><button type="submit" value="draft" class="button secondary">Guardar borrador</button><button type="submit" value="publish" class="button">Publicar cambios</button></div>
         </form>
         <div class="preview">
-          <p id="preview-label" hidden>Vista previa del borrador</p>
+          <div id="preview-tools" class="preview-tools" hidden>
+            <p id="preview-label">Vista previa del borrador</p>
+            <div class="device-switch" role="group" aria-label="Tamaño de vista previa">
+              <button type="button" data-device="wide" aria-pressed="true">Escritorio</button>
+              <button type="button" data-device="phone" aria-pressed="false">Celular</button>
+            </div>
+          </div>
           <div id="school-site"></div>
         </div>
       </div>
@@ -57,6 +68,6 @@
   </main>
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
-  <script src="/portal-colegio.js?v=1"></script>
+  <script src="/portal-colegio.js?v=2"></script>
 </body>
 </html>

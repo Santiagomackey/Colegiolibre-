@@ -10,10 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./instituciones.css?v=20261109-release25">
   <link rel="stylesheet" href="./instituciones-v50.css?v=20261109-release25">
-  <style>
-    @media (min-width: 800px) { #planes .ib-plan-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    .ib-request__state select { max-width: 100%; font: inherit; padding: .4rem; }
-  </style>
+  <link rel="stylesheet" href="/instituciones-portal.css?v=2">
   <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
@@ -70,53 +67,36 @@
   
 
   <main class="ib-shell">
-    <section class="ib-hero">
-      <div class="ib-hero-copy">
-        <span class="ib-kicker">COLEGIOLIBRE PARA INSTITUCIONES</span>
-        <h1>El marketplace oficial de tu comunidad escolar.</h1>
-        <p>Un espacio propio para que las familias de tu colegio compren, vendan y reutilicen materiales de forma simple y segura.</p>
-        <div class="ib-hero-actions">
+    <section class="institution-intro">
+      <div class="institution-copy">
+        <p class="institution-eyebrow">ColegioLibre para instituciones</p>
+        <h1>Un espacio propio para tu colegio.</h1>
+        <p>Compartí comunicados y recursos en un portal con la identidad de tu institución y acceso para tu comunidad escolar.</p>
+        <div class="institution-actions">
           <a id="view-plans-button" href="#planes">Ver planes <span aria-hidden="true">→</span></a>
-          <small>Empezá gratis y mejorá el portal cuando tu comunidad crezca</small>
-        </div>
-        <div class="ib-benefits">
-          <span><b>✓</b> Plan inicial gratuito</span>
-          <span><b>✓</b> Identidad personalizada</span>
-          <span><b>✓</b> Sin trabajo técnico</span>
+          <a href="/portal-colegio?demo=1">Explorar portal de ejemplo</a>
         </div>
       </div>
-      <aside class="ib-preview" aria-label="Vista previa del portal institucional">
-        <div class="ib-preview-top"><i></i><i></i><i></i><span>colegiolibre.com/colegio/tu-colegio</span></div>
-        <div class="ib-preview-body">
-          <div class="ib-preview-brand"><span>TC</span><div><b>Tu Colegio</b><small>Comunidad oficial</small></div></div>
-          <div class="ib-preview-heading"><b>Materiales de tu comunidad</b><span>Ver todos</span></div>
-          <div class="ib-preview-products">
-            <article><i></i><b>Matemática IGCSE</b><span>$18.000</span></article>
-            <article><i></i><b>Uniforme escolar</b><span>$24.500</span></article>
-            <article><i></i><b>Mochila azul</b><span>$16.900</span></article>
-          </div>
+      <div class="institution-example" aria-label="Ejemplo de un portal escolar">
+        <div class="example-top"><span>Instituto del Parque</span><span>Vista de ejemplo</span></div>
+        <div class="example-welcome"><strong>Bienvenidos al colegio</strong><p>Materiales y novedades para las familias.</p></div>
+        <div class="example-panels">
+          <section><h2>Comunicados</h2><p>Feria de intercambio</p><small>Viernes · Biblioteca</small></section>
+          <section><h2>Recursos</h2><p>Lista de materiales <span aria-hidden="true">↗</span></p><small>Primaria y secundaria</small></section>
         </div>
-      </aside>
+      </div>
     </section>
 
-    <section class="ib-proof" aria-label="Características del servicio">
-      <div><strong>Desde $0</strong><span>Un plan para cada etapa del colegio</span></div>
-      <div><strong>Padrón oficial</strong><span>Instituciones argentinas verificadas</span></div>
-      <div><strong>Administración simple</strong><span>Sin conocimientos técnicos</span></div>
-      <div><strong>Identidad propia</strong><span>Logo, colores y dirección exclusiva</span></div>
-    </section>
-
-    <section class="ib-process" aria-label="Cómo solicitar el portal">
-      <article><b>01</b><div><strong>Buscá tu colegio</strong><span>Usamos el padrón oficial argentino.</span></div></article>
-      <article><b>02</b><div><strong>Personalizalo</strong><span>Elegí su nombre, código y colores.</span></div></article>
-      <article><b>03</b><div><strong>Enviá la solicitud</strong><span>La revisamos antes de activarla.</span></div></article>
+    <section class="institution-features" aria-label="Herramientas del portal">
+      <article><h2>Identidad del colegio</h2><p>Elegí el logo, la portada y los colores. Revisá el resultado antes de publicarlo.</p></article>
+      <article><h2>Acceso de la comunidad</h2><p>Administrá los correos autorizados y el acceso de los miembros verificados.</p></article>
+      <article><h2>Comunicados y recursos</h2><p>Publicá novedades, listas de materiales y enlaces en un solo lugar.</p></article>
     </section>
 
     <section class="ib-pricing" id="planes" aria-labelledby="pricing-title">
       <header class="ib-pricing-heading">
         <div>
-          <span class="ib-kicker-dark">PLANES PARA INSTITUCIONES</span>
-          <h2 id="pricing-title" tabindex="-1">Una solución que crece con tu comunidad.</h2>
+          <h2 id="pricing-title" tabindex="-1">Planes para tu colegio</h2>
           <p>El plan Comunidad ofrece una página pública. Los planes pagos agregan un portal privado y personalizable para miembros verificados.</p>
         </div>
         <div class="ib-billing" role="group" aria-label="Modalidad de facturación">
@@ -129,12 +109,12 @@
         <article class="ib-plan" data-plan="Comunidad">
           <div class="ib-plan-top">
             <span class="ib-plan-icon" aria-hidden="true">C</span>
-            <div><small>PARA EMPEZAR</small><h3>Comunidad</h3></div>
+            <div><h3>Comunidad</h3></div>
           </div>
           <p class="ib-plan-description">La forma más simple de abrir un espacio oficial para las familias del colegio.</p>
           <div class="ib-price"><strong>$0</strong><span>para siempre</span></div>
           <small class="ib-price-note">Sin tarjeta ni compromiso de permanencia.</small>
-          <button class="ib-plan-cta" type="button" data-select-plan="Comunidad">Crear portal gratis</button>
+          <button class="ib-plan-cta" type="button" data-select-plan="Comunidad">Solicitar página pública</button>
           <div class="ib-plan-divider"></div>
           <strong class="ib-includes">Incluye:</strong>
           <ul>
@@ -146,10 +126,10 @@
         </article>
 
         <article class="ib-plan ib-plan-featured" data-plan="Institucional">
-          <span class="ib-popular">PORTAL PRIVADO</span>
+          
           <div class="ib-plan-top">
             <span class="ib-plan-icon" aria-hidden="true">I</span>
-            <div><small>PARA COLEGIOS ACTIVOS</small><h3>Institucional</h3></div>
+            <div><h3>Institucional</h3></div>
           </div>
           <p class="ib-plan-description">Más control, identidad y herramientas para convertir el portal en un servicio del colegio.</p>
           <div class="ib-price" data-monthly="24.900" data-annual="20.750"><span class="ib-currency">ARS</span><strong>$24.900</strong><span>/mes</span></div>
