@@ -41,17 +41,18 @@ export default async function handler(req, res) {
       }
       return send(res,200,{ available:true });
     }
-    const members = manager && req.query?.manage === '1'
+    const manage = manager && req.query?.manage === '1';
+    const members = manage
       ? await select(cfg,'school_portal_members','email',{school_id:school.id},{order:'email.asc',limit:'1000'}) : undefined;
-    const fields = manager ? 'draft,published,revision,published_at' : 'published,published_at';
+    const fields = manage ? 'draft,published,revision,published_at' : 'published,published_at';
     const [portal] = await select(cfg, 'school_portal_content', fields, { school_id: school.id });
     if (!manager && !portal?.published) return send(res, 404, { error: 'Tu colegio todavía está preparando el portal.' });
     const { code, city, name, display_name } = school;
     return send(res, 200, {
-      school: { code, city, name: display_name || name }, manager, subscription: manager ? subscription : undefined,
+      school: { code, city, name: display_name || name }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       content: portal?.published || portalDefaults,
-      ...(manager && { draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
+      ...(manage && { draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
     });
   } catch (error) {
     return send(res, error.status || 503, { error: error.status ? error.message : 'No pudimos cargar el portal. Volvé a intentar.' });
