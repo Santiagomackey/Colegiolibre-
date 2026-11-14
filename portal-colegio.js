@@ -27,12 +27,12 @@
     const rgb = (hex.match(/\w\w/g) || []).map(pair => parseInt(pair,16)/255).map(v => v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4);
     return rgb[0]*.2126 + rgb[1]*.7152 + rgb[2]*.0722 > .179 ? '#101820' : '#ffffff';
   }
-  async function api(body, manage = false) {
+  async function api(body, manage = false, query = {}) {
     const { data } = await window.colegioLibreSupabase.auth.getSession();
     if (!data?.session?.access_token) throw Object.assign(Error('Iniciá sesión para entrar al portal de tu colegio.'),{status:401});
     const headers = { Authorization: 'Bearer ' + data.session.access_token };
     if (body) headers['Content-Type'] = 'application/json';
-    const response = await fetch('/api/school-portal?' + new URLSearchParams({code, ...(manage && {manage:'1'})}), {
+    const response = await fetch('/api/school-portal?' + new URLSearchParams({code, ...query, ...(manage && {manage:'1'})}), {
       method:body?'POST':'GET', headers, body:body?JSON.stringify(body):undefined, cache:'no-store'
     });
     const result = await response.json();
@@ -44,7 +44,8 @@
     host.replaceChildren();
     const hero = element('section', '', 'school-hero');
     const color = /^#[0-9a-f]{6}$/i.test(content.primary) ? content.primary : '#0B2E6B';
-    hero.style.setProperty('--school-color',color);
+    host.style.setProperty('--school-color',color);
+    host.style.setProperty('--school-ink',ink(color));
     hero.style.setProperty('--hero-ink',ink(color));
     hero.style.setProperty('--school-accent',/^#[0-9a-f]{6}$/i.test(content.accent) ? content.accent : '#67C23A');
     const cover = urlFor(content.cover);
@@ -81,6 +82,7 @@
     nav.setAttribute('aria-label','Navegación del colegio');
     const contact = /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(content.contact || '');
     const sections = [
+      ['publicaciones','Publicaciones',!editing],
       ['comunicados','Comunicados',content.announcements?.length],
       ['recursos','Recursos',content.resources?.length],
       ['contacto','Contacto',contact]
@@ -102,6 +104,13 @@
     if (content.description) copy.append(element('p',content.description));
     hero.append(copy);
     host.append(hero);
+    if (!editing) {
+      const market = window.colegioLibreSchoolMarketplace({
+        header,demo,school:name,load:params => api(undefined,false,{...params,catalog:'1'})
+      });
+      host.append(market.place);
+      market.start();
+    }
 
     const grid = element('div','','school-content-grid');
     if (content.announcements?.length) {
@@ -267,8 +276,8 @@
       portal = {
         school: { name:'Instituto del Parque' },
         content: {
-          name:'Instituto del Parque', title:'Bienvenidos al colegio', primary:'#1d493d', accent:'#c4edac',
-          description:'Materiales, novedades y recursos para las familias del Instituto del Parque. Esta vista muestra contenido de ejemplo.',
+          name:'Instituto del Parque', title:'El marketplace de tu colegio', primary:'#1d493d', accent:'#c4edac',
+          description:'Encontrá libros, uniformes y útiles entre las familias del Instituto del Parque.',
           announcements:[{title:'Feria de intercambio',body:'El viernes nos encontramos en la biblioteca para intercambiar libros y útiles.'}],
           resources:[{title:'Ver herramientas y planes institucionales',url:'https://www.colegiolibre.com/instituciones#planes'}]
         }
@@ -325,7 +334,7 @@
         return;
       }
       setMode(canEdit);
-      if (/^#(?:inicio|comunicados|recursos|contacto)$/.test(location.hash)) $(location.hash)?.scrollIntoView();
+      if (/^#(?:inicio|publicaciones|comunicados|recursos|contacto)$/.test(location.hash)) $(location.hash)?.scrollIntoView();
     } catch (error) {
       if (current !== boot) return;
       status.textContent = error.message;
