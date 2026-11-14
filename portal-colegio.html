@@ -7,21 +7,21 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColegioLibre</title>
   <link rel="icon" href="/images/favicon-32.png">
-  <link rel="stylesheet" href="/portal-colegio.css?v=2">
+  <link rel="stylesheet" href="/portal-colegio.css?v=3">
 </head>
 <body>
-  <header class="masthead">
+  <header class="masthead" id="platform-header">
     <a href="/" aria-label="Inicio de ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="154" height="53"></a>
     <nav aria-label="ColegioLibre"><a href="/colegio">Mi colegio</a><a href="/instituciones">Instituciones</a></nav>
   </header>
-  <main>
+  <main id="portal-main">
     <p id="portal-status" role="status" aria-live="polite">Cargando portal…</p>
     <a id="portal-login" class="button" hidden>Iniciar sesión</a>
     <a id="portal-verification" class="button" href="/perfil?view=settings" hidden>Revisar mi colegio</a>
     <div id="portal-content" hidden>
       <div id="workspace" class="workspace" hidden>
         <div><h1>Panel del colegio</h1><p id="plan-status"></p><p id="publication-status"></p></div>
-        <div class="toolbar"><button type="button" id="mode" class="button secondary">Ver portal publicado</button><a class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a></div>
+        <div class="toolbar"><a id="published-site-link" class="button secondary" target="_blank" rel="noopener">Abrir sitio del colegio</a><a class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a></div>
       </div>
       <nav id="editor-nav" aria-label="Secciones del editor" hidden>
         <a href="#identity-panel">Identidad</a><a href="#announcements-panel">Comunicados</a><a href="#resources-panel">Recursos</a><a href="#membership">Accesos</a>
@@ -68,6 +68,6 @@
   </main>
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
-  <script src="/portal-colegio.js?v=2"></script>
+  <script src="/portal-colegio.js?v=3"></script>
 </body>
 </html>

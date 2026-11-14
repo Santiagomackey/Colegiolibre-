@@ -3,6 +3,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/comunidad/:code", "destination": "/portal-colegio" },
     {
       "source": "/materias/:slug",
       "destination": "/materia?materia=:slug"

@@ -9,7 +9,7 @@
       headers: { Authorization:'Bearer ' + data.session.access_token }, cache:'no-store'
     });
     if (!response.ok) return;
-    link.href = '/portal-colegio?code=' + encodeURIComponent(code);
+    link.href = '/comunidad/' + encodeURIComponent(code.toLowerCase());
     link.hidden = false;
   } catch (_) {
     // The public school page is usable even when the private portal is unavailable.

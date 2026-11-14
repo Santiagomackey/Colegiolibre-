@@ -2,8 +2,11 @@
   'use strict';
   const $ = selector => document.querySelector(selector);
   const params = new URLSearchParams(location.search);
-  const code = params.get('code');
+  const siteCode = location.pathname.match(/^\/comunidad\/([a-z0-9_-]{1,80})\/?$/i)?.[1];
+  const code = siteCode || params.get('code');
   const demo = params.get('demo') === '1' && !code;
+  const wantsEditor = !siteCode && params.get('edit') === '1';
+  const siteUrl = value => '/comunidad/' + encodeURIComponent(value.toLowerCase());
   const form = $('#editor');
   const status = $('#portal-status');
   const fields = ['name','title','description','primary','accent','logo','cover','layout','contact'];
@@ -58,33 +61,63 @@
       hero.append(photo);
     }
     const copy = element('div','','school-hero-copy');
-    const identity = element('div','','school-identity');
+    const brand = element('a','','school-brand');
+    const name = content.name || portal.school.name;
+    brand.href = '#inicio';
     const logo = urlFor(content.logo);
+    const monogram = element('span',name.trim().split(/\s+/).slice(0,2).map(word => word[0]).join('').toUpperCase(),'school-monogram');
+    brand.append(monogram,element('span',name));
     if (logo) {
       const img = element('img');
       img.alt = '';
       img.referrerPolicy = 'no-referrer';
+      img.addEventListener('load',() => monogram.replaceWith(img));
       img.src = logo.href;
-      img.addEventListener('error',() => img.remove());
-      identity.append(img);
     }
-    identity.append(element('span',content.name || portal.school.name));
-    copy.append(identity,element(editing ? 'h2' : 'h1', content.title || portal.school.name));
+    const header = element('header','','school-header');
+    header.id = 'inicio';
+    header.append(brand);
+    const nav = element('nav','','school-navigation');
+    nav.setAttribute('aria-label','Navegación del colegio');
+    const contact = /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(content.contact || '');
+    const sections = [
+      ['comunicados','Comunicados',content.announcements?.length],
+      ['recursos','Recursos',content.resources?.length],
+      ['contacto','Contacto',contact]
+    ];
+    for (const [id,label,visible] of sections) {
+      if (!visible) continue;
+      const link = element('a',label);
+      link.href = '#' + id;
+      nav.append(link);
+    }
+    if (portal.manager && !editing) {
+      const link = element('a','Administrar sitio','school-admin-link');
+      link.href = '/portal-colegio?code=' + encodeURIComponent(portal.school.code) + '&edit=1';
+      nav.append(link);
+    }
+    if (nav.childElementCount) header.append(nav);
+    host.append(header);
+    copy.append(element(editing ? 'h2' : 'h1', content.title || name));
     if (content.description) copy.append(element('p',content.description));
     hero.append(copy);
     host.append(hero);
+
+    const grid = element('div','','school-content-grid');
     if (content.announcements?.length) {
       const block = element('section','','school-block');
+      block.id = 'comunicados';
       block.append(element('h2','Comunicados'));
       for (const item of content.announcements) {
         const article = element('article');
         article.append(element('h3',item.title),element('p',item.body));
         block.append(article);
       }
-      host.append(block);
+      grid.append(block);
     }
     if (content.resources?.length) {
       const block = element('section','','school-block');
+      block.id = 'recursos';
       block.append(element('h2','Recursos del colegio'));
       for (const item of content.resources) {
         const url = urlFor(item.url);
@@ -95,20 +128,26 @@
         link.rel = 'noopener noreferrer';
         block.append(link);
       }
-      host.append(block);
+      grid.append(block);
     }
-    const block = element('section','','school-block');
-    block.append(element('h2','Comunidad'));
-    const catalog = element('a',demo ? 'Ver planes para mi colegio' : 'Ver publicaciones públicas del colegio');
-    catalog.href = demo ? '/instituciones#planes' : '/colegio?code=' + encodeURIComponent(portal.school.code);
-    block.append(catalog);
-    if (content.contact && /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(content.contact)) {
+    if (grid.childElementCount) host.append(grid);
+
+    const footer = element('footer','','school-footer');
+    footer.append(element('strong',name));
+    if (contact) {
       const link = element('a','Escribir al colegio');
+      footer.id = 'contacto';
       link.href = 'mailto:' + content.contact;
-      block.append(link);
+      footer.append(link);
     }
-    host.append(block);
+    if (demo) {
+      const link = element('a','Volver a Instituciones');
+      link.href = '/instituciones';
+      footer.append(link);
+    }
+    host.append(footer);
   }
+
   function addRow(kind, value = {}) {
     const { max, key } = lists[kind];
     const parent = $('#edit-' + kind);
@@ -153,12 +192,10 @@
     $('#preview-tools').hidden = $('#editor-nav').hidden = !editing;
     if (!editing) $('#school-site').classList.remove('phone-preview');
     else $('#school-site').classList.toggle('phone-preview', $('#preview-tools [data-device=phone]').getAttribute('aria-pressed') === 'true');
-    $('#mode').textContent = editing ? 'Ver portal publicado' : 'Editar portal';
     draw(editing ? read() : portal.content);
   }
   form.addEventListener('input',changed);
   form.querySelectorAll('[data-add]').forEach(button => button.addEventListener('click',() => { addRow(button.dataset.add); changed(); }));
-  $('#mode').addEventListener('click',() => setMode(!editing));
   const deviceButtons = [...document.querySelectorAll('[data-device]')];
   deviceButtons.forEach(button => button.addEventListener('click',() => {
     for (const option of deviceButtons) option.setAttribute('aria-pressed',String(option === button));
@@ -237,20 +274,32 @@
         }
       };
       $('#portal-content').hidden = false;
+      document.title = 'Instituto del Parque | Sitio de ejemplo';
+      $('#platform-header').hidden = true;
+      document.body.classList.add('school-publication');
       status.textContent = 'Vista de ejemplo';
       setMode(false);
       return;
     }
     if (!code) { status.textContent = 'Entrá desde la página de tu colegio.'; return; }
+    $('#platform-header').hidden = false;
+    document.body.classList.remove('school-publication');
     $('#portal-content').hidden = $('#portal-login').hidden = $('#portal-verification').hidden = true;
+    $('#portal-verification').href = '/perfil?view=settings';
+    $('#portal-verification').textContent = 'Revisar mi colegio';
     try {
-      const result = await api(undefined,true);
+      const result = await api(undefined,wantsEditor);
       if (current !== boot) return;
       portal = result;
       document.title = portal.school.name + ' | ColegioLibre';
       $('#portal-content').hidden = false;
-      $('#workspace').hidden = $('#membership').hidden = !portal.manager;
-      if (portal.manager) {
+      const canEdit = wantsEditor && portal.manager;
+      $('#platform-header').hidden = !canEdit;
+      document.body.classList.toggle('school-publication',!canEdit);
+      $('#workspace').hidden = $('#membership').hidden = !canEdit;
+      if (!wantsEditor && !siteCode) history.replaceState(null,'',siteUrl(portal.school.code) + location.hash);
+      if (canEdit) {
+        $('#published-site-link').href = siteUrl(portal.school.code);
         drawMembers();
         publicationStatus();
         const { plan,billing_cycle,paid_through } = portal.subscription;
@@ -263,13 +312,26 @@
         }
       }
       status.textContent = '';
-      setMode(portal.manager);
+      if (!canEdit && !portal.publishedAt) {
+        $('#portal-content').hidden = true;
+        $('#platform-header').hidden = false;
+        status.textContent = 'El sitio todavía no está publicado.';
+        const link = $('#portal-verification');
+        if (portal.manager) {
+          link.href = '/portal-colegio?code=' + encodeURIComponent(portal.school.code) + '&edit=1';
+          link.textContent = 'Abrir editor';
+          link.hidden = false;
+        }
+        return;
+      }
+      setMode(canEdit);
+      if (/^#(?:inicio|comunicados|recursos|contacto)$/.test(location.hash)) $(location.hash)?.scrollIntoView();
     } catch (error) {
       if (current !== boot) return;
       status.textContent = error.message;
       if (error.status === 401) {
         const link = $('#portal-login');
-        link.href = '/login?next=' + encodeURIComponent('/portal-colegio?code='+encodeURIComponent(code));
+        link.href = '/login?next=' + encodeURIComponent('/portal-colegio?code='+encodeURIComponent(code)+(wantsEditor ? '&edit=1' : ''));
         link.hidden = false;
       }
       if (error.status === 403) $('#portal-verification').hidden = false;
