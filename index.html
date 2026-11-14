@@ -2086,20 +2086,11 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
     </form>
     </div>
     <div id="onboarding-payment-step" hidden>
-      <h2 id="onboarding-payment-title">Recibí transferencias</h2>
-      <p>Agregá tu alias de Mercado Pago para recibir el pago de tus ventas. También podés hacerlo más tarde desde Configuración.</p>
-      <form id="onboarding-payment-form" class="onboarding-form" novalidate>
-        <label>
-          Alias de Mercado Pago
-          <input name="alias" type="text" minlength="6" maxlength="20" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias" aria-describedby="onboarding-payment-help" />
-        </label>
-        <label>
-          Nombre del titular
-          <input name="holder_name" type="text" minlength="2" maxlength="100" required autocomplete="off" />
-        </label>
-        <small id="onboarding-payment-help">Copiá el alias y el nombre tal como aparecen en tu cuenta. Confirmá cada pago después de verlo acreditado.</small>
+      <h2 id="onboarding-payment-title">Conectá Mercado Pago</h2>
+      <p>Vinculá tu cuenta para recibir los pagos de tus ventas. También podés hacerlo más tarde desde Configuración.</p>
+      <form id="onboarding-payment-form" class="onboarding-form">
         <p id="onboarding-payment-message" class="onboarding-message" role="status" aria-live="polite"></p>
-        <button id="onboarding-payment-submit" class="onboarding-submit" type="submit">Guardar alias y continuar</button>
+        <button id="onboarding-payment-submit" class="onboarding-submit" type="submit">Conectar Mercado Pago</button>
         <button id="onboarding-payment-skip" class="onboarding-payment-skip" type="button">Ahora no</button>
       </form>
     </div>
@@ -2150,16 +2141,17 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
 <script src="/transfer-common.js?v=20261111-alias36"></script>
-<script src="./jsonboarding.js?v=20261111-more42"></script>
+<script src="/mp-checkout-client.js?v=account-connect-1"></script>
+<script src="./jsonboarding.js?v=account-connect-1"></script>
 <script src="./home-wanted.js?v=20261111-home39"></script>
 <script src="./script.js?v=paid-delivery-1"></script>
-<script src="./native-bridge.js?v=20261111-more42"></script>
-<script src="./notifications.js?v=20261109-transfer27"></script>
+<script src="./native-bridge.js?v=account-connect-1"></script>
+<script src="./notifications.js?v=account-connect-1"></script>
     
     <script src="./mobile-ui.js?v=20261111-more42"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/marketplace-upgrades.js?v=20261109-release25"></script>
-<script src="/site-header.js?v=20261111-flow38"></script>
+<script src="/site-header.js?v=account-connect-1"></script>
 </body>
 </html>

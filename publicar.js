@@ -35,6 +35,8 @@ const categoryFieldConfig = {
     title: "Datos del material"
   },
   Cuadernos: {
+    subject: true,
+    optionalSubject: true,
     optionLabel: "Tipo de cuaderno",
     options: ["Rayado", "Cuadriculado", "Liso", "Carpeta", "Repuesto de hojas", "Otro"],
     title: "Datos del cuaderno"
@@ -77,6 +79,7 @@ const academicFieldsRow = document.querySelector("#academic-fields-row");
 const schoolLevelSelect = document.querySelector("#nivel-escolar");
 const schoolYearSelect = document.querySelector("#anio-escolar");
 const subjectSelect = document.querySelector("#materia");
+const subjectFieldGroup = document.querySelector("#subject-field-group");
 const subcategoryFieldGroup = document.querySelector("#subcategory-field-group");
 const subcategoryFieldLabel = document.querySelector("#subcategory-field-label");
 const subcategorySelect = document.querySelector("#subcategoria");
@@ -630,6 +633,7 @@ function updateCategoryFields() {
   resetDynamicFieldValues();
   dynamicProductFields.hidden = !config;
   academicFieldsRow.hidden = !config?.academic;
+  subjectFieldGroup.hidden = !config?.subject;
   subcategoryFieldGroup.hidden = !Array.isArray(config?.options);
   sizeFieldGroup.hidden = !Array.isArray(config?.sizes);
 
@@ -659,9 +663,9 @@ function updateCategoryFields() {
   }
 
   if (config.subject) {
-    setSelectOptions(subjectSelect, "Seleccioná la materia", subjectOptions);
+    setSelectOptions(subjectSelect, config.optionalSubject ? "Sin materia" : "Seleccioná la materia", subjectOptions);
     subjectSelect.disabled = false;
-    subjectSelect.required = true;
+    subjectSelect.required = !config.optionalSubject;
   }
 
   if (Array.isArray(config.options)) {
@@ -1006,9 +1010,7 @@ async function handleSubmit(event) {
       categoryConfig?.academic && schoolYearSelect.value
         ? Number(schoolYearSelect.value)
         : null;
-    const subject = categoryConfig?.subject
-      ? subjectSelect.value
-      : null;
+    const subject = categoryConfig?.subject ? subjectSelect.value || null : null;
     const subcategory = Array.isArray(categoryConfig?.options)
       ? subcategorySelect.value
       : null;
@@ -1033,7 +1035,7 @@ async function handleSubmit(event) {
       return;
     }
 
-    if (categoryConfig?.subject && !subject) {
+    if (categoryConfig?.subject && !categoryConfig.optionalSubject && !subject) {
       showToast("Seleccioná la materia.");
       return;
     }

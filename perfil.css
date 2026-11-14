@@ -109,3 +109,22 @@
   .mobile-profile .dashboard-metrics,
   .mobile-profile .dashboard-profile-card__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Keep the opened menu in the card's layout so ancestor clipping cannot hide it. */
+.publication-card.is-menu-open .publication-card__stats { grid-template-rows: auto auto; }
+.publication-card .publication-menu { display: contents; }
+.publication-card .publication-menu__trigger { justify-self: end; }
+.publication-card .publication-menu__dropdown {
+  position: static;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: end;
+  width: min(100%, 270px);
+  min-width: 0;
+  box-shadow: none;
+}
+.publication-menu__dropdown button[data-delete-action] { color: #b42318; }
+@media (max-width: 980px) {
+  .publication-card .publication-menu__trigger { position: absolute; top: 1rem; right: 1rem; }
+  .publication-card .publication-menu__dropdown { grid-row: 3; }
+}
