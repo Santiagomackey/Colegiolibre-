@@ -8,6 +8,7 @@ export default async function handler(req,res){
  let config, checkout;
  try{config=configuration();checkout=checkoutConfig();}catch(_){return json(res,503,{error:'LINK_NOT_CONFIGURED'});}
  if(req.method==='POST'){
+  if(req.body?.checkout===true&&!checkout)return json(res,503,{error:'MP_CHECKOUT_NOT_CONFIGURED'});
   try{
    const user=await authenticatedUser(config,req);if(!user)return json(res,401,{error:'AUTH_REQUIRED'});
    const state=random(),launch=random(),verifier=random();

@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./perfil.css?v=20261110-mobilefix36" />
+    <link rel="stylesheet" href="./perfil.css?v=account-connect-1" />
     <link rel="stylesheet" href="./notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="./polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
@@ -397,30 +397,15 @@
 
 <section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title">
   <h2 id="payment-settings-title">Datos de cobro</h2>
-  <p class="pay-muted">Usá tu alias de Mercado Pago para recibir transferencias. El comprador verá tus datos al iniciar un pedido.</p>
-  <div id="mp-checkout-settings" class="pay-mercado-pago-settings" hidden data-no-translate>
-    <p id="mp-checkout-link-status" class="pay-muted" role="status"></p>
-    <button id="mp-checkout-link" type="button" class="pay-button pay-button--mercado-pago">Vincular Mercado Pago</button>
+  <div data-mp-connect-card>
+    <p class="pay-muted" data-mp-status role="status">Conectá Mercado Pago para recibir los pagos de tus ventas.</p>
+    <button data-mp-connect class="pay-button pay-button--mercado-pago" type="button" disabled>Conectar Mercado Pago</button>
+    <a data-mp-login href="/login?next=%2Fperfil%3Fview%3Dsettings" hidden>Iniciar sesión</a>
   </div>
-  <form id="mp-alias-form" class="pay-mp-alias" hidden novalidate>
-    <label>Alias de Mercado Pago
-      <input name="alias" type="text" required minlength="6" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias" />
-    </label>
-    <label>Nombre del titular
-      <input name="holder_name" type="text" required minlength="2" maxlength="100" autocomplete="off" />
-    </label>
-    <p class="pay-small">Copiá el alias y el nombre tal como aparecen en tu cuenta. Confirmá cada pago después de verlo acreditado.</p>
-    <button type="submit" class="pay-button">Guardar alias</button>
-  </form>
-  <p id="mp-link-message" class="pay-message" role="status" data-no-translate></p>
-  <details id="mp-authorization-options" class="pay-mp-card">
-    <summary>Vinculación de cuenta con Mercado Pago</summary>
-    <div id="mp-link-card">
-      <p id="mp-link-status" data-no-translate></p>
-      <button id="mp-link-connect" class="pay-button" type="button" data-no-translate>Vincular Mercado Pago</button>
-      <button id="mp-link-remove" class="pay-button pay-button--secondary" type="button" hidden>Quitar vínculo en ColegioLibre</button>
-    </div>
-  </details>
+  <section data-android-notifications hidden aria-label="Notificaciones de Android">
+    <p class="pay-muted" data-android-notification-status role="status">Recibí avisos de ventas, mensajes y alertas en tu teléfono.</p>
+    <button class="pay-button pay-button--secondary" data-android-notification-enable type="button">Activar notificaciones de Android</button>
+  </section>
   <a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a>
 </section>
         </section>
@@ -485,12 +470,12 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./perfil.js?v=20261109-transfer27"></script>
-<script src="./native-bridge.js?v=20261110-recovery31"></script>
-<script src="./notifications.js?v=20261109-transfer27"></script>
+<script src="./perfil.js?v=account-connect-1"></script>
+<script src="./native-bridge.js?v=account-connect-1"></script>
+<script src="./notifications.js?v=account-connect-1"></script>
     <script src="./mobile-ui.js?v=20261109-transfer27"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-<script src="/transfer-common.js?v=20261111-alias36"></script><script src="/mp-checkout-client.js?v=1"></script><script src="/mp-link-settings.js?v=mp-checkout-1"></script><script src="/site-header.js?v=20261111-flow38"></script>
+<script src="/transfer-common.js?v=20261111-alias36"></script><script src="/mp-checkout-client.js?v=account-connect-1"></script><script src="/mp-link-settings.js?v=account-connect-1"></script><script src="/site-header.js?v=account-connect-1"></script>
 </body>
 </html>

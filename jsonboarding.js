@@ -232,7 +232,7 @@
         setOnboardingMessage("No se pudo guardar tu perfil. Probá nuevamente.", "error");
       }
     });
-    byId("onboarding-payment-form").addEventListener("submit", saveOnboardingAlias);
+    byId("onboarding-payment-form").addEventListener("submit", connectOnboardingPayment);
     byId("onboarding-payment-skip").addEventListener("click", () => {
       if (!paymentBusy) finishOnboarding();
     });
@@ -502,9 +502,9 @@
       return;
     }
 
-    // An existing payment method already covers this optional setup step.
-    const { data: payment } = await Promise.resolve(window.colegioLibreSupabase.rpc("get_my_payment_details")).catch(() => ({}));
-    if (payment) {
+    const checkout = window.colegioLibreMercadoPago;
+    const payment = await checkout?.request('?seller=1').catch(() => null);
+    if (payment?.linked) {
       finishOnboarding();
       return;
     }
@@ -512,34 +512,30 @@
     byId("onboarding-payment-step").hidden = false;
     byId("onboarding-modal").querySelector('[role="dialog"]')
       .setAttribute("aria-labelledby", "onboarding-payment-title");
-    byId("onboarding-payment-form").elements.alias.focus();
+    byId("onboarding-payment-submit").focus();
   }
 
-  async function saveOnboardingAlias(event) {
+  async function connectOnboardingPayment(event) {
     event.preventDefault();
     if (paymentBusy) return;
-    const form = event.currentTarget;
-    const save = byId("onboarding-payment-submit");
+    const connect = byId("onboarding-payment-submit");
     const skip = byId("onboarding-payment-skip");
     const message = byId("onboarding-payment-message");
-    const transfers = window.colegioLibreTransfers;
-    paymentBusy = true;
-    save.disabled = true;
-    skip.disabled = true;
-    message.textContent = "Guardando alias…";
+    paymentBusy = connect.disabled = skip.disabled = true;
+    message.textContent = "Abriendo Mercado Pago…";
     message.dataset.state = "loading";
     try {
       const { data } = await window.colegioLibreSupabase.auth.getUser();
       if (data?.user?.id !== onboardingUser?.id) throw Error("AUTH_REQUIRED");
-      await transfers.saveMercadoPagoAlias(form.elements.alias.value, form.elements.holder_name.value);
-      finishOnboarding();
-    } catch (error) {
-      message.textContent = transfers.errorMessage(error);
+      sessionStorage.setItem('colegiolibre-mp-onboarding-next',
+        getPostOnboardingDestination(pendingDestination, onboardingProfile));
+      await window.colegioLibreMercadoPago.connect();
+    } catch (_) {
+      sessionStorage.removeItem('colegiolibre-mp-onboarding-next');
+      message.textContent = "No pudimos abrir Mercado Pago. Podés continuar y conectarlo desde Configuración.";
       message.dataset.state = "error";
     } finally {
-      paymentBusy = false;
-      save.disabled = false;
-      skip.disabled = false;
+      paymentBusy = connect.disabled = skip.disabled = false;
     }
   }
 

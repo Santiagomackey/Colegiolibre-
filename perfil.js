@@ -877,6 +877,7 @@ function buildPublicationCard(item) {
     published.title = item.moderationReason;
   }
   dropdown.innerHTML = buildMenuActions(item.status, item.moderationStatus);
+  dropdown.insertAdjacentHTML("beforeend", '<button type="button" role="menuitem" data-delete-action>Eliminar publicación</button>');
 
   card.addEventListener("click", (event) => {
     if (event.target.closest(".publication-menu")) {
@@ -893,6 +894,7 @@ function buildPublicationCard(item) {
     dropdown.hidden = !willOpen;
     card.classList.toggle("is-menu-open", willOpen);
     menuTrigger.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) dropdown.querySelector("button")?.focus();
   });
 
   dropdown.querySelectorAll("[data-status-action]").forEach((button) => {
@@ -909,6 +911,29 @@ function buildPublicationCard(item) {
   dropdown.querySelector("[data-edit-action]")?.addEventListener("click", (event) => {
     event.stopPropagation();
     window.location.href = `/publicar?edit=${encodeURIComponent(item.id)}`;
+  });
+
+  dropdown.querySelector("[data-delete-action]").addEventListener("click", async (event) => {
+    event.stopPropagation();
+    if (!window.confirm("¿Querés eliminar esta publicación?")) return;
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const { error } = await window.colegioLibreSupabase.rpc("delete_own_listing", { p_product_id: item.id });
+      if (error) throw error;
+      await hydrateDashboard(state.currentUser.id);
+      renderCounts();
+      renderDashboard();
+      renderCurrentSection();
+      showToast("Publicación eliminada.");
+    } catch (error) {
+      const code = String(error?.message || "");
+      showToast(code.includes("LISTING_HAS_ORDERS")
+        ? "Esta publicación tiene un pedido asociado y se conserva en tu historial."
+        : "No pudimos eliminar la publicación. Volvé a intentar.");
+    } finally {
+      button.disabled = false;
+    }
   });
 
   return fragment;
@@ -1099,7 +1124,9 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      const trigger = document.querySelector(".publication-menu__trigger[aria-expanded=true]");
       closeMenusExcept(null);
+      trigger?.focus();
     }
   });
 

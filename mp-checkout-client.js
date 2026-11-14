@@ -16,10 +16,24 @@
     return payload;
   }
 
+  async function connect() {
+    const { data, error } = await window.colegioLibreSupabase.auth.getSession();
+    if (error || !data?.session?.access_token) throw Error('AUTH_REQUIRED');
+    const native = window.Capacitor?.isNativePlatform?.();
+    const response = await fetch('/api/mercadopago-link', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + data.session.access_token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: native ? 'app' : 'web', checkout: true })
+    });
+    const payload = await response.json();
+    if (!response.ok || !payload.url) throw Error(payload.error || 'LINK_START_FAILED');
+    return open(payload.url);
+  }
+
   async function open(raw) {
     const url = new URL(raw, location.origin);
     const checkout = url.origin === 'https://www.mercadopago.com.ar' && url.pathname.startsWith('/checkout/');
-    const link = url.origin === location.origin && url.pathname === '/api/mercadopago-link';
+    const link = [location.origin, 'https://www.colegiolibre.com'].includes(url.origin) && url.pathname === '/api/mercadopago-link';
     const sellerLink = /^https:\/\/mpago[.]la\/[A-Za-z0-9]{4,64}$/.test(raw);
     const wallet = url.href === 'https://www.mercadopago.com.ar/';
     if (!checkout && !link && !sellerLink && !wallet) throw Error('MP_INVALID_REDIRECT');
@@ -30,5 +44,5 @@
     else location.assign(url.href);
   }
 
-  window.colegioLibreMercadoPago = { request, open };
+  window.colegioLibreMercadoPago = { request, open, connect };
 })();

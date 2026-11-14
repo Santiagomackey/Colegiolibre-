@@ -46,19 +46,9 @@
     <section class="more-mp-card" id="mercado-pago" aria-labelledby="more-mp-title">
       <div class="more-avatar" aria-hidden="true"><svg><use href="#more-card"></use></svg></div>
       <div>
-        <h2 id="more-mp-title">Alias de Mercado Pago</h2>
-        <p>Usá tu alias de Mercado Pago para recibir transferencias. El comprador verá tus datos al iniciar un pedido.</p>
-        <form id="mp-alias-form" class="more-mp-form" hidden novalidate>
-          <label>Alias de Mercado Pago
-            <input name="alias" type="text" required minlength="6" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="mi.alias">
-          </label>
-          <label>Nombre del titular
-            <input name="holder_name" type="text" required minlength="2" maxlength="100" autocomplete="off">
-          </label>
-          <button class="more-mp-action" type="submit">Guardar alias</button>
-        </form>
-        <p id="mp-alias-message" role="status" data-no-translate></p>
-        <a class="more-mp-action" id="mp-alias-sign-in" href="/login?next=%2Fmas" hidden>Iniciar sesión</a>
+        <h2 id="more-mp-title">Mercado Pago</h2>
+        <p>Conectá la cuenta donde querés recibir tus ventas.</p>
+        <a class="more-mp-action" href="/perfil?view=settings#datos-cobro">Conectar Mercado Pago</a>
       </div>
     </section>
 
@@ -95,8 +85,7 @@
   <script src="/vendor/supabase.js?v=20261109-release25"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
   <script src="/transfer-common.js?v=20261111-alias36"></script>
-  <script src="/mp-link-settings.js?v=20261111-alias44"></script>
-  <script src="/native-bridge.js?v=20261111-more42"></script>
+  <script src="/native-bridge.js?v=account-connect-1"></script>
   <script src="/mas.js?v=20261111-more42"></script>
   <script src="/mobile-ui.js?v=20261111-more42"></script>
   <script src="/pwa.js?v=20261109-release25"></script>

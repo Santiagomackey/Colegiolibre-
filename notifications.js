@@ -4,6 +4,7 @@
   const api = window.colegioLibreApi;
   const client = window.colegioLibreSupabase;
 
+  if (window.Capacitor?.isNativePlatform?.() && window.Capacitor.getPlatform?.() === 'android') return;
   if (!api?.getCurrentUser || !client?.from) return;
 
   const state = {
