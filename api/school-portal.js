@@ -1,4 +1,4 @@
-import { active, cleanContent, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolFor, select, send, userFor } from '../server/school-portal.js';
+import { active, cleanContent, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolCodes, schoolFor, select, send, userFor } from '../server/school-portal.js';
 
 export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return send(res, 405, { error: 'Método no permitido.' });
@@ -33,6 +33,30 @@ export default async function handler(req, res) {
         p_school_id: school.id, p_revision: revision, p_content: cleanContent(content), p_publish: publish
       } });
       return send(res, 200, { revision: next });
+    }
+    if (req.query?.catalog === '1') {
+      const [publication] = await select(cfg,'school_portal_content','published_at',{school_id:school.id});
+      if (!publication?.published_at && !manager) return send(res,404,{ error:'El portal todavía no está publicado.' });
+      const page = Number(req.query.page || 0);
+      const category = String(req.query.category || '');
+      const term = String(req.query.q || '').trim().slice(0,100);
+      const sort = {__proto__:null,recent:'created_at.desc',price:'price.asc',price_desc:'price.desc'}[req.query.sort] || 'created_at.desc';
+      if (!Number.isSafeInteger(page) || page < 0 || page > 1000) return send(res,400,{error:'Página inválida.'});
+      if (category && !['Libros','Apuntes','Cuadernos','Útiles','Mochilas','Tecnología','Uniformes','Otros'].includes(category)) {
+        return send(res,400,{error:'Categoría inválida.'});
+      }
+      const codes = [...new Set(schoolCodes(school).flatMap(code => [code,code.toUpperCase(),code.toLowerCase()]))]
+        .filter(code => /^[a-z0-9_-]{1,80}$/i.test(code));
+      const query = new URLSearchParams({
+        select:'id,title,price,category,condition,image_url',school_code:'in.(' + codes.join(',') + ')',
+        status:'eq.available',or:'(moderation_status.eq.approved,moderation_status.is.null)',
+        order:sort + ',id.desc',limit:'25',offset:String(page*24)
+      });
+      if (category) query.set('category','eq.' + category);
+      const safeTerm = term.replace(/[^\p{L}\p{N} .-]/gu,' ').trim();
+      if (safeTerm) query.set('title','ilike.*' + safeTerm + '*');
+      const products = await rest(cfg,'products?' + query);
+      return send(res,200,{products:products.slice(0,24),more:products.length>24});
     }
     if (req.query?.summary === '1') {
       if (!manager) {
