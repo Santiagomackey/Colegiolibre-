@@ -1,0 +1,39 @@
+.institution-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .96fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  padding: clamp(1.5rem, 4vw, 4.4rem);
+  border-radius: 22px;
+  background: #0c2550;
+  color: #fff;
+}
+.institution-eyebrow { color: #c6e0fb; margin: 0 0 1rem; font-size: .88rem; font-weight: 650; }
+.institution-copy h1 { color: #fff; font-size: clamp(2.25rem, 5vw, 4.8rem); letter-spacing: -.065em; line-height: .99; margin: 0 0 1.25rem; max-width: 11ch; }
+.institution-copy > p:not(.institution-eyebrow) { margin: 0; line-height: 1.65; max-width: 38ch; color: #d9e6f7; }
+.institution-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem 1.2rem; margin-top: 1.65rem; }
+.institution-actions a { color: #fff; font-size: .9rem; font-weight: 700; padding: .65rem 0; }
+.institution-actions #view-plans-button { background: #c4edac; color: #152b22; border-radius: 9px; text-decoration: none; padding: .7rem 1rem; }
+.institution-example { min-width: 0; background: #edf3fa; color: #132944; padding: clamp(.7rem, 2vw, 1.25rem); border-radius: 15px; }
+.example-top { display: flex; justify-content: space-between; gap: .75rem; padding: .3rem .25rem .9rem; font-size: .8rem; font-weight: 750; }
+.example-top span:last-child { color: #455b75; font-weight: 500; }
+.example-welcome { display: grid; align-content: end; gap: .5rem; min-height: 180px; padding: 1.3rem; border-radius: 10px; background: #1d493d; color: white; }
+.example-welcome strong { font-size: clamp(1.35rem, 3vw, 2.2rem); letter-spacing: -.04em; }
+.example-welcome p, .example-panels p { margin: 0; }
+.example-panels { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; margin-top: .65rem; }
+.example-panels section { background: white; padding: .85rem; border-radius: 8px; overflow-wrap: anywhere; }
+.example-panels h2 { margin: 0 0 .5rem; font-size: .78rem; color: #48607c; }
+.example-panels p { font-weight: 750; font-size: .9rem; }
+.example-panels small { color: #526983; }
+.institution-features { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin: 1.3rem 0 2.8rem; border-block: 1px solid #d8e3ef; }
+.institution-features article { padding: 1.1rem 1.25rem; }
+.institution-features article + article { border-left: 1px solid #d8e3ef; }
+.institution-features h2 { font-size: 1rem; margin: 0 0 .45rem; }
+.institution-features p { font-size: .88rem; line-height: 1.5; margin: 0; }
+.ib-request__state select { max-width: 100%; font: inherit; padding: .4rem; }
+@media (min-width: 800px) { #planes .ib-plan-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 760px) {
+  .institution-intro { grid-template-columns: 1fr; gap: 1.7rem; }
+  .institution-features { grid-template-columns: 1fr; }
+  .institution-features article + article { border-left: 0; border-top: 1px solid #d8e3ef; }
+}
