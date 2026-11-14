@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./instituciones.css?v=20261109-release25">
   <link rel="stylesheet" href="./instituciones-v50.css?v=20261109-release25">
+  <style>
+    @media (min-width: 800px) { #planes .ib-plan-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .ib-request__state select { max-width: 100%; font: inherit; padding: .4rem; }
+  </style>
   <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
@@ -113,7 +117,7 @@
         <div>
           <span class="ib-kicker-dark">PLANES PARA INSTITUCIONES</span>
           <h2 id="pricing-title" tabindex="-1">Una solución que crece con tu comunidad.</h2>
-          <p>Todos los planes incluyen un portal seguro, acceso para las familias y acompañamiento de ColegioLibre.</p>
+          <p>El plan Comunidad ofrece una página pública. Los planes pagos agregan un portal privado y personalizable para miembros verificados.</p>
         </div>
         <div class="ib-billing" role="group" aria-label="Modalidad de facturación">
           <button class="is-active" type="button" data-billing="monthly">Mensual</button>
@@ -134,16 +138,15 @@
           <div class="ib-plan-divider"></div>
           <strong class="ib-includes">Incluye:</strong>
           <ul>
-            <li>Portal exclusivo del colegio</li>
+            <li>Página pública del colegio</li>
             <li>Publicaciones y búsquedas ilimitadas</li>
             <li>Logo y nombre institucional</li>
             <li>Soporte por email</li>
-            <li class="is-muted">Panel de métricas avanzadas</li>
           </ul>
         </article>
 
         <article class="ib-plan ib-plan-featured" data-plan="Institucional">
-          <span class="ib-popular">MÁS ELEGIDO</span>
+          <span class="ib-popular">PORTAL PRIVADO</span>
           <div class="ib-plan-top">
             <span class="ib-plan-icon" aria-hidden="true">I</span>
             <div><small>PARA COLEGIOS ACTIVOS</small><h3>Institucional</h3></div>
@@ -156,32 +159,14 @@
           <strong class="ib-includes">Todo lo de Comunidad, más:</strong>
           <ul>
             <li>Colores y portada personalizados</li>
-            <li>Panel de métricas del colegio</li>
-            <li>Moderación y usuarios responsables</li>
+            <li>Borradores y vista previa</li>
+            <li>Acceso por colegio y correos autorizados</li>
             <li>Comunicaciones destacadas</li>
-            <li>Soporte prioritario</li>
+            <li>Enlaces y recursos privados</li>
           </ul>
         </article>
 
-        <article class="ib-plan ib-plan-network" data-plan="Red Escolar">
-          <div class="ib-plan-top">
-            <span class="ib-plan-icon" aria-hidden="true">R</span>
-            <div><small>PARA GRUPOS EDUCATIVOS</small><h3>Red Escolar</h3></div>
-          </div>
-          <p class="ib-plan-description">Una administración central para instituciones con varias sedes o comunidades.</p>
-          <div class="ib-price" data-monthly="59.900" data-annual="49.917"><span class="ib-currency">ARS</span><strong>$59.900</strong><span>/mes</span></div>
-          <small class="ib-price-note" data-monthly-note="Facturación mensual por red educativa." data-annual-note="ARS $599.000 al año. Ahorrás dos meses.">Facturación mensual por red educativa.</small>
-          <button class="ib-plan-cta" type="button" data-select-plan="Red Escolar">Elegir Red Escolar</button>
-          <div class="ib-plan-divider"></div>
-          <strong class="ib-includes">Todo lo de Institucional, más:</strong>
-          <ul>
-            <li>Hasta 5 sedes conectadas</li>
-            <li>Panel general y métricas por sede</li>
-            <li>Administradores por institución</li>
-            <li>Implementación acompañada</li>
-            <li>Soporte directo y seguimiento</li>
-          </ul>
-        </article>
+
       </div>
       <p class="ib-pricing-footnote">Los precios se expresan en pesos argentinos y no incluyen impuestos. Las familias usan ColegioLibre sin costo.</p>
     </section>
@@ -249,11 +234,11 @@
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4.5 6v5.4c0 4.7 3.1 8 7.5 9.6 4.4-1.6 7.5-4.9 7.5-9.6V6L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 12 2.1 2.1 4.6-4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div><strong>Solicitud segura y verificable</strong><span>Nunca publicamos un portal sin revisar sus datos.</span></div>
       </div>
-      <a class="ib-help-link" href="mailto:ayuda@colegiolibre.com?subject=Consulta%20institucional">¿Tenés dudas? Hablá con nosotros →</a>
+      <a class="ib-help-link" href="mailto:colegiolibreayuda@gmail.com?subject=Consulta%20institucional">¿Tenés dudas? Hablá con nosotros →</a>
     </aside>
     </div>
 
-    <section class="ib-card ib-tracking">
+    <section class="ib-card ib-tracking" id="solicitudes">
       <header class="ib-card-heading"><div><span>MIS SOLICITUDES</span><h2>Seguimiento</h2><p>Consultá el estado de los portales que solicitaste.</p></div></header>
       <div id="my-requests" class="ib-request-list"></div>
     </section>
@@ -263,7 +248,7 @@
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
   <script src="./supabase.js?v=20261110-recovery31"></script>
-  <script src="./instituciones.js?v=20261109-release25"></script>
+  <script src="./instituciones.js?v=private-portal-1"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/notifications.js?v=20261110-shell32"></script>
 <script src="/site-header.js?v=20261111-flow38"></script>

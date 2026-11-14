@@ -1,4 +1,22 @@
-function send(res,status,body){res.status(status).setHeader("Content-Type","application/json");res.end(JSON.stringify(body))}
-function headers(){var key=process.env.SUPABASE_SERVICE_ROLE_KEY;return{apikey:key,Authorization:"Bearer "+key,"Content-Type":"application/json"}}
-export default async function handler(req,res){if(req.method!=="POST")return send(res,405,{ok:false});try{var id=String(req.query?.id||req.body?.data?.id||req.body?.id||"");if(!id)return send(res,200,{ok:true,ignored:true});var mp=await fetch("https://api.mercadopago.com/preapproval/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+process.env.MERCADOPAGO_ACCESS_TOKEN}});if(!mp.ok)return send(res,200,{ok:true,pending:true});var subscription=await mp.json(),requestId=subscription.external_reference;if(!requestId)return send(res,200,{ok:true,ignored:true});await fetch(process.env.SUPABASE_URL+"/rest/v1/institution_subscriptions?provider_subscription_id=eq."+encodeURIComponent(id),{method:"PATCH",headers:headers(),body:JSON.stringify({status:subscription.status,updated_at:new Date().toISOString()})});await fetch(process.env.SUPABASE_URL+"/rest/v1/institution_requests?id=eq."+encodeURIComponent(requestId),{method:"PATCH",headers:headers(),body:JSON.stringify({subscription_status:subscription.status,mercadopago_subscription_id:id})});return send(res,200,{ok:true})}catch(error){console.error(error);return send(res,500,{ok:false})}}
+import { config, select, send } from '../server/school-portal.js';
+import { mp, signedNotification, subscriptionFields, syncSubscription } from '../server/school-billing.js';
 
+export default async function handler(req,res) {
+  if (req.method !== 'POST') return send(res,405,{ok:false});
+  try {
+    const cfg = config();
+    const type = req.query?.type || req.body?.type;
+    if (!['subscription_preapproval','subscription_authorized_payment'].includes(type)) return send(res,200,{ignored:true});
+    const id = signedNotification(cfg.webhook,req);
+    if (!id) return send(res,401,{ok:false});
+    const providerId = type === 'subscription_preapproval' ? id :
+      (await mp(cfg,'/authorized_payments/'+id)).preapproval_id;
+    if (!providerId) return send(res,200,{ignored:true});
+    const [subscription] = await select(cfg,'institution_subscriptions',subscriptionFields,{provider_subscription_id:providerId});
+    if (!subscription) return send(res,503,{ok:false});
+    await syncSubscription(cfg,subscription);
+    return send(res,200,{ok:true});
+  } catch (_) {
+    return send(res,503,{ok:false});
+  }
+}
