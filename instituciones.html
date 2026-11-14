@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./instituciones.css?v=20261109-release25">
   <link rel="stylesheet" href="./instituciones-v50.css?v=20261109-release25">
-  <link rel="stylesheet" href="/instituciones-portal.css?v=2">
+  <link rel="stylesheet" href="/instituciones-portal.css?v=3">
   <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
@@ -151,75 +151,80 @@
       <p class="ib-pricing-footnote">Los precios se expresan en pesos argentinos y no incluyen impuestos. Las familias usan ColegioLibre sin costo.</p>
     </section>
 
-    <div class="ib-workspace">
-    <section class="ib-card" id="request-card">
-      <header class="ib-card-heading"><div><span>SOLICITUD INSTITUCIONAL</span><h2>Creá el portal de tu colegio</h2><p>Completá los datos. Podrás revisar todo antes de enviarlo.</p></div><b id="selected-plan-badge">Plan Comunidad</b></header>
-      <div class="ib-selected-plan" id="selected-plan-summary" data-plan="Comunidad">
-        <span class="ib-selected-plan__icon" id="selected-plan-icon">C</span>
-        <div><small>PLAN SELECCIONADO</small><strong id="selected-plan-name">Comunidad</strong><p id="selected-plan-copy">Gratis para siempre. No requiere medio de pago.</p></div>
-        <button id="change-plan-button" type="button">Cambiar</button>
-      </div>
-      <div class="ib-payment-flow" aria-label="Proceso de contratación">
-        <span class="is-current"><b>1</b> Solicitud</span><i></i><span><b>2</b> Verificación</span><i id="payment-step-line"></i><span id="payment-step"><b>3</b> Pago seguro</span><i id="activation-step-line"></i><span id="activation-step"><b>4</b> Activación</span>
-      </div>
-      <p class="ib-payment-explanation" id="payment-explanation">El plan Comunidad no requiere tarjeta. Se activa cuando aprobamos los datos del colegio.</p>
-      <div id="login-required" class="ib-login" hidden>
-        <p>Necesitás iniciar sesión para enviar una solicitud verificable.</p>
-        <a href="/login?next=/instituciones">Iniciar sesión</a>
-      </div>
+    <div class="ib-workspace institution-request">
+      <section class="ib-card request-main" id="request-card" aria-labelledby="request-title">
+        <header class="request-heading">
+          <h2 id="request-title">Solicitá tu portal</h2>
+          <p>Seleccioná la institución y dejá un correo para que podamos verificar la solicitud.</p>
+        </header>
 
-      <form id="institution-request-form" hidden>
-        <input id="requested-plan" name="requested_plan" type="hidden" value="Comunidad">
-        <input id="billing-cycle" name="billing_cycle" type="hidden" value="monthly">
-        <div class="ib-form-section"><span>1</span><div><strong>Institución oficial</strong><small>Encontrala por nombre, dirección o CUE.</small></div></div>
-        <label>Buscá el colegio
-          <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE">
-        </label>
-        <div class="ib-results" id="school-results" role="listbox"></div>
-        <input id="official-code" name="official_code" type="hidden">
-        <input id="official-name" name="official_name" type="hidden">
-
-        <div class="ib-selected" id="selected-school" hidden>
-          <span>Colegio seleccionado</span><strong></strong><small></small>
+        <div id="login-required" class="request-sign-in" hidden>
+          <p>Iniciá sesión para enviar la solicitud y seguir su estado.</p>
+          <a href="/login?next=%2Finstituciones">Iniciar sesión</a>
         </div>
 
-        <div class="ib-form-section"><span>2</span><div><strong>Identidad del portal</strong><small>Así se verá y encontrará tu comunidad.</small></div></div>
-        <div class="ib-two">
-          <label>Nombre corto<input name="short_name" required maxlength="50" placeholder="Ej. ORT Almagro"></label>
-          <label>Código sugerido<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_-]+" placeholder="ort-almagro"></label>
-        </div>
-        <label>Email de contacto institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
-        <div class="ib-form-section"><span>3</span><div><strong>Colores institucionales</strong><small>Personalizá el portal con la identidad del colegio.</small></div></div>
-        <div class="ib-colors">
-          <label>Principal<input name="primary_color" type="color" value="#0B2E6B"></label>
-          <label>Secundario<input name="secondary_color" type="color" value="#67C23A"></label>
-          <label>Acento<input name="accent_color" type="color" value="#FFC72C"></label>
-        </div>
-        <label class="ib-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
-        <button class="ib-submit" type="submit"><span id="request-submit-label">Solicitar portal gratuito</span><b aria-hidden="true">→</b></button>
-        <p id="request-status" class="ib-status" role="status"></p>
-      </form>
-    </section>
+        <form id="institution-request-form" hidden>
+          <input id="requested-plan" name="requested_plan" type="hidden" value="Comunidad">
+          <input id="billing-cycle" name="billing_cycle" type="hidden" value="monthly">
+          <fieldset class="request-fields">
+            <legend>Institución</legend>
+            <label for="school-search">Colegio registrado</label>
+            <input id="school-search" type="search" autocomplete="off" placeholder="Buscá por nombre, dirección o CUE" aria-controls="school-results">
+            <div class="ib-results" id="school-results" role="group" aria-label="Colegios encontrados" aria-live="polite"></div>
+            <input id="official-code" name="official_code" type="hidden">
+            <input id="official-name" name="official_name" type="hidden">
+            <div class="request-selection" id="selected-school" hidden>
+              <div><span>Colegio seleccionado</span><strong></strong><small></small></div>
+              <button type="button" id="change-school">Cambiar</button>
+            </div>
+          </fieldset>
 
-    <aside class="ib-assurance">
-      <span class="ib-assurance-kicker">PROCESO DE ACTIVACIÓN</span>
-      <h2>Nos ocupamos de que el portal quede listo.</h2>
-      <p>Una vez enviada la solicitud, ColegioLibre verifica los datos antes de habilitar la comunidad.</p>
-      <ol>
-        <li><span>1</span><div><strong>Revisión institucional</strong><small>Validamos el colegio y el contacto responsable.</small></div></li>
-        <li><span>2</span><div><strong>Configuración del portal</strong><small>Aplicamos el nombre, la dirección y los colores.</small></div></li>
-        <li><span>3</span><div><strong>Activación</strong><small>Recibís el acceso para compartirlo con las familias.</small></div></li>
-      </ol>
-      <div class="ib-assurance-note">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4.5 6v5.4c0 4.7 3.1 8 7.5 9.6 4.4-1.6 7.5-4.9 7.5-9.6V6L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 12 2.1 2.1 4.6-4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><strong>Solicitud segura y verificable</strong><span>Nunca publicamos un portal sin revisar sus datos.</span></div>
-      </div>
-      <a class="ib-help-link" href="mailto:colegiolibreayuda@gmail.com?subject=Consulta%20institucional">¿Tenés dudas? Hablá con nosotros →</a>
-    </aside>
+          <fieldset class="request-fields">
+            <legend>Datos del portal</legend>
+            <div class="ib-two">
+              <label>Nombre visible<input name="short_name" required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
+              <label>Dirección del portal<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_-]+" placeholder="instituto-del-parque" aria-describedby="request-address"></label>
+            </div>
+            <p class="request-address" id="request-address">colegiolibre.com/colegio/</p>
+            <label>Correo de contacto institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+          </fieldset>
+
+          <details class="request-colors">
+            <summary>Personalizar colores</summary>
+            <div class="ib-colors">
+              <label>Principal<input name="primary_color" type="color" value="#0B2E6B"></label>
+              <label>Secundario<input name="secondary_color" type="color" value="#67C23A"></label>
+              <label>Acento<input name="accent_color" type="color" value="#FFC72C"></label>
+            </div>
+          </details>
+          <div class="request-submit">
+            <label class="request-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
+            <button class="ib-submit" type="submit" id="request-submit-label">Enviar solicitud</button>
+            <p id="request-status" class="ib-status" role="status" tabindex="-1"></p>
+          </div>
+        </form>
+      </section>
+
+      <aside class="request-side" aria-label="Plan y próximos pasos">
+        <section id="selected-plan-summary" class="request-plan" data-plan="Comunidad" aria-labelledby="request-plan-title">
+          <header><h2 id="request-plan-title">Tu plan</h2><button id="change-plan-button" type="button">Cambiar plan</button></header>
+          <strong id="selected-plan-name">Comunidad</strong>
+          <p id="selected-plan-copy">Gratis</p>
+          <p id="payment-explanation">La página se activa después de verificar la solicitud.</p>
+        </section>
+        <section class="request-next" aria-labelledby="request-next-title">
+          <h2 id="request-next-title">Después de enviar</h2>
+          <ol>
+            <li>Revisamos el colegio y el contacto.</li>
+            <li>Podés consultar el resultado en <a href="#solicitudes">Mis solicitudes</a>.</li>
+          </ol>
+          <a href="mailto:colegiolibreayuda@gmail.com?subject=Consulta%20institucional">Consultar por correo</a>
+        </section>
+      </aside>
     </div>
 
     <section class="ib-card ib-tracking" id="solicitudes">
-      <header class="ib-card-heading"><div><span>MIS SOLICITUDES</span><h2>Seguimiento</h2><p>Consultá el estado de los portales que solicitaste.</p></div></header>
+      <header class="ib-card-heading"><div><h2>Mis solicitudes</h2><p>Consultá el estado de cada solicitud y su plan.</p></div></header>
       <div id="my-requests" class="ib-request-list"></div>
     </section>
 
@@ -228,7 +233,7 @@
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
   <script src="./supabase.js?v=20261110-recovery31"></script>
-  <script src="./instituciones.js?v=private-portal-1"></script>
+  <script src="./instituciones.js?v=private-portal-2"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/notifications.js?v=20261110-shell32"></script>
 <script src="/site-header.js?v=20261111-flow38"></script>

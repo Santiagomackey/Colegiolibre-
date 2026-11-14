@@ -13,6 +13,8 @@
   var status = document.getElementById("request-status");
   var requestList = document.getElementById("my-requests");
   var timer = null;
+  var searchSequence = 0;
+  var sending = false;
   var currentUser = null;
   var requestedCodeEdited = false;
   var selectedPlan = "Comunidad";
@@ -56,9 +58,7 @@
       button.addEventListener("click", function () {
         selectedPlan = button.dataset.selectPlan || "Comunidad";
         var input = document.getElementById("requested-plan");
-        var badge = document.getElementById("selected-plan-badge");
         if (input) input.value = selectedPlan;
-        if (badge) badge.textContent = "Plan " + selectedPlan;
         document.querySelectorAll(".ib-plan").forEach(function (plan) {
           plan.classList.toggle("is-selected", plan.dataset.plan === selectedPlan);
         });
@@ -74,29 +74,17 @@
   function renderSelectedPlan() {
     var summary = document.getElementById("selected-plan-summary");
     var name = document.getElementById("selected-plan-name");
-    var icon = document.getElementById("selected-plan-icon");
     var copy = document.getElementById("selected-plan-copy");
     var explanation = document.getElementById("payment-explanation");
-    var submitLabel = document.getElementById("request-submit-label");
-    var paymentStep = document.getElementById("payment-step");
-    var paymentStepLine = document.getElementById("payment-step-line");
-    var activationStep = document.getElementById("activation-step");
     var paid = selectedPlan !== "Comunidad";
-    if (paymentStep) paymentStep.hidden = !paid;
-    if (paymentStepLine) paymentStepLine.hidden = !paid;
-    if (activationStep) activationStep.innerHTML = paid ? "<b>4</b> Activación" : "<b>3</b> Activación";
     if (summary) summary.dataset.plan = selectedPlan;
     if (name) name.textContent = selectedPlan;
-    if (icon) icon.textContent = selectedPlan.charAt(0);
     if (copy) copy.textContent = paid
-      ? (selectedBilling === "annual" ? "Facturación anual mediante Mercado Pago." : "Facturación mensual mediante Mercado Pago.")
-      : "Gratis para siempre. No requiere medio de pago.";
+      ? (selectedBilling === "annual" ? "ARS $249.000 por año" : "ARS $24.900 por mes")
+      : "Gratis";
     if (explanation) explanation.textContent = paid
-      ? "Primero verificamos que representes al colegio. Cuando la solicitud sea aprobada, en Seguimiento aparecerá el botón para pagar con Mercado Pago. No se cobra nada antes de la aprobación."
-      : "El plan Comunidad no requiere tarjeta. Se activa cuando aprobamos los datos del colegio.";
-    if (submitLabel) submitLabel.textContent = paid
-      ? "Enviar solicitud del plan " + selectedPlan
-      : "Solicitar portal gratuito";
+      ? "El pago se habilita en Mis solicitudes cuando se apruebe la institución."
+      : "La página se activa después de verificar la solicitud.";
   }
 
   async function init() {
@@ -124,33 +112,63 @@
   function bind() {
     search.addEventListener("input", function () {
       window.clearTimeout(timer);
+      var request = ++searchSequence;
+      clearSchool();
+      results.replaceChildren();
+      search.setCustomValidity("");
       var query = search.value.trim();
       if (query.length < 2) {
         results.replaceChildren();
         return;
       }
-      timer = window.setTimeout(function () { void findSchools(query); }, 260);
+      timer = window.setTimeout(function () { void findSchools(query, request); }, 260);
+    });
+    document.getElementById("change-school").addEventListener("click", function () {
+      clearSchool();
+      search.value = "";
+      search.focus();
     });
     form.elements.requested_code.addEventListener("input", function () {
       requestedCodeEdited = true;
+      updateAddress();
     });
     form.elements.short_name.addEventListener("input", function () {
       if (!requestedCodeEdited) {
         form.elements.requested_code.value = slugify(form.elements.short_name.value);
+        updateAddress();
       }
     });
     form.addEventListener("submit", submit);
   }
 
-  async function findSchools(query) {
+  function clearSchool() {
+    officialCode.value = "";
+    officialName.value = "";
+    selected.hidden = true;
+    search.hidden = false;
+    search.labels[0].hidden = false;
+  }
+
+  function updateAddress() {
+    document.getElementById("request-address").textContent =
+      "colegiolibre.com/colegio/" + slugify(form.elements.requested_code.value);
+  }
+
+  async function findSchools(query, request) {
     results.innerHTML = '<div class="ib-result">Buscando…</div>';
-    var schools = await api.searchSchools(query, 8);
+    var schools;
+    try {
+      schools = await api.searchSchools(query, 8);
+    } catch (_) {
+      if (request === searchSequence) results.textContent = "No pudimos buscar colegios. Volvé a intentar.";
+      return;
+    }
+    if (request !== searchSequence) return;
     results.replaceChildren();
     schools.forEach(function (school) {
       var button = document.createElement("button");
       button.type = "button";
       button.className = "ib-result";
-      button.setAttribute("role", "option");
       button.innerHTML = "<strong></strong><small></small>";
       button.querySelector("strong").textContent = school.official_name || school.name;
       button.querySelector("small").textContent =
@@ -169,19 +187,26 @@
     officialCode.value = school.database_code || school.code;
     officialName.value = name;
     selected.hidden = false;
+    search.setCustomValidity("");
+    search.hidden = true;
+    search.labels[0].hidden = true;
     selected.querySelector("strong").textContent = name;
     selected.querySelector("small").textContent =
       [school.address, school.city, school.province].filter(Boolean).join(" · ");
     form.elements.short_name.value = name.replace(/^(instituto|colegio|escuela)\s+/i, "").slice(0, 50);
     form.elements.requested_code.value = slugify(form.elements.short_name.value);
     requestedCodeEdited = false;
+    updateAddress();
     results.replaceChildren();
+    document.getElementById("change-school").focus();
   }
 
   async function submit(event) {
     event.preventDefault();
+    if (sending) return;
     if (!officialCode.value) {
-      status.textContent = "Primero seleccioná el colegio oficial.";
+      search.setCustomValidity("Seleccioná un colegio de los resultados.");
+      search.reportValidity();
       return;
     }
     var data = new FormData(form);
@@ -199,33 +224,39 @@
       billing_cycle: String(data.get("billing_cycle") || selectedBilling),
       status: "pending"
     };
-    status.textContent = "Enviando solicitud…";
-    var result = await client.from("institution_requests").insert(record).select("id").single();
-    if (result.error && (result.error.code === "PGRST204" || /requested_plan|billing_cycle/i.test(result.error.message || ""))) {
-      var compatibleRecord = Object.assign({}, record);
-      delete compatibleRecord.requested_plan;
-      delete compatibleRecord.billing_cycle;
-      result = await client.from("institution_requests").insert(compatibleRecord).select("id").single();
-    }
-    if (result.error) {
-      status.textContent =
-        result.error.code === "23505"
-          ? "Ese colegio ya tiene una solicitud pendiente. ColegioLibre la revisará pronto."
-          : "No pudimos enviarla: " + result.error.message;
+    if (!record.requested_code || !record.short_name) {
+      status.textContent = "Completá el nombre visible y la dirección del portal.";
+      status.focus();
       return;
     }
-    status.textContent = "Solicitud enviada. ColegioLibre la revisará antes de activar el portal.";
-    form.reset();
-    selected.hidden = true;
-    officialCode.value = "";
-    officialName.value = "";
-    requestedCodeEdited = false;
-    form.elements.requested_plan.value = selectedPlan;
-    form.elements.billing_cycle.value = selectedBilling;
-    if (form.elements.contact_email) {
+    sending = true;
+    var button = document.getElementById("request-submit-label");
+    button.disabled = true;
+    status.textContent = "Enviando solicitud…";
+    try {
+      var result = await client.from("institution_requests").insert(record).select("id").single();
+      if (result.error) {
+        status.textContent = result.error.code === "23505"
+          ? "Este colegio ya tiene una solicitud pendiente."
+          : "No pudimos enviar la solicitud. Volvé a intentar.";
+        return;
+      }
+      status.textContent = "Solicitud enviada. Podés seguir su estado en Mis solicitudes.";
+      form.reset();
+      clearSchool();
+      updateAddress();
+      requestedCodeEdited = false;
+      form.elements.requested_plan.value = selectedPlan;
+      form.elements.billing_cycle.value = selectedBilling;
       form.elements.contact_email.value = currentUser.email || "";
+      try { await renderRequests(); } catch (_) {}
+    } catch (_) {
+      status.textContent = "No pudimos enviar la solicitud. Volvé a intentar.";
+    } finally {
+      sending = false;
+      button.disabled = false;
+      status.focus();
     }
-    await renderRequests();
   }
 
   async function renderRequests() {
