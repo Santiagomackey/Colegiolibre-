@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Portal del colegio | ColegioLibre</title>
+  <link rel="icon" href="/images/favicon-32.png">
+  <link rel="stylesheet" href="/portal-colegio.css?v=1">
+</head>
+<body>
+  <header class="masthead">
+    <a href="/" aria-label="Inicio de ColegioLibre"><img src="/images/logo-horizontal.webp" alt="ColegioLibre" width="154" height="53"></a>
+    <nav aria-label="ColegioLibre"><a href="/colegio">Mi colegio</a><a href="/instituciones">Instituciones</a></nav>
+  </header>
+  <main>
+    <p id="portal-status" role="status" aria-live="polite">Cargando portal…</p>
+    <a id="portal-login" class="button" hidden>Iniciar sesión</a>
+    <a id="portal-verification" class="button" href="/perfil?view=settings" hidden>Revisar mi colegio</a>
+    <div id="portal-content" hidden>
+      <div id="workspace" class="workspace" hidden>
+        <div><h1>Panel del colegio</h1><p id="plan-status"></p></div>
+        <div class="toolbar"><button type="button" id="mode" class="button secondary">Ver portal publicado</button><a class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a></div>
+      </div>
+      <div id="layout" class="layout">
+        <form id="editor" hidden>
+          <section class="panel">
+            <h2>Identidad y bienvenida</h2>
+            <label>Nombre visible <input name="name" maxlength="80"></label>
+            <label>Título de bienvenida <input name="title" maxlength="110"></label>
+            <label>Presentación <textarea name="description" rows="3" maxlength="650"></textarea></label>
+            <div class="colors">
+              <label>Color principal <input name="primary" type="color"></label>
+              <label>Color de acento <input name="accent" type="color"></label>
+            </div>
+            <label>URL HTTPS del logo <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
+            <label>Correo de contacto <input name="contact" type="email" maxlength="140"></label>
+          </section>
+          <section class="panel"><h2>Comunicados</h2><div id="edit-announcements"></div><button type="button" data-add="announcements" class="button secondary">Agregar comunicado</button></section>
+          <section class="panel"><h2>Enlaces y recursos</h2><div id="edit-resources"></div><button type="button" data-add="resources" class="button secondary">Agregar recurso</button></section>
+          <div class="toolbar editor-actions"><button type="submit" value="draft" class="button secondary">Guardar borrador</button><button type="submit" value="publish" class="button">Publicar cambios</button></div>
+        </form>
+        <div class="preview">
+          <p id="preview-label" hidden>Vista previa del borrador</p>
+          <div id="school-site"></div>
+        </div>
+      </div>
+      <section class="panel membership" id="membership" hidden>
+        <h2>Acceso de la comunidad</h2>
+        <p>Autorizá correos para que sus titulares puedan entrar con una cuenta verificada. Los miembros ya verificados de tu colegio también pueden acceder.</p>
+        <form id="member-form" class="toolbar"><label>Correo autorizado <input type="email" name="email" maxlength="160" required></label><button class="button" type="submit">Autorizar acceso</button></form>
+        <p id="member-status" role="status" aria-live="polite"></p>
+        <ul id="member-list"></ul>
+      </section>
+    </div>
+  </main>
+  <script src="/vendor/supabase.js"></script>
+  <script src="/supabase.js?v=20261110-recovery31"></script>
+  <script src="/portal-colegio.js?v=1"></script>
+</body>
+</html>

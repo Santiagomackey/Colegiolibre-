@@ -239,25 +239,20 @@
       item.dataset.status = request.status;
       item.innerHTML = "<span><strong></strong><small></small></span><span class=\"ib-request__state\"><b></b></span>";
       item.querySelector("strong").textContent = request.official_school_name;
-      item.querySelector("small").textContent = "/colegio/" + request.requested_code;
+      item.querySelector("small").textContent = request.requested_plan;
       item.querySelector("b").textContent =
         request.status === "pending" ? "Pendiente" :
         request.status === "approved" && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized" ? "Aprobada · falta pago" :
         request.status === "approved" ? "Aprobada" : "Rechazada";
       if (request.status === "approved") {
-        if (!request.requested_plan || request.requested_plan === "Comunidad" || request.subscription_status === "authorized") {
-          var link = document.createElement("a");
-          link.href = "/colegio/" + encodeURIComponent(request.requested_code);
-          link.textContent = "Abrir portal";
-          item.querySelector(".ib-request__state").appendChild(link);
-        }
-        if (request.requested_plan && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized") {
-          var pay = document.createElement("button");
-          pay.type = "button";
-          pay.className = "ib-pay-button";
-          pay.textContent = request.subscription_status === "pending" ? "Continuar pago" : "Contratar plan";
-          pay.addEventListener("click", function () { void startPayment(request.id, pay); });
-          item.querySelector(".ib-request__state").appendChild(pay);
+        const controls = item.querySelector(".ib-request__state");
+        if (request.requested_plan === "Comunidad") {
+          const link = document.createElement("a");
+          link.href = "/colegio?code=" + encodeURIComponent(request.official_school_code);
+          link.textContent = "Ver comunidad";
+          controls.append(link);
+        } else {
+          void renderBilling(request, item);
         }
       }
       requestList.appendChild(item);
@@ -265,24 +260,88 @@
     if (!requestList.children.length) requestList.innerHTML = "<p>Todavía no enviaste solicitudes.</p>";
   }
 
-  async function startPayment(requestId, button) {
-    button.disabled = true;
-    button.textContent = "Abriendo Mercado Pago…";
+  async function billing(requestId, options) {
+    const session = await client.auth.getSession();
+    const token = session.data?.session?.access_token;
+    if (!token) throw Error("Iniciá sesión para continuar.");
+    const params = new URLSearchParams({ request_id:requestId, refresh:"1" });
+    const response = await fetch("/api/mercadopago-subscription" + (options ? "" : "?" + params), {
+      method:options?"POST":"GET",
+      headers:{ "Content-Type":"application/json", Authorization:"Bearer " + token },
+      body:options?JSON.stringify({ request_id:requestId,...options }):undefined
+    });
+    const result = await response.json();
+    if (!response.ok) throw Error(result.error || "No pudimos consultar el plan.");
+    return result;
+  }
+
+  async function renderBilling(request, item) {
+    const controls = item.querySelector(".ib-request__state");
+    const label = item.querySelector("b");
+    label.textContent = "Consultando plan…";
     try {
-      var session = await client.auth.getSession();
-      var token = session.data?.session?.access_token;
-      var response = await fetch("/api/mercadopago-subscription", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
-        body: JSON.stringify({ request_id: requestId })
-      });
-      var result = await response.json();
-      if (!response.ok || !result.init_point) throw new Error(result.error || "No pudimos abrir el pago.");
-      window.location.href = result.init_point;
+      const plan = await billing(request.id);
+      label.textContent = plan.active ? "Plan activo" : plan.status === "authorized" ? "Esperando primer cobro" :
+        plan.status === "pending" ? "Pago pendiente" : plan.status === "cancelled" ? "Renovación cancelada" : "Aprobada";
+      if (plan.paidThrough) {
+        const until = document.createElement("small");
+        until.textContent = "Pago hasta el " + new Date(plan.paidThrough).toLocaleDateString("es-AR");
+        controls.append(until);
+      }
+      if (plan.active) {
+        const link = document.createElement("a");
+        link.href = "/portal-colegio?code=" + encodeURIComponent(request.official_school_code);
+        link.textContent = "Abrir panel privado";
+        controls.append(link);
+      }
+      if (!plan.enabled) {
+        const help = document.createElement("small");
+        help.textContent = "Los cobros en línea todavía no están habilitados.";
+        controls.append(help);
+        return;
+      }
+      if (["none","pending"].includes(plan.status)) {
+        const cycle = document.createElement("select");
+        cycle.setAttribute("aria-label","Frecuencia de facturación");
+        const prices = request.requested_plan === "Red Escolar" ? ["$59.900","$599.000"] : ["$24.900","$249.000"];
+        cycle.add(new Option("Mensual · ARS " + prices[0],"monthly"));
+        cycle.add(new Option("Anual · ARS " + prices[1],"annual"));
+        cycle.value = plan.cycle || request.billing_cycle || "monthly";
+        cycle.disabled = plan.status === "pending";
+        controls.append(cycle);
+        addBillingButton(controls,plan.status === "pending" ? "Continuar pago" : "Contratar con Mercado Pago", async () => {
+          const result = await billing(request.id,{cycle:cycle.value});
+          window.location.assign(result.init_point);
+        });
+      }
+      if (plan.canCancel) {
+        addBillingButton(controls,"Cancelar renovación",async () => {
+          if (!window.confirm("¿Cancelar la renovación de este plan? El acceso continúa hasta el fin del período pagado.")) return;
+          await billing(request.id,{action:"cancel"});
+          await renderRequests();
+        });
+      }
     } catch (error) {
-      status.textContent = error.message;
-      button.disabled = false;
-      button.textContent = "Reintentar pago";
+      label.textContent = error.message;
+      addBillingButton(controls,"Volver a consultar",renderRequests);
     }
+  }
+
+  function addBillingButton(container, title, handler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ib-pay-button";
+    button.textContent = title;
+    button.addEventListener("click",async () => {
+      button.disabled = true;
+      try { await handler(); }
+      catch (error) {
+        const message = document.createElement("small");
+        message.setAttribute("role","status");
+        message.textContent = error.message;
+        button.after(message);
+      } finally { button.disabled = false; }
+    });
+    container.append(button);
   }
 })();
