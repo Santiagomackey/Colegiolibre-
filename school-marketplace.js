@@ -43,7 +43,7 @@
     return article;
   }
 
-  window.colegioLibreSchoolMarketplace = function ({header, demo, school, load}) {
+  window.colegioLibreSchoolMarketplace = function ({header, demo, preview, school, load}) {
     const place = node('section','school-marketplace');
     place.id = 'publicaciones';
     place.setAttribute('aria-labelledby','school-market-title');
@@ -52,16 +52,19 @@
     form.setAttribute('aria-label','Buscar en el colegio');
     const search = node('input','');
     search.type = 'search';
+    search.disabled = Boolean(preview);
     search.placeholder = '¿Qué material estás buscando?';
     search.setAttribute('aria-label','Buscar material escolar');
     search.maxLength = 100;
     const searchButton = node('button','','Buscar');
+    searchButton.disabled = Boolean(preview);
     const categoryNav = node('nav','school-categories');
     categoryNav.setAttribute('aria-label','Categorías del colegio');
     const heading = node('div','market-heading');
     const title = node('h2','','Publicaciones del colegio');
     title.id = 'school-market-title';
     const sort = node('select','');
+    if (preview) sort.disabled = true;
     sort.setAttribute('aria-label','Ordenar publicaciones');
     for (const [id,label] of [['recent','Más recientes'],['price','Menor precio'],['price_desc','Mayor precio']]) {
       const option = node('option','',label);
@@ -84,6 +87,7 @@
     const categoryButtons = ['',...categories].map(value => {
       const button = node('button','',value || 'Todo');
       button.type = 'button';
+      button.disabled = Boolean(preview);
       button.setAttribute('aria-pressed',String(value === ''));
       button.addEventListener('click', () => {
         category = value;
@@ -141,6 +145,10 @@
       next.textContent = 'Ver más publicaciones';
       void update(append);
     });
-    return {place, start:() => void update()};
+    return {place, start() {
+      if (!preview) { void update(); return; }
+      if (demo) for (const product of samples) grid.append(card(product,school,true));
+      else status.textContent = 'Acá se mostrarán las publicaciones disponibles del colegio.';
+    }};
   };
 })();
