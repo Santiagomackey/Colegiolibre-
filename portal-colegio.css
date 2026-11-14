@@ -163,7 +163,7 @@ select { width: 100%; padding: .6rem; background: #fff; border: 1px solid var(--
 .school-publication .school-hero { min-height: clamp(155px, 24vw, 290px); }
 .school-marketplace { margin-block: 1.6rem 2rem; scroll-margin-top: 1rem; }
 .market-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .6rem; margin-bottom: .9rem; }
-.market-heading h2 { font-size: clamp(1.2rem,2.6vw,1.7rem); letter-spacing: -.025em; }
+.market-heading :is(h1,h2) { font-size: clamp(1.2rem,2.6vw,1.7rem); letter-spacing: -.025em; }
 .market-heading select { width: auto; max-width: 100%; }
 .market-status { color: #465c75; padding: 1rem; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .market-status:empty { display: none; }
@@ -224,24 +224,19 @@ a.market-card-link:hover h3 { text-decoration: underline; }
 .school-categories button[aria-pressed=true] { background: var(--school-ink); color: var(--school-color); border-color: transparent; }
 .school-search button { white-space: nowrap; }
 #school-site .school-hero {
-  min-height: clamp(210px, 28cqi, 360px);
-  background: var(--school-color);
-  position: relative;
-  isolation: isolate;
-  border: 0;
-  border-radius: 18px;
+  min-height: 0;
+  background: #fff;
+  color: #16243b;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
 }
-.school-hero:not(.has-cover) {
-  background: radial-gradient(ellipse at 96% 106%, color-mix(in srgb, var(--school-accent) 26%, transparent), transparent 59%), var(--school-color) !important;
-}
-.school-hero:not(.has-cover) .school-hero-copy { z-index: 1; }
-.school-hero-copy { gap: .75rem; }
-.school-hero :is(h1,h2) { max-width: 20ch; font-size: clamp(1.74rem, 4.8cqi, 3.95rem); line-height: 1.03; overflow-wrap: anywhere; }
-.school-hero p { max-width: 50ch; font-size: clamp(.88rem, 1.5cqi, 1.04rem); }
-.school-cta { justify-self: start; background: var(--school-accent); color: var(--accent-ink); padding: .68rem .95rem; border-radius: 8px; font-weight: 750; font-size: .87rem; text-decoration: none; margin-top: .25rem; }
-.school-cta:hover { text-decoration: underline; }
-.school-art { position: absolute; z-index: 0; pointer-events: none; width: 44%; max-height: 90%; object-fit: contain; bottom: 0; right: 4%; }
-.school-hero.has-art .school-hero-copy { width: 56%; }
+#school-site .school-hero.has-cover { padding: 0; }
+.school-hero-copy { gap: .45rem; }
+.school-hero :is(h1,h2) { max-width: none; font-size: clamp(1.25rem, 3cqi, 2rem); line-height: 1.15; overflow-wrap: anywhere; }
+.school-hero p { max-width: 65ch; color: #435770; font-size: .95rem; }
+#school-site .school-hero.image-only { display: block; }
+.school-hero.image-only .school-cover { height: clamp(120px, 24cqi, 240px); }
 .school-hero.cover-split .school-cover { order: 2; }
 .school-hero.cover-split { grid-template-columns: minmax(0,1.08fr) minmax(0,.92fr); }
 .school-hero.cover-split .school-cover { max-height: none; min-height: 0; }
@@ -273,8 +268,6 @@ a.market-card-link:hover h3 { text-decoration: underline; }
   #school-site .school-navigation { grid-column: 1; grid-row: 3; }
   .school-hero.cover-split { grid-template-columns: minmax(0,1fr); }
   .school-hero.cover-split .school-cover { height: 160px; }
-  .school-hero.has-art .school-hero-copy { width: 100%; }
-  .school-art { display: none; }
 }
 
 /* School editor */
@@ -316,5 +309,3 @@ a.market-card-link:hover h3 { text-decoration: underline; }
   .editing .preview { position: relative; top: 0; max-height: 620px; }
   .editing .workspace { align-items: flex-start; }
 }
-.school-hero.banner-without-image .school-hero-copy { justify-items: center; text-align: center; }
-.school-hero.banner-without-image .school-cta { justify-self: center; }
