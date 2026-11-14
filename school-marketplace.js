@@ -61,7 +61,7 @@
     const categoryNav = node('nav','school-categories');
     categoryNav.setAttribute('aria-label','Categorías del colegio');
     const heading = node('div','market-heading');
-    const title = node('h2','','Publicaciones del colegio');
+    const title = node(preview ? 'h2' : 'h1','','Publicaciones del colegio');
     title.id = 'school-market-title';
     const sort = node('select','');
     if (preview) sort.disabled = true;

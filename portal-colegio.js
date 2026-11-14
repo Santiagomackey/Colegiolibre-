@@ -49,36 +49,29 @@
     const color = /^#[0-9a-f]{6}$/i.test(content.primary) ? content.primary : '#0B2E6B';
     host.style.setProperty('--school-color',color);
     host.style.setProperty('--school-ink',ink(color));
-    hero.style.setProperty('--hero-ink',ink(color));
     const accent = /^#[0-9a-f]{6}$/i.test(content.accent) ? content.accent : '#67C23A';
     host.style.setProperty('--school-accent',accent);
-    hero.style.setProperty('--accent-ink',ink(accent));
+    const name = content.name || portal.school.name;
+    const title = content.title && content.title !== 'Bienvenidos a nuestra comunidad' && content.title !== name ? content.title : '';
+    const hasIntro = Boolean(title || content.description);
     const cover = urlFor(content.cover);
     hero.classList.toggle('cover-compact',content.layout === 'compact');
-    hero.classList.toggle('banner-without-image',content.layout === 'banner' && !cover);
-    const fallbackCover = !cover && (!content.layout || content.layout === 'split');
-    if (fallbackCover) {
-      const art = element('img','','school-art');
-      art.alt = '';
-      art.src = '/images/materiales.webp';
-      hero.append(art);
-      hero.classList.add('has-art');
-    }
+
     if (cover) {
       hero.classList.add('has-cover', content.layout === 'split' ? 'cover-split' : 'cover-banner');
       const photo = element('img','','school-cover');
       photo.alt = '';
       photo.referrerPolicy = 'no-referrer';
-      photo.src = cover.href;
       photo.addEventListener('error',() => {
         photo.remove();
         hero.classList.remove('has-cover','cover-banner','cover-split');
+        if (!hasIntro) hero.remove();
       });
+      photo.src = cover.href;
       hero.append(photo);
     }
     const copy = element('div','','school-hero-copy');
     const brand = element('a','','school-brand');
-    const name = content.name || portal.school.name;
     brand.href = '#inicio';
     const logo = urlFor(content.logo);
     const monogram = element('span',name.trim().split(/\s+/).slice(0,2).map(word => word[0]).join('').toUpperCase(),'school-monogram');
@@ -119,17 +112,14 @@
     }
     if (nav.childElementCount) header.append(nav);
     host.append(header);
-    copy.append(element(editing ? 'h2' : 'h1', content.title || name));
-    if (content.description) copy.append(element('p',content.description));
-    hero.append(copy);
-    host.append(hero);
-    const browse = element('a','Explorar materiales','school-cta');
-    browse.href = '#publicaciones';
-    if (editing) browse.addEventListener('click',event => {
-      event.preventDefault();
-      host.querySelector('#publicaciones')?.scrollIntoView({block:'nearest'});
-    });
-    copy.append(browse);
+    if (hasIntro) {
+      if (title) copy.append(element('h2',title));
+      if (content.description) copy.append(element('p',content.description));
+      hero.append(copy);
+    } else {
+      hero.classList.add('image-only');
+    }
+    if (cover || hasIntro) host.append(hero);
     const market = window.colegioLibreSchoolMarketplace({
       header,demo,preview:editing,school:name,load:params => api(undefined,false,{...params,catalog:'1'})
     });
@@ -388,8 +378,7 @@
       portal = {
         school: { name:'Instituto del Parque' },
         content: {
-          layout:'split', name:'Instituto del Parque', title:'Materiales para tu próximo año escolar', primary:'#123a30', accent:'#d8ef93',
-          description:'Encontrá libros, uniformes y útiles entre las familias del Instituto del Parque.',
+          layout:'split', name:'Instituto del Parque', primary:'#123a30', accent:'#d8ef93',
           announcements:[
             {title:'Feria de intercambio',body:'El viernes nos encontramos en la biblioteca para intercambiar libros y útiles.'},
             {title:'Prepará los materiales del próximo ciclo',body:'Revisá la lista de tu curso antes de comprar o publicar materiales.'}
