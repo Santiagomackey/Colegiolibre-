@@ -79,6 +79,7 @@ const academicFieldsRow = document.querySelector("#academic-fields-row");
 const schoolLevelSelect = document.querySelector("#nivel-escolar");
 const schoolYearSelect = document.querySelector("#anio-escolar");
 const subjectSelect = document.querySelector("#materia");
+const subjectFieldGroup = document.querySelector("#subject-field-group");
 const subcategoryFieldGroup = document.querySelector("#subcategory-field-group");
 const subcategoryFieldLabel = document.querySelector("#subcategory-field-label");
 const subcategorySelect = document.querySelector("#subcategoria");
@@ -632,6 +633,7 @@ function updateCategoryFields() {
   resetDynamicFieldValues();
   dynamicProductFields.hidden = !config;
   academicFieldsRow.hidden = !config?.academic;
+  subjectFieldGroup.hidden = !config?.subject;
   subcategoryFieldGroup.hidden = !Array.isArray(config?.options);
   sizeFieldGroup.hidden = !Array.isArray(config?.sizes);
 
@@ -661,7 +663,7 @@ function updateCategoryFields() {
   }
 
   if (config.subject) {
-    setSelectOptions(subjectSelect, "Seleccioná la materia", subjectOptions);
+    setSelectOptions(subjectSelect, config.optionalSubject ? "Sin materia" : "Seleccioná la materia", subjectOptions);
     subjectSelect.disabled = false;
     subjectSelect.required = !config.optionalSubject;
   }
