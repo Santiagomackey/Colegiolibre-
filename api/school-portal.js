@@ -1,4 +1,4 @@
-import { active, cleanContent, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolCodes, schoolFor, select, send, userFor } from '../server/school-portal.js';
+import { active, cleanContent, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolCodes, schoolFor, schoolPortalPath, select, send, userFor } from '../server/school-portal.js';
 
 export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return send(res, 405, { error: 'Método no permitido.' });
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
         const [published] = await select(cfg,'school_portal_content','published_at',{ school_id:school.id });
         if (!published?.published_at) return send(res,404,{ error:'Tu colegio todavía está preparando el portal.' });
       }
-      return send(res,200,{ available:true });
+      return send(res,200,{ available:true, path:await schoolPortalPath(cfg,school) });
     }
     const manage = manager && req.query?.manage === '1';
     const members = manage
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
     if (!manager && !portal?.published) return send(res, 404, { error: 'Tu colegio todavía está preparando el portal.' });
     const { code, city, name, display_name } = school;
     return send(res, 200, {
-      school: { code, city, name: display_name || name }, manager, subscription: manage ? subscription : undefined,
+      school: { code, city, name: display_name || name, path:await schoolPortalPath(cfg,school) }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       content: portal?.published || portalDefaults,
       ...(manage && { draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })

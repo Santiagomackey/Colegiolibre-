@@ -14,6 +14,7 @@ const {
 } = window.colegioLibreApi;
 
 const schoolCode = (
+  window.location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] ||
   new URLSearchParams(window.location.search).get("code") || ""
 )
   .trim()

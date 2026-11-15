@@ -54,6 +54,17 @@ export async function schoolFor(cfg, code) {
     await first(cfg, 'schools', schoolFields, { community_code: value, is_active: true }, { limit: '1' });
 }
 
+export async function schoolPortalPath(cfg, school) {
+  const official = school.code.toLowerCase();
+  const alias = school.community_code?.toLowerCase();
+  let segment = official;
+  if (alias && alias !== official && /^[a-z0-9_-]{1,80}$/.test(alias)) {
+    const collision = await first(cfg, 'schools', 'id', { code: alias.toUpperCase(), is_active: true }, { limit: '1' });
+    if (!collision || collision.id === school.id) segment = alias;
+  }
+  return '/comunidad/' + encodeURIComponent(segment);
+}
+
 export async function schoolAccess(cfg, user, school) {
   const profile = await first(cfg, 'profiles', 'school_code,school_verification_status,account_status', { id: user.id }, { limit: '1' });
   if (['banned','suspended'].includes(profile?.account_status)) return {};
