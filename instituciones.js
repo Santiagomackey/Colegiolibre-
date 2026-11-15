@@ -77,6 +77,7 @@
     var copy = document.getElementById("selected-plan-copy");
     var explanation = document.getElementById("payment-explanation");
     var paid = selectedPlan !== "Comunidad";
+    updateAddress();
     if (summary) summary.dataset.plan = selectedPlan;
     if (name) name.textContent = selectedPlan;
     if (copy) copy.textContent = paid
@@ -96,6 +97,7 @@
       return;
     }
     bind();
+    updateAddress();
     if (form.elements.contact_email && !form.elements.contact_email.value) {
       form.elements.contact_email.value = currentUser.email || "";
     }
@@ -151,7 +153,8 @@
 
   function updateAddress() {
     document.getElementById("request-address").textContent =
-      "colegiolibre.com/colegio/" + slugify(form.elements.requested_code.value);
+      "colegiolibre.com/" + (selectedPlan === "Comunidad" ? "colegio/" : "comunidad/") +
+      (slugify(form.elements.requested_code.value) || "nombre-del-colegio");
   }
 
   async function findSchools(query, request) {
@@ -319,9 +322,9 @@
         until.textContent = "Pago hasta el " + new Date(plan.paidThrough).toLocaleDateString("es-AR");
         controls.append(until);
       }
-      if (plan.active) {
+      if (plan.active && /^\/comunidad\/[a-z0-9_-]{1,80}$/.test(plan.portalPath || "")) {
         const link = document.createElement("a");
-        link.href = "/comunidad/" + encodeURIComponent(request.official_school_code.toLowerCase()) + "/editor";
+        link.href = plan.portalPath + "/editor";
         link.textContent = "Abrir panel privado";
         controls.append(link);
       }

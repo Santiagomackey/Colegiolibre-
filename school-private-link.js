@@ -1,6 +1,6 @@
 (async () => {
   const link = document.querySelector('#school-private-link');
-  const code = new URLSearchParams(location.search).get('code');
+  const code = location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] || new URLSearchParams(location.search).get('code');
   if (!link || !code) return;
   try {
     const { data } = await window.colegioLibreSupabase.auth.getSession();
@@ -9,7 +9,9 @@
       headers: { Authorization:'Bearer ' + data.session.access_token }, cache:'no-store'
     });
     if (!response.ok) return;
-    link.href = '/comunidad/' + encodeURIComponent(code.toLowerCase());
+    const { path } = await response.json();
+    if (!/^\/comunidad\/[a-z0-9_-]{1,80}$/.test(path || '')) return;
+    link.href = path;
     link.hidden = false;
   } catch (_) {
     // The public school page is usable even when the private portal is unavailable.

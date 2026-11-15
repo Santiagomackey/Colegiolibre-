@@ -1,4 +1,4 @@
-import { active, config, fail, schoolAccess, schoolFor, select, send, userFor, UUID } from '../server/school-portal.js';
+import { active, config, fail, schoolAccess, schoolFor, schoolPortalPath, select, send, userFor, UUID } from '../server/school-portal.js';
 import { beginSubscription, mp, subscriptionFields, syncSubscription } from '../server/school-billing.js';
 
 export default async function handler(req, res) {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       const current = stored?.provider_subscription_id && enabled && req.query?.refresh === '1'
         ? await syncSubscription(cfg, stored) : stored;
       return send(res,200,{ enabled, active:active(current), status:current?.status || 'none', paidThrough:current?.paid_through,
-        cycle:current?.billing_cycle, canCancel:Boolean(current?.provider_subscription_id && current.status !== 'cancelled') });
+        cycle:current?.billing_cycle, portalPath:active(current) ? await schoolPortalPath(cfg,school) : undefined, canCancel:Boolean(current?.provider_subscription_id && current.status !== 'cancelled') });
     }
     if (req.body?.action === 'cancel') {
       if (!stored?.provider_subscription_id) throw fail(409, 'No hay una suscripción que cancelar.');

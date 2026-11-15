@@ -309,3 +309,5 @@ a.market-card-link:hover h3 { text-decoration: underline; }
   .editing .preview { position: relative; top: 0; max-height: 620px; }
   .editing .workspace { align-items: flex-start; }
 }
+#school-site-address { overflow-wrap: anywhere; }
+#share-feedback:empty { display: none; }

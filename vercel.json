@@ -15,7 +15,7 @@
     },
     {
       "source": "/colegio/:code",
-      "destination": "/"
+      "destination": "/colegio"
     }
   ],
   "headers": [

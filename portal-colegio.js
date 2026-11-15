@@ -7,14 +7,14 @@
   const code = siteCode || params.get('code');
   const demo = params.get('demo') === '1' && !code;
   const wantsEditor = Boolean(route?.[2]) || (!siteCode && params.get('edit') === '1');
-  const siteUrl = value => '/comunidad/' + encodeURIComponent(value.toLowerCase());
+  const siteUrl = () => portal.school.path || '/comunidad/' + encodeURIComponent(portal.school.code.toLowerCase());
   const form = $('#editor');
   const status = $('#portal-status');
   const fields = ['name','title','description','primary','accent','logo','cover','layout','sectionOrder','contact'];
   const lists = { announcements: { max:8, key:'body' }, resources: { max:12, key:'url' } };
   let portal, editing = false, saving = false, dirty = false, boot = 0, previewFrame;
   const editorFeedback = $('#editor-feedback');
-  const editorUrl = value => siteUrl(value) + '/editor';
+  const editorUrl = () => siteUrl() + '/editor';
 
   function element(tag, text, className) {
     const node = document.createElement(tag);
@@ -107,7 +107,7 @@
     }
     if (portal.manager && !editing) {
       const link = element('a','Administrar sitio','school-admin-link');
-      link.href = editorUrl(portal.school.code);
+      link.href = editorUrl();
       nav.append(link);
     }
     if (nav.childElementCount) header.append(nav);
@@ -235,7 +235,18 @@
       tabs[next].focus();
     });
   }
+  $('#copy-site-link').addEventListener('click', async () => {
+    const feedback = $('#share-feedback');
+    try {
+      await navigator.clipboard.writeText(new URL(siteUrl(),location.origin).href);
+      feedback.textContent = 'Enlace copiado.';
+    } catch (_) {
+      feedback.textContent = 'Copiá la dirección que aparece debajo del nombre del colegio.';
+    }
+  });
+
   function publicationStatus() {
+    $('#copy-site-link').hidden = demo || !portal.publishedAt;
     $('#publication-status').textContent = dirty ? 'Cambios sin guardar' : portal.draftSaved ? 'Borrador guardado' :
       portal.publishedAt ? 'Publicado el ' + new Date(portal.publishedAt).toLocaleDateString('es-AR') : 'Pendiente de publicación';
   }
@@ -349,8 +360,11 @@
 
   function prepareEditor() {
     $('#editor-school').textContent = portal.school.name;
-    $('#published-site-link').href = demo ? '/portal-colegio?demo=1' : siteUrl(portal.school.code);
+    $('#published-site-link').href = demo ? '/portal-colegio?demo=1' : siteUrl();
     $('#manage-plan').hidden = demo;
+    $('#school-site-address').hidden = demo;
+    $('#school-site-address').textContent = demo ? '' : location.host + siteUrl();
+    $('#share-feedback').textContent = '';
     $('#member-filter').value = '';
     memberForm.reset();
     memberStatus.textContent = editorFeedback.textContent = '';
@@ -419,10 +433,9 @@
       $('#platform-header').hidden = !canEdit;
       document.body.classList.toggle('school-publication',!canEdit);
       $('#workspace').hidden = !canEdit;
-      if (canEdit) {
-        if (!siteCode) history.replaceState(null,'',editorUrl(portal.school.code));
-        prepareEditor();
-      } else if (!siteCode || wantsEditor) history.replaceState(null,'',siteUrl(portal.school.code) + location.hash);
+      const canonicalPath = canEdit ? editorUrl() : siteUrl();
+      if (location.pathname !== canonicalPath) history.replaceState(null,'',canonicalPath + location.hash);
+      if (canEdit) prepareEditor();
       status.textContent = '';
       if (!canEdit && !portal.publishedAt) {
         $('#portal-content').hidden = true;
@@ -430,7 +443,7 @@
         status.textContent = 'El sitio todavía no está publicado.';
         const link = $('#portal-verification');
         if (portal.manager) {
-          link.href = editorUrl(portal.school.code);
+          link.href = editorUrl();
           link.textContent = 'Abrir editor';
           link.hidden = false;
         }

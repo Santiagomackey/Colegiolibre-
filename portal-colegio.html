@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColegioLibre</title>
   <link rel="icon" href="/images/favicon-32.png">
-  <link rel="stylesheet" href="/portal-colegio.css?v=6">
+  <link rel="stylesheet" href="/portal-colegio.css?v=7">
 </head>
 <body>
   <header class="masthead" id="platform-header">
@@ -24,8 +24,11 @@
           <p class="workspace-kicker" id="editor-school"></p>
           <h1>Editor del sitio</h1>
           <p id="plan-status"></p>
+          <p id="school-site-address" hidden></p>
+          <p id="share-feedback" role="status" aria-live="polite"></p>
         </div>
         <div class="toolbar">
+          <button id="copy-site-link" class="button secondary" type="button" hidden>Copiar enlace</button>
           <a id="published-site-link" class="button secondary" target="_blank" rel="noopener">Abrir sitio ↗</a>
           <a id="manage-plan" class="button secondary" href="/instituciones#solicitudes">Gestionar plan</a>
         </div>
@@ -101,6 +104,6 @@
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
   <script src="/school-marketplace.js?v=3"></script>
-  <script src="/portal-colegio.js?v=6"></script>
+  <script src="/portal-colegio.js?v=7"></script>
 </body>
 </html>
