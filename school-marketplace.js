@@ -43,7 +43,7 @@
     return article;
   }
 
-  window.colegioLibreSchoolMarketplace = function ({header, demo, preview, school, load}) {
+  window.colegioLibreSchoolMarketplace = function ({header, demo, preview, school, catalogTitle, load}) {
     const place = node('section','school-marketplace');
     place.id = 'publicaciones';
     place.setAttribute('aria-labelledby','school-market-title');
@@ -61,7 +61,7 @@
     const categoryNav = node('nav','school-categories');
     categoryNav.setAttribute('aria-label','Categorías del colegio');
     const heading = node('div','market-heading');
-    const title = node(preview ? 'h2' : 'h1','','Publicaciones del colegio');
+    const title = node(preview ? 'h2' : 'h1','',catalogTitle || 'Publicaciones del colegio');
     title.id = 'school-market-title';
     const sort = node('select','');
     if (preview) sort.disabled = true;
