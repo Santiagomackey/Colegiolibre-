@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColegioLibre</title>
   <link rel="icon" href="/images/favicon-32.png">
-  <link rel="stylesheet" href="/portal-colegio.css?v=7">
+  <link rel="stylesheet" href="/portal-colegio.css?v=8">
 </head>
 <body>
   <header class="masthead" id="platform-header">
@@ -48,6 +48,7 @@
               <label>Nombre visible <input name="name" maxlength="80" autocomplete="off"></label>
               <label>Título de bienvenida <input name="title" maxlength="110"></label>
               <label>Presentación <textarea name="description" rows="4" maxlength="650"></textarea></label>
+              <label>Título del catálogo <input name="catalogTitle" maxlength="80" placeholder="Publicaciones del colegio"></label>
               <label>Correo de contacto <input name="contact" type="email" maxlength="140"></label>
             </section>
             <section class="panel" id="appearance-panel" role="tabpanel" aria-labelledby="tab-appearance" hidden>
@@ -56,7 +57,12 @@
                 <label>Color principal <input name="primary" type="color"></label>
                 <label>Color de acento <input name="accent" type="color"></label>
               </div>
-              <label>Logo <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
+              <label>Logo desde un enlace <input name="logo" type="url" maxlength="600" placeholder="https://"></label>
+              <label>Subir logo <input id="logo-file" type="file" accept="image/png,image/webp,image/jpeg"></label>
+              <p class="field-help">PNG, JPG o WebP de hasta 2 MB. Usá un escudo autorizado para difusión pública.</p>
+              <label>Encabezado <select name="headerStyle"><option value="light">Fondo blanco</option><option value="branded">Color del colegio</option></select></label>
+              <label>Fondo del catálogo <select name="surface"><option value="neutral">Gris claro</option><option value="white">Blanco</option><option value="tinted">Tono del colegio</option></select></label>
+              <label>Bordes de las tarjetas <select name="cardStyle"><option value="rounded">Redondeados</option><option value="square">Rectos</option></select></label>
               <label>Imagen de portada <input name="cover" type="url" maxlength="600" placeholder="https://"></label>
               <p class="field-help">Usá enlaces HTTPS directos. Si dejás la portada vacía, el catálogo aparece sin imagen de portada.</p>
               <label>Diseño de portada <select name="layout"><option value="split">Imagen a la derecha</option><option value="banner">Imagen panorámica</option><option value="compact">Portada compacta</option></select></label>
@@ -73,7 +79,13 @@
           </form>
           <section class="panel membership" id="membership" role="tabpanel" aria-labelledby="tab-members" hidden>
             <h2>Acceso al portal</h2>
-            <p>Autorizá el correo con el que cada familia inicia sesión. Los miembros con pertenencia verificada también pueden entrar.</p>
+            <label>Quién puede entrar
+              <select name="membershipMode" form="editor">
+                <option value="community">Miembros verificados y familias autorizadas</option>
+                <option value="verified">Solo miembros verificados del colegio</option>
+              </select>
+            </label>
+            <p>Los cambios en esta opción se aplican al publicar. Los correos autorizados deben estar confirmados en la cuenta de ColegioLibre.</p>
             <form id="member-form"><label>Correo autorizado <input type="email" name="email" maxlength="160" required></label><button class="button" type="submit">Autorizar acceso</button></form>
             <p id="member-status" role="status" aria-live="polite"></p>
             <label id="member-filter-label">Buscar correo <input id="member-filter" type="search"></label>
@@ -103,7 +115,7 @@
   </main>
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
-  <script src="/school-marketplace.js?v=3"></script>
-  <script src="/portal-colegio.js?v=7"></script>
+  <script src="/school-marketplace.js?v=4"></script>
+  <script src="/portal-colegio.js?v=8"></script>
 </body>
 </html>

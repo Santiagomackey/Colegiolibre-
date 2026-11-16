@@ -10,9 +10,10 @@
   const siteUrl = () => portal.school.path || '/comunidad/' + encodeURIComponent(portal.school.code.toLowerCase());
   const form = $('#editor');
   const status = $('#portal-status');
-  const fields = ['name','title','description','primary','accent','logo','cover','layout','sectionOrder','contact'];
+  const fields = ['name','title','description','primary','accent','logo','cover','layout','sectionOrder','contact','catalogTitle','headerStyle','surface','cardStyle','membershipMode'];
   const lists = { announcements: { max:8, key:'body' }, resources: { max:12, key:'url' } };
   let portal, editing = false, saving = false, dirty = false, boot = 0, previewFrame;
+  let demoLogo;
   const editorFeedback = $('#editor-feedback');
   const editorUrl = () => siteUrl() + '/editor';
 
@@ -45,6 +46,9 @@
   function draw(content) {
     const host = $('#school-site');
     host.replaceChildren();
+    host.dataset.header = content.headerStyle || 'light';
+    host.dataset.surface = content.surface || 'neutral';
+    host.dataset.cards = content.cardStyle || 'rounded';
     const hero = element('section', '', 'school-hero');
     const color = /^#[0-9a-f]{6}$/i.test(content.primary) ? content.primary : '#0B2E6B';
     host.style.setProperty('--school-color',color);
@@ -76,12 +80,12 @@
     const logo = urlFor(content.logo);
     const monogram = element('span',name.trim().split(/\s+/).slice(0,2).map(word => word[0]).join('').toUpperCase(),'school-monogram');
     brand.append(monogram,element('span',name));
-    if (logo) {
+    if (logo || (demo && editing && demoLogo)) {
       const img = element('img');
       img.alt = '';
       img.referrerPolicy = 'no-referrer';
       img.addEventListener('load',() => monogram.replaceWith(img));
-      img.src = logo.href;
+      img.src = demo && editing && demoLogo ? demoLogo : logo.href;
     }
     const header = element('header','','school-header');
     header.id = 'inicio';
@@ -121,7 +125,7 @@
     }
     if (cover || hasIntro) host.append(hero);
     const market = window.colegioLibreSchoolMarketplace({
-      header,demo,preview:editing,school:name,load:params => api(undefined,false,{...params,catalog:'1'})
+      header,demo,preview:editing,school:name,catalogTitle:content.catalogTitle,load:params => api(undefined,false,{...params,catalog:'1'})
     });
     if (content.sectionOrder !== 'community') host.append(market.place);
 
@@ -265,7 +269,53 @@
     $('#school-site').classList.toggle('phone-preview',editing && $('#preview-tools [data-device=phone]').getAttribute('aria-pressed') === 'true');
     draw(editing ? read() : portal.content);
   }
-  form.addEventListener('input',changed);
+  form.addEventListener('input',event => {
+    if (event.target.id === 'logo-file') return;
+    if (event.target.name === 'logo' && demoLogo) {
+      URL.revokeObjectURL(demoLogo);
+      demoLogo = '';
+    }
+    changed();
+  });
+  form.elements.membershipMode.addEventListener('change',changed);
+  $('#logo-file').addEventListener('change', async event => {
+    const input = event.target;
+    const file = input.files[0];
+    input.value = '';
+    if (!file || saving) return;
+    const ext = { 'image/png':'png', 'image/jpeg':'jpg', 'image/webp':'webp' }[file.type];
+    if (!ext || file.size > 2 * 1024 * 1024) {
+      editorFeedback.textContent = 'Elegí una imagen PNG, JPG o WebP de hasta 2 MB.';
+      return;
+    }
+    if (demo) {
+      if (demoLogo) URL.revokeObjectURL(demoLogo);
+      demoLogo = URL.createObjectURL(file);
+      changed();
+      return;
+    }
+    const current = boot;
+    saving = true;
+    input.disabled = true;
+    editorFeedback.textContent = 'Subiendo logo…';
+    try {
+      const folder = portal.brandingFolder;
+      if (!/^[a-z0-9_-]{1,80}$/.test(folder || '')) throw Error();
+      const path = folder + '/logos/' + crypto.randomUUID() + '.' + ext;
+      const storage = window.colegioLibreSupabase.storage.from('school-branding');
+      const { error } = await storage.upload(path,file,{contentType:file.type,upsert:false});
+      if (error) throw error;
+      if (current !== boot) return;
+      form.elements.logo.value = storage.getPublicUrl(path).data.publicUrl;
+      changed();
+      editorFeedback.textContent = 'Logo cargado. Guardá o publicá para aplicar el cambio.';
+    } catch (_) {
+      if (current === boot) editorFeedback.textContent = 'No pudimos subir el logo. Intentá de nuevo o usá un enlace HTTPS.';
+    } finally {
+      input.disabled = false;
+      saving = false;
+    }
+  });
   form.querySelectorAll('[data-add]').forEach(button => button.addEventListener('click',() => {
     const added = addRow(button.dataset.add);
     if (added) { changed(); added.focus(); }
@@ -375,7 +425,10 @@
       ? plan.plan + ' · ' + (plan.billing_cycle === 'annual' ? 'Anual' : 'Mensual') + ' · Pago hasta el ' +
         new Date(plan.paid_through).toLocaleDateString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'})
       : 'Modo de prueba';
-    const defaults = {layout:'split',sectionOrder:'catalog',primary:'#0B2E6B',accent:'#67C23A'};
+    const defaults = {
+      layout:'split',sectionOrder:'catalog',primary:'#0B2E6B',accent:'#67C23A',
+      headerStyle:'light',surface:'neutral',cardStyle:'rounded',membershipMode:'community'
+    };
     fields.forEach(key => {
       form.elements[key].value = portal.draft[key] || defaults[key] || '';
     });

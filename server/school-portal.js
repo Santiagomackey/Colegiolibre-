@@ -3,7 +3,7 @@ import { authenticatedUser } from './mp-link.js';
 export const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 export const PROVIDER_ID = /^[a-z0-9_-]{8,100}$/i;
 export const prices = { Institucional: { monthly: 24900, annual: 249000 }, 'Red Escolar': { monthly: 59900, annual: 599000 } };
-export const portalDefaults = { name: '', title: '', description: '', primary: '#0B2E6B', accent: '#67C23A', logo: '', cover: '', layout: 'split', sectionOrder: 'catalog', contact: '', announcements: [], resources: [] };
+export const portalDefaults = { name: '', title: '', description: '', primary: '#0B2E6B', accent: '#67C23A', surface: 'neutral', headerStyle: 'light', cardStyle: 'rounded', catalogTitle: '', membershipMode: 'community', logo: '', cover: '', layout: 'split', sectionOrder: 'catalog', contact: '', announcements: [], resources: [] };
 export const fail = (status, message) => Object.assign(Error(message), { status });
 
 export function config() {
@@ -45,23 +45,33 @@ export function select(cfg, table, fields, filters = {}, extras = {}) {
 const first = async (...args) => (await select(...args))[0] || null;
 const schoolFields = 'id,code,community_code,name,display_name,city';
 export const active = subscription => Date.parse(subscription?.paid_through || '') > Date.now();
-export const schoolCodes = school => [...new Set([school.code, school.community_code].filter(Boolean))];
+export const schoolCodes = school => [...new Set([school.ambiguousOfficialCode ? null : school.code, school.community_code].filter(Boolean))];
 
 export async function schoolFor(cfg, code) {
   if (typeof code !== 'string' || !/^[\w-]{1,80}$/.test(code)) return null;
   const value = code.toUpperCase();
-  return await first(cfg, 'schools', schoolFields, { code: value, is_active: true }, { limit: '1' }) ||
+  const school = await first(cfg, 'schools', schoolFields, { code: value, is_active: true }, { limit: '1' }) ||
     await first(cfg, 'schools', schoolFields, { community_code: value, is_active: true }, { limit: '1' });
+  if (!school) return null;
+
+  const official = school.code.toUpperCase();
+  const alias = school.community_code?.toUpperCase();
+  const [officialConflict, aliasConflict] = await Promise.all([
+    select(cfg, 'schools', 'id', { community_code: official }, { id:'neq.'+school.id, limit:'1' }),
+    alias && alias !== official
+      ? select(cfg, 'schools', 'id', { code: alias }, { id:'neq.'+school.id, limit:'1' })
+      : []
+  ]);
+  return {
+    ...school,
+    ambiguousOfficialCode: Boolean(officialConflict.length),
+    community_code: aliasConflict.length || (officialConflict.length && official === alias) ? null : school.community_code
+  };
 }
 
-export async function schoolPortalPath(cfg, school) {
-  const official = school.code.toLowerCase();
+export function schoolPortalPath(school) {
   const alias = school.community_code?.toLowerCase();
-  let segment = official;
-  if (alias && alias !== official && /^[a-z0-9_-]{1,80}$/.test(alias)) {
-    const collision = await first(cfg, 'schools', 'id', { code: alias.toUpperCase(), is_active: true }, { limit: '1' });
-    if (!collision || collision.id === school.id) segment = alias;
-  }
+  const segment = /^[a-z0-9_-]{1,80}$/.test(alias || '') ? alias : school.code.toLowerCase();
   return '/comunidad/' + encodeURIComponent(segment);
 }
 
@@ -70,13 +80,20 @@ export async function schoolAccess(cfg, user, school) {
   if (['banned','suspended'].includes(profile?.account_status)) return {};
   const codes = schoolCodes(school).map(code => code.toUpperCase());
   const memberships = await select(cfg, 'school_admins', 'school_code', { user_id: user.id, is_active: true });
-  const manager = memberships.some(membership => codes.includes(membership.school_code.toUpperCase()));
-  const verified = profile?.school_verification_status === 'verified' && codes.includes(profile.school_code?.toUpperCase());
+  let assignment = memberships.find(membership => codes.includes(membership.school_code.toUpperCase()));
+  if (!assignment && school.ambiguousOfficialCode) {
+    const officialAssignment = memberships.find(membership => membership.school_code.toUpperCase() === school.code.toUpperCase());
+    if (officialAssignment && await first(cfg, 'institution_requests', 'id', {
+      official_school_code:school.code, applicant_user_id:user.id, status:'approved'
+    }, { limit:'1' })) assignment = officialAssignment;
+  }
+  const manager = Boolean(assignment);
+  const verified = Boolean(user.email_confirmed_at) && profile?.school_verification_status === 'verified' && codes.includes(profile.school_code?.toUpperCase());
   const email = user.email?.trim().toLowerCase();
   const invited = !manager && !verified && email && user.email_confirmed_at &&
     await first(cfg, 'school_portal_members', 'school_id', { school_id: school.id, email }, { limit:'1' });
   const member = Boolean(verified || invited);
-  return { manager, member };
+  return { manager, member, verified, brandingFolder:assignment?.school_code.toLowerCase() };
 }
 
 export async function paidSubscription(cfg, school) {
@@ -108,6 +125,11 @@ export function cleanContent(input) {
     description: trimmed(data.description, 650),
     primary: color(data.primary, portalDefaults.primary),
     accent: color(data.accent, portalDefaults.accent),
+    surface: ['neutral','white','tinted'].includes(data.surface) ? data.surface : 'neutral',
+    headerStyle: data.headerStyle === 'branded' ? 'branded' : 'light',
+    cardStyle: data.cardStyle === 'square' ? 'square' : 'rounded',
+    catalogTitle: trimmed(data.catalogTitle, 80),
+    membershipMode: data.membershipMode === 'verified' ? 'verified' : 'community',
     logo: httpsUrl(data.logo),
     cover: httpsUrl(data.cover),
     layout: ['split','banner','compact'].includes(data.layout) ? data.layout : 'split',

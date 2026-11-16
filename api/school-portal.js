@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const user = await userFor(cfg, req);
     const school = await schoolFor(cfg, req.query?.code);
     if (!school) return send(res, 404, { error: 'No encontramos ese colegio.' });
-    const { manager, member } = await schoolAccess(cfg, user, school);
+    const { manager, member, verified, brandingFolder } = await schoolAccess(cfg, user, school);
     if (!manager && !member) return send(res, 403, { error: 'El portal está reservado para miembros verificados o autorizados por este colegio.' });
     const subscription = await paidSubscription(cfg, school);
     if (!active(subscription)) return send(res, 403, { error: 'El colegio todavía no tiene un período pago vigente.' });
@@ -34,9 +34,14 @@ export default async function handler(req, res) {
       } });
       return send(res, 200, { revision: next });
     }
+    const manage = manager && req.query?.manage === '1';
+    const fields = manage ? 'draft,published,revision,published_at' : 'published,published_at';
+    const [portal] = await select(cfg, 'school_portal_content', fields, { school_id: school.id });
+    if (!manager && !portal?.published_at) return send(res, 404, { error: 'Tu colegio todavía está preparando el portal.' });
+    if (!manager && portal?.published?.membershipMode === 'verified' && !verified) {
+      return send(res, 403, { error: 'Verificá tu pertenencia a este colegio para entrar.' });
+    }
     if (req.query?.catalog === '1') {
-      const [publication] = await select(cfg,'school_portal_content','published_at',{school_id:school.id});
-      if (!publication?.published_at && !manager) return send(res,404,{ error:'El portal todavía no está publicado.' });
       const page = Number(req.query.page || 0);
       const category = String(req.query.category || '');
       const term = String(req.query.q || '').trim().slice(0,100);
@@ -47,6 +52,7 @@ export default async function handler(req, res) {
       }
       const codes = [...new Set(schoolCodes(school).flatMap(code => [code,code.toUpperCase(),code.toLowerCase()]))]
         .filter(code => /^[a-z0-9_-]{1,80}$/i.test(code));
+      if (!codes.length) return send(res,200,{products:[],more:false});
       const query = new URLSearchParams({
         select:'id,title,price,category,condition,image_url',school_code:'in.(' + codes.join(',') + ')',
         status:'eq.available',or:'(moderation_status.eq.approved,moderation_status.is.null)',
@@ -58,25 +64,15 @@ export default async function handler(req, res) {
       const products = await rest(cfg,'products?' + query);
       return send(res,200,{products:products.slice(0,24),more:products.length>24});
     }
-    if (req.query?.summary === '1') {
-      if (!manager) {
-        const [published] = await select(cfg,'school_portal_content','published_at',{ school_id:school.id });
-        if (!published?.published_at) return send(res,404,{ error:'Tu colegio todavía está preparando el portal.' });
-      }
-      return send(res,200,{ available:true, path:await schoolPortalPath(cfg,school) });
-    }
-    const manage = manager && req.query?.manage === '1';
+    if (req.query?.summary === '1') return send(res,200,{ available:true, path:schoolPortalPath(school) });
     const members = manage
       ? await select(cfg,'school_portal_members','email',{school_id:school.id},{order:'email.asc',limit:'1000'}) : undefined;
-    const fields = manage ? 'draft,published,revision,published_at' : 'published,published_at';
-    const [portal] = await select(cfg, 'school_portal_content', fields, { school_id: school.id });
-    if (!manager && !portal?.published) return send(res, 404, { error: 'Tu colegio todavía está preparando el portal.' });
     const { code, city, name, display_name } = school;
     return send(res, 200, {
-      school: { code, city, name: display_name || name, path:await schoolPortalPath(cfg,school) }, manager, subscription: manage ? subscription : undefined,
+      school: { code, city, name: display_name || name, path:schoolPortalPath(school) }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       content: portal?.published || portalDefaults,
-      ...(manage && { draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
+      ...(manage && { brandingFolder, draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
     });
   } catch (error) {
     return send(res, error.status || 503, { error: error.status ? error.message : 'No pudimos cargar el portal. Volvé a intentar.' });

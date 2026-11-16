@@ -311,3 +311,12 @@ a.market-card-link:hover h3 { text-decoration: underline; }
 }
 #school-site-address { overflow-wrap: anywhere; }
 #share-feedback:empty { display: none; }
+
+#school-site[data-surface="white"] { background: #fff; }
+#school-site[data-surface="tinted"] { background: color-mix(in srgb, var(--school-color) 8%, white); }
+#school-site[data-surface="white"], #school-site[data-surface="tinted"] { padding: .75rem; border-radius: 14px; }
+#school-site[data-header="branded"] .school-header { background: var(--school-color); color: var(--school-ink); border-color: transparent; }
+#school-site[data-header="branded"] .school-navigation a { color: inherit; }
+#school-site[data-header="branded"] .school-monogram { background: var(--school-ink); color: var(--school-color); }
+#school-site[data-header="branded"] .school-search { color: #16243b; }
+#school-site[data-cards="square"] :is(.market-card,.school-block) { border-radius: 4px; }
