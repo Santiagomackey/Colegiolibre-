@@ -12,6 +12,13 @@
   var officialName = document.getElementById("official-name");
   var status = document.getElementById("request-status");
   var requestList = document.getElementById("my-requests");
+  const paymentReturn = document.getElementById("payment-return");
+  const query = new URLSearchParams(location.search);
+  const returning = query.get("payment") === "return";
+  const returnedRequest = returning ? query.get("request_id") : null;
+  const currency = new Intl.NumberFormat("es-AR", {style:"currency", currency:"ARS", currencyDisplay:"code", maximumFractionDigits:0});
+  let confirmationTimer;
+  let confirmationChecks = 0;
   var timer = null;
   var searchSequence = 0;
   var sending = false;
@@ -84,7 +91,7 @@
       ? (selectedBilling === "annual" ? "ARS $249.000 por año" : "ARS $24.900 por mes")
       : "Gratis";
     if (explanation) explanation.textContent = paid
-      ? "El pago se habilita en Mis solicitudes cuando se apruebe la institución."
+      ? "Después de la aprobación, vas a poder comprar el plan en Mis solicitudes. El editor se habilita cuando se acredite el pago."
       : "La página se activa después de verificar la solicitud.";
   }
 
@@ -93,6 +100,12 @@
     loginRequired.hidden = Boolean(currentUser);
     form.hidden = !currentUser;
     if (!currentUser) {
+      if (returning) {
+        const login = document.createElement("a");
+        login.href = "/login?next=" + encodeURIComponent(location.pathname + location.search);
+        login.textContent = "Iniciar sesión para consultar el pago";
+        showPaymentReturn("Consultá tu suscripción", "Entrá con la cuenta que solicitó el portal.", login);
+      }
       requestList.innerHTML = "<p>Iniciá sesión para ver tus solicitudes.</p>";
       return;
     }
@@ -267,7 +280,19 @@
       .select("*").eq("applicant_user_id", currentUser.id)
       .order("created_at", { ascending: false });
     requestList.replaceChildren();
-    (response.data || []).forEach(function (request) {
+    if (response.error) {
+      requestList.textContent = "No pudimos cargar tus solicitudes.";
+      addBillingButton(requestList,"Volver a consultar",renderRequests);
+      return;
+    }
+    const requests = response.data || [];
+    const returnTarget = returning && (returnedRequest
+      ? requests.find(request => request.id === returnedRequest)
+      : requests.find(request => request.status === "approved" && request.requested_plan !== "Comunidad"));
+    if (returning && (!returnTarget || returnTarget.status !== "approved" || returnTarget.requested_plan === "Comunidad")) {
+      showPaymentReturn("Suscripción institucional", "Consultá el estado en Mis solicitudes con la cuenta que realizó la compra.");
+    }
+    requests.forEach(function (request) {
       var item = document.createElement("article");
       item.className = "ib-request";
       item.dataset.status = request.status;
@@ -275,9 +300,7 @@
       item.querySelector("strong").textContent = request.official_school_name;
       item.querySelector("small").textContent = request.requested_plan;
       item.querySelector("b").textContent =
-        request.status === "pending" ? "Pendiente" :
-        request.status === "approved" && request.requested_plan !== "Comunidad" && request.subscription_status !== "authorized" ? "Aprobada · falta pago" :
-        request.status === "approved" ? "Aprobada" : "Rechazada";
+        request.status === "pending" ? "En revisión" : request.status === "approved" ? "Aprobada" : "Rechazada";
       if (request.status === "approved") {
         const controls = item.querySelector(".ib-request__state");
         if (request.requested_plan === "Comunidad") {
@@ -286,7 +309,7 @@
           link.textContent = "Ver comunidad";
           controls.append(link);
         } else {
-          void renderBilling(request, item);
+          void renderBilling(request, item, request === returnTarget);
         }
       }
       requestList.appendChild(item);
@@ -309,12 +332,65 @@
     return result;
   }
 
-  async function renderBilling(request, item) {
+  function showPaymentReturn(title, description, action) {
+    if (!paymentReturn) return;
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    const copy = document.createElement("p");
+    copy.textContent = description;
+    paymentReturn.replaceChildren(heading,copy);
+    if (action) paymentReturn.append(action);
+    paymentReturn.hidden = false;
+  }
+
+  function editorLink(path) {
+    if (!/^\/comunidad\/[a-z0-9_-]{1,80}$/.test(path || "")) return null;
+    const link = document.createElement("a");
+    link.href = path + "/editor";
+    link.textContent = "Personalizar mi portal";
+    link.className = "ib-editor-link";
+    return link;
+  }
+
+  function updatePaymentReturn(plan, request, item) {
+    const editor = plan.active && editorLink(plan.portalPath);
+    if (editor) {
+      showPaymentReturn("Pago acreditado", "Tu plan está activo. Ya podés personalizar y publicar el portal privado de tu colegio.", editor);
+      return;
+    }
+    const waiting = plan.enabled && ["pending","authorized"].includes(plan.status);
+    showPaymentReturn(
+      waiting ? "Estamos verificando el pago" : "Suscripción institucional",
+      waiting ? "El editor se habilita cuando Mercado Pago confirma la acreditación."
+        : "Revisá el estado de tu solicitud para continuar."
+    );
+    if (!waiting) return;
+    const refresh = document.createElement("div");
+    paymentReturn.append(refresh);
+    addBillingButton(refresh,"Consultar estado",async () => {
+      clearTimeout(confirmationTimer);
+      await renderBilling(request,item,true);
+    });
+    if (confirmationChecks < 8) {
+      confirmationChecks++;
+      confirmationTimer = setTimeout(() => {
+        if (item.isConnected && !document.hidden) void renderBilling(request,item,true);
+      }, 5000);
+    }
+  }
+
+  async function renderBilling(request, item, fromReturn = false) {
+    if (item.dataset.billingLoading) return;
+    item.dataset.billingLoading = "true";
     const controls = item.querySelector(".ib-request__state");
     const label = item.querySelector("b");
+    if (fromReturn) clearTimeout(confirmationTimer);
+    controls.replaceChildren(label);
     label.textContent = "Consultando plan…";
     try {
       const plan = await billing(request.id);
+      if (!item.isConnected) return;
+      if (fromReturn) updatePaymentReturn(plan,request,item);
       label.textContent = plan.active ? "Plan activo" : plan.status === "authorized" ? "Esperando primer cobro" :
         plan.status === "pending" ? "Pago pendiente" : plan.status === "cancelled" ? "Renovación cancelada" : "Aprobada";
       if (plan.paidThrough) {
@@ -322,42 +398,60 @@
         until.textContent = "Pago hasta el " + new Date(plan.paidThrough).toLocaleDateString("es-AR");
         controls.append(until);
       }
-      if (plan.active && /^\/comunidad\/[a-z0-9_-]{1,80}$/.test(plan.portalPath || "")) {
-        const link = document.createElement("a");
-        link.href = plan.portalPath + "/editor";
-        link.textContent = "Abrir panel privado";
-        controls.append(link);
-      }
+      const editor = plan.active && editorLink(plan.portalPath);
+      if (editor) controls.append(editor);
       if (!plan.enabled) {
         const help = document.createElement("small");
-        help.textContent = "Los cobros en línea todavía no están habilitados.";
+        help.textContent = "La contratación a través de Mercado Pago todavía no está disponible.";
         controls.append(help);
         return;
       }
-      if (["none","pending"].includes(plan.status)) {
+      if (!plan.active && ["none","pending"].includes(plan.status) && plan.prices) {
+        const checkout = document.createElement("div");
+        checkout.className = "ib-checkout";
         const cycle = document.createElement("select");
         cycle.setAttribute("aria-label","Frecuencia de facturación");
-        const prices = request.requested_plan === "Red Escolar" ? ["$59.900","$599.000"] : ["$24.900","$249.000"];
-        cycle.add(new Option("Mensual · ARS " + prices[0],"monthly"));
-        cycle.add(new Option("Anual · ARS " + prices[1],"annual"));
+        for (const [value,title] of [["monthly","Mensual"],["annual","Anual"]]) {
+          const amount = plan.cycle === value && plan.amount ? plan.amount : plan.prices[value];
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = title + " · " + currency.format(amount);
+          cycle.append(option);
+        }
         cycle.value = plan.cycle || request.billing_cycle || "monthly";
-        cycle.disabled = plan.status === "pending";
-        controls.append(cycle);
-        addBillingButton(controls,plan.status === "pending" ? "Continuar pago" : "Contratar con Mercado Pago", async () => {
+        cycle.disabled = Boolean(plan.cycle);
+        const recipient = document.createElement("small");
+        recipient.textContent = "Pagás la suscripción a ColegioLibre desde el checkout de Mercado Pago.";
+        checkout.append(cycle,recipient);
+        controls.append(checkout);
+        addBillingButton(checkout,plan.checkoutReady ? "Continuar en Mercado Pago" : "Comprar suscripción", async () => {
           const result = await billing(request.id,{cycle:cycle.value});
+          if (!result.init_point) throw Error("No pudimos abrir el checkout. Consultá el estado del plan.");
           window.location.assign(result.init_point);
         });
       }
+      if (plan.refreshUnavailable) {
+        const message = document.createElement("small");
+        message.textContent = "Mercado Pago no respondió. Mostramos el último estado confirmado.";
+        controls.append(message);
+      }
+      if (["pending","authorized","paused"].includes(plan.status) || plan.refreshUnavailable) {
+        addBillingButton(controls,"Consultar estado",() => renderBilling(request,item,fromReturn));
+      }
       if (plan.canCancel) {
-        addBillingButton(controls,"Cancelar renovación",async () => {
-          if (!window.confirm("¿Cancelar la renovación de este plan? El acceso continúa hasta el fin del período pagado.")) return;
+        addBillingButton(controls,plan.status === "pending" ? "Cancelar pago pendiente" : "Cancelar renovación",async () => {
+          const confirmation = plan.status === "pending" ? "¿Cancelar esta contratación pendiente?"
+            : "¿Cancelar la renovación de este plan? El acceso continúa hasta el fin del período pagado.";
+          if (!window.confirm(confirmation)) return;
           await billing(request.id,{action:"cancel"});
           await renderRequests();
         });
       }
     } catch (error) {
       label.textContent = error.message;
-      addBillingButton(controls,"Volver a consultar",renderRequests);
+      addBillingButton(controls,"Volver a consultar",() => renderBilling(request,item,fromReturn));
+    } finally {
+      delete item.dataset.billingLoading;
     }
   }
 
@@ -366,11 +460,13 @@
     button.type = "button";
     button.className = "ib-pay-button";
     button.textContent = title;
+    let message;
     button.addEventListener("click",async () => {
+      message?.remove();
       button.disabled = true;
       try { await handler(); }
       catch (error) {
-        const message = document.createElement("small");
+        message = document.createElement("small");
         message.setAttribute("role","status");
         message.textContent = error.message;
         button.after(message);

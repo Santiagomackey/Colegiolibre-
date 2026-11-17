@@ -1,4 +1,4 @@
-import { active, config, fail, schoolAccess, schoolFor, schoolPortalPath, select, send, userFor, UUID } from '../server/school-portal.js';
+import { active, config, fail, prices, schoolAccess, schoolFor, schoolPortalPath, select, send, userFor, UUID } from '../server/school-portal.js';
 import { beginSubscription, mp, subscriptionFields, syncSubscription } from '../server/school-billing.js';
 
 export default async function handler(req, res) {
@@ -16,10 +16,24 @@ export default async function handler(req, res) {
     const [stored] = await select(cfg,'institution_subscriptions',subscriptionFields,{ request_id:id, user_id:user.id });
     const enabled = Boolean(cfg.mpToken && cfg.webhook);
     if (req.method === 'GET') {
-      const current = stored?.provider_subscription_id && enabled && req.query?.refresh === '1'
-        ? await syncSubscription(cfg, stored) : stored;
-      return send(res,200,{ enabled, active:active(current), status:current?.status || 'none', paidThrough:current?.paid_through,
-        cycle:current?.billing_cycle, portalPath:active(current) ? schoolPortalPath(school) : undefined, canCancel:Boolean(current?.provider_subscription_id && current.status !== 'cancelled') });
+      let current = stored;
+      let refreshUnavailable = false;
+      if (stored?.provider_subscription_id && enabled && req.query?.refresh === '1') {
+        try {
+          current = await syncSubscription(cfg, stored);
+        } catch (error) {
+          if (error.status === 409) throw error;
+          refreshUnavailable = true;
+        }
+      }
+      const paid = active(current);
+      return send(res, 200, {
+        enabled, active:paid, status:current?.status || 'none', paidThrough:current?.paid_through,
+        cycle:current?.billing_cycle, amount:current?.amount, prices:prices[request.requested_plan],
+        checkoutReady:Boolean(current?.init_point), refreshUnavailable,
+        portalPath:paid ? schoolPortalPath(school) : undefined,
+        canCancel:enabled && Boolean(current?.provider_subscription_id && current.status !== 'cancelled')
+      });
     }
     if (req.body?.action === 'cancel') {
       if (!stored?.provider_subscription_id) throw fail(409, 'No hay una suscripción que cancelar.');
