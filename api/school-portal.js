@@ -68,11 +68,14 @@ export default async function handler(req, res) {
     const members = manage
       ? await select(cfg,'school_portal_members','email',{school_id:school.id},{order:'email.asc',limit:'1000'}) : undefined;
     const { code, city, name, display_name } = school;
+    const initialDraft = manage && !portal ? cleanContent({
+      name:school.short_name, primary:school.primary_color, accent:school.accent_color
+    }) : portalDefaults;
     return send(res, 200, {
       school: { code, city, name: display_name || name, path:schoolPortalPath(school) }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       content: portal?.published || portalDefaults,
-      ...(manage && { brandingFolder, draft: { ...portalDefaults, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
+      ...(manage && { brandingFolder, draft: { ...initialDraft, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
     });
   } catch (error) {
     return send(res, error.status || 503, { error: error.status ? error.message : 'No pudimos cargar el portal. Volvé a intentar.' });

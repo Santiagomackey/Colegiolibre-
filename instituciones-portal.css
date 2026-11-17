@@ -103,3 +103,29 @@
   .institution-request .ib-two { grid-template-columns: 1fr; }
   .institution-request .ib-submit { width: 100%; }
 }
+
+.ib-payment-return {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f1f6fc;
+  border: 1px solid #d6e3f4;
+  border-radius: 12px;
+}
+.ib-payment-return[hidden] { display: none; }
+.ib-payment-return h3 { margin: 0; }
+.ib-payment-return p { margin: .4rem 0 .65rem; }
+.ib-checkout { display: grid; gap: .5rem; width: 100%; max-width: 24rem; }
+.ib-checkout select { width: 100%; min-height: 42px; padding: .5rem; font: inherit; }
+.ib-checkout .ib-pay-button, .ib-payment-return .ib-pay-button { min-height: 42px; font-size: .85rem; }
+.ib-payment-return .ib-editor-link, .ib-request__state .ib-editor-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: .5rem .8rem;
+  border-radius: 8px;
+  background: #0b2e6b;
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 750;
+  text-decoration: none;
+}

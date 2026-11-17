@@ -43,7 +43,7 @@ export function select(cfg, table, fields, filters = {}, extras = {}) {
   return rest(cfg, table + '?' + query);
 }
 const first = async (...args) => (await select(...args))[0] || null;
-const schoolFields = 'id,code,community_code,name,display_name,city';
+const schoolFields = 'id,code,community_code,name,display_name,short_name,primary_color,accent_color,city';
 export const active = subscription => Date.parse(subscription?.paid_through || '') > Date.now();
 export const schoolCodes = school => [...new Set([school.ambiguousOfficialCode ? null : school.code, school.community_code].filter(Boolean))];
 

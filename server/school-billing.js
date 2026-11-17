@@ -39,7 +39,9 @@ export function paidThrough(invoices, subscription) {
     invoice.preapproval_id === subscription.provider_subscription_id &&
     invoice.currency_id === subscription.currency &&
     Number(invoice.transaction_amount) === Number(subscription.amount) &&
-    invoice.payment?.status === 'approved' && Date.parse(invoice.debit_date) <= Date.now()
+    invoice.payment?.status === 'approved' &&
+    (!invoice.payment.status_detail || invoice.payment.status_detail === 'accredited') &&
+    Date.parse(invoice.debit_date) <= Date.now()
   );
   const end = Math.max(0, ...valid.map(invoice => endOfPeriod(invoice.debit_date, subscription.billing_cycle)));
   return end ? new Date(end).toISOString() : null;
@@ -50,7 +52,7 @@ export async function syncSubscription(cfg, subscription) {
   if (!id) return subscription;
   if (!PROVIDER_ID.test(id)) throw fail(409, 'El identificador de la suscripción no es válido.');
   const stamp = new Date().toISOString();
-  const invoiceQuery = new URLSearchParams({ preapproval_id: id, limit: '20', sort: 'date_created:desc' });
+  const invoiceQuery = new URLSearchParams({ preapproval_id: id, limit: '20', sort: 'date_created', criteria: 'desc' });
   const [remote, invoices] = await Promise.all([mp(cfg, '/preapproval/' + id), mp(cfg, '/authorized_payments/search?' + invoiceQuery)]);
   if (remote.id !== id || remote.external_reference !== subscription.request_id || !Array.isArray(invoices.results)) {
     throw fail(409, 'Mercado Pago devolvió una suscripción distinta.');
@@ -67,7 +69,7 @@ export async function syncSubscription(cfg, subscription) {
 }
 
 export async function beginSubscription(cfg, request, school, user, cycle, previous) {
-  const amount = prices[request.requested_plan]?.[cycle];
+  const amount = previous ? Number(previous.amount) : prices[request.requested_plan]?.[cycle];
   if (!amount || !['monthly','annual'].includes(cycle)) throw fail(400, 'Elegí un plan y una frecuencia válidos.');
   if (!cfg.mpToken || !cfg.webhook) throw fail(503, 'El cobro de suscripciones todavía no está habilitado.');
   const current = await select(cfg, 'institution_subscriptions', 'request_id', { school_id: school.id }, {
@@ -92,19 +94,29 @@ export async function beginSubscription(cfg, request, school, user, cycle, previ
     } catch (_) { throw fail(409, 'Ya hay una contratación en curso. Actualizá la página.'); }
   }
   const result = await mp(cfg, '/preapproval', 'POST', {
-    reason: 'ColegioLibre - ' + request.requested_plan,
+    reason: 'ColegioLibre - ' + request.requested_plan + (cycle === 'annual' ? ' anual' : ' mensual'),
     external_reference: request.id,
     payer_email: request.contact_email,
     auto_recurring: { frequency: cycle === 'annual' ? 12 : 1, frequency_type:'months', transaction_amount: amount, currency_id:'ARS' },
-    back_url: cfg.origin + '/instituciones?payment=return#solicitudes',
+    back_url: cfg.origin + '/instituciones?payment=return&request_id=' + encodeURIComponent(request.id) + '#solicitudes',
     status:'pending'
   }, 'school-' + request.id);
   const url = checkoutUrl(result.init_point);
   if (!PROVIDER_ID.test(result.id || '') || !url) throw fail(502, 'Mercado Pago no devolvió un enlace válido.');
-  await rest(cfg, 'institution_subscriptions?request_id=eq.' + request.id, { method:'PATCH', body:{
-    provider_subscription_id: result.id, init_point: url, updated_at: new Date().toISOString()
-  } });
-  return url;
+  const query = new URLSearchParams({
+    request_id:'eq.' + request.id, status:'eq.pending', provider_subscription_id:'is.null'
+  });
+  const updated = await rest(cfg, 'institution_subscriptions?' + query, {
+    method:'PATCH', prefer:'return=representation', body:{
+      provider_subscription_id:result.id, init_point:url, updated_at:new Date().toISOString()
+    }
+  });
+  if (updated.length) return url;
+  // A concurrent attempt can persist its checkout before this request returns.
+  const [saved] = await select(cfg,'institution_subscriptions',subscriptionFields,{request_id:request.id});
+  const savedUrl = checkoutUrl(saved?.init_point);
+  if (saved?.status === 'pending' && savedUrl) return savedUrl;
+  throw fail(409, 'El estado de la suscripción cambió. Volvé a consultarlo.');
 }
 
 export function signedNotification(secret, req) {
