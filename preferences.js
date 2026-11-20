@@ -1996,7 +1996,7 @@
   function refreshColegoLogos() {
     document.querySelectorAll("img").forEach(img => {
       const source = img.getAttribute("src") || "";
-      if (/logo-horizontal\.(?:webp|png)|logo-colegiolibre|colegiolibre-logo/i.test(source)) {
+      if (/logo-horizontal\.(?:webp|png)|logo-colegiolibre|colegiolibre-logo|colegiolibre-footer-logo/i.test(source)) {
         if (source !== "/images/colego-logo.svg") img.setAttribute("src", "/images/colego-logo.svg");
         if (img.alt !== "Colego") img.alt = "Colego";
       }
