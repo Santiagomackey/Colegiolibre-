@@ -1992,4 +1992,19 @@
       if (target) translateTree(target);
     }
   };
+  // Colego visual rebrand: preserve the dimensions and positioning of existing logo slots.
+  function refreshColegoLogos() {
+    document.querySelectorAll("img").forEach(img => {
+      const source = img.getAttribute("src") || "";
+      if (/logo-horizontal\.(?:webp|png)|logo-colegiolibre|colegiolibre-logo/i.test(source)) {
+        if (source !== "/images/colego-logo.svg") img.setAttribute("src", "/images/colego-logo.svg");
+        if (img.alt !== "Colego") img.alt = "Colego";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    refreshColegoLogos();
+    new MutationObserver(refreshColegoLogos).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:["src"]});
+  });
+
 })();
