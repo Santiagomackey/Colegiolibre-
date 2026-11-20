@@ -1,13 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 240" role="img" aria-label="Colego">
-<g stroke="#082b62" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 125" role="img" aria-label="Colego"><g transform="translate(-35 15) scale(.56)"><g stroke="#082b62" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
 <path d="M143 82 128 55q-4-7-12-7h-18" fill="none"/><path d="M132 79h200l-17 70q-2 9-12 9H156q-9 0-12-10Z" fill="#fdb101"/>
 <path d="m158 77-16-38q-2-6 5-9l63-18q7-2 9 6l16 59Z" fill="#037bd6"/><path d="m156 43 60-17M162 57l60-17" stroke="#52b7ff" stroke-width="5"/>
 <path d="m222 77 35-65q3-6 10-3l31 17q7 3 3 10l-22 41Z" fill="#72a901"/><path d="m254 28 38 20" stroke="#b2dc43" stroke-width="6"/>
 <path d="m205 77 32-83q3-8 11-5l21 9q8 3 5 11l-25 68Z" fill="#fdb101"/><path d="m238 0 32 13" stroke="#fff" stroke-width="8"/>
 <path d="M155 159h154" fill="none"/><circle cx="179" cy="174" r="11" fill="#082b62"/><circle cx="286" cy="174" r="11" fill="#082b62"/>
-</g>
-<g fill="#037bd6"><rect x="80" y="92" width="37" height="7" rx="4"/><rect x="88" y="109" width="30" height="7" rx="4"/><rect x="99" y="126" width="23" height="7" rx="4"/></g>
-<g fill="#fdb101"><path d="m322 20 7-21 8 3-7 21Z"/><path d="m343 31 17-13 6 7-18 13Z"/><path d="m353 49 23-2 1 9-23 2Z"/></g>
-<text x="280" y="211" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="900" letter-spacing="-4"><tspan fill="#082b62">Cole</tspan><tspan fill="#72a901">go</tspan></text>
-<path d="M160 226Q280 246 394 224" fill="none" stroke="#fdb101" stroke-width="9" stroke-linecap="round"/>
-</svg>
+</g><g fill="#037bd6"><rect x="80" y="92" width="37" height="7" rx="4"/><rect x="88" y="109" width="30" height="7" rx="4"/><rect x="99" y="126" width="23" height="7" rx="4"/></g><g fill="#fdb101"><path d="m322 20 7-21 8 3-7 21Z"/><path d="m343 31 17-13 6 7-18 13Z"/><path d="m353 49 23-2 1 9-23 2Z"/></g></g><text x="185" y="83" font-family="Arial,Helvetica,sans-serif" font-size="79" font-weight="900" letter-spacing="-5"><tspan fill="#082b62">Cole</tspan><tspan fill="#72a901">go</tspan></text><path d="M191 95 Q332 121 478 94" fill="none" stroke="#fdb101" stroke-width="8" stroke-linecap="round"/></svg>
