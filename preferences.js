@@ -1992,6 +1992,24 @@
       if (target) translateTree(target);
     }
   };
+
+  // Apply ColeGo branding consistently on every page that loads preferences.
+  function refreshColegoPageBrand() {
+    if (document.title && /ColegioLibre/i.test(document.title)) {
+      document.title = document.title.replace(/ColegioLibre/gi, "ColeGo");
+    }
+    document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => {
+      if (link.getAttribute("href") !== "/images/colego-favicon.svg?v=3") {
+        link.setAttribute("href", "/images/colego-favicon.svg?v=3");
+        link.setAttribute("type", "image/svg+xml");
+      }
+    });
+    document.querySelectorAll('meta[property="og:site_name"], meta[name="apple-mobile-web-app-title"]').forEach(meta => {
+      if (/ColegioLibre/i.test(meta.content)) meta.content = "ColeGo";
+    });
+  }
+  refreshColegoPageBrand();
+  document.addEventListener("DOMContentLoaded", refreshColegoPageBrand);
   // Colego visual rebrand: preserve the dimensions and positioning of existing logo slots.
   function refreshColegoLogos() {
     document.querySelectorAll("img").forEach(img => {
