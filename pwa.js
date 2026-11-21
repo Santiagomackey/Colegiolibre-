@@ -37,15 +37,15 @@
   function copy() {
     return language() === "en"
       ? {
-          installTitle: "Install ColegioLibre",
+          installTitle: "Install ColeGo",
           installText: "Use it like an app from your home screen.",
-          apkTitle: "ColegioLibre for Android",
-          apkText: "Install ColegioLibre directly on your home screen.",
+          apkTitle: "ColeGo for Android",
+          apkText: "Install ColeGo directly on your home screen.",
           apkInstall: "Install app",
           iosText: "Install the iPhone version from Safari.",
           install: "Install",
           iosInstall: "View steps",
-          iosGuideTitle: "Install ColegioLibre on iPhone",
+          iosGuideTitle: "Install ColeGo on iPhone",
           iosStepOne: "Open this page in Safari.",
           iosStepTwo: "Tap the Share button at the bottom of the screen.",
           iosStepThree: "Choose “Add to Home Screen”, enable “Open as Web App” and tap Add.",
@@ -57,15 +57,15 @@
           later: "Later"
         }
       : {
-          installTitle: "Instalá ColegioLibre",
+          installTitle: "Instalá ColeGo",
           installText: "Usala como una app desde tu pantalla de inicio.",
-          apkTitle: "ColegioLibre para Android",
-          apkText: "Instalá ColegioLibre directamente en tu pantalla de inicio.",
+          apkTitle: "ColeGo para Android",
+          apkText: "Instalá ColeGo directamente en tu pantalla de inicio.",
           apkInstall: "Instalar app",
           iosText: "Instalá la versión para iPhone desde Safari.",
           install: "Instalar",
           iosInstall: "Ver pasos",
-          iosGuideTitle: "Instalar ColegioLibre en iPhone",
+          iosGuideTitle: "Instalar ColeGo en iPhone",
           iosStepOne: "Abrí esta página desde Safari.",
           iosStepTwo: "Tocá el botón Compartir que aparece abajo en la pantalla.",
           iosStepThree: "Elegí “Agregar a pantalla de inicio”, activá “Abrir como app” y tocá Agregar.",
@@ -81,7 +81,7 @@
   function showManualInstallGuide() {
     const dialog=document.createElement("dialog");
     const en=language()==="en";
-    const title=document.createElement("h2");title.textContent=en?"Install ColegioLibre":"Instalar ColegioLibre";
+    const title=document.createElement("h2");title.textContent=en?"Install ColeGo":"Instalar ColeGo";
     const text=document.createElement("p");text.textContent=en?"Open your browser menu and choose Install app or Add to Home screen.":"Abrí el menú de tu navegador y elegí Instalar app o Agregar a pantalla de inicio.";
     const close=document.createElement("button");close.type="button";close.textContent=en?"Got it":"Entendido";close.onclick=()=>dialog.close();
     dialog.append(title,text,close);dialog.style.cssText="max-width:min(420px,90vw);border:1px solid #dce4f0;border-radius:18px;padding:24px;line-height:1.6";document.body.append(dialog);dialog.addEventListener("close",()=>dialog.remove(),{once:true});dialog.showModal();
@@ -104,7 +104,7 @@
   }
 
   async function detectInstalledApp() {
-    if (isStandalone || isNativeApp || wasInstalledFromThisBrowser()) {
+    if (isStandalone || isNativeApp) {
       rememberInstalled();
       return true;
     }
@@ -139,7 +139,6 @@
       !isHome ||
       isStandalone ||
       isNativeApp ||
-      wasInstalledFromThisBrowser() ||
       (isAndroid && apkPromptWasDismissedRecently())
     ) return null;
 
@@ -176,7 +175,7 @@
 
     card.querySelector("#pwa-install-button").addEventListener("click", async () => {
       if (isAndroid) {
-        // Prefer the browser's native PWA install flow. This installs ColegioLibre
+        // Prefer the browser's native PWA install flow. This installs ColeGo
         // directly and places it on the home screen without downloading an APK first.
         if (installPrompt) {
           installPrompt.prompt();
@@ -191,7 +190,7 @@
         }
 
         // Fallback for Android browsers that do not expose the install prompt:
-        // download the APK directly from ColegioLibre (same origin), not via Drive.
+        // download the APK directly from ColeGo (same origin), not via Drive.
         if (APK_URL) window.location.assign(APK_URL);
         else showManualInstallGuide();
         card.hidden = true;
@@ -259,7 +258,7 @@
   }
 
   async function showInstallCard() {
-    // Never show the install card when ColegioLibre is already running as an
+    // Never show the install card when ColeGo is already running as an
     // installed PWA/native app. This check must also run on Android.
     if (await detectInstalledApp()) return;
     if (!isAndroid && sessionStorage.getItem(DISMISS_KEY) === "true") return;
