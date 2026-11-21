@@ -5619,3 +5619,6 @@ body.has-blocking-modal {
   font-weight: 700;
   cursor: pointer;
 }
+
+/* ColeGo: the installed mobile app does not display the website footer. */
+html[data-native-app] footer, html[data-native-app] .site-footer, html[data-native-app] .cl-editorial-footer { display: none !important; }
