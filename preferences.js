@@ -1999,8 +1999,8 @@
       document.title = document.title.replace(/ColegioLibre/gi, "ColeGo");
     }
     document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => {
-      if (link.getAttribute("href") !== "/images/colego-favicon.svg?v=transparent20261121") {
-        link.setAttribute("href", "/images/colego-favicon.svg?v=transparent20261121");
+      if (link.getAttribute("href") !== "/images/colego-favicon.svg?v=larger20261121") {
+        link.setAttribute("href", "/images/colego-favicon.svg?v=larger20261121");
         link.setAttribute("type", "image/svg+xml");
       }
     });
