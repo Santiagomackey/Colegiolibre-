@@ -5622,3 +5622,8 @@ body.has-blocking-modal {
 
 /* Hide website footer inside the installed ColeGo Android/iOS application only. */
 html[data-native-app] footer, html[data-native-app] .site-footer, html[data-native-app] .cl-editorial-footer { display:none!important; }
+
+/* ColeGo: on phone-sized screens the desktop website footer is not shown. */
+@media (max-width: 760px) {
+  footer.site-footer, footer.cl-editorial-footer, .footer-medium.site-footer { display: none !important; }
+}
