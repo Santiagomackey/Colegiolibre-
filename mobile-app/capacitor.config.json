@@ -1,6 +1,6 @@
 {
   "appId": "com.colegiolibre.app",
-  "appName": "ColegioLibre",
+  "appName": "ColeGo",
   "webDir": "www",
   "server": {
     "url": "https://www.colegiolibre.com",
