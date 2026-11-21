@@ -46,7 +46,7 @@ jobs:
       - name: Guardar APK de prueba
         uses: actions/upload-artifact@v4
         with:
-          name: ColegioLibre-Android-debug
+          name: ColeGo-Android-debug
           path: mobile-app/artifacts/*-debug.apk
           if-no-files-found: error
           retention-days: 14
