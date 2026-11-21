@@ -13,6 +13,6 @@ const variant=release?'release':'debug';
 const source=resolve(root,`android/app/build/outputs/apk/${variant}/app-${release?'release-unsigned':'debug'}.apk`);
 const {version}=JSON.parse(await readFile(resolve(root,'package.json'),'utf8'));
 const folder=resolve(root,'artifacts');await mkdir(folder,{recursive:true});
-const target=resolve(folder,`ColegioLibre-${version}-${release?'unsigned':'debug'}.apk`);await copyFile(source,target);
+const target=resolve(folder,`ColeGo-${version}-${release?'unsigned':'debug'}.apk`);await copyFile(source,target);
 console.log(`APK built: ${target}`);
 if(release)console.log('Sign the release with the existing production keystore before distributing it.');
