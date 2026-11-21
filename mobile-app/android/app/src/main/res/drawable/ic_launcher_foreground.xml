@@ -1,1 +1,6 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"><item android:width="76dp" android:height="76dp" android:gravity="center"><bitmap android:src="@drawable/brand_icon" android:gravity="fill"/></item></layer-list>
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+<path android:fillColor="@android:color/transparent" android:strokeColor="#037bd6" android:strokeWidth="17" android:strokeLineCap="round" android:pathData="M75,33 C63,18 40,18 29,35 C17,53 27,77 47,81 C58,83 69,79 76,72"/>
+<path android:fillColor="@android:color/transparent" android:strokeColor="#72a901" android:strokeWidth="13" android:strokeLineCap="round" android:pathData="M73,32 L82,41"/>
+<path android:fillColor="@android:color/transparent" android:strokeColor="#fdb101" android:strokeWidth="13" android:strokeLineCap="round" android:pathData="M74,73 L82,65"/>
+</vector>
