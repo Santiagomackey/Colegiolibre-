@@ -124,3 +124,22 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
     height: 20px;
   }
 }
+
+/* Align the account shortcuts closer to the center, and attach the dropdown to the username. */
+@media (min-width: 701px) {
+  html body .cl-site-header .cl-site-actions {
+    margin-right: 38px !important;
+    gap: 14px;
+  }
+  html body .cl-site-header .cl-site-account {
+    min-width: 0;
+    max-width: 124px;
+    margin-right: 0;
+  }
+  html body .cl-site-header .cl-site-account-menu {
+    margin-left: -13px;
+  }
+  html body .cl-site-header .cl-site-account-menu > summary {
+    width: 18px;
+  }
+}
