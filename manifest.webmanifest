@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "ColegioLibre",
-  "short_name": "ColegioLibre",
+  "name": "ColeGo",
+  "short_name": "ColeGo",
   "description": "Marketplace de materiales escolares usados para estudiantes y comunidades educativas de Argentina.",
   "lang": "es-AR",
   "dir": "ltr",
@@ -23,34 +23,23 @@
   ],
   "icons": [
     {
-      "src": "/images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/images/colego-app-icon.svg?v=20261122",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "Publicar producto",
       "short_name": "Publicar",
-      "description": "Crear una nueva publicaci\u00f3n",
+      "description": "Crear una nueva publicación",
       "url": "/publicar?source=shortcut",
       "icons": [
         {
-          "src": "/images/icon-192.png",
-          "sizes": "192x192"
+          "src": "/images/colego-app-icon.svg?v=20261122",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -61,8 +50,9 @@
       "url": "/mensajes?source=shortcut",
       "icons": [
         {
-          "src": "/images/icon-192.png",
-          "sizes": "192x192"
+          "src": "/images/colego-app-icon.svg?v=20261122",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -73,8 +63,9 @@
       "url": "/favoritos?source=shortcut",
       "icons": [
         {
-          "src": "/images/icon-192.png",
-          "sizes": "192x192"
+          "src": "/images/colego-app-icon.svg?v=20261122",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     }
