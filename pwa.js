@@ -152,7 +152,7 @@
     card.hidden = true;
     card.setAttribute("aria-live", "polite");
     card.innerHTML = `
-      <img class="pwa-install-card__icon" src="/images/colego-app-icon.svg?v=20261122" alt="" />
+      <img class="pwa-install-card__icon" src="/images/colego-app-icon.svg?v=20261122-newcart" alt="" />
       <div class="pwa-install-card__copy">
         <strong>${isAndroid ? text.apkTitle : text.installTitle}</strong>
         <p>${isAndroid ? text.apkText : (isIOS ? text.iosText : text.installText)}</p>
