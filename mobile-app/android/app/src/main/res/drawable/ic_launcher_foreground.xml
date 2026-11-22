@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
- android:width="108dp" android:height="108dp"
- android:viewportWidth="108" android:viewportHeight="108">
- <!-- Centered ColeGo cart and books; clean vector for Android launcher -->
- <group android:translateX="18" android:translateY="18" android:scaleX="1.13" android:scaleY="1.13">
- <path android:fillColor="#037BD6" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M25,23 L40,19 L44,41 L29,43 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M27,27 L39,24 L39.5,27 L28,30 Z"/>
- <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M40,17 L51,21 L44,42 L33,40 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M41,21 L49,24 L48,27 L40,24 Z"/>
- <path android:fillColor="#72A901" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M50,27 L59,31 L54,42 L45,40 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M51,31 L57,33 L56,35.5 L50,33.5 Z"/>
- <path android:fillColor="#082B62" android:pathData="M7,41 Q5,41 5,43 Q5,45 7,45 L15,45 L21,65 Q22,68 25,68 L56,68 Q59,68 59,65 Q59,62 56,62 L27,62 L22,42 Q21,39 18,39 L7,39 Z"/>
- <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3.5" android:strokeLineJoin="round" android:pathData="M20,43 L60,43 L55,61 Q54,64 51,64 L27,64 Q24,64 23,61 Z"/>
- <path android:fillColor="#082B62" android:pathData="M30,72 m-4.5,0 a4.5,4.5 0,1 0,9 0 a4.5,4.5 0,1 0,-9 0"/>
- <path android:fillColor="#082B62" android:pathData="M51,72 m-4.5,0 a4.5,4.5 0,1 0,9 0 a4.5,4.5 0,1 0,-9 0"/>
- </group>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+<!-- ColeGo: clean cart, three books, centered within Android adaptive icon safe zone -->
+<group android:translateX="20" android:translateY="19" android:scaleX="0.96" android:scaleY="0.96">
+<path android:fillColor="#037BD6" android:strokeColor="#082B62" android:strokeWidth="3.5" android:strokeLineJoin="round" android:pathData="M25,26 L41,21 L45,46 L31,47 Z"/>
+<path android:fillColor="#FFFFFF" android:pathData="M28,29 L40,26 L40.7,30 L29,33 Z"/>
+<path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3.5" android:strokeLineJoin="round" android:pathData="M43,16 L58,21 L50,47 L36,45 Z"/>
+<path android:fillColor="#FFFFFF" android:pathData="M44,21 L55,25 L54,29 L43,25 Z"/>
+<path android:fillColor="#72A901" android:strokeColor="#082B62" android:strokeWidth="3.5" android:strokeLineJoin="round" android:pathData="M57,29 L69,34 L63,47 L51,45 Z"/>
+<path android:fillColor="#FFFFFF" android:pathData="M58,34 L66,37 L64.5,40 L56.5,37 Z"/>
+<path android:fillColor="#082B62" android:pathData="M8,44 L19,44 L26,72 L67,72 L67,67 L30,67 L24,42 Q23,39 19,39 L8,39 Q5,39 5,42 Q5,44 8,44 Z"/>
+<path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="4.2" android:strokeLineJoin="round" android:pathData="M24,46 L71,46 L64,67 Q63,70 59,70 L32,70 Q29,70 28,67 Z"/>
+<path android:fillColor="#082B62" android:pathData="M36,79 m-5,0 a5,5 0,1 0,10 0 a5,5 0,1 0,-10 0"/>
+<path android:fillColor="#082B62" android:pathData="M60,79 m-5,0 a5,5 0,1 0,10 0 a5,5 0,1 0,-10 0"/>
+</group>
 </vector>
