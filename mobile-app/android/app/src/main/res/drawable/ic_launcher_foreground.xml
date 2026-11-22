@@ -2,17 +2,17 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
  android:width="108dp" android:height="108dp"
  android:viewportWidth="108" android:viewportHeight="108">
- <!-- ColeGo cart and books, no decorative rays -->
- <group android:translateX="15" android:translateY="13" android:scaleX="1.22" android:scaleY="1.22">
- <path android:fillColor="#037BD6" android:strokeColor="#082B62" android:strokeWidth="2.8" android:strokeLineJoin="round" android:pathData="M24,20 L39,15 L44,39 L29,42 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M27,22 L37,19 L38,22 L28,25 Z"/>
- <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="2.8" android:strokeLineJoin="round" android:pathData="M38,14 L49,18 L42,42 L31,38 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M40,18 L47,20 L46,23 L39,21 Z"/>
- <path android:fillColor="#72A901" android:strokeColor="#082B62" android:strokeWidth="2.8" android:strokeLineJoin="round" android:pathData="M47,23 L56,27 L50,41 L41,38 Z"/>
- <path android:fillColor="#FFFFFF" android:pathData="M48,26 L53,28 L52,31 L47,29 Z"/>
- <path android:fillColor="#00000000" android:strokeColor="#082B62" android:strokeWidth="4" android:strokeLineCap="round" android:pathData="M7,35 L15,35 L21,59 L51,59"/>
- <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3" android:strokeLineJoin="round" android:pathData="M17,35 L56,35 L51,55 L22,55 Z"/>
- <path android:fillColor="#082B62" android:pathData="M30,64 m-4,0 a4,4 0,1 0,8 0 a4,4 0,1 0,-8 0"/>
- <path android:fillColor="#082B62" android:pathData="M48,64 m-4,0 a4,4 0,1 0,8 0 a4,4 0,1 0,-8 0"/>
+ <!-- Centered ColeGo cart and books; clean vector for Android launcher -->
+ <group android:translateX="18" android:translateY="18" android:scaleX="1.13" android:scaleY="1.13">
+ <path android:fillColor="#037BD6" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M25,23 L40,19 L44,41 L29,43 Z"/>
+ <path android:fillColor="#FFFFFF" android:pathData="M27,27 L39,24 L39.5,27 L28,30 Z"/>
+ <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M40,17 L51,21 L44,42 L33,40 Z"/>
+ <path android:fillColor="#FFFFFF" android:pathData="M41,21 L49,24 L48,27 L40,24 Z"/>
+ <path android:fillColor="#72A901" android:strokeColor="#082B62" android:strokeWidth="3.3" android:strokeLineJoin="round" android:pathData="M50,27 L59,31 L54,42 L45,40 Z"/>
+ <path android:fillColor="#FFFFFF" android:pathData="M51,31 L57,33 L56,35.5 L50,33.5 Z"/>
+ <path android:fillColor="#082B62" android:pathData="M7,41 Q5,41 5,43 Q5,45 7,45 L15,45 L21,65 Q22,68 25,68 L56,68 Q59,68 59,65 Q59,62 56,62 L27,62 L22,42 Q21,39 18,39 L7,39 Z"/>
+ <path android:fillColor="#FDB101" android:strokeColor="#082B62" android:strokeWidth="3.5" android:strokeLineJoin="round" android:pathData="M20,43 L60,43 L55,61 Q54,64 51,64 L27,64 Q24,64 23,61 Z"/>
+ <path android:fillColor="#082B62" android:pathData="M30,72 m-4.5,0 a4.5,4.5 0,1 0,9 0 a4.5,4.5 0,1 0,-9 0"/>
+ <path android:fillColor="#082B62" android:pathData="M51,72 m-4.5,0 a4.5,4.5 0,1 0,9 0 a4.5,4.5 0,1 0,-9 0"/>
  </group>
 </vector>
