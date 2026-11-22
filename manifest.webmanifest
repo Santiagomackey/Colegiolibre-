@@ -23,7 +23,7 @@
   ],
   "icons": [
     {
-      "src": "/images/colego-app-icon.svg?v=20261122",
+      "src": "/images/colego-app-icon.svg?v=20261122-newcart",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -37,7 +37,7 @@
       "url": "/publicar?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261122",
+          "src": "/images/colego-app-icon.svg?v=20261122-newcart",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -50,7 +50,7 @@
       "url": "/mensajes?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261122",
+          "src": "/images/colego-app-icon.svg?v=20261122-newcart",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -63,7 +63,7 @@
       "url": "/favoritos?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261122",
+          "src": "/images/colego-app-icon.svg?v=20261122-newcart",
           "sizes": "any",
           "type": "image/svg+xml"
         }
