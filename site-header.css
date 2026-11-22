@@ -197,3 +197,38 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
     width: 14px !important;
   }
 }
+
+/* Center the complete shortcut cluster inside its own header column. */
+@media (min-width: 701px) {
+  html body .cl-site-header .cl-site-top {
+    grid-template-columns: 208px minmax(180px, 1fr) minmax(300px, 370px);
+  }
+  html body .cl-site-header .cl-site-actions {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    gap: 7px !important;
+  }
+  html body .cl-site-header .cl-site-actions > :is(.cl-site-action, .cl-notification-trigger) {
+    flex: 0 0 auto !important;
+    min-width: 56px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+  html body .cl-site-header .cl-site-actions > .cl-site-account-menu {
+    flex: 0 0 14px !important;
+    min-width: 14px !important;
+    width: 14px !important;
+    max-width: 14px !important;
+    margin-left: -10px !important;
+  }
+  html body .cl-site-header .cl-site-account-menu > summary {
+    width: 14px !important;
+  }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  html body .cl-site-header .cl-site-top {
+    grid-template-columns: 174px minmax(170px, 1fr) minmax(280px, 330px);
+  }
+}
