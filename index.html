@@ -1642,18 +1642,32 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>
 <style id="colego-native-no-footer">html[data-native-app] footer,html[data-native-app] .site-footer,html[data-native-app] .cl-editorial-footer{display:none!important}</style><style id="colego-home-background">
+#pedidos-comunidad { padding-bottom: 0; }
+#contenido-principal + .cl-editorial-footer.footer-medium.site-footer { margin-top: 0 !important; }
 .home-school-plan {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: .25rem 1rem;
-  margin-bottom: 1rem;
-  padding: .65rem .9rem;
-  border-inline-start: 3px solid #e8ae12;
+  margin: 18px auto;
+  padding: .45rem 1rem;
+  background: #f5f8fc;
+  color: #173555;
+  border-inline-start: 3px solid #f3ba22;
+  border-radius: 8px;
   font-size: .9rem;
+  line-height: 1.5;
 }
-.home-school-plan a { white-space: nowrap; }
+.home-school-plan a {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  min-height: 44px;
+  color: #0b2e6b;
+  font-weight: 700;
+  white-space: nowrap;
+}
   html:not([data-theme="dark"]) body.cl-marketplace,
   html:not([data-theme="dark"]) .cl-marketplace .page-shell,
   html:not([data-theme="dark"]) .cl-marketplace .empty-state,
@@ -1902,10 +1916,6 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
                   <svg class="icon"><use href="#icon-chevron"></use></svg>
                 </a>
               </div>
-              <aside class="home-school-plan" aria-label="Plan institucional">
-                <span><strong>¿Representás a un colegio?</strong> Creá su portal privado desde $19.900 por mes.</span>
-                <a class="text-link text-link--dark" href="/instituciones#planes">Ver planes <span aria-hidden="true">→</span></a>
-              </aside>
               <div class="scope-selector reveal">
                 <span class="scope-label" id="scope-summary-label">
                   Viendo productos de toda Argentina
@@ -1938,6 +1948,12 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
         </section>
 
         <section class="home-wanted-section" id="pedidos-comunidad" hidden aria-labelledby="home-alerts-title"><div class="container"><div class="home-wanted-panel"><div class="home-wanted-copy"><p class="home-wanted-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>Alertas de la comunidad</p><h2 id="home-alerts-title">¿Buscás algo en particular?</h2><p>Creá una alerta con el material que necesitás. Te avisamos cuando aparezca una coincidencia.</p><div class="home-wanted-actions"><a class="home-wanted-primary" href="/busco#crear-pedido">Crear alerta <span aria-hidden="true">→</span></a><a class="home-wanted-secondary" href="/busco">Ver alertas</a></div><p class="home-wanted-note">Gratis · En tu colegio, tu zona o todo el país.</p></div><div class="home-wanted-live"><header><h3>La comunidad está buscando</h3><a href="/busco">Ver todas</a></header><div id="home-wanted-list" class="home-wanted-list" aria-live="polite" aria-busy="true"><div class="home-wanted-skeleton" aria-hidden="true"></div><div class="home-wanted-skeleton" aria-hidden="true"></div><span class="sr-only">Cargando alertas…</span></div></div></div></div></section>
+        <aside class="container" aria-label="Plan institucional">
+          <div class="home-school-plan">
+            <span><strong>¿Representás a un colegio?</strong> Creá su portal privado desde $19.900 por mes.</span>
+            <a href="/instituciones#planes">Ver planes <span aria-hidden="true">→</span></a>
+          </div>
+        </aside>
       </main>
 
       <footer class="site-footer footer-medium cl-editorial-footer" id="ayuda">
