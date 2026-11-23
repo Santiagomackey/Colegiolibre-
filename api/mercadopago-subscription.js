@@ -44,7 +44,13 @@ export default async function handler(req, res) {
       let remote = await mp(cfg,path);
       const cancelled = value => ['cancelled','canceled'].includes(value.status);
       if (remote.id !== providerId || remote.external_reference !== id) throw fail(409,'La suscripción no coincide.');
-      if (!cancelled(remote)) remote = await mp(cfg,path,'PUT',{ status:'canceled' });
+      if (!cancelled(remote)) {
+        try { remote = await mp(cfg,path,'PUT',{ status:'canceled' }); }
+        catch (error) {
+          if (!error.message.includes('HTTP 400')) throw error;
+          remote = await mp(cfg,path,'PUT',{ status:'cancelled' });
+        }
+      }
       if (remote.id !== providerId || !cancelled(remote)) throw fail(502,'Mercado Pago todavía no confirmó la cancelación.');
       const query = new URLSearchParams({request_id:'eq.'+id,provider_subscription_id:'eq.'+providerId});
       await rest(cfg,'institution_subscriptions?'+query,{method:'PATCH',body:{
