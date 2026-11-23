@@ -170,3 +170,28 @@
 @media (max-width: 520px) {
   #planes a.ib-plan-cta { width: 100%; }
 }
+
+.school-application [hidden] { display: none !important; }
+.school-application .request-heading { border: 0; padding-bottom: 0; margin-bottom: 1.25rem; }
+.school-application .application-plan {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: .25rem 1rem; margin: 0 0 1.75rem; padding: .85rem 1rem;
+  color: #15335b; background: #f0f5fb; border-inline-start: 3px solid #edb323;
+}
+.school-application #selected-plan-copy { margin: 0; font-size: 1rem; }
+.school-application .request-fields { margin-bottom: 1.75rem; }
+.school-application legend { font-size: 1.2rem; }
+.school-application form label { font-size: .95rem; line-height: 1.45; }
+.school-application form :is(input[type=search], input[type=email], input:not([type])) {
+  box-sizing: border-box; width: 100%; padding: .75rem .9rem; min-height: 48px;
+}
+.school-application .request-fields > label:has(input[type=email]) { margin-top: 1rem; }
+.school-application .request-address { margin: .4rem 0 0; }
+.school-application .ib-submit {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: .75rem 1.5rem; font: 700 1rem/1.3 Inter, sans-serif;
+}
+@media (max-width: 520px) {
+  .school-application .request-main { padding: 1.15rem; }
+  .school-application .request-submit { gap: 1rem; }
+}

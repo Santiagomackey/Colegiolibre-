@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./instituciones.css?v=20261109-release25">
   <link rel="stylesheet" href="./instituciones-v50.css?v=20261109-release25">
-  <link rel="stylesheet" href="/instituciones-portal.css?v=6">
+  <link rel="stylesheet" href="/instituciones-portal.css?v=7">
   <link rel="stylesheet" href="/global-search.css?v=20261109-release25">
 <link rel="stylesheet" href="./opening.css?v=20261109-release25" />
 <link rel="stylesheet" href="/ui-consistency.css?v=20261109-release25">
@@ -73,7 +73,7 @@
         <header class="request-heading">
           <a href="/instituciones#planes">← Volver al plan</a>
           <h1 id="request-title">Registrá tu colegio</h1>
-          <p>Buscá tu colegio y dejá un correo de contacto para que podamos verificar que lo representás.</p>
+          <p>Verificamos los datos de tu institución antes de habilitar el pago.</p>
         </header>
 
         <div id="login-required" class="request-sign-in" hidden>
@@ -82,13 +82,13 @@
         </div>
 
         <form id="institution-request-form" hidden>
-          <p class="application-plan"><strong id="selected-plan-name">Básico</strong> · <span id="selected-plan-copy">ARS $19.900 por mes</span></p>
+          <p class="application-plan"><span>Plan <strong id="selected-plan-name">Básico</strong></span> <span id="selected-plan-copy">ARS $19.900 por mes</span></p>
           <input id="requested-plan" name="requested_plan" type="hidden" value="Institucional">
           <input id="billing-cycle" name="billing_cycle" type="hidden" value="monthly">
           <fieldset class="request-fields">
-            <legend>Tu colegio</legend>
-            <label for="school-search">Colegio registrado</label>
-            <input id="school-search" type="search" autocomplete="off" placeholder="Buscá por nombre, dirección o CUE" aria-controls="school-results">
+            <legend>Institución</legend>
+            <label for="school-search">Buscá tu colegio</label>
+            <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE" aria-controls="school-results">
             <div class="ib-results" id="school-results" role="group" aria-label="Colegios encontrados" aria-live="polite"></div>
             <input id="official-code" name="official_code" type="hidden">
             <input id="official-name" name="official_name" type="hidden">
@@ -96,16 +96,17 @@
               <div><span>Colegio seleccionado</span><strong></strong><small></small></div>
               <button type="button" id="change-school">Cambiar</button>
             </div>
+            <label>Correo institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
           </fieldset>
 
           <fieldset class="request-fields">
-            <legend>Datos del portal</legend>
+            <legend>Página del colegio</legend>
             <div class="ib-two">
-              <label>Nombre que verán las familias<input name="short_name" required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
-              <label>Dirección de la página<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_-]+" placeholder="instituto-del-parque" aria-describedby="request-address"></label>
+              <label>Nombre público<input name="short_name" required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
+              <label>Dirección del portal<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_\-]+" placeholder="instituto-del-parque" aria-describedby="request-address"></label>
             </div>
             <p class="request-address" id="request-address">colegiolibre.com/colegio/</p>
-            <label>Correo de contacto institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+
           </fieldset>
 
           <div class="request-submit">
