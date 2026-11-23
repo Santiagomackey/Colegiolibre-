@@ -20,12 +20,12 @@ Referencia: https://supabase.com/docs/guides/auth/social-sign-in/auth-apple
 3. En el servidor de Vercel configurá `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `PUSH_WEBHOOK_SECRET`. Usá los valores de tus propios proyectos; no los agregues al código cliente.
 4. En Supabase creá un Database Webhook para `public.notifications`, eventos INSERT y UPDATE, POST a `https://www.colegiolibre.com/api/push-notification`, con el header `x-push-secret` que coincide con la variable del servidor. El endpoint omite los cambios de lectura y las actualizaciones sin nuevo contenido.
 5. Desplegá la web y recompilá/reinstalá Android 1.0.26. El plugin Browser es nuevo y requiere `npm --prefix mobile-app ci` y `npm run android:apk`, o el workflow incluido de GitHub Actions. El entorno de edición no tiene Android SDK.
-6. Iniciá sesión y tocá Activar avisos en Alertas o en la campana. Aceptá el permiso. Solo se muestra Avisos activados cuando el token del dispositivo pudo guardarse.
+6. Iniciá sesión en Android y aceptá el permiso del sistema.
 7. Con dos cuentas, enviá un mensaje y publicá un material que coincida con una búsqueda de la otra. Comprobá con la app abierta y en segundo plano/cerrada: aviso en la bandeja, sonido según los ajustes del teléfono y navegación correcta al tocarlo. Probá permiso denegado y cierre de sesión. Forzar la detención de la app en Android o bloquear el canal impide la entrega normal.
 
 FCM muestra la notificación en segundo plano; en primer plano la app presenta un aviso local inmediato en el mismo canal. No usa una alarma exacta. El contenido se oculta en la pantalla bloqueada según los ajustes del usuario. Las URLs de destino están limitadas a páginas internas de ColegioLibre.
 
-El navegador puede mostrar avisos mientras el sitio está abierto; esta entrega no agrega Web Push de fondo a una PWA. El emisor del servidor procesa tokens FCM de Android. iOS/APNs requiere una integración separada; no se considera configurado ni probado.
+La web instalada recibe Web Push a través del service worker. En iPhone, agregá ColeGo a la pantalla de inicio y abrilo desde su ícono. Después de iniciar sesión, el primer toque permite solicitar el permiso del sistema. Para configurar otro entorno, aplicá database/phone_web_push.sql, creá un par VAPID y configurá WEB_PUSH_PUBLIC_KEY y WEB_PUSH_PRIVATE_KEY en el servidor. notifications.js usa únicamente la clave pública del mismo par.
 
 Referencias: https://capacitorjs.com/docs/v7/apis/push-notifications y https://firebase.google.com/docs/cloud-messaging/android/receive
 

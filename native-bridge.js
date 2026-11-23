@@ -223,7 +223,7 @@
   }
 
   let pushListenersReady = false;
-  async function initializePushNotifications({ ask = false } = {}) {
+  async function initializePushNotifications({ ask = true } = {}) {
     const pushNotifications = plugin("PushNotifications");
     const client = window.colegioLibreSupabase;
     const api = window.colegioLibreApi;
@@ -318,30 +318,6 @@
     showNotification,
     takePhoto
   };
-
-  const androidSettings = document.querySelector('[data-android-notifications]');
-  if (androidSettings && isNative && capacitor.getPlatform?.() === 'android') {
-    androidSettings.hidden = false;
-    const button = androidSettings.querySelector('[data-android-notification-enable]');
-    const status = androidSettings.querySelector('[data-android-notification-status]');
-    const update = async () => {
-      const current = await notificationStatus();
-      button.disabled = current.registered;
-      button.textContent = current.registered ? 'Notificaciones activadas' : 'Activar notificaciones de Android';
-      status.textContent = current.permission === 'denied'
-        ? 'Permití los avisos de ColegioLibre en Ajustes de Android.'
-        : current.error && current.error !== 'sign_in_required' ? 'No pudimos registrar este teléfono. Volvé a intentar.'
-        : 'Recibí avisos de ventas, mensajes y alertas en tu teléfono.';
-    };
-    button.addEventListener('click', async () => {
-      button.disabled = true;
-      try { await initializePushNotifications({ ask: true }); }
-      catch (_) { pushState.error = 'registration_failed'; }
-      finally { void update(); }
-    });
-    window.addEventListener('colegiolibre:pushstatechange', update);
-    void update();
-  }
 
   void initializeNativeListeners();
 })();

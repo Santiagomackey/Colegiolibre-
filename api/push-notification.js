@@ -1,3 +1,4 @@
+import {sendWebPush} from "../server/web-push.js";
 import crypto from "node:crypto";
 import {buildPushMessage} from "../server/push-payload.js";
 
@@ -134,17 +135,35 @@ export default async function handler(request, response) {
   }
 
   try {
-    const allDevices = await loadTokens(notification.user_id);
-    // These are FCM registration tokens; iOS APNs tokens need a separate sender.
-    const devices = allDevices.filter(device => device.platform === "android");
-    if (!devices.length) {
-      return sendJson(response, 200, { sent: 0, message: "Sin dispositivos registrados." });
-    }
-
-    const accessToken = await getGoogleAccessToken();
-    const results = await Promise.allSettled(
-      devices.map((device) => sendToDevice(accessToken, device, notification))
-    );
+    const webUrl = new URL('/rest/v1/web_push_devices', process.env.SUPABASE_URL);
+    webUrl.searchParams.set('user_id', 'eq.' + notification.user_id);
+    webUrl.searchParams.set('select', 'endpoint,p256dh,auth');
+    const webDelivery = async () => {
+      const response = await fetch(webUrl, {headers: supabaseHeaders()});
+      if (!response.ok) throw new Error('Web subscription lookup failed');
+      const devices = await response.json();
+      return Promise.allSettled(devices.map(async device => {
+        try {
+          await sendWebPush(device, notification);
+        } catch (error) {
+          if ([404, 410].includes(error.statusCode)) {
+            const expired = new URL(webUrl);
+            expired.searchParams.delete('select');
+            expired.searchParams.set('endpoint', 'eq.' + device.endpoint);
+            await fetch(expired, {method: 'DELETE', headers: supabaseHeaders()});
+          }
+          throw error;
+        }
+      }));
+    };
+    const androidDelivery = async () => {
+      const devices = (await loadTokens(notification.user_id)).filter(d => d.platform === 'android');
+      if (!devices.length) return [];
+      const accessToken = await getGoogleAccessToken();
+      return Promise.allSettled(devices.map(device => sendToDevice(accessToken, device, notification)));
+    };
+    const deliveries = await Promise.allSettled([webDelivery(), androidDelivery()]);
+    const results = deliveries.flatMap(group => group.status === 'fulfilled' ? group.value : [group]);
     const sent = results.filter((result) => result.status === "fulfilled").length;
     const failed = results.length - sent;
 

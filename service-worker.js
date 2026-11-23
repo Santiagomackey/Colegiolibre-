@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v84";
+const CACHE_VERSION = "colegiolibre-pwa-v85";
 const APP_SHELL = [
   "/",
   "/404.html",
@@ -57,6 +57,17 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("push", event => {
+  const notice = event.data?.json() || {};
+  const destination = new URL(notice.url || "/", self.location.origin);
+  event.waitUntil(self.registration.showNotification(notice.title || "ColeGo", {
+    body: notice.body || "",
+    icon: "/images/colego-cart-192.png",
+    tag: notice.id,
+    data: {url: destination.origin === self.location.origin ? destination.href : "/"}
+  }));
 });
 
 self.addEventListener("notificationclick", (event) => {

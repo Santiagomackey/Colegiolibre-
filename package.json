@@ -17,5 +17,8 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.16"
+  },
+  "dependencies": {
+    "web-push": "3.6.7"
   }
 }
