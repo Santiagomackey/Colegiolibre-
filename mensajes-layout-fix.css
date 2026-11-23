@@ -131,7 +131,12 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
   body.mobile-messages :is(.conversation-title,.conversation-product,.conversation-last,.chat-header__copy h2,.chat-header__copy p) {
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
   }
-  body.mobile-messages[data-view="chat"] { overflow: hidden; }
+  html body.mobile-messages[data-view="chat"] {
+    overflow: hidden;
+    padding-bottom: 0 !important;
+  }
+  /* The chat composer owns the safe area while the bottom navigation is hidden. */
+  html body.mobile-messages[data-view="chat"]::after { content: none; }
   html body.mobile-messages[data-view="chat"] :is(.cl-site-header,.cl-mobile-nav) { display: none !important; }
   body.mobile-messages[data-view="chat"] .messages-page {
     position: fixed; inset: var(--chat-top, 0px) 0 auto; height: var(--chat-height, 100dvh);
@@ -161,7 +166,7 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
   body.mobile-messages .messages-list { flex: 1 1 0; min-height: 0; padding: 12px 14px; background: #f7f9fc; }
   body.mobile-messages .message { max-width: 86%; overflow-wrap: anywhere; }
   body.mobile-messages .message-form {
-    min-height: 0; padding: 8px 12px max(8px,env(safe-area-inset-bottom)); gap: 8px; background: white;
+    min-height: 0; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), var(--cl-native-bottom, 0px))); gap: 8px; background: white;
   }
   body.mobile-messages .message-composer { padding: 8px 12px; border-radius: 18px; box-shadow: none; }
   body.mobile-messages .message-form textarea { font-size: 16px; max-height: min(90px,18dvh); }
