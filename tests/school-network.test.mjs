@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import portalApi from '../api/school-portal.js';
-import { cleanContent } from '../server/school-portal.js';
+import { cleanContent, contentLimits, prices } from '../server/school-portal.js';
 
 test('a paid school portal protects published content and catalog with its own membership policy', async t => {
   const oldUrl = process.env.SUPABASE_URL;
@@ -84,4 +84,19 @@ test('school appearance settings validate and retain compatible defaults', () =>
     ['branded','tinted','square','Materiales','verified','https://example.org/logo.png','#67C23A']
   );
   assert.equal(cleanContent({}).membershipMode,'community');
+});
+
+test('each school plan applies its advertised price and publishing capacity', () => {
+  const items = Array.from({ length: 25 }, (_, i) => ({
+    title: String(i), body: 'Aviso', url: 'https://example.com/'
+  }));
+  for (const [plan, monthly, annual, notices, links] of [
+    ['Institucional', 19900, 199000, 8, 12],
+    ['Red Escolar', 22900, 229000, 16, 24]
+  ]) {
+    assert.deepEqual(prices[plan], { monthly, annual });
+    const saved = cleanContent({ announcements: items, resources: items }, contentLimits(plan));
+    assert.equal(saved.announcements.length, notices);
+    assert.equal(saved.resources.length, links);
+  }
 });

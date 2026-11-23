@@ -2,7 +2,7 @@ import { authenticatedUser } from './mp-link.js';
 
 export const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 export const PROVIDER_ID = /^[a-z0-9_-]{8,100}$/i;
-export const prices = { Institucional: { monthly: 19900, annual: 199000 }, 'Red Escolar': { monthly: 59900, annual: 599000 } };
+export const prices = { Institucional: { monthly: 19900, annual: 199000 }, 'Red Escolar': { monthly: 22900, annual: 229000 } };
 export const portalDefaults = { name: '', title: '', description: '', primary: '#0B2E6B', accent: '#67C23A', surface: 'neutral', headerStyle: 'light', cardStyle: 'rounded', catalogTitle: '', membershipMode: 'community', logo: '', cover: '', layout: 'split', sectionOrder: 'catalog', contact: '', announcements: [], resources: [] };
 export const fail = (status, message) => Object.assign(Error(message), { status });
 
@@ -115,7 +115,10 @@ function httpsUrl(value) {
     return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
   } catch (_) { return ''; }
 }
-export function cleanContent(input) {
+export function contentLimits(plan) {
+  return plan === 'Red Escolar' ? { announcements: 16, resources: 24 } : { announcements: 8, resources: 12 };
+}
+export function cleanContent(input, limits = contentLimits()) {
   const data = input && typeof input === 'object' ? input : {};
   const color = (value, fallback) => /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
   const list = (value, limit, convert) => Array.isArray(value) ? value.slice(0,limit).map(convert).filter(Boolean) : [];
@@ -135,11 +138,11 @@ export function cleanContent(input) {
     layout: ['split','banner','compact'].includes(data.layout) ? data.layout : 'split',
     sectionOrder: data.sectionOrder === 'community' ? 'community' : 'catalog',
     contact: /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(data.contact) ? trimmed(data.contact, 140) : '',
-    announcements: list(data.announcements, 8, item => {
+    announcements: list(data.announcements, limits.announcements, item => {
       const title = trimmed(item?.title, 95), body = trimmed(item?.body, 500);
       return title && body ? { title, body } : null;
     }),
-    resources: list(data.resources, 12, item => {
+    resources: list(data.resources, limits.resources, item => {
       const title = trimmed(item?.title, 95), url = httpsUrl(item?.url);
       return title && url ? { title, url } : null;
     })

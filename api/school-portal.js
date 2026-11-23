@@ -1,4 +1,4 @@
-import { active, cleanContent, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolCodes, schoolFor, schoolPortalPath, select, send, userFor } from '../server/school-portal.js';
+import { active, cleanContent, contentLimits, config, paidSubscription, portalDefaults, rest, schoolAccess, schoolCodes, schoolFor, schoolPortalPath, select, send, userFor } from '../server/school-portal.js';
 
 export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return send(res, 405, { error: 'Método no permitido.' });
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         return send(res, 400, { error: 'Los datos del portal no son válidos.' });
       }
       const next = await rest(cfg, 'rpc/save_school_portal_content', { method:'POST', body:{
-        p_school_id: school.id, p_revision: revision, p_content: cleanContent(content), p_publish: publish
+        p_school_id: school.id, p_revision: revision, p_content: cleanContent(content, contentLimits(subscription.plan)), p_publish: publish
       } });
       return send(res, 200, { revision: next });
     }
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
       school: { code, city, name: display_name || name, path:schoolPortalPath(school) }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       content: portal?.published || portalDefaults,
-      ...(manage && { brandingFolder, draft: { ...initialDraft, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
+      ...(manage && { brandingFolder, limits: contentLimits(subscription.plan), draft: { ...initialDraft, ...(portal?.draft || {}) }, revision: portal?.revision || 0 })
     });
   } catch (error) {
     return send(res, error.status || 503, { error: error.status ? error.message : 'No pudimos cargar el portal. Volvé a intentar.' });

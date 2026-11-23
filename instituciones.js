@@ -24,7 +24,7 @@
   var sending = false;
   var currentUser = null;
   var requestedCodeEdited = false;
-  var selectedPlan = query.get("plan") === "Institucional" ? "Institucional" : "Comunidad";
+  var selectedPlan = query.get("plan") === "Red Escolar" ? "Red Escolar" : "Institucional";
   var selectedBilling = form && query.get("cycle") === "annual" ? "annual" : "monthly";
 
   init();
@@ -69,12 +69,12 @@
   function renderSelectedPlan() {
     var name = document.getElementById("selected-plan-name");
     var copy = document.getElementById("selected-plan-copy");
-    var paid = selectedPlan !== "Comunidad";
+    var expanded = selectedPlan === "Red Escolar";
     updateAddress();
-    if (name) name.textContent = selectedPlan;
-    if (copy) copy.textContent = paid
-      ? (selectedBilling === "annual" ? "ARS $199.000 por año" : "ARS $19.900 por mes")
-      : "Gratis";
+    if (name) name.textContent = expanded ? "Red Escolar" : "Básico";
+    if (copy) copy.textContent = selectedBilling === "annual"
+      ? currency.format(expanded ? 229000 : 199000) + " por año"
+      : currency.format(expanded ? 22900 : 19900) + " por mes";
 
   }
 
@@ -279,7 +279,7 @@
       item.dataset.status = request.status;
       item.innerHTML = "<span><strong></strong><small></small></span><span class=\"ib-request__state\"><b></b></span>";
       item.querySelector("strong").textContent = request.official_school_name;
-      item.querySelector("small").textContent = request.requested_plan;
+      item.querySelector("small").textContent = request.requested_plan === "Institucional" ? "Básico" : request.requested_plan;
       item.querySelector("b").textContent =
         request.status === "pending" ? "En revisión" : request.status === "approved" ? "Aprobada" : "Rechazada";
       if (request.status === "approved") {

@@ -422,7 +422,7 @@
     publicationStatus();
     const plan = portal.subscription;
     $('#plan-status').textContent = plan
-      ? plan.plan + ' · ' + (plan.billing_cycle === 'annual' ? 'Anual' : 'Mensual') + ' · Pago hasta el ' +
+      ? (plan.plan === 'Institucional' ? 'Básico' : plan.plan) + ' · ' + (plan.billing_cycle === 'annual' ? 'Anual' : 'Mensual') + ' · Pago hasta el ' +
         new Date(plan.paid_through).toLocaleDateString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'})
       : 'Modo de prueba';
     const defaults = {
@@ -433,6 +433,7 @@
       form.elements[key].value = portal.draft[key] || defaults[key] || '';
     });
     for (const kind of Object.keys(lists)) {
+      if (portal.limits) lists[kind].max = portal.limits[kind];
       $('#edit-'+kind).replaceChildren();
       for (const item of portal.draft[kind] || []) addRow(kind,item);
     }

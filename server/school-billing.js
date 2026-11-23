@@ -94,7 +94,7 @@ export async function beginSubscription(cfg, request, school, user, cycle, previ
     } catch (_) { throw fail(409, 'Ya hay una contratación en curso. Actualizá la página.'); }
   }
   const result = await mp(cfg, '/preapproval', 'POST', {
-    reason: 'ColegioLibre - ' + request.requested_plan + (cycle === 'annual' ? ' anual' : ' mensual'),
+    reason: 'ColeGo - ' + (request.requested_plan === 'Institucional' ? 'Básico' : request.requested_plan) + (cycle === 'annual' ? ' anual' : ' mensual'),
     external_reference: request.id,
     payer_email: request.contact_email,
     auto_recurring: { frequency: cycle === 'annual' ? 12 : 1, frequency_type:'months', transaction_amount: amount, currency_id:'ARS' },
