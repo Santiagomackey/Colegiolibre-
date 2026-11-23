@@ -1891,51 +1891,10 @@
     translateTree(document.body);
     renderTitle();
 
-    const controls=document.getElementById("preference-controls");
-    controls?.setAttribute("aria-label",language==="en"?"Display preferences":"Preferencias de visualización");
-    const button = document.getElementById("preference-language");
-    if (button) {
-      button.querySelector(".preference-controls__language-label").textContent =
-        language === "en" ? "ES" : "EN";
-      button.setAttribute(
-        "aria-label",
-        language === "en" ? "Cambiar a español" : "Switch to English"
-      );
-    }
     applyTheme(theme, false);
     window.dispatchEvent(
       new CustomEvent("colegiolibre:languagechange", { detail: { language } })
     );
-  }
-
-  function createControls() {
-    if (document.getElementById("preference-controls")) return;
-    const controls = document.createElement("aside");
-    controls.id = "preference-controls";
-    controls.className = "preference-controls";
-    controls.setAttribute(
-      "aria-label",
-      language === "en" ? "Display preferences" : "Preferencias de visualización"
-    );
-    controls.setAttribute("data-no-translate", "");
-    controls.innerHTML = `
-      <button class="preference-controls__button preference-controls__language" id="preference-language" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"></circle>
-          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
-        </svg>
-        <span class="preference-controls__language-label">EN</span>
-      </button>
-    `;
-    document.body.appendChild(controls);
-    applyTheme(theme, false);
-    const languageButton=controls.querySelector("#preference-language");
-    languageButton.querySelector("span").textContent=language==="en"?"ES":"EN";
-    languageButton.setAttribute("aria-label",language==="en"?"Cambiar a español":"Switch to English");
-    document.getElementById("preference-language").addEventListener("click", () => {
-      const nextLanguage = language === "en" ? "es" : "en";
-      applyLanguage(nextLanguage);
-    });
   }
 
   root.dataset.originalTitle = document.title;
@@ -1943,18 +1902,8 @@
   root.lang = language;
   root.dataset.language = language;
 
-  // Controls do not wait for database/vendor scripts to finish loading.
-  if (document.body) createControls();
-  else {
-    const earlyControlsObserver=new MutationObserver(() => {
-      if(document.body){earlyControlsObserver.disconnect();createControls()}
-    });
-    earlyControlsObserver.observe(root,{childList:true});
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
     if (!root.dataset.originalTitle) root.dataset.originalTitle = document.title;
-    createControls();
     applyLanguage(language, false);
     observer = new MutationObserver((mutations) => {
       if (translating) return;

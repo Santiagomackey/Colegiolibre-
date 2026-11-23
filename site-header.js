@@ -28,7 +28,6 @@
   const route=location.pathname.replace(/\.html$/,'').split('/').filter(Boolean).pop()||'';
   header.querySelectorAll('[data-site-nav]').forEach(link=>{if(link.dataset.siteNav===route)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
  }
- function placeLanguage(){const controls=document.querySelector('#preference-controls');if(controls&&controls.parentElement!==document.body)document.body.appendChild(controls);}
  async function hydrate(){
   const current=++run;
   try{
@@ -46,8 +45,8 @@
  });
  document.addEventListener('click',event=>{if(!header.contains(event.target))header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
- window.addEventListener('colegiolibre:languagechange',()=>{render();placeLanguage();});
+ window.addEventListener('colegiolibre:languagechange',()=>{render();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function initialize(){addMenuLinks();placeLanguage();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initialize(){addMenuLinks();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();
