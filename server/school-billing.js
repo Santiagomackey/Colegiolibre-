@@ -18,7 +18,11 @@ export async function mp(cfg, path, method = 'GET', body, idempotency) {
   const res = await fetch('https://api.mercadopago.com' + path, {
     method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(8000)
   });
-  if (!res.ok) throw fail(502, 'Mercado Pago no pudo completar la solicitud. Volvé a intentar.');
+  if (!res.ok) {
+    const operation = path.startsWith('/authorized_payments/') ? 'consultar los cobros'
+      : method === 'PUT' ? 'actualizar la suscripción' : method === 'GET' ? 'consultar la suscripción' : 'crear la suscripción';
+    throw fail(502, 'Mercado Pago devolvió HTTP ' + res.status + ' al ' + operation + '.');
+  }
   return res.json();
 }
 
