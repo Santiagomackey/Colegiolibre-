@@ -54,6 +54,7 @@
         billingButtons.forEach(function (item) { item.classList.toggle("is-active", item === button); });
         prices.forEach(function (price) {
           price.querySelector("strong").textContent = "$" + price.dataset[billing];
+          price.querySelector(".ib-price-period").textContent = billing === "annual" ? "/año" : "/mes";
           var note = price.parentElement.querySelector(".ib-price-note");
           if (note) note.textContent = note.dataset[billing + "Note"];
         });
@@ -88,7 +89,7 @@
     if (summary) summary.dataset.plan = selectedPlan;
     if (name) name.textContent = selectedPlan;
     if (copy) copy.textContent = paid
-      ? (selectedBilling === "annual" ? "ARS $249.000 por año" : "ARS $24.900 por mes")
+      ? (selectedBilling === "annual" ? "ARS $199.000 por año" : "ARS $19.900 por mes")
       : "Gratis";
     if (explanation) explanation.textContent = paid
       ? "Después de la aprobación, vas a poder comprar el plan en Mis solicitudes. El editor se habilita cuando se acredite el pago."
@@ -356,6 +357,7 @@
     const editor = plan.active && editorLink(plan.portalPath);
     if (editor) {
       showPaymentReturn("Pago acreditado", "Tu plan está activo. Ya podés personalizar y publicar el portal privado de tu colegio.", editor);
+      if (request.id === returnedRequest) window.location.replace(editor.href);
       return;
     }
     const waiting = plan.enabled && ["pending","authorized"].includes(plan.status);

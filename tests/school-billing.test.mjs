@@ -26,7 +26,7 @@ test('starts a school checkout with the platform account and persists one sharea
       const body = JSON.parse(options.body);
       assert.equal(body.external_reference,request.id);
       assert.equal(body.auto_recurring.frequency,12);
-      assert.equal(body.auto_recurring.transaction_amount,249000);
+      assert.equal(body.auto_recurring.transaction_amount,199000);
       assert.equal(body.status,'pending');
       assert.equal(new URL(body.back_url).searchParams.get('request_id'),request.id);
       return Response.json({id:providerId,init_point:checkout});

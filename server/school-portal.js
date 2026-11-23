@@ -2,7 +2,7 @@ import { authenticatedUser } from './mp-link.js';
 
 export const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 export const PROVIDER_ID = /^[a-z0-9_-]{8,100}$/i;
-export const prices = { Institucional: { monthly: 24900, annual: 249000 }, 'Red Escolar': { monthly: 59900, annual: 599000 } };
+export const prices = { Institucional: { monthly: 19900, annual: 199000 }, 'Red Escolar': { monthly: 59900, annual: 599000 } };
 export const portalDefaults = { name: '', title: '', description: '', primary: '#0B2E6B', accent: '#67C23A', surface: 'neutral', headerStyle: 'light', cardStyle: 'rounded', catalogTitle: '', membershipMode: 'community', logo: '', cover: '', layout: 'split', sectionOrder: 'catalog', contact: '', announcements: [], resources: [] };
 export const fail = (status, message) => Object.assign(Error(message), { status });
 
