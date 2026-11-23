@@ -1,4 +1,4 @@
-const origin = process.env.COLEGIO_LIBRE_URL || "https://colegiolibre.vercel.app";
+const origin = process.env.COLEGIO_LIBRE_URL || "https://www.colegiolibre.com";
 const routes = [
   "/",
   "/login.html",
