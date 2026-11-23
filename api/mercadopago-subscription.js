@@ -1,4 +1,4 @@
-import { active, config, fail, prices, schoolAccess, schoolFor, schoolPortalPath, select, send, userFor, UUID } from '../server/school-portal.js';
+import { active, config, fail, prices, schoolAccess, schoolFor, schoolPortalPath, rest, select, send, userFor, UUID } from '../server/school-portal.js';
 import { beginSubscription, mp, subscriptionFields, syncSubscription } from '../server/school-billing.js';
 
 export default async function handler(req, res) {
@@ -39,9 +39,18 @@ export default async function handler(req, res) {
     }
     if (req.body?.action === 'cancel') {
       if (!stored?.provider_subscription_id) throw fail(409, 'No hay una suscripción que cancelar.');
-      await mp(cfg,'/preapproval/'+encodeURIComponent(stored.provider_subscription_id),'PUT',{ status:'canceled' });
-      const current = await syncSubscription(cfg,stored);
-      return send(res,200,{ status:current.status, paidThrough:current.paid_through });
+      const providerId = stored.provider_subscription_id;
+      const path = '/preapproval/' + encodeURIComponent(providerId);
+      let remote = await mp(cfg,path);
+      const cancelled = value => ['cancelled','canceled'].includes(value.status);
+      if (remote.id !== providerId || remote.external_reference !== id) throw fail(409,'La suscripción no coincide.');
+      if (!cancelled(remote)) remote = await mp(cfg,path,'PUT',{ status:'canceled' });
+      if (remote.id !== providerId || !cancelled(remote)) throw fail(502,'Mercado Pago todavía no confirmó la cancelación.');
+      const query = new URLSearchParams({request_id:'eq.'+id,provider_subscription_id:'eq.'+providerId});
+      await rest(cfg,'institution_subscriptions?'+query,{method:'PATCH',body:{
+        status:'cancelled',provider_synced_at:new Date().toISOString(),updated_at:new Date().toISOString()
+      }});
+      return send(res,200,{status:'cancelled'});
     }
     if (access.manager === undefined || (request.status !== 'pending' && !manager)) throw fail(403, 'Esta inscripción no admite nuevos pagos.');
     return send(res,200,{ init_point:await beginSubscription(cfg,request,school,user,req.body?.cycle || request.billing_cycle,stored) });
