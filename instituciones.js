@@ -290,8 +290,10 @@
       item.querySelector("strong").textContent = request.official_school_name;
       item.querySelector("small").textContent = request.requested_plan === "Institucional" ? "Básico" : request.requested_plan;
       item.querySelector("b").textContent =
-        request.status === "pending" ? "En revisión" : request.status === "approved" ? "Aprobada" : "Rechazada";
-      if (request.status === "approved" || request.requested_plan !== "Comunidad") {
+        request.status === "pending" ? "En revisión" : request.status === "approved" ? "Aprobada" : request.status === "withdrawn" ? "Cancelada" : "Rechazada";
+      if (request.status === "withdrawn" && request === returnTarget) {
+        showPaymentReturn("Pago cancelado", "Podés iniciar una nueva contratación desde la página del plan.");
+      } else if (request.status !== "withdrawn" && (request.status === "approved" || request.requested_plan !== "Comunidad")) {
         const controls = item.querySelector(".ib-request__state");
         if (request.requested_plan === "Comunidad") {
           const link = document.createElement("a");

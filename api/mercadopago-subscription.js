@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       let current = stored;
       let refreshUnavailable = false;
-      if (stored?.provider_subscription_id && enabled && req.query?.refresh === '1') {
+      if (request.status !== 'withdrawn' && stored?.provider_subscription_id && enabled && req.query?.refresh === '1') {
         try {
           current = await syncSubscription(cfg, stored);
         } catch (error) {
