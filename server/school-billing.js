@@ -69,6 +69,7 @@ export async function syncSubscription(cfg, subscription) {
 }
 
 export async function beginSubscription(cfg, request, school, user, cycle, previous) {
+  if (!previous && request.requested_plan !== "Institucional") throw fail(409, "Este plan ya no se ofrece. Solicitá el plan Básico.");
   const amount = previous ? Number(previous.amount) : prices[request.requested_plan]?.[cycle];
   if (!amount || !['monthly','annual'].includes(cycle)) throw fail(400, 'Elegí un plan y una frecuencia válidos.');
   if (!cfg.mpToken || !cfg.webhook) throw fail(503, 'El cobro de suscripciones todavía no está habilitado.');

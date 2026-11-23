@@ -24,7 +24,7 @@
   var sending = false;
   var currentUser = null;
   var requestedCodeEdited = false;
-  var selectedPlan = query.get("plan") === "Red Escolar" ? "Red Escolar" : "Institucional";
+  var selectedPlan = "Institucional";
   var selectedBilling = form && query.get("cycle") === "annual" ? "annual" : "monthly";
 
   init();
@@ -69,12 +69,11 @@
   function renderSelectedPlan() {
     var name = document.getElementById("selected-plan-name");
     var copy = document.getElementById("selected-plan-copy");
-    var expanded = selectedPlan === "Red Escolar";
     updateAddress();
-    if (name) name.textContent = expanded ? "Red Escolar" : "Básico";
+    if (name) name.textContent = "Básico";
     if (copy) copy.textContent = selectedBilling === "annual"
-      ? currency.format(expanded ? 229000 : 199000) + " por año"
-      : currency.format(expanded ? 22900 : 19900) + " por mes";
+      ? currency.format(199000) + " por año"
+      : currency.format(19900) + " por mes";
 
   }
 

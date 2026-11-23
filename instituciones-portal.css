@@ -31,7 +31,8 @@
 .institution-features h2 { font-size: 1rem; margin: 0 0 .45rem; }
 .institution-features p { font-size: .88rem; line-height: 1.5; margin: 0; }
 .ib-request__state select { max-width: 100%; font: inherit; padding: .4rem; }
-@media (min-width: 800px) { #planes .ib-plan-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+#planes { max-width: 42rem; margin-inline: auto; }
+#planes .ib-plan-grid { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 760px) {
   .institution-intro { grid-template-columns: 1fr; gap: 1.7rem; }
   .institution-features { grid-template-columns: 1fr; }
@@ -147,4 +148,25 @@
   background: #f1f5f9;
   border-radius: .5rem;
 }
-.ib-plan a.ib-plan-cta { display: block; text-align: center; text-decoration: none; }
+#planes a.ib-plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  min-height: 46px;
+  padding: .65rem 1.5rem;
+  background: #0b2e6b;
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  font: 700 1rem/1.25 Inter, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+#planes a.ib-plan-cta:hover { background: #173f82; }
+#planes a.ib-plan-cta:focus-visible { outline: 3px solid #4982ce; outline-offset: 3px; }
+@media (max-width: 520px) {
+  #planes a.ib-plan-cta { width: 100%; }
+}

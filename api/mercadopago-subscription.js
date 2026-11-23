@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       const paid = active(current);
       return send(res, 200, {
         enabled, active:paid, status:current?.status || 'none', paidThrough:current?.paid_through,
-        cycle:current?.billing_cycle, amount:current?.amount, prices:prices[request.requested_plan],
+        cycle:current?.billing_cycle, amount:current?.amount, prices:stored || request.requested_plan === "Institucional" ? prices[request.requested_plan] : undefined,
         checkoutReady:Boolean(current?.init_point), refreshUnavailable,
         portalPath:paid ? schoolPortalPath(school) : undefined,
         canCancel:enabled && Boolean(current?.provider_subscription_id && current.status !== 'cancelled')
