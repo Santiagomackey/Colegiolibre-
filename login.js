@@ -16,7 +16,7 @@
     "/publicar",
     "/favoritos",
     "/mensajes",
-    "/colegio", "/portal-colegio", "/instituciones",
+    "/colegio", "/portal-colegio", "/instituciones", "/solicitar-portal",
     "/busco", "/compra", "/pedidos", "/mas"
   ]);
   const params = new URLSearchParams(window.location.search);

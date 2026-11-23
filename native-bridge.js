@@ -154,7 +154,7 @@
     const app = capacitor.Plugins?.App;
     const allowedPages = new Set([
       "/", "/producto", "/mensajes", "/favoritos",
-      "/perfil", "/publicar", "/colegio", "/portal-colegio", "/instituciones", "/busco", "/login", "/compra", "/pedidos", "/mas"
+      "/perfil", "/publicar", "/colegio", "/portal-colegio", "/instituciones", "/solicitar-portal", "/busco", "/login", "/compra", "/pedidos", "/mas"
     ]);
     const safeDestination = (rawValue, fallback = "/") => {
       try {

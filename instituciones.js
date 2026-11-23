@@ -24,8 +24,8 @@
   var sending = false;
   var currentUser = null;
   var requestedCodeEdited = false;
-  var selectedPlan = "Comunidad";
-  var selectedBilling = "monthly";
+  var selectedPlan = query.get("plan") === "Institucional" ? "Institucional" : "Comunidad";
+  var selectedBilling = form && query.get("cycle") === "annual" ? "annual" : "monthly";
 
   init();
 
@@ -36,7 +36,6 @@
     var pricingSection = document.getElementById("planes");
     var billingButtons = document.querySelectorAll("[data-billing]");
     var prices = document.querySelectorAll(".ib-price[data-monthly]");
-    var changePlanButton = document.getElementById("change-plan-button");
     if (viewPlansButton && pricingSection) {
       viewPlansButton.addEventListener("click", function (event) {
         event.preventDefault();
@@ -58,48 +57,42 @@
           var note = price.parentElement.querySelector(".ib-price-note");
           if (note) note.textContent = note.dataset[billing + "Note"];
         });
-        renderSelectedPlan();
-      });
-    });
-
-    document.querySelectorAll("[data-select-plan]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        selectedPlan = button.dataset.selectPlan || "Comunidad";
-        var input = document.getElementById("requested-plan");
-        if (input) input.value = selectedPlan;
-        document.querySelectorAll(".ib-plan").forEach(function (plan) {
-          plan.classList.toggle("is-selected", plan.dataset.plan === selectedPlan);
+        document.querySelectorAll("[data-select-plan]").forEach(function (link) {
+          const url = new URL(link.href);
+          url.searchParams.set("cycle", billing);
+          link.href = url.href;
         });
-        renderSelectedPlan();
-        document.getElementById("request-card").scrollIntoView({ behavior: "smooth", block: "start" });
       });
-    });
-    if (changePlanButton) changePlanButton.addEventListener("click", function () {
-      document.getElementById("planes").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
   function renderSelectedPlan() {
-    var summary = document.getElementById("selected-plan-summary");
     var name = document.getElementById("selected-plan-name");
     var copy = document.getElementById("selected-plan-copy");
-    var explanation = document.getElementById("payment-explanation");
     var paid = selectedPlan !== "Comunidad";
     updateAddress();
-    if (summary) summary.dataset.plan = selectedPlan;
     if (name) name.textContent = selectedPlan;
     if (copy) copy.textContent = paid
       ? (selectedBilling === "annual" ? "ARS $199.000 por año" : "ARS $19.900 por mes")
       : "Gratis";
-    if (explanation) explanation.textContent = paid
-      ? "Después de la aprobación, vas a poder comprar el plan en Mis solicitudes. El editor se habilita cuando se acredite el pago."
-      : "La página se activa después de verificar la solicitud.";
+
   }
 
   async function init() {
     currentUser = await api.getCurrentUser(true);
-    loginRequired.hidden = Boolean(currentUser);
-    form.hidden = !currentUser;
+    if (form) {
+      form.elements.requested_plan.value = selectedPlan;
+      form.elements.billing_cycle.value = selectedBilling;
+      loginRequired.querySelector("a").href = "/login?next=" + encodeURIComponent(location.pathname + location.search);
+      loginRequired.hidden = Boolean(currentUser);
+      form.hidden = !currentUser;
+      renderSelectedPlan();
+      if (currentUser) {
+        bind();
+        form.elements.contact_email.value = currentUser.email || "";
+      }
+      return;
+    }
     if (!currentUser) {
       if (returning) {
         const login = document.createElement("a");
@@ -109,11 +102,6 @@
       }
       requestList.innerHTML = "<p>Iniciá sesión para ver tus solicitudes.</p>";
       return;
-    }
-    bind();
-    updateAddress();
-    if (form.elements.contact_email && !form.elements.contact_email.value) {
-      form.elements.contact_email.value = currentUser.email || "";
     }
     await renderRequests();
   }
@@ -234,9 +222,9 @@
       requested_code: slugify(data.get("requested_code")),
       short_name: String(data.get("short_name") || "").trim(),
       contact_email: String(data.get("contact_email") || "").trim(),
-      primary_color: data.get("primary_color"),
-      secondary_color: data.get("secondary_color"),
-      accent_color: data.get("accent_color"),
+      primary_color: "#0B2E6B",
+      secondary_color: "#67C23A",
+      accent_color: "#FFC72C",
       requested_plan: String(data.get("requested_plan") || selectedPlan),
       billing_cycle: String(data.get("billing_cycle") || selectedBilling),
       status: "pending"
@@ -258,15 +246,7 @@
           : "No pudimos enviar la solicitud. Volvé a intentar.";
         return;
       }
-      status.textContent = "Solicitud enviada. Podés seguir su estado en Mis solicitudes.";
-      form.reset();
-      clearSchool();
-      updateAddress();
-      requestedCodeEdited = false;
-      form.elements.requested_plan.value = selectedPlan;
-      form.elements.billing_cycle.value = selectedBilling;
-      form.elements.contact_email.value = currentUser.email || "";
-      try { await renderRequests(); } catch (_) {}
+      window.location.assign("/instituciones#solicitudes");
     } catch (_) {
       status.textContent = "No pudimos enviar la solicitud. Volvé a intentar.";
     } finally {
