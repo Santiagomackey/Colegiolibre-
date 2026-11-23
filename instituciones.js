@@ -236,18 +236,23 @@
     sending = true;
     var button = document.getElementById("request-submit-label");
     button.disabled = true;
-    status.textContent = "Enviando solicitud…";
+    status.textContent = "Preparando el pago…";
     try {
       var result = await client.from("institution_requests").insert(record).select("id").single();
-      if (result.error) {
-        status.textContent = result.error.code === "23505"
-          ? "Este colegio ya tiene una solicitud pendiente."
-          : "No pudimos enviar la solicitud. Volvé a intentar.";
-        return;
+      let requestId = result.data?.id;
+      if (result.error?.code === "23505") {
+        const existing = await client.from("institution_requests").select("id,billing_cycle")
+          .eq("applicant_user_id",currentUser.id).eq("official_school_code",officialCode.value)
+          .eq("requested_plan",selectedPlan).eq("status","pending").maybeSingle();
+        if (!existing.data) throw Error("Este colegio ya tiene una inscripción en curso.");
+        requestId = existing.data.id;
       }
-      window.location.assign("/instituciones#solicitudes");
-    } catch (_) {
-      status.textContent = "No pudimos enviar la solicitud. Volvé a intentar.";
+      if (!requestId) throw Error("No pudimos guardar los datos del colegio. Volvé a intentar.");
+      const checkout = await billing(requestId,{cycle:selectedBilling});
+      if (!checkout.init_point) throw Error("No pudimos abrir Mercado Pago. Volvé a intentar.");
+      window.location.assign(checkout.init_point);
+    } catch (error) {
+      status.textContent = error.message || "No pudimos iniciar el pago.";
     } finally {
       sending = false;
       button.disabled = false;
@@ -269,7 +274,7 @@
     const returnTarget = returning && (returnedRequest
       ? requests.find(request => request.id === returnedRequest)
       : requests.find(request => request.status === "approved" && request.requested_plan !== "Comunidad"));
-    if (returning && (!returnTarget || returnTarget.status !== "approved" || returnTarget.requested_plan === "Comunidad")) {
+    if (returning && (!returnTarget || returnTarget.status === "rejected" || returnTarget.requested_plan === "Comunidad")) {
       showPaymentReturn("Suscripción institucional", "Consultá el estado en Mis solicitudes con la cuenta que realizó la compra.");
     }
     requests.forEach(function (request) {
@@ -281,7 +286,7 @@
       item.querySelector("small").textContent = request.requested_plan === "Institucional" ? "Básico" : request.requested_plan;
       item.querySelector("b").textContent =
         request.status === "pending" ? "En revisión" : request.status === "approved" ? "Aprobada" : "Rechazada";
-      if (request.status === "approved") {
+      if (request.status === "approved" || request.requested_plan !== "Comunidad") {
         const controls = item.querySelector(".ib-request__state");
         if (request.requested_plan === "Comunidad") {
           const link = document.createElement("a");
@@ -339,6 +344,12 @@
       if (request.id === returnedRequest) window.location.replace(editor.href);
       return;
     }
+    if (plan.active && !editor) {
+      showPaymentReturn("Pago acreditado", request.status === "pending"
+        ? "Estamos verificando tu representación del colegio. Cuando esté confirmada podrás abrir el editor desde esta página."
+        : "Consultá con soporte sobre el acceso a este colegio.");
+      return;
+    }
     const waiting = plan.enabled && ["pending","authorized"].includes(plan.status);
     showPaymentReturn(
       waiting ? "Estamos verificando el pago" : "Suscripción institucional",
@@ -387,7 +398,7 @@
         controls.append(help);
         return;
       }
-      if (!plan.active && ["none","pending"].includes(plan.status) && plan.prices) {
+      if (request.status !== "rejected" && !plan.active && ["none","pending"].includes(plan.status) && plan.prices) {
         const checkout = document.createElement("div");
         checkout.className = "ib-checkout";
         const cycle = document.createElement("select");

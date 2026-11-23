@@ -9,10 +9,12 @@ export default async function handler(req, res) {
     const id = req.method === 'GET' ? req.query?.request_id : req.body?.request_id;
     if (typeof id !== 'string' || !UUID.test(id)) throw fail(400, 'Solicitud inválida.');
     const [request] = await select(cfg,'institution_requests','id,official_school_code,requested_plan,billing_cycle,status,contact_email',
-      { id, applicant_user_id:user.id, status:'approved' });
-    if (!request) throw fail(403, 'Primero debemos aprobar la solicitud institucional.');
+      { id, applicant_user_id:user.id });
+    if (!request) throw fail(403, 'No encontramos esa inscripción en tu cuenta.');
     const school = await schoolFor(cfg, request.official_school_code);
-    if (!school || !(await schoolAccess(cfg,user,school)).manager) throw fail(403, 'Acceso reservado a la administración del colegio.');
+    if (!school) throw fail(404, 'No encontramos el colegio.');
+    const access = await schoolAccess(cfg,user,school);
+    const manager = request.status === 'approved' && access.manager;
     const [stored] = await select(cfg,'institution_subscriptions',subscriptionFields,{ request_id:id, user_id:user.id });
     const enabled = Boolean(cfg.mpToken && cfg.webhook);
     if (req.method === 'GET') {
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
         enabled, active:paid, status:current?.status || 'none', paidThrough:current?.paid_through,
         cycle:current?.billing_cycle, amount:current?.amount, prices:stored || request.requested_plan === "Institucional" ? prices[request.requested_plan] : undefined,
         checkoutReady:Boolean(current?.init_point), refreshUnavailable,
-        portalPath:paid ? schoolPortalPath(school) : undefined,
+        portalPath:paid && manager ? schoolPortalPath(school) : undefined,
         canCancel:enabled && Boolean(current?.provider_subscription_id && current.status !== 'cancelled')
       });
     }
@@ -41,6 +43,7 @@ export default async function handler(req, res) {
       const current = await syncSubscription(cfg,stored);
       return send(res,200,{ status:current.status, paidThrough:current.paid_through });
     }
+    if (access.manager === undefined || (request.status !== 'pending' && !manager)) throw fail(403, 'Esta inscripción no admite nuevos pagos.');
     return send(res,200,{ init_point:await beginSubscription(cfg,request,school,user,req.body?.cycle || request.billing_cycle,stored) });
   } catch (error) {
     return send(res,error.status || 503,{ error:error.status ? error.message : 'No pudimos completar la solicitud. Volvé a intentar.' });
