@@ -3,7 +3,7 @@
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
   const APK_DISMISS_KEY = "colegiolibre-apk-dismissed-at";
-  const APK_URL = null; // Enable only after installing a newly built, signed release.
+  const APK_URL = "/downloads/ColeGo-V45.apk";
   const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -152,7 +152,7 @@
     card.hidden = true;
     card.setAttribute("aria-live", "polite");
     card.innerHTML = `
-      <img class="pwa-install-card__icon" src="/images/colego-app-icon.svg?v=20261123-finalcart" alt="" />
+      <img class="pwa-install-card__icon" src="/images/colego-cart-192.png" alt="" />
       <div class="pwa-install-card__copy">
         <strong>${isAndroid ? text.apkTitle : text.installTitle}</strong>
         <p>${isAndroid ? text.apkText : (isIOS ? text.iosText : text.installText)}</p>

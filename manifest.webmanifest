@@ -23,9 +23,15 @@
   ],
   "icons": [
     {
-      "src": "/images/colego-app-icon.svg?v=20261123-finalcart",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/images/colego-cart-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/colego-cart-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
@@ -37,9 +43,9 @@
       "url": "/publicar?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261123-finalcart",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/images/colego-cart-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -50,9 +56,9 @@
       "url": "/mensajes?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261123-finalcart",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/images/colego-cart-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -63,9 +69,9 @@
       "url": "/favoritos?source=shortcut",
       "icons": [
         {
-          "src": "/images/colego-app-icon.svg?v=20261123-finalcart",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/images/colego-cart-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
