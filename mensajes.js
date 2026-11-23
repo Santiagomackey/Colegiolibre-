@@ -65,6 +65,29 @@
     userBlocked: false
   };
 
+  const phoneLayout = window.matchMedia("(max-width: 880px)");
+  const productDetails = document.querySelector(".mobile-product-details");
+  function syncPhoneLayout() {
+    if (!productDetails) return;
+    productDetails.open = false;
+    productDetails.hidden = !phoneLayout.matches;
+    const parent = phoneLayout.matches ? productDetails : document.querySelector(".messages-app");
+    parent.append(elements.productPanel);
+    sizePhoneChat();
+  }
+
+  function sizePhoneChat() {
+    if (!phoneLayout.matches) return;
+    const viewport = window.visualViewport;
+    if (!viewport || viewport.scale !== 1) return;
+    document.body.style.setProperty("--chat-height", viewport.height + "px");
+    document.body.style.setProperty("--chat-top", viewport.offsetTop + "px");
+  }
+
+  phoneLayout.addEventListener("change", syncPhoneLayout);
+  window.visualViewport?.addEventListener("resize", sizePhoneChat);
+  window.visualViewport?.addEventListener("scroll", sizePhoneChat);
+  syncPhoneLayout();
   initMessagesPage();
 
   async function initMessagesPage() {
@@ -123,7 +146,7 @@
     elements.messageForm?.addEventListener("submit", handleSendMessage);
     elements.messageInput?.addEventListener("input", handleComposerInput);
     elements.messageInput?.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
+      if (event.key === "Enter" && !event.shiftKey && !event.isComposing && !phoneLayout.matches) {
         event.preventDefault();
         elements.messageForm.requestSubmit();
       }
@@ -131,6 +154,9 @@
 
     elements.mobileBackButton?.addEventListener("click", () => {
       document.body.dataset.view = "list";
+      if (productDetails) productDetails.open = false;
+      history.replaceState(null, "", "/mensajes");
+      elements.conversationList.querySelector(".is-active")?.focus({preventScroll:true});
     });
 
     elements.reportConversationButton?.addEventListener(
@@ -510,7 +536,9 @@
     renderConversationHeader(conversation);
     renderProductPanel(conversation);
     setComposerEnabled(true);
+    if (productDetails) productDetails.open = false;
     document.body.dataset.view = "chat";
+    sizePhoneChat();
     await subscribeTyping(conversation.id);
     await loadMessages(conversation.id);
     await markConversationNotificationsRead(conversation.id);
