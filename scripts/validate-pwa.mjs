@@ -11,11 +11,11 @@ const assert = (condition, message) => {
 };
 
 const manifest = JSON.parse(read("manifest.webmanifest"));
-assert(manifest.name === "ColegioLibre", "El manifiesto debe usar el nombre ColegioLibre.");
+assert(manifest.name === "ColeGo", "El manifiesto debe usar el nombre ColegioLibre.");
 assert(manifest.display === "standalone", "La PWA debe abrirse en modo standalone.");
 assert(manifest.start_url, "Falta start_url en el manifiesto.");
 assert(manifest.scope === "/", "El scope de la PWA debe ser /.");
-assert(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "Faltan iconos PWA.");
+assert(Array.isArray(manifest.icons) && ["192x192","512x512"].every(size => manifest.icons.some(icon => icon.sizes === size)), "Faltan iconos PWA.");
 
 for (const icon of manifest.icons || []) {
   const iconPath = String(icon.src || "").replace(/^\//, "");
@@ -52,7 +52,7 @@ const pages = [
 for (const page of pages) {
   const html = read(page);
   assert(html.includes("manifest.webmanifest"), `${page} no enlaza el manifiesto.`);
-  assert(html.includes("apple-touch-icon.png"), `${page} no enlaza el icono de iOS.`);
+  assert(/<link[^>]+rel="apple-touch-icon"[^>]+href="[^"]+\.png"/.test(html), `${page} no enlaza el icono de iOS.`);
   assert(html.includes("pwa.css"), `${page} no carga los estilos PWA.`);
   assert(html.includes("pwa.js"), `${page} no registra la PWA.`);
 }

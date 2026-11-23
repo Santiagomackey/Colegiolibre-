@@ -23,7 +23,7 @@ required.forEach((file) => assert(exists(file), `Falta ${file}.`));
 
 const config = JSON.parse(read("mobile-app/capacitor.config.json"));
 assert(config.appId === "com.colegiolibre.app", "El identificador nativo es incorrecto.");
-assert(!config.server?.url, "La APK debe usar la copia web incluida y no depender de un servidor remoto para iniciar.");
+assert(config.server?.url === "https://www.colegiolibre.com", "La app debe usar el dominio oficial.");
 
 const manifest = read("mobile-app/android/app/src/main/AndroidManifest.xml");
 assert(manifest.includes("android.permission.CAMERA"), "Android no declara permiso de cámara.");
@@ -42,12 +42,12 @@ assert(publishHtml.includes('capture="environment"'), "Publicar no habilita la c
 assert(publishHtml.includes("native-bridge.js"), "Publicar no carga el puente nativo.");
 
 const notifications = read("notifications.js");
-assert(notifications.includes("showSystemNotification"), "Faltan avisos del sistema.");
+assert(read("service-worker.js").includes("self.registration.showNotification") && notifications.includes("pushManager.subscribe"), "Faltan avisos del sistema.");
 assert(notifications.includes("requestPermission"), "Falta la solicitud explícita de permiso.");
 assert(exists("recovery-callback.html"), "Falta el callback de recuperación.");
 assert(exists("open-app.html"), "Falta el puente web hacia la aplicación.");
-assert(read("login.js").includes("recovery-callback.html"), "Recuperar contraseña no usa su callback dedicado.");
-assert(read("producto.js").includes("open-app.html"), "Los productos no generan un enlace móvil.");
+assert(read("login.js").includes('"/recovery-callback"'), "Recuperar contraseña no usa su callback dedicado.");
+assert(read("producto.js").includes("/open-app?path="), "Los productos no generan un enlace móvil.");
 
 if (failures.length) {
   console.error(`Validación móvil fallida (${failures.length}):`);

@@ -5,9 +5,9 @@ import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../preferences.js',import.meta.url),'utf8');
 function fixture(){
  const root={dataset:{}},events={},observers=[];
- const document={documentElement:root,body:null,title:'ColegioLibre',querySelector:()=>null,getElementById:()=>null,addEventListener:(name,fn)=>events[name]=fn,createTreeWalker(target){let i=0;return{currentNode:null,nextNode(){this.currentNode=target.textNodes?.[i++];return Boolean(this.currentNode);}}}};
+ const document={documentElement:root,body:null,title:'ColegioLibre',querySelectorAll:()=>[],querySelector:()=>null,getElementById:()=>null,addEventListener:(name,fn)=>events[name]=fn,createTreeWalker(target){let i=0;return{currentNode:null,nextNode(){this.currentNode=target.textNodes?.[i++];return Boolean(this.currentNode);}}}};
  const pending=[],dialogs=[];
- const window={prompt:(...args)=>{dialogs.push(args);return 'My collection';},matchMedia:()=>({addEventListener(){}}),dispatchEvent(){},requestAnimationFrame:fn=>{pending.push(fn);return pending.length;}};
+ const window={addEventListener(){},prompt:(...args)=>{dialogs.push(args);return 'My collection';},matchMedia:()=>({addEventListener(){}}),dispatchEvent(){},requestAnimationFrame:fn=>{pending.push(fn);return pending.length;}};
  vm.runInNewContext(source,{window,document,localStorage:{getItem:()=>null,setItem(){}},MutationObserver:class{constructor(fn){observers.push(fn)}observe(){}disconnect(){}},CustomEvent:class{},Node:{ELEMENT_NODE:1,TEXT_NODE:3},NodeFilter:{SHOW_TEXT:4,FILTER_ACCEPT:1,FILTER_REJECT:2}});
  const attributes=new Map([['placeholder','Buscar material escolar']]);
  const parent={nodeType:1,closest:()=>null,hasAttribute:k=>attributes.has(k),getAttribute:k=>attributes.get(k),setAttribute:(k,v)=>attributes.set(k,v),querySelectorAll:()=>[]};

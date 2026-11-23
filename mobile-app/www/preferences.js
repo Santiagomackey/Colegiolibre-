@@ -7,12 +7,12 @@
   const systemDark = window.matchMedia?.("(prefers-color-scheme: dark)");
   const readPreference = key => {try{return localStorage.getItem(key)}catch(_){return null}};
   const storedTheme = readPreference(STORAGE_THEME);
-  const storedLanguage = readPreference(STORAGE_LANGUAGE);
+  try { localStorage.removeItem(STORAGE_LANGUAGE); } catch (_) {}
   // ColegioLibre now has one light appearance. Clear a retained dark choice
   // before the first paint, including on installed phones.
   let theme = "light";
   try { localStorage.setItem(STORAGE_THEME, "light"); } catch (_) {}
-  let language = storedLanguage === "en" ? "en" : "es";
+  let language = "es";
   let observer = null;
   let translating = false;
   const originalText = new WeakMap();

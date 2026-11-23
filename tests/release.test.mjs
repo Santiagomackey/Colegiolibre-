@@ -214,7 +214,7 @@ test("recuperar contraseña procesa PKCE y abre el formulario de cambio", () => 
 test("el avatar del vendedor no puede deformarse", () => {
   const css = read("producto.css");
 
-  assert.match(css, /\.seller-avatar\s*\{[\s\S]*?flex:\s*0 0 58px/);
+  assert.match(css, /\.seller-avatar\s*\{[\s\S]*?flex:\s*0 0 34px/);
   assert.match(css, /\.seller-avatar\s*\{[\s\S]*?aspect-ratio:\s*1/);
 });
 
@@ -292,7 +292,7 @@ test("el inicio traduce las descripciones institucionales y de categorías", () 
   );
   assert.match(preferences, /\.trim\(\)\.replace\(\/\\s\+\/g,\s*" "\)/);
   assert.match(home, /preferences\.js\?v=[\w-]+/);
-  assert.match(script, /refresh\?\.\(elements\.categoryShelves\)/);
+  assert.match(preferences, /mutation.addedNodes.forEach\(scheduleTranslation\)/);
 });
 
 test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", () => {
@@ -320,7 +320,7 @@ test("la interfaz mantiene logo, fondo oscuro, contacto y perfil consistentes", 
     read("perfil.css"),
     /\.mobile-profile \.profile-sidebar\s*\{[^}]*min-height:\s*0;/
   );
-  assert.match(home, /images\/favicon(?:-32\.png|\.svg)/);
+  assert.match(home, /images\/colego-favicon\.svg/);
   assert.match(profile, /preferences\.css\?v=[\w-]+/);
   assert.match(serviceWorker, /colegiolibre-pwa-v\d+/);
 });

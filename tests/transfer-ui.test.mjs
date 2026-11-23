@@ -42,6 +42,7 @@ test('viewing checkout leaves stock free, and a competing reservation hides paym
  };
  const calls = [];
  const window = {
+   setInterval(){},
   addEventListener() {},
   colegioLibreApi: { async getCurrentUser() { return { id: 'buyer' }; } },
   colegioLibreSupabase: { from() { return query; } },
@@ -96,6 +97,7 @@ test('pickup orders show payment before delivery coordination', async () => {
    }
   };
   const window = {
+   setInterval(){},
    addEventListener() {},
    colegioLibreApi: { async getCurrentUser() { return { id: 'buyer' }; } },
    colegioLibreTransfers: {
@@ -112,7 +114,7 @@ test('pickup orders show payment before delivery coordination', async () => {
   };
   vm.runInNewContext(checkout, { window, document, URLSearchParams, location: { search: '?id=pickup-order' } });
   await new Promise(setImmediate);
-  const labels = node => [node.textContent, ...node.children.flatMap(labels)];
+  const labels = node => [node.disabled ? 'disabled: ' + node.textContent : node.textContent, ...node.children.flatMap(labels)];
   return labels(document.querySelector('#transfer-checkout'));
  };
  const coordinate = 'Coordinar entrega en el colegio';
@@ -121,7 +123,7 @@ test('pickup orders show payment before delivery coordination', async () => {
  assert.ok(pending.includes(pay));
  assert.ok(!pending.includes(coordinate));
  const missing = await labelsFor({ status: 'payment_pending' });
- assert.ok(missing.includes('Pedir link de pago al vendedor'));
+ assert.ok(missing.includes('disabled: ' + pay) && missing.includes('El vendedor todavía tiene que cargar su alias de cobro.'));
  assert.ok(!missing.includes(pay) && !missing.includes(coordinate));
  const awaiting = await labelsFor({ status: 'awaiting_confirmation', pickup_link_ready: true, pickup_link_opened: true });
  assert.ok(!awaiting.includes(pay) && !awaiting.includes(coordinate));

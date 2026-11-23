@@ -40,7 +40,7 @@ test('Explore exposes retry and truthful empty states after server failures',asy
  const elements=new Map(),handlers=new Map(),calls=[];
  const element=selector=>{if(!elements.has(selector))elements.set(selector,{value:'',hidden:false,textContent:'',open:true,replaceChildren(){},setAttribute(){},addEventListener(event,fn){handlers.set(selector+':'+event,fn)}});return elements.get(selector)};
  let result={data:null,error:{message:'offline'}},pending;
- const window={colegioLibreSupabase:{from:()=>query(result,calls)}};
+ const window={addEventListener(){},colegioLibreSupabase:{from:()=>query(result,calls)}};
  const document={querySelector:element,querySelectorAll:()=>[]};
  const history={replaceState(){}};
  vm.runInNewContext(read('explorar.js'),{window,document,location:{href:'https://www.colegiolibre.com/explorar'},history,URL,AbortController,setTimeout,clearTimeout,matchMedia:()=>({matches:true,addEventListener(){}})});

@@ -216,7 +216,7 @@ html {
 
   .product-media,
   .product-skeleton .skeleton-media {
-    aspect-ratio: 4 / 5 !important;
+    aspect-ratio: 1 / 1 !important;
   }
 
   .product-media img {
@@ -681,7 +681,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* --------------------------------------------------------------------------
-   ColeGo · interfaz móvil de aplicación
+   ColegioLibre · interfaz móvil de aplicación
    Estas reglas reemplazan el header de escritorio únicamente en subpáginas.
    -------------------------------------------------------------------------- */
 @media (max-width:980px) {
@@ -1085,15 +1085,6 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
     margin-bottom: 14px;
   }
 
-  .product-detail-body .gallery-stage,
-  .product-detail-body .gallery-stage__media {
-    min-height: min(88vw, 390px) !important;
-  }
-
-  .product-detail-body .gallery-stage {
-    border-radius: 22px;
-  }
-
   /* Home: una sola búsqueda. Antes convivían la versión desktop y mobile. */
   body:not(.mobile-subpage) .site-header .search-bar--desktop {
     display: none !important;
@@ -1471,7 +1462,6 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
  html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item--publish{background:#0b2e6b!important;color:#fff!important;box-shadow:none!important}
  html[data-theme] body .cl-mobile-nav .cl-mobile-nav__item--publish :is(svg,span){color:#fff!important;stroke:currentColor!important}
 }
-
 </style>
 <style id="cl-home-critical">
 /* Final home header rules: account state changes text, never the layout. */
@@ -1532,7 +1522,6 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
   body.cl-marketplace .site-header .search-bar--mobile:focus-within{outline:2px solid #8bb8f4;outline-offset:2px}
   body.cl-marketplace .site-header .search-bar--mobile .search-submit{display:grid!important;place-items:center!important;border:0!important;padding:0!important}
 }
-
 </style>
 <style id="cl-chrome-critical">
 :root{--cl-chrome-bg:#ffffff;--cl-chrome-soft:#f4f5f7;--cl-chrome-fg:#263142;--cl-chrome-muted:#657184;--cl-chrome-border:#e0e5ec;--cl-chrome-active:#edf0f4;--cl-chrome-primary:#253044;--cl-chrome-on-primary:#ffffff;--cl-system-surface:#ffffff}
@@ -1645,7 +1634,6 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
  html[data-theme] body.cl-marketplace .products-section{padding-top:8px!important}
  html[data-theme] body.mobile-favorites .favorite-skeleton{background:var(--cl-chrome-soft)!important;min-height:220px!important;border-radius:16px!important}
 }
-
 </style>
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>

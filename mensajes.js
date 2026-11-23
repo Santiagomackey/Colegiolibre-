@@ -152,11 +152,23 @@
       }
     });
 
-    elements.mobileBackButton?.addEventListener("click", () => {
+    function showInbox() {
       document.body.dataset.view = "list";
       if (productDetails) productDetails.open = false;
-      history.replaceState(null, "", "/mensajes");
       elements.conversationList.querySelector(".is-active")?.focus({preventScroll:true});
+    }
+    window.addEventListener("popstate", () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id") || params.get("conversation");
+      if (id) void openConversation(id, {pushHistory:false});
+      else showInbox();
+    });
+    elements.mobileBackButton?.addEventListener("click", () => {
+      if (history.state?.fromMessagesInbox) history.back();
+      else {
+        history.replaceState(null, "", "/mensajes");
+        showInbox();
+      }
     });
 
     elements.reportConversationButton?.addEventListener(
@@ -524,9 +536,10 @@
     }
 
     state.activeConversationId = conversation.id;
-    if (pushHistory) {
-      history.replaceState(
-        null,
+    if (pushHistory && new URLSearchParams(location.search).get("id") !== conversation.id) {
+      const fromInbox = phoneLayout.matches && document.body.dataset.view === "list";
+      history[fromInbox ? "pushState" : "replaceState"](
+        {fromMessagesInbox: fromInbox || Boolean(history.state?.fromMessagesInbox)},
         "",
         `/mensajes?id=${encodeURIComponent(conversation.id)}`
       );

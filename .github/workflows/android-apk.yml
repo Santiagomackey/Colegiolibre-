@@ -50,3 +50,12 @@ jobs:
           path: mobile-app/artifacts/*-debug.apk
           if-no-files-found: error
           retention-days: 14
+      - name: Compilar APK de distribución
+        run: npm --prefix mobile-app run android:release
+      - name: Guardar APK para la firma de producción
+        uses: actions/upload-artifact@v4
+        with:
+          name: ColeGo-Android-release-unsigned
+          path: mobile-app/artifacts/*-unsigned.apk
+          if-no-files-found: error
+          retention-days: 14

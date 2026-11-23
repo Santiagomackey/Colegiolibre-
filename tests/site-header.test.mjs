@@ -10,7 +10,7 @@ test('public sections ship the same header with one search and one account actio
 });
 test('a retained dark preference cannot activate dark mode or restore its removed control',()=>{
  const store=new Map([['colegiolibre-theme','dark']]);const storage={getItem:key=>store.get(key)||null,setItem:(k,v)=>store.set(k,v)};
- const root={dataset:{}},document={documentElement:root,body:null,title:'ColegioLibre',querySelector:()=>null,getElementById:()=>null,addEventListener(){}};
+ const root={dataset:{}},document={documentElement:root,body:null,title:'ColegioLibre',querySelectorAll:()=>[],querySelector:()=>null,getElementById:()=>null,addEventListener(){}};
  const window={matchMedia:()=>({matches:true,addEventListener(){}}),dispatchEvent(){},addEventListener(){}};
  vm.runInNewContext(source('preferences.js'),{window,document,localStorage:storage,MutationObserver:class{observe(){}disconnect(){}},CustomEvent:class{}});
  assert.equal(root.dataset.theme,'light');assert.equal(store.get('colegiolibre-theme'),'light');window.colegioLibrePreferences.setTheme('dark');assert.equal(root.dataset.theme,'light');assert.equal(source('preferences.js').includes('id="preference-theme"'),false);
@@ -25,7 +25,7 @@ test('shared account labels preserve the seller name across language changes and
  vm.runInNewContext(source('site-header.js'),{document,window,URL,URLSearchParams,location:{pathname:'/mensajes',assign:p=>navigations.push(p)},queueMicrotask});
  const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
  assert.equal(menuLinks.length,2);
- assert.match(menuLinks[0].html,/href="\/mas#mercado-pago"/);
+ assert.match(menuLinks[0].html,/href="\/perfil\?view=settings#datos-cobro"/);
  assert.match(menuLinks[1].html,/href="\/explorar"/);
  assert.equal(node('#accountText').textContent,'Santiago');assert.equal(node('#accountButton').href,'/perfil');
  document.documentElement.dataset.language='en';events['colegiolibre:languagechange']();assert.equal(message.textContent,'Messages');assert.equal(node('#accountText').textContent,'Santiago');

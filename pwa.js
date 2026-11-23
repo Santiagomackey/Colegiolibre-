@@ -3,7 +3,6 @@
 
   const DISMISS_KEY = "colegiolibre-pwa-install-dismissed";
   const APK_DISMISS_KEY = "colegiolibre-apk-dismissed-at";
-  const APK_URL = "/downloads/ColeGo-V45.apk";
   const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -189,10 +188,7 @@
           return;
         }
 
-        // Fallback for Android browsers that do not expose the install prompt:
-        // download the APK directly from ColeGo (same origin), not via Drive.
-        if (APK_URL) window.location.assign(APK_URL);
-        else showManualInstallGuide();
+        showManualInstallGuide();
         card.hidden = true;
         return;
       }
