@@ -94,141 +94,38 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
 }
 
 @media (min-width: 701px) {
+  .cl-site-top {
+    grid-template-columns: auto minmax(0, 1fr) max-content;
+    column-gap: clamp(12px, 1.5vw, 24px);
+  }
   html body .cl-site-header .cl-site-actions {
-    --header-action-width: clamp(44px, calc((100vw - 472px) / 5), 76px);
-    gap: 6px;
+    gap: 2px;
   }
-
-  html body .cl-site-header .cl-site-actions > :is(.cl-site-action, .cl-notification-trigger, .cl-site-account-menu) {
-    flex: 0 0 var(--header-action-width);
-    min-width: 0;
-    max-width: var(--header-action-width);
-    margin-inline: 0;
+  html body .cl-site-header .cl-site-action {
+    flex-direction: row;
+    gap: 7px;
+    padding: 0 clamp(6px, .7vw, 12px);
+    min-height: 40px;
+    font-size: 13px;
+    border-radius: 8px;
   }
-
-  .cl-site-header .cl-site-actions :is(.cl-site-action span, .cl-notification-trigger__label) {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .cl-site-header .cl-site-account-menu > summary {
-    width: 100%;
-    height: 46px;
-    padding-top: 4px;
-    align-content: start;
-  }
-
-  .cl-site-header .cl-site-account-menu > summary svg {
-    height: 20px;
-  }
-}
-
-/* Align the account shortcuts closer to the center, and attach the dropdown to the username. */
-@media (min-width: 701px) {
-  html body .cl-site-header .cl-site-actions {
-    margin-right: 38px !important;
-    gap: 14px;
-  }
+  .cl-site-header .cl-site-action svg { width: 18px; height: 18px; }
+  html body .cl-site-header .cl-site-action:hover { background: #f2f5fa; }
   html body .cl-site-header .cl-site-account {
     min-width: 0;
-    max-width: 124px;
-    margin-right: 0;
+    max-width: 150px;
+    margin-left: 5px;
+    padding-right: 3px;
+    background: #f1f5fa;
+    border-radius: 22px 0 0 22px;
   }
-  html body .cl-site-header .cl-site-account-menu {
-    margin-left: -13px;
+  .cl-site-account-menu { margin-left: -2px; }
+  .cl-site-account-menu > summary {
+    width: 28px;
+    height: 40px;
+    padding-right: 5px;
+    border-radius: 0 22px 22px 0;
+    background: #f1f5fa;
   }
-  html body .cl-site-header .cl-site-account-menu > summary {
-    width: 18px;
-  }
-}
-
-/* Compact desktop account shortcuts */
-@media (min-width: 701px) {
-  html body .cl-site-header .cl-site-actions {
-    gap: 5px !important;
-    margin-right: 38px !important;
-  }
-  html body .cl-site-header .cl-site-action,
-  html body .cl-site-header .cl-notification-trigger {
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-  }
-  html body .cl-site-header .cl-site-account {
-    min-width: 0 !important;
-    max-width: 100px !important;
-    margin-right: 0 !important;
-  }
-  html body .cl-site-header .cl-site-account-menu {
-    margin-left: -8px !important;
-  }
-  html body .cl-site-header .cl-site-account-menu > summary {
-    width: 14px !important;
-    padding: 0 !important;
-  }
-}
-
-/* Desktop: compact shortcuts as a group, positioned further toward page center. */
-@media (min-width: 701px) {
-  html body .cl-site-header .cl-site-actions {
-    gap: 8px !important;
-    margin-right: clamp(76px, 8vw, 130px) !important;
-    justify-content: flex-start !important;
-  }
-  html body .cl-site-header .cl-site-actions > :is(.cl-site-action, .cl-notification-trigger) {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    min-width: 58px !important;
-    max-width: none !important;
-  }
-  html body .cl-site-header .cl-site-actions > .cl-site-account {
-    min-width: 62px !important;
-    max-width: 100px !important;
-  }
-  html body .cl-site-header .cl-site-actions > .cl-site-account-menu {
-    flex: 0 0 14px !important;
-    width: 14px !important;
-    min-width: 14px !important;
-    max-width: 14px !important;
-    margin-left: -9px !important;
-  }
-  html body .cl-site-header .cl-site-account-menu > summary {
-    width: 14px !important;
-  }
-}
-
-/* Center the complete shortcut cluster inside its own header column. */
-@media (min-width: 701px) {
-  html body .cl-site-header .cl-site-top {
-    grid-template-columns: 208px minmax(180px, 1fr) minmax(300px, 370px);
-  }
-  html body .cl-site-header .cl-site-actions {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    justify-content: center !important;
-    gap: 7px !important;
-  }
-  html body .cl-site-header .cl-site-actions > :is(.cl-site-action, .cl-notification-trigger) {
-    flex: 0 0 auto !important;
-    min-width: 56px !important;
-    width: auto !important;
-    max-width: none !important;
-  }
-  html body .cl-site-header .cl-site-actions > .cl-site-account-menu {
-    flex: 0 0 14px !important;
-    min-width: 14px !important;
-    width: 14px !important;
-    max-width: 14px !important;
-    margin-left: -10px !important;
-  }
-  html body .cl-site-header .cl-site-account-menu > summary {
-    width: 14px !important;
-  }
-}
-@media (min-width: 701px) and (max-width: 1100px) {
-  html body .cl-site-header .cl-site-top {
-    grid-template-columns: 174px minmax(170px, 1fr) minmax(280px, 330px);
-  }
+  .cl-site-account-menu > summary:hover { background: #e5ecf5; }
 }
