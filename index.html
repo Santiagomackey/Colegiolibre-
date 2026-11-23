@@ -1653,7 +1653,24 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
 <link rel="stylesheet" href="/site-header.css?v=centered-column-20261122">
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>
-<style id="colego-native-no-footer">html[data-native-app] footer,html[data-native-app] .site-footer,html[data-native-app] .cl-editorial-footer{display:none!important}</style></head>
+<style id="colego-native-no-footer">html[data-native-app] footer,html[data-native-app] .site-footer,html[data-native-app] .cl-editorial-footer{display:none!important}</style><style id="colego-home-background">
+  html:not([data-theme="dark"]) body.cl-marketplace,
+  html:not([data-theme="dark"]) .cl-marketplace .page-shell,
+  html:not([data-theme="dark"]) .cl-marketplace .empty-state,
+  html:not([data-theme="dark"]) .cl-marketplace .cl-site-header .cl-site-search {
+    background: #fff;
+  }
+
+  html:not([data-theme="dark"]) .cl-marketplace .page-glow {
+    display: none;
+  }
+
+  .cl-marketplace #category-drawer[aria-hidden="true"] {
+    visibility: hidden;
+    box-shadow: none;
+  }
+</style>
+</head>
   
   <body class="cl-marketplace">
 <header class="cl-site-header" data-no-translate>
