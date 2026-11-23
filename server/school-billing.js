@@ -79,7 +79,7 @@ export async function beginSubscription(cfg, request, school, user, cycle, previ
   if (current.some(row => row.request_id !== request.id)) throw fail(409, 'El colegio ya tiene otra suscripción vigente o en trámite.');
   if (previous?.provider_subscription_id) {
     if (previous.status === 'pending' && !previous.paid_through) {
-      if (previous.billing_cycle !== cycle) throw fail(409, 'Ya hay un pago pendiente con otra frecuencia. Revisalo en Mis solicitudes antes de continuar.');
+      if (previous.billing_cycle !== cycle) throw fail(409, 'Ya hay un pago pendiente con otra frecuencia. Para retomarlo, elegí la modalidad con la que iniciaste el pago.');
       const pendingUrl = checkoutUrl(previous.init_point);
       if (pendingUrl) return pendingUrl;
     }

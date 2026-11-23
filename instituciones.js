@@ -11,10 +11,15 @@
   var officialCode = document.getElementById("official-code");
   var officialName = document.getElementById("official-name");
   var status = document.getElementById("request-status");
-  var requestList = document.getElementById("my-requests");
-  const paymentReturn = document.getElementById("payment-return");
   const query = new URLSearchParams(location.search);
   const returning = query.get("payment") === "return";
+  const management = document.getElementById("subscription-management");
+  if (management && (returning || query.get("gestion") === "1" || location.hash === "#solicitudes")) {
+    document.getElementById("planes").remove();
+    management.replaceWith(management.content.cloneNode(true));
+  }
+  var requestList = document.getElementById("my-requests");
+  const paymentReturn = document.getElementById("payment-return");
   const returnedRequest = returning ? query.get("request_id") : null;
   const currency = new Intl.NumberFormat("es-AR", {style:"currency", currency:"ARS", currencyDisplay:"code", maximumFractionDigits:0});
   let confirmationTimer;
@@ -27,7 +32,7 @@
   var selectedPlan = "Institucional";
   var selectedBilling = form && query.get("cycle") === "annual" ? "annual" : "monthly";
 
-  init();
+  if (form || requestList) init();
 
   bindPricing();
 
@@ -275,7 +280,7 @@
       ? requests.find(request => request.id === returnedRequest)
       : requests.find(request => request.status === "approved" && request.requested_plan !== "Comunidad"));
     if (returning && (!returnTarget || returnTarget.status === "rejected" || returnTarget.requested_plan === "Comunidad")) {
-      showPaymentReturn("Suscripción institucional", "Consultá el estado en Mis solicitudes con la cuenta que realizó la compra.");
+      showPaymentReturn("Suscripción institucional", "Entrá con la cuenta que realizó la compra para consultar el estado del pago.");
     }
     requests.forEach(function (request) {
       var item = document.createElement("article");
