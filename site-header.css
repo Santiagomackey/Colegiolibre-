@@ -116,16 +116,17 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
     max-width: 150px;
     margin-left: 5px;
     padding-right: 3px;
-    background: #f1f5fa;
-    border-radius: 22px 0 0 22px;
+    background: transparent;
+    border-radius: 0;
   }
   .cl-site-account-menu { margin-left: -2px; }
   .cl-site-account-menu > summary {
     width: 28px;
     height: 40px;
     padding-right: 5px;
-    border-radius: 0 22px 22px 0;
-    background: #f1f5fa;
+    border-radius: 0;
+    background: transparent;
   }
-  .cl-site-account-menu > summary:hover { background: #e5ecf5; }
+  html body .cl-site-header .cl-site-account:hover,
+  .cl-site-account-menu > summary:hover { background: transparent; color: #0b2e6b; }
 }
