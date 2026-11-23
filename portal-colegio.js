@@ -3,10 +3,12 @@
   const $ = selector => document.querySelector(selector);
   const params = new URLSearchParams(location.search);
   const route = location.pathname.match(/^\/comunidad\/([a-z0-9_-]{1,80})(\/editor)?\/?$/i);
-  const siteCode = route?.[1];
+  const shortRoute = location.pathname.match(/^\/([a-z0-9_-]+-school|colegio-[a-z0-9_-]+)(\/editor)?\/?$/i);
+  const slug = shortRoute?.[1].toLowerCase();
+  const siteCode = route?.[1] || (slug?.endsWith('-school') ? slug : slug?.slice('colegio-'.length));
   const code = siteCode || params.get('code');
   const demo = params.get('demo') === '1' && !code;
-  const wantsEditor = Boolean(route?.[2]) || (!siteCode && params.get('edit') === '1');
+  const wantsEditor = Boolean(route?.[2] || shortRoute?.[2]) || (!siteCode && params.get('edit') === '1');
   const siteUrl = () => portal.school.path || '/comunidad/' + encodeURIComponent(portal.school.code.toLowerCase());
   const form = $('#editor');
   const status = $('#portal-status');

@@ -72,7 +72,7 @@ export async function schoolFor(cfg, code) {
 export function schoolPortalPath(school) {
   const alias = school.community_code?.toLowerCase();
   const segment = /^[a-z0-9_-]{1,80}$/.test(alias || '') ? alias : school.code.toLowerCase();
-  return '/comunidad/' + encodeURIComponent(segment);
+  return '/' + (segment.endsWith('-school') ? '' : 'colegio-') + encodeURIComponent(segment);
 }
 
 export async function schoolAccess(cfg, user, school) {

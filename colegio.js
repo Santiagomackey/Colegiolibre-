@@ -169,9 +169,8 @@ async function resolveSchoolFromAccount() {
     return;
   }
 
-  window.location.replace(
-    `/colegio?code=${encodeURIComponent(profileSchoolCode)}`
-  );
+  const portalPath = await window.colegoPrivateSchoolPath?.(profileSchoolCode);
+  window.location.replace(portalPath || `/colegio?code=${encodeURIComponent(profileSchoolCode)}`);
 }
 
 function bindEvents() {

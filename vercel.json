@@ -3,6 +3,10 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/:slug([a-z0-9_-]+-school)/editor", "destination": "/portal-colegio" },
+    { "source": "/:slug([a-z0-9_-]+-school)", "destination": "/portal-colegio" },
+    { "source": "/colegio-:slug([a-z0-9_-]+)/editor", "destination": "/portal-colegio" },
+    { "source": "/colegio-:slug([a-z0-9_-]+)", "destination": "/portal-colegio" },
     {
       "source": "/comunidad/:code/editor",
       "destination": "/portal-colegio"

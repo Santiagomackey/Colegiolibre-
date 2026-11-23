@@ -1,7 +1,4 @@
-(async () => {
-  const link = document.querySelector('#school-private-link');
-  const code = location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] || new URLSearchParams(location.search).get('code');
-  if (!link || !code) return;
+window.colegoPrivateSchoolPath = async function (code) {
   try {
     const { data } = await window.colegioLibreSupabase.auth.getSession();
     if (!data?.session?.access_token) return;
@@ -10,10 +7,17 @@
     });
     if (!response.ok) return;
     const { path } = await response.json();
-    if (!/^\/comunidad\/[a-z0-9_-]{1,80}$/.test(path || '')) return;
+    if (!/^\/(?:comunidad\/[a-z0-9_-]{1,80}|[a-z0-9_-]+-school|colegio-[a-z0-9_-]+)$/.test(path || '')) return;
+    return path;
+  } catch (_) { return null; }
+};
+(async () => {
+  const link = document.querySelector('#school-private-link');
+  const code = location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] || new URLSearchParams(location.search).get('code');
+  if (!link || !code) return;
+  const path = await window.colegoPrivateSchoolPath(code);
+  if (path) {
     link.href = path;
     link.hidden = false;
-  } catch (_) {
-    // The public school page is usable even when the private portal is unavailable.
   }
 })();

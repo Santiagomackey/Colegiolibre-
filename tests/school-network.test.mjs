@@ -68,7 +68,7 @@ test('a paid school portal protects published content and catalog with its own m
   assert.equal((await request({summary:'1'})).code,403);
   assert.equal(protectedReads,1);
   published.published.membershipMode = 'community';
-  assert.equal((await request({summary:'1'})).data.path,'/comunidad/parque');
+  assert.equal((await request({summary:'1'})).data.path,'/colegio-parque');
   assignment = true;
   published.published.membershipMode = 'verified';
   assert.equal((await request({manage:'1'})).data.brandingFolder,'a1');

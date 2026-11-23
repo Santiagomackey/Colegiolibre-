@@ -158,9 +158,9 @@
   }
 
   function updateAddress() {
+    const slug = slugify(form.elements.requested_code.value) || "nombre-del-colegio";
     document.getElementById("request-address").textContent =
-      "colegiolibre.com/" + (selectedPlan === "Comunidad" ? "colegio/" : "comunidad/") +
-      (slugify(form.elements.requested_code.value) || "nombre-del-colegio");
+      "colegiolibre.com/" + (slug.endsWith("-school") ? "" : "colegio-") + slug;
   }
 
   async function findSchools(query, request) {
@@ -336,7 +336,7 @@
   }
 
   function editorLink(path) {
-    if (!/^\/comunidad\/[a-z0-9_-]{1,80}$/.test(path || "")) return null;
+    if (!/^\/(?:comunidad\/[a-z0-9_-]{1,80}|[a-z0-9_-]+-school|colegio-[a-z0-9_-]+)$/.test(path || "")) return null;
     const link = document.createElement("a");
     link.href = path + "/editor";
     link.textContent = "Personalizar mi portal";
