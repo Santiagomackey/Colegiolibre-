@@ -369,6 +369,32 @@
   const memberList = $('#member-list');
   $('#member-filter').addEventListener('input',drawMembers);
   function drawMembers() {
+    const requests = $('#school-access-list');
+    requests.replaceChildren();
+    for (const entry of portal.accessRequests || []) {
+      const row = element('li');
+      row.append(element('span',[entry.name,entry.email].filter(Boolean).join(' · ')));
+      const actions = entry.status === 'pending' ? [['approved','Aprobar'],['rejected','Rechazar']] : [['revoked','Quitar acceso']];
+      for (const [review,label] of actions) {
+        const button = element('button',label);
+        button.type = 'button';
+        button.addEventListener('click',async () => {
+          const controls = row.querySelectorAll('button');
+          controls.forEach(control => control.disabled = true);
+          try {
+            await api({review,userId:entry.user_id});
+            if (review === 'approved') entry.status = review;
+            else portal.accessRequests = portal.accessRequests.filter(item => item !== entry);
+            drawMembers();
+            memberStatus.textContent = {approved:'Acceso aprobado.',rejected:'Solicitud rechazada.',revoked:'Acceso quitado.'}[review];
+          } catch (error) { memberStatus.textContent = error.message; }
+          finally { controls.forEach(control => control.disabled = false); }
+        });
+        row.append(button);
+      }
+      requests.append(row);
+    }
+    if (!requests.childElementCount) requests.append(element('li','Todavía no hay solicitudes.'));
     memberList.replaceChildren();
     const members = portal.members || [];
     const query = $('#member-filter').value.trim().toLowerCase();
@@ -477,8 +503,8 @@
     $('#platform-header').hidden = false;
     document.body.classList.remove('school-publication');
     $('#portal-content').hidden = $('#portal-login').hidden = $('#portal-verification').hidden = true;
-    $('#portal-verification').href = '/perfil?view=settings';
-    $('#portal-verification').textContent = 'Revisar mi colegio';
+    $('#portal-verification').href = '/colegio';
+    $('#portal-verification').textContent = 'Ir a Mi colegio';
     try {
       const result = await api(undefined,wantsEditor);
       if (current !== boot) return;

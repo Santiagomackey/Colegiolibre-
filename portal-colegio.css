@@ -320,3 +320,7 @@ a.market-card-link:hover h3 { text-decoration: underline; }
 #school-site[data-header="branded"] .school-monogram { background: var(--school-ink); color: var(--school-color); }
 #school-site[data-header="branded"] .school-search { color: #16243b; }
 #school-site[data-cards="square"] :is(.market-card,.school-block) { border-radius: 4px; }
+
+#school-access-list li { flex-wrap: wrap; justify-content: flex-start; padding-block: .75rem; }
+#school-access-list li span { flex: 1 1 12rem; min-width: 0; }
+#school-access-list button { min-height: 44px; padding-inline: .75rem; cursor: pointer; }

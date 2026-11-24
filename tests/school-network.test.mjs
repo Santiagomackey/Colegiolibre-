@@ -28,6 +28,7 @@ test('a paid school portal protects published content and catalog with its own m
         if (url.searchParams.get('community_code') === 'eq.PARQUE') return Response.json([school]);
         return Response.json([]);
       case 'profiles': return Response.json(profile ? [profile] : []);
+      case 'school_portal_access_requests': return Response.json([]);
       case 'school_admins': return Response.json(assignment ? [{school_code:'A1'}] : []);
       case 'school_portal_members':
         assert.equal(url.searchParams.get('school_id'),'eq.school-a');

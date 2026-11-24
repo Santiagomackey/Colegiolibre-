@@ -76,7 +76,7 @@ export function schoolPortalPath(school) {
 }
 
 export async function schoolAccess(cfg, user, school) {
-  const profile = await first(cfg, 'profiles', 'school_code,school_verification_status,account_status', { id: user.id }, { limit: '1' });
+  const profile = await first(cfg, 'profiles', 'name,school_code,school_verification_status,account_status', { id: user.id }, { limit: '1' });
   if (['banned','suspended'].includes(profile?.account_status)) return {};
   const codes = schoolCodes(school).map(code => code.toUpperCase());
   const memberships = await select(cfg, 'school_admins', 'school_code', { user_id: user.id, is_active: true });
@@ -88,12 +88,15 @@ export async function schoolAccess(cfg, user, school) {
     }, { limit:'1' })) assignment = officialAssignment;
   }
   const manager = Boolean(assignment);
-  const verified = Boolean(user.email_confirmed_at) && profile?.school_verification_status === 'verified' && codes.includes(profile.school_code?.toUpperCase());
+  const eligible = Boolean(user.email_confirmed_at && user.email && codes.includes(profile?.school_code?.toUpperCase()));
+  const request = eligible && !manager && profile.school_verification_status !== 'verified'
+    ? await first(cfg,'school_portal_access_requests','status',{school_id:school.id,user_id:user.id}) : null;
+  const verified = eligible && (profile.school_verification_status === 'verified' || request?.status === 'approved');
   const email = user.email?.trim().toLowerCase();
   const invited = !manager && !verified && email && user.email_confirmed_at &&
     await first(cfg, 'school_portal_members', 'school_id', { school_id: school.id, email }, { limit:'1' });
   const member = Boolean(verified || invited);
-  return { manager, member, verified, brandingFolder:assignment?.school_code.toLowerCase() };
+  return { manager, member, verified, eligible, requestStatus:request?.status, name:profile?.name, brandingFolder:assignment?.school_code.toLowerCase() };
 }
 
 export async function paidSubscription(cfg, school) {

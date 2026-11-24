@@ -1,4 +1,4 @@
-const pages=new Set(['/','/producto','/mensajes','/perfil','/favoritos','/busco','/compra','/pedidos']);
+const pages=new Set(['/','/producto','/mensajes','/perfil','/favoritos','/busco','/compra','/pedidos','/portal-colegio']);
 export function safePushPath(value) {
   try {
     const url=new URL(value||'/','https://www.colegiolibre.com/');

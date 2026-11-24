@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Portal del colegio | ColeGo</title>
   <link rel="icon" href="/images/colego-favicon.svg?v=3">
-  <link rel="stylesheet" href="/portal-colegio.css?v=8">
+  <link rel="stylesheet" href="/portal-colegio.css?v=access-1">
 </head>
 <body>
   <header class="masthead" id="platform-header">
@@ -86,6 +86,9 @@
               </select>
             </label>
             <p>Los cambios en esta opción se aplican al publicar. Los correos autorizados deben estar confirmados en la cuenta de ColegioLibre.</p>
+            <h3>Solicitudes de acceso</h3>
+            <ul id="school-access-list"></ul>
+            <h3>Acceso por correo</h3>
             <form id="member-form"><label>Correo autorizado <input type="email" name="email" maxlength="160" required></label><button class="button" type="submit">Autorizar acceso</button></form>
             <p id="member-status" role="status" aria-live="polite"></p>
             <label id="member-filter-label">Buscar correo <input id="member-filter" type="search"></label>
@@ -116,6 +119,6 @@
   <script src="/vendor/supabase.js"></script>
   <script src="/supabase.js?v=20261110-recovery31"></script>
   <script src="/school-marketplace.js?v=4"></script>
-  <script src="/portal-colegio.js?v=10"></script>
+  <script src="/portal-colegio.js?v=11"></script>
 </body>
 </html>
