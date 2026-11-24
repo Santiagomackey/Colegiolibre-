@@ -63,7 +63,7 @@ function createLocalApiFallback() {
         product && product.school_year !== null && product.school_year !== undefined
           ? Number(product.school_year)
           : null,
-      seller_name: (product && product.seller_name) || "Usuario ColegioLibre",
+      seller_name: (product && product.seller_name) || "Usuario Colestores",
       size: (product && product.size) || null,
       status: (product && product.status) || "available",
       subject: (product && product.subject) || null,
@@ -450,8 +450,8 @@ function showToast(message) {
 
 function hydrateLogos() {
   elements.logoImages.forEach((image) => {
-    image.src = "images/logo-horizontal.webp";
-    image.alt = "ColegioLibre";
+    image.src = "images/colestores-logo.svg";
+    image.alt = "Colestores";
   });
 }
 

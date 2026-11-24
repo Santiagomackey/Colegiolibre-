@@ -86,7 +86,7 @@ function localDecision(product) {
   if (BLOCK_PATTERNS.some((pattern) => pattern.test(text))) {
     return {
       decision: "rejected",
-      reason: "La publicación contiene contenido o datos que no están permitidos en ColegioLibre.",
+      reason: "La publicación contiene contenido o datos que no están permitidos en Colestores.",
       severity: "high",
       source: "local"
     };
@@ -95,7 +95,7 @@ function localDecision(product) {
   if (!ALLOWED_CATEGORIES.has(category)) {
     return {
       decision: "rejected",
-      reason: "La categoría no está permitida en ColegioLibre.",
+      reason: "La categoría no está permitida en Colestores.",
       severity: "medium",
       source: "local"
     };

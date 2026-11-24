@@ -194,7 +194,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("admin-analytics error", error);
     return json(res, 500, {
-      error: "No se pudo cargar Analytics de ColegioLibre.",
+      error: "No se pudo cargar Analytics de Colestores.",
       detail: String(error?.message || error).slice(0, 300)
     });
   }

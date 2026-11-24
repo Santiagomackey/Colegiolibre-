@@ -527,7 +527,7 @@
       text.includes("error sending recovery") ||
       text.includes("error sending email")
     ) {
-      return "El servicio de correo no pudo enviar el mensaje. Revisá la configuración SMTP de ColegioLibre o intentá nuevamente en unos minutos.";
+      return "El servicio de correo no pudo enviar el mensaje. Revisá la configuración SMTP de Colestores o intentá nuevamente en unos minutos.";
     }
     if (
       text.includes("failed to fetch") ||

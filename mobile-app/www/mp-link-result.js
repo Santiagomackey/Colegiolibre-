@@ -5,5 +5,5 @@
  const path='/perfil?view=settings&mp_link='+result+(reasons.includes(reason)?'&mp_reason='+encodeURIComponent(reason):'')+'#datos-cobro';
  const open=document.querySelector('#mp-result-open');open.href='colegiolibre://open?path='+encodeURIComponent(path);
  document.querySelector('#mp-result-web').href=path;
- if(document.documentElement.dataset.language==='en'){document.documentElement.lang='en';document.querySelector('#mp-result-title').textContent='Return to ColegioLibre';document.querySelector('#mp-result-copy').textContent='Open the app to continue with your account.';open.textContent='Open ColegioLibre';document.querySelector('#mp-result-web').textContent='Continue on the website';}
+ if(document.documentElement.dataset.language==='en'){document.documentElement.lang='en';document.querySelector('#mp-result-title').textContent='Return to Colestores';document.querySelector('#mp-result-copy').textContent='Open the app to continue with your account.';open.textContent='Open Colestores';document.querySelector('#mp-result-web').textContent='Continue on the website';}
 })();

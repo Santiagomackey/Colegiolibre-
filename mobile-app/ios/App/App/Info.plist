@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>ColegioLibre</string>
+        <string>Colestores</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -25,11 +25,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>ColegioLibre usa la cámara para agregar fotos a tus publicaciones.</string>
+	<string>Colestores usa la cámara para agregar fotos a tus publicaciones.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>ColegioLibre accede a tus fotos únicamente cuando elegís imágenes para una publicación.</string>
+	<string>Colestores accede a tus fotos únicamente cuando elegís imágenes para una publicación.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>ColegioLibre puede guardar una foto solo cuando vos lo solicitás.</string>
+	<string>Colestores puede guardar una foto solo cuando vos lo solicitás.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

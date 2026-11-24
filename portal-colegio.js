@@ -172,7 +172,7 @@
       link.href = 'mailto:' + content.contact;
       footer.append(link);
     }
-    const platform = element('a','ColegioLibre');
+    const platform = element('a','Colestores');
     platform.href = demo ? '/instituciones' : '/';
     footer.append(platform);
     host.append(footer);
@@ -509,7 +509,7 @@
       const result = await api(undefined,wantsEditor);
       if (current !== boot) return;
       portal = result;
-      document.title = portal.school.name + ' | ColegioLibre';
+      document.title = portal.school.name + ' | Colestores';
       $('#portal-content').hidden = false;
       const canEdit = wantsEditor && portal.manager;
       $('#platform-header').hidden = !canEdit;

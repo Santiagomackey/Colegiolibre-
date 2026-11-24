@@ -11,7 +11,7 @@ const assert = (condition, message) => {
 };
 
 const manifest = JSON.parse(read("manifest.webmanifest"));
-assert(manifest.name === "ColeGo", "El manifiesto debe usar el nombre ColegioLibre.");
+assert(manifest.name === "Colestores", "El manifiesto debe usar el nombre Colestores.");
 assert(manifest.display === "standalone", "La PWA debe abrirse en modo standalone.");
 assert(manifest.start_url, "Falta start_url en el manifiesto.");
 assert(manifest.scope === "/", "El scope de la PWA debe ser /.");

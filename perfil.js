@@ -508,7 +508,7 @@ function renderVerificationSection() {
             <article class="verification-action-card verification-action-card--blocked">
               <p class="section-kicker">Acceso restringido</p>
               <h3>${escapeHtml(accountLabels[accountStatus])}</h3>
-              <p>No podés publicar ni iniciar conversaciones mientras tu cuenta esté restringida. Contactá al equipo administrador de ColegioLibre.</p>
+              <p>No podés publicar ni iniciar conversaciones mientras tu cuenta esté restringida. Contactá al equipo administrador de Colestores.</p>
             </article>
           `
           : verificationStatus === "verified"
@@ -713,7 +713,7 @@ function renderTransactionHistory(transactions) {
                   statusLabels[transaction.status] || transaction.status
                 )}</span>
                 <h3>${escapeHtml(
-                  transaction.product?.title || "Producto de ColegioLibre"
+                  transaction.product?.title || "Producto de Colestores"
                 )}</h3>
                 <p>${escapeHtml(
                   transaction.status === "completed"

@@ -47,7 +47,7 @@
 }
 
 
-/* ColeGo catalog refresh: tighter hierarchy, spacious results and modern filters */
+/* Colestores catalog refresh: tighter hierarchy, spacious results and modern filters */
 body{background:var(--ex-bg)}
 .ex-hero{padding:34px max(24px,calc((100vw - 1280px)/2)) 28px;background:linear-gradient(115deg,#fff 0%,#f5f8fd 100%);border-bottom:1px solid var(--ex-line)}
 html[data-theme="dark"] .ex-hero{background:linear-gradient(115deg,#121b2a,#101620)}

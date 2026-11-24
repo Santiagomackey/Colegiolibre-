@@ -624,7 +624,7 @@ html[data-theme="dark"] .cl-mobile-nav__item[aria-current="page"] {
 }
 
 /* --------------------------------------------------------------------------
-   ColegioLibre · interfaz móvil de aplicación
+   Colestores · interfaz móvil de aplicación
    Estas reglas reemplazan el header de escritorio únicamente en subpáginas.
    -------------------------------------------------------------------------- */
 @media (max-width:980px) {
