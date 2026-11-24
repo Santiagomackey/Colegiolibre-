@@ -25,7 +25,10 @@ export default async function handler(req,res) {
   const account = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
   const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
   try {
-    if (!token || !/^[a-f0-9]{32}$/i.test(account || '') || !key || !supabase) throw Error('configuration');
+    if (!token || !/^[a-f0-9]{32}$/i.test(account || '') || !key || !supabase) {
+      console.warn('Help configuration missing', { token:!!token, account:/^[a-f0-9]{32}$/i.test(account || ''), storage:!!(key && supabase) });
+      throw Error('configuration');
+    }
     const ip = req.headers['x-vercel-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || 'shared';
     const bucket = createHmac('sha256',key).update('help:'+new Date().toISOString().slice(0,13)+':'+ip).digest('hex');
     const reserved = await rest({supabase,key},'rpc/reserve_help_ai_turn',{method:'POST',body:{p_bucket:bucket}});
@@ -37,13 +40,16 @@ export default async function handler(req,res) {
       signal:AbortSignal.timeout(18000)
     });
     if (!response.ok) {
-      console.warn('Workers AI returned HTTP',response.status);
+      const failure = await response.json().catch(()=>null);
+      console.warn('Workers AI returned HTTP',response.status,'code',Number(failure?.errors?.[0]?.code) || 0);
       throw Error('provider');
     }
     const answer = (await response.json()).result?.response;
     if (typeof answer !== 'string' || !answer.trim()) throw Error('empty');
     return send(res,200,{answer:answer.trim().slice(0,2000)});
-  } catch {
+  } catch (error) {
+    const category = ['configuration','provider','empty','PORTAL_STORAGE_ERROR'].includes(error.message) ? error.message : 'transport';
+    console.warn('ColeGo help fallback',category);
     return send(res,200,{answer:guideAnswer(history),source:'guide'});
   }
 }
