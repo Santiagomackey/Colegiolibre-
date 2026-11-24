@@ -1,4 +1,5 @@
 import {sendWebPush} from "../server/web-push.js";
+import {sendApplePush} from "../server/apple-push.js";
 import crypto from "node:crypto";
 import {buildPushMessage} from "../server/push-payload.js";
 
@@ -156,13 +157,22 @@ export default async function handler(request, response) {
         }
       }));
     };
-    const androidDelivery = async () => {
-      const devices = (await loadTokens(notification.user_id)).filter(d => d.platform === 'android');
-      if (!devices.length) return [];
-      const accessToken = await getGoogleAccessToken();
-      return Promise.allSettled(devices.map(device => sendToDevice(accessToken, device, notification)));
+    const nativeDelivery = async () => {
+      const devices = await loadTokens(notification.user_id);
+      let googleToken;
+      return Promise.allSettled(devices.map(async device => {
+        if (device.platform === 'ios') {
+          try { return await sendApplePush(device, notification); }
+          catch (error) {
+            if (error.status === 410) await removeInvalidToken(device.token);
+            throw error;
+          }
+        }
+        googleToken ||= getGoogleAccessToken();
+        return sendToDevice(await googleToken, device, notification);
+      }));
     };
-    const deliveries = await Promise.allSettled([webDelivery(), androidDelivery()]);
+    const deliveries = await Promise.allSettled([webDelivery(), nativeDelivery()]);
     const results = deliveries.flatMap(group => group.status === 'fulfilled' ? group.value : [group]);
     const sent = results.filter((result) => result.status === "fulfilled").length;
     const failed = results.length - sent;

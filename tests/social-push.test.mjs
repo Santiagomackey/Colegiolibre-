@@ -42,3 +42,33 @@ test('push endpoint rejects untrusted calls and ignores read-only updates',async
   const read=response();await handler({method:'POST',headers:{'x-push-secret':'test-only-secret'},body:{type:'UPDATE',record:{id:'n',user_id:'u',read:true,updated_at:'new'},old_record:{updated_at:'old'}}},read);assert.equal(read.code,200);assert.equal(read.body.skipped,true);
  }finally{if(previous===undefined)delete process.env.PUSH_WEBHOOK_SECRET;else process.env.PUSH_WEBHOOK_SECRET=previous;}
 });
+
+for (const platform of ['android', 'ios']) {
+  test(platform + ' asks on first launch, registers after sign-in and opens the selected notification', async () => {
+    let user = null, permission = 'prompt', requests = 0;
+    const saved = [], listeners = {};
+    const push = {
+      checkPermissions: async () => ({ receive: permission }),
+      requestPermissions: async () => { requests++; permission = 'granted'; return { receive: permission }; },
+      addListener: async (name, fn) => { listeners[name] = fn; },
+      register: async () => listeners.registration({ value: 'device-token-for-registration' })
+    };
+    const window = {
+      Capacitor: { isNativePlatform: () => true, getPlatform: () => platform, Plugins: { PushNotifications: push } },
+      location: { origin:'https://www.colegiolibre.com' }, fetch:async()=>({}), addEventListener(){}, dispatchEvent(){},
+      colegioLibreApi:{getCurrentUser:async()=>user}, colegioLibreSupabase:{auth:{},rpc:async(name,args)=>{saved.push(args);return {};}}
+    };
+    vm.runInNewContext(read('native-bridge.js'), {window,document:{documentElement:{dataset:{}},addEventListener(){}},URL,Request,CustomEvent:class{}});
+    await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(requests,1);
+    assert.equal(saved.length,0);
+    user={id:'seller'};
+    await window.colegioLibreNative.enablePushNotifications();
+    assert.equal(requests,1);
+    assert.equal(saved[0].p_platform,platform);
+    for (const url of ['/mensajes?id=chat','/compra?id=order']) {
+      listeners.pushNotificationActionPerformed({notification:{data:{url}}});
+      assert.equal(window.location.href,url);
+    }
+  });
+}

@@ -219,19 +219,21 @@
       // La web sigue funcionando si el dispositivo no admite este bloqueo.
     }
 
-    await initializePushNotifications().catch(() => {pushState.error="registration_failed";publishPushState()});
   }
 
   let pushListenersReady = false;
-  async function initializePushNotifications({ ask = true } = {}) {
+  let initializingPush;
+  function initializePushNotifications(options) {
+    if (!initializingPush) {
+      initializingPush = setupPush(options).finally(() => { initializingPush = null; });
+    }
+    return initializingPush;
+  }
+  async function setupPush({ ask = true } = {}) {
     const pushNotifications = plugin("PushNotifications");
     const client = window.colegioLibreSupabase;
     const api = window.colegioLibreApi;
-    if (!isNative || !pushNotifications || !client || !api?.getCurrentUser) return false;
-
-    if(capacitor.getPlatform?.() !== 'android'){pushState.error='platform_not_configured';publishPushState();return false;}
-    const user = await api.getCurrentUser();
-    if (!user) {pushState.error="sign_in_required";publishPushState();return false;}
+    if (!isNative || !pushNotifications || !['android','ios'].includes(capacitor.getPlatform?.())) return false;
 
     if (!pushListenersReady) {
       pushListenersReady = true;
@@ -272,6 +274,11 @@
     const granted = ask ? await requestNotificationPermission() : (await notificationStatus()).permission === 'granted';
     if (!granted) return false;
 
+    if (!client || !await api?.getCurrentUser?.()) {
+      pushState.error = "sign_in_required";
+      publishPushState();
+      return false;
+    }
     await createNotificationChannels();
     pushState.error=null;
     await pushNotifications.register();
@@ -319,5 +326,6 @@
     takePhoto
   };
 
+  void initializePushNotifications().catch(() => { pushState.error = "registration_failed"; publishPushState(); });
   void initializeNativeListeners();
 })();
