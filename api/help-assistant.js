@@ -21,9 +21,12 @@ export default async function handler(req,res) {
     return send(res,400,{error:'Escribí una consulta de hasta 700 caracteres.'});
   }
   const { SUPABASE_URL:supabase, SUPABASE_SERVICE_ROLE_KEY:key } = process.env;
-  const token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
+  const token = process.env.AI_GATEWAY_API_KEY || (process.env.VERCEL && req.headers['x-vercel-oidc-token']) || process.env.VERCEL_OIDC_TOKEN;
   try {
-    if (!token || !key || !supabase) throw Error('configuration');
+    if (!token || !key || !supabase) {
+      console.warn('Help assistant configuration unavailable', {gateway:!!token,storage:!!(key && supabase)});
+      throw Error('configuration');
+    }
     const ip = req.headers['x-vercel-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || 'shared';
     const bucket = createHmac('sha256',key).update('help:'+new Date().toISOString().slice(0,13)+':'+ip).digest('hex');
     const reserved = await rest({supabase,key},'rpc/reserve_help_ai_turn',{method:'POST',body:{p_bucket:bucket}});
