@@ -1,3 +1,4 @@
+import { guideAnswer } from '../server/help-guide.js';
 import { createHmac } from 'node:crypto';
 import { rest, send } from '../server/school-portal.js';
 
@@ -38,13 +39,14 @@ export default async function handler(req,res) {
       signal:AbortSignal.timeout(18000)
     });
     if (!response.ok) {
-      console.warn('Help assistant gateway status',response.status);
+      const detail = (await response.json().catch(()=>null))?.error;
+      console.warn('Help assistant gateway status',response.status,String(detail?.type || detail?.code || '').slice(0,100), String(detail?.message || '').replace(/https?:\/\/\S+/g,'[link]').slice(0,240));
       throw Error('provider');
     }
     const answer = (await response.json()).choices?.[0]?.message?.content;
     if (typeof answer !== 'string' || !answer.trim()) throw Error('empty');
     return send(res,200,{answer:answer.trim().slice(0,2000)});
   } catch {
-    return send(res,503,{error:'El asistente no pudo responder. Volvé a intentar o escribí a soporte.'});
+    return send(res,200,{answer:guideAnswer(history),source:'guide'});
   }
 }

@@ -5,9 +5,9 @@
   const log = document.querySelector('#help-log');
   const button = form.querySelector('button');
   let history = [];
-  function show(role,text) {
+  function show(role,text,source) {
     const label = document.createElement('strong');
-    label.textContent = role === 'user' ? 'Vos' : 'ColeGo IA';
+    label.textContent = role === 'user' ? 'Vos' : source === 'guide' ? 'Guía de ColeGo' : 'ColeGo IA';
     const p = document.createElement('p');
     p.textContent = text;
     log.append(label,p);
@@ -29,7 +29,7 @@
         return;
       }
       show('user',question);
-      show('assistant',data.answer);
+      show('assistant',data.answer,data.source);
       history = [...messages,{role:'assistant',content:data.answer}];
       field.value = '';
       status.textContent = '';

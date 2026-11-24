@@ -36,7 +36,9 @@ test('assistant accepts a follow-up, limits usage and preserves a failed turn fo
   const follow=[first,{role:'assistant',content:'Abrí Mi colegio.'},{role:'user',content:'¿Y después?'}];
   assert.equal((await ask(follow)).data.answer,'Abrí Mi colegio.');
   offline=true;
-  assert.equal((await ask([first])).code,503);
+  const fallback = await ask([first]);
+  assert.equal(fallback.data.source,'guide');
+  assert.match(fallback.data.answer,/Mi colegio/);
   offline=false;
   for(let n=2;n<20;n++) assert.equal((await ask([first])).code,200);
   assert.equal((await ask([first])).code,429);
