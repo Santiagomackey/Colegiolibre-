@@ -1,0 +1,9 @@
+.help-chat form { display:grid; gap:.6rem; }
+.help-chat label { font-weight:700; }
+.help-chat textarea { width:100%; resize:vertical; padding:.8rem; border:1px solid var(--line); border-radius:.7rem; font:inherit; color:inherit; background:var(--white); }
+.help-actions { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+.help-actions button { min-height:44px; padding:.65rem 1.1rem; border:0; border-radius:.7rem; background:#0b2e6b; color:white; font:inherit; font-weight:700; cursor:pointer; }
+.help-actions button:disabled { opacity:.6; }
+#help-log { max-height:min(45vh,25rem); overflow-y:auto; overflow-wrap:anywhere; }
+#help-log p { margin:.5rem 0 .9rem; white-space:pre-wrap; }
+#help-status:empty { display:none; }
