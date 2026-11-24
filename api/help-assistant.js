@@ -23,9 +23,11 @@ export default async function handler(req,res) {
   }
   const { SUPABASE_URL:supabase, SUPABASE_SERVICE_ROLE_KEY:key } = process.env;
   const account = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
-  const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
+  const savedToken = process.env.CLOUDFLARE_API_TOKEN?.trim() || '';
+  const matches = [...new Set(savedToken.match(/\bcfut_[A-Za-z0-9_-]{24,}\b/g) || [])];
+  const token = matches.length === 1 ? matches[0] : savedToken;
   try {
-    if (!/^[A-Za-z0-9_-]+$/.test(token || '')) throw Error('token_format');
+    if (!/^[A-Za-z0-9_-]+$/.test(token || '')) throw Error(/…|\.{3}/.test(savedToken) ? 'masked_token' : 'token_format');
     if (!token || !/^[a-f0-9]{32}$/i.test(account || '') || !key || !supabase) {
       console.warn('Help configuration missing', { token:!!token, account:/^[a-f0-9]{32}$/i.test(account || ''), storage:!!(key && supabase) });
       throw Error('configuration');
@@ -49,7 +51,7 @@ export default async function handler(req,res) {
     if (typeof answer !== 'string' || !answer.trim()) throw Error('empty');
     return send(res,200,{answer:answer.trim().slice(0,2000)});
   } catch (error) {
-    const category = ['configuration','token_format','provider','empty','PORTAL_STORAGE_ERROR'].includes(error.message) ? error.message : 'transport';
+    const category = ['configuration','masked_token','token_format','provider','empty','PORTAL_STORAGE_ERROR'].includes(error.message) ? error.message : 'transport';
     console.warn('ColeGo help fallback',category,error.name, /^[A-Z0-9_]{1,40}$/.test(error.cause?.code || '') ? error.cause.code : '');
     return send(res,200,{answer:guideAnswer(history),source:'guide'});
   }
