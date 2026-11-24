@@ -22,28 +22,25 @@ export default async function handler(req,res) {
     return send(res,400,{error:'Escribí una consulta de hasta 700 caracteres.'});
   }
   const { SUPABASE_URL:supabase, SUPABASE_SERVICE_ROLE_KEY:key } = process.env;
-  const token = process.env.AI_GATEWAY_API_KEY || (process.env.VERCEL && req.headers['x-vercel-oidc-token']) || process.env.VERCEL_OIDC_TOKEN;
+  const account = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
+  const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
   try {
-    if (!token || !key || !supabase) {
-      console.warn('Help assistant configuration unavailable', {gateway:!!token,storage:!!(key && supabase)});
-      throw Error('configuration');
-    }
+    if (!token || !/^[a-f0-9]{32}$/i.test(account || '') || !key || !supabase) throw Error('configuration');
     const ip = req.headers['x-vercel-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || 'shared';
     const bucket = createHmac('sha256',key).update('help:'+new Date().toISOString().slice(0,13)+':'+ip).digest('hex');
     const reserved = await rest({supabase,key},'rpc/reserve_help_ai_turn',{method:'POST',body:{p_bucket:bucket}});
     if (!reserved) return send(res,429,{error:'Se alcanzó el límite de consultas por hora. Podés volver más tarde o escribir a soporte.'});
-    const response = await fetch('https://ai-gateway.vercel.sh/v1/chat/completions',{
+    const response = await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/ai/run/@cf/meta/llama-3.1-8b-instruct',{
       method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-      body:JSON.stringify({model:'openai/gpt-4.1-nano',temperature:0.2,max_tokens:300,
+      body:JSON.stringify({temperature:0.2,max_tokens:300,
         messages:[{role:'system',content:instructions},...history.map(({role,content})=>({role,content}))]}),
       signal:AbortSignal.timeout(18000)
     });
     if (!response.ok) {
-      const detail = (await response.json().catch(()=>null))?.error;
-      console.warn('Help assistant gateway status',response.status,String(detail?.type || detail?.code || '').slice(0,100), String(detail?.message || '').replace(/https?:\/\/\S+/g,'[link]').slice(0,240));
+      console.warn('Workers AI returned HTTP',response.status);
       throw Error('provider');
     }
-    const answer = (await response.json()).choices?.[0]?.message?.content;
+    const answer = (await response.json()).result?.response;
     if (typeof answer !== 'string' || !answer.trim()) throw Error('empty');
     return send(res,200,{answer:answer.trim().slice(0,2000)});
   } catch {
