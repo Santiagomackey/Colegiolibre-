@@ -1668,6 +1668,15 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
   font-weight: 700;
   white-space: nowrap;
 }
+  @media (max-width: 640px) {
+    .home-school-plan {
+      display: grid;
+      gap: .25rem;
+      padding: .85rem 1rem .55rem;
+    }
+    .home-school-plan strong { display: block; margin-bottom: .2rem; }
+    .home-school-plan a { justify-self: start; }
+  }
   html:not([data-theme="dark"]) body.cl-marketplace,
   html:not([data-theme="dark"]) .cl-marketplace .page-shell,
   html:not([data-theme="dark"]) .cl-marketplace .empty-state,
