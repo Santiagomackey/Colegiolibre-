@@ -29,9 +29,21 @@
         const {data,error}=await window.colegioLibreSupabase.auth.signInWithOAuth({provider,options:{redirectTo:callback.href,skipBrowserRedirect:true,scopes:provider==='apple'?'email name':'email profile'}});
         if(error)throw error;
         if(!data?.url)throw Error('Missing OAuth URL');
+        let authorizationUrl = data.url;
+        if (provider === 'google') {
+          const endpoint = new URL('/api/google-signin', base);
+          endpoint.search = new URL(data.url).search;
+          const response = await fetch(endpoint, {cache: 'no-store'});
+          if (!response.ok) {
+            if (status) status.textContent = text('No pudimos conectar con Google ahora. Esperá unos segundos y volvé a intentarlo.', 'Google sign-in is temporarily unavailable. Try again in a moment.');
+            return;
+          }
+          authorizationUrl = (await response.json()).url;
+          if (new URL(authorizationUrl).origin !== 'https://accounts.google.com') throw Error('Unexpected authorization URL');
+        }
         const browser=window.Capacitor?.Plugins?.Browser || (native?window.Capacitor?.registerPlugin?.('Browser'):null);
-        if(native && browser?.open) await browser.open({url:data.url});
-        else window.location.assign(data.url);
+        if(native && browser?.open) await browser.open({url:authorizationUrl});
+        else window.location.assign(authorizationUrl);
       } catch(error) {
         if(status) status.textContent=text(`No pudimos iniciar sesión con ${name}. Probá nuevamente o ingresá con tu email.`,`We couldn't sign you in with ${name}. Try again or use your email.`);
         console.error('Social sign-in failed',error?.code || 'oauth_error');
