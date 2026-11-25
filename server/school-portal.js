@@ -9,7 +9,7 @@ export const fail = (status, message) => Object.assign(Error(message), { status 
 export function config() {
   const { SUPABASE_URL: supabase, SUPABASE_SERVICE_ROLE_KEY: key, MERCADOPAGO_ACCESS_TOKEN: mpToken, MERCADOPAGO_SUBSCRIPTIONS_WEBHOOK_SECRET: webhook } = process.env;
   if (!supabase || !key) throw fail(503, 'El portal no está disponible en este momento.');
-  return { supabase, key, mpToken, webhook, origin: 'https://www.colegiolibre.com' };
+  return { supabase, key, mpToken, webhook, origin: 'https://www.colego.com.ar' };
 }
 
 export function send(res, status, payload) {

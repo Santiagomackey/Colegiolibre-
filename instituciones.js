@@ -160,7 +160,7 @@
   function updateAddress() {
     const slug = slugify(form.elements.requested_code.value) || "nombre-del-colegio";
     document.getElementById("request-address").textContent =
-      "colegiolibre.com/" + (slug.endsWith("-school") ? "" : "colegio-") + slug;
+      "colego.com.ar/" + (slug.endsWith("-school") ? "" : "colegio-") + slug;
   }
 
   async function findSchools(query, request) {

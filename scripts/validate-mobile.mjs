@@ -23,7 +23,7 @@ required.forEach((file) => assert(exists(file), `Falta ${file}.`));
 
 const config = JSON.parse(read("mobile-app/capacitor.config.json"));
 assert(config.appId === "com.colegiolibre.app", "El identificador nativo es incorrecto.");
-assert(config.server?.url === "https://www.colegiolibre.com", "La app debe usar el dominio oficial.");
+assert(config.server?.url === "https://www.colego.com.ar", "La app debe usar el dominio oficial.");
 
 const manifest = read("mobile-app/android/app/src/main/AndroidManifest.xml");
 assert(manifest.includes("android.permission.CAMERA"), "Android no declara permiso de cámara.");

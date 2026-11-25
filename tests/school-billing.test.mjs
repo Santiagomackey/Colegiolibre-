@@ -6,7 +6,7 @@ import { active } from '../server/school-portal.js';
 const request = { id:'56087add-3971-44c2-8728-9a3f66a596f5', requested_plan:'Institucional', contact_email:'school@example.com' };
 const school = { id:'8fc20ab6-14c6-4d5b-8670-0fea2b36a81f' };
 const user = { id:'09170f7c-62f0-4ac6-af96-1b8074e2cba9' };
-const cfg = { mpToken:'test-collector-fixture', webhook:'fixture', origin:'https://www.colegiolibre.com', supabase:'https://school-fixture.example', key:'fixture' };
+const cfg = { mpToken:'test-collector-fixture', webhook:'fixture', origin:'https://www.colego.com.ar', supabase:'https://school-fixture.example', key:'fixture' };
 const providerId = 'subscription-fixture';
 const checkout = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_id=${providerId}`;
 const subscription = {

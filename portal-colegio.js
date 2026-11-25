@@ -479,7 +479,7 @@
             {title:'Feria de intercambio',body:'El viernes nos encontramos en la biblioteca para intercambiar libros y útiles.'},
             {title:'Prepará los materiales del próximo ciclo',body:'Revisá la lista de tu curso antes de comprar o publicar materiales.'}
           ],
-          resources:[{title:'Ver herramientas y planes institucionales',url:'https://www.colegiolibre.com/instituciones#planes'}]
+          resources:[{title:'Ver herramientas y planes institucionales',url:'https://www.colego.com.ar/instituciones#planes'}]
         }
       };
       $('#portal-content').hidden = false;

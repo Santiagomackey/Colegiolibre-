@@ -1,8 +1,8 @@
 const pages=new Set(['/','/producto','/mensajes','/perfil','/favoritos','/busco','/compra','/pedidos','/portal-colegio']);
 export function safePushPath(value) {
   try {
-    const url=new URL(value||'/','https://www.colegiolibre.com/');
-    if(!['https://www.colegiolibre.com','https://colegiolibre.com'].includes(url.origin))return '/';
+    const url=new URL(value||'/','https://www.colego.com.ar/');
+    if(!['https://www.colego.com.ar','https://colego.com.ar','https://colegiolibre.com','https://www.colegiolibre.com'].includes(url.origin))return '/';
     const page=url.pathname.replace(/\.html$/,'')||'/';
     return pages.has(page)?page+url.search:'/';
   }catch(_){return '/'}

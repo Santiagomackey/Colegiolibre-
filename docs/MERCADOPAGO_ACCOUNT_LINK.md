@@ -13,14 +13,14 @@ No se presupone una API que importe alias/CVU: la vinculación conserva la ident
 1. Aplicá primero `database/10_direct_transfer_orders.sql` si no está ejecutada. Después ejecutá `database/11_mercadopago_link.sql` en Supabase staging. Esta segunda migración crea el vínculo privado, los intentos temporales de OAuth y permite que una cuenta Mercado Pago use un alias sin CVU. Los pedidos existentes conservan sus instrucciones de pago.
 2. En Mercado Pago Developers, creá/configurá la aplicación de ColegioLibre. Registrá exactamente esta URL HTTPS de retorno:
 
-   `https://www.colegiolibre.com/api/mercadopago-link`
+   `https://www.colego.com.ar/api/mercadopago-link`
 
 3. Habilitá PKCE S256 en esa aplicación y el acceso de lectura necesario para autorizar una cuenta. La integración solicita `scope=read`, no permisos para cobrar ni transferir dinero.
 4. En las variables privadas del servidor de Vercel configurá:
 
    - `MERCADOPAGO_CLIENT_ID`
    - `MERCADOPAGO_CLIENT_SECRET`
-   - `MERCADOPAGO_REDIRECT_URI=https://www.colegiolibre.com/api/mercadopago-link`
+   - `MERCADOPAGO_REDIRECT_URI=https://www.colego.com.ar/api/mercadopago-link`
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
 

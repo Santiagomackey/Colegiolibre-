@@ -37,7 +37,7 @@ test('Checkout Pro verifies provider origin, order identity, seller, amount and 
 });
 
 test('checkout uses the linked seller token, server price and an idempotent provider order', async t => {
- const config = { origin: 'https://www.colegiolibre.com', supabase: 'https://example.supabase.co', key: 'service',
+ const config = { origin: 'https://www.colego.com.ar', supabase: 'https://example.supabase.co', key: 'service',
    encryption: Buffer.alloc(32, 4) };
  const url = 'https://www.mercadopago.com.ar/checkout/v1/redirect?order_id=' + remote.id;
  const checkout = { provider_id: null, mp_user_id: '111' };

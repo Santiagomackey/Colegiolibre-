@@ -24,16 +24,16 @@ test('native API string and Request calls reach the public HTTPS backend',async(
  const document={documentElement:{dataset:{}},addEventListener(){}};
  vm.runInNewContext(read('native-bridge.js'),{window,document,Request,URL,console,File:class {}});
  await window.fetch('/api/moderate-product');await window.fetch(new Request('https://localhost/api/upload?test=1'));await window.fetch('https://example.org/file');
- assert.deepEqual(calls,['https://www.colegiolibre.com/api/moderate-product','https://www.colegiolibre.com/api/upload?test=1','https://example.org/file']);
+ assert.deepEqual(calls,['https://www.colego.com.ar/api/moderate-product','https://www.colego.com.ar/api/upload?test=1','https://example.org/file']);
 });
 test('telemetry is scoped, respects authentication and matches the SQL error schema',async()=>{
  const handlers={},rows=[];let user=null;
  const client={auth:{getUser:async()=>({data:{user}}),onAuthStateChange(){}},from:()=>({insert:async row=>{rows.push(row)}})};
  const window={colegioLibreSupabase:client,addEventListener:(key,fn)=>{handlers[key]=fn},matchMedia:()=>({matches:false})};
- const context=vm.createContext({window,document:{addEventListener(){},title:''},location:{pathname:'/login',href:'https://www.colegiolibre.com/login?secret=hidden'},navigator:{},localStorage:{getItem:()=>null},sessionStorage:{getItem:()=>null,setItem(){}},URL,URLSearchParams,setTimeout,clearTimeout,console});
+ const context=vm.createContext({window,document:{addEventListener(){},title:''},location:{pathname:'/login',href:'https://www.colego.com.ar/login?secret=hidden'},navigator:{},localStorage:{getItem:()=>null},sessionStorage:{getItem:()=>null,setItem(){}},URL,URLSearchParams,setTimeout,clearTimeout,console});
  vm.runInContext('const SUPABASE_URL="existing"; const supabase="existing";'+read('telemetry.js'),context);
- await handlers.error({message:'test user@example.org https://secret.invalid/?token=123',filename:'https://www.colegiolibre.com/app.js?token=123'});assert.equal(rows.length,0);
- user={id:'test-user'};await handlers.error({message:'test user@example.org https://secret.invalid/?token=123',filename:'https://www.colegiolibre.com/app.js?token=123'});
+ await handlers.error({message:'test user@example.org https://secret.invalid/?token=123',filename:'https://www.colego.com.ar/app.js?token=123'});assert.equal(rows.length,0);
+ user={id:'test-user'};await handlers.error({message:'test user@example.org https://secret.invalid/?token=123',filename:'https://www.colego.com.ar/app.js?token=123'});
  assert.equal(rows.length,1);assert.equal(rows[0].user_id,'test-user');assert.equal(rows[0].page_path,'/login');assert.equal(rows[0].error_source,'/app.js');assert.ok(rows[0].error_message.includes('[email]'));assert.ok(!rows[0].error_message.includes('token=123'));assert.ok(!('kind' in rows[0]));
 });
 test('Explore exposes retry and truthful empty states after server failures',async()=>{
@@ -43,7 +43,7 @@ test('Explore exposes retry and truthful empty states after server failures',asy
  const window={addEventListener(){},colegioLibreSupabase:{from:()=>query(result,calls)}};
  const document={querySelector:element,querySelectorAll:()=>[]};
  const history={replaceState(){}};
- vm.runInNewContext(read('explorar.js'),{window,document,location:{href:'https://www.colegiolibre.com/explorar'},history,URL,AbortController,setTimeout,clearTimeout,matchMedia:()=>({matches:true,addEventListener(){}})});
+ vm.runInNewContext(read('explorar.js'),{window,document,location:{href:'https://www.colego.com.ar/explorar'},history,URL,AbortController,setTimeout,clearTimeout,matchMedia:()=>({matches:true,addEventListener(){}})});
  await new Promise(resolve=>setImmediate(resolve));assert.equal(element('#results-error').hidden,false);assert.equal(element('#catalog-filters').open,false);assert.equal(element('#empty').hidden,true);
  result={data:[],error:null,count:0};await element('#retry').onclick();
  assert.equal(element('#results-error').hidden,true);assert.equal(element('#empty').hidden,false);assert.equal(element('#count').textContent,'0 resultados');
@@ -75,9 +75,9 @@ test('UI cache returns fresh layout code online and the current cached code offl
  const handlers={},writes=[];let offline=false,promise;
  const old={text:'old layout'},fresh={text:'new layout',ok:true,clone(){return this}};
  const cache={match:async()=>old,put:async(request,response)=>writes.push(response)};
- const self={location:{origin:'https://www.colegiolibre.com'},addEventListener:(key,fn)=>{handlers[key]=fn}};
+ const self={location:{origin:'https://www.colego.com.ar'},addEventListener:(key,fn)=>{handlers[key]=fn}};
  vm.runInNewContext(read('service-worker.js'),{self,URL,caches:{open:async()=>cache},fetch:async()=>{if(offline)throw Error('offline');return fresh}});
- const event={request:{method:'GET',url:'https://www.colegiolibre.com/mobile.css?v=current',mode:'cors',destination:'style'},respondWith:value=>{promise=value}};
+ const event={request:{method:'GET',url:'https://www.colego.com.ar/mobile.css?v=current',mode:'cors',destination:'style'},respondWith:value=>{promise=value}};
  handlers.fetch(event);assert.equal(await promise,fresh);assert.deepEqual(writes,[fresh]);
  offline=true;handlers.fetch(event);assert.equal(await promise,old);
 });

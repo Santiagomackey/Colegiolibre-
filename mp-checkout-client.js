@@ -33,7 +33,7 @@
   async function open(raw) {
     const url = new URL(raw, location.origin);
     const checkout = url.origin === 'https://www.mercadopago.com.ar' && url.pathname.startsWith('/checkout/');
-    const link = [location.origin, 'https://www.colegiolibre.com'].includes(url.origin) && url.pathname === '/api/mercadopago-link';
+    const link = [location.origin, 'https://www.colego.com.ar', 'https://www.colegiolibre.com'].includes(url.origin) && url.pathname === '/api/mercadopago-link';
     const sellerLink = /^https:\/\/mpago[.]la\/[A-Za-z0-9]{4,64}$/.test(raw);
     const wallet = url.href === 'https://www.mercadopago.com.ar/';
     if (!checkout && !link && !sellerLink && !wallet) throw Error('MP_INVALID_REDIRECT');

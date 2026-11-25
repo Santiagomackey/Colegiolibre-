@@ -1,4 +1,4 @@
-const origin = process.env.COLEGIO_LIBRE_URL || "https://www.colegiolibre.com";
+const origin = process.env.COLEGIO_LIBRE_URL || "https://www.colego.com.ar";
 const routes = [
   "/",
   "/login.html",

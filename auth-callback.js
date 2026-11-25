@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const params = new URLSearchParams(location.search);
-  const next = params.get("next") || "/";
+  const next = window.colegioLibreRecovery?.safeNext(params.get("next")) || "/";
   const source = params.get("source") === "app" ? "app" : "web";
   const confirmationCode = params.get("code") || "";
   const hash = location.hash || "";

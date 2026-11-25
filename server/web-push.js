@@ -13,7 +13,7 @@ export async function sendWebPush(device, notice) {
     body: String(notice.body || '').slice(0,240), url: safePushPath(notice.action_url)});
   await webpush.sendNotification({endpoint: device.endpoint, keys: {auth: device.auth, p256dh: device.p256dh}}, payload, {
     TTL: 86400, urgency: 'high', timeout: 8000,
-    vapidDetails: {subject: 'https://www.colegiolibre.com', publicKey: process.env.WEB_PUSH_PUBLIC_KEY,
+    vapidDetails: {subject: 'https://www.colego.com.ar', publicKey: process.env.WEB_PUSH_PUBLIC_KEY,
       privateKey: process.env.WEB_PUSH_PRIVATE_KEY}
   });
 }

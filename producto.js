@@ -679,7 +679,7 @@ async function shareCurrentProduct() {
   if (!currentProduct) return;
 
   const publicSiteUrl = String(
-    window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
+    window.colegioLibreConfig?.publicSiteUrl || "https://www.colego.com.ar"
   ).replace(/\/$/, "");
   const productPath = `/producto?id=${encodeURIComponent(currentProduct.id)}`;
   const sharedUrl = `${publicSiteUrl}/open-app?path=${encodeURIComponent(productPath)}`;

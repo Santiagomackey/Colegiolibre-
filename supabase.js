@@ -13,7 +13,7 @@ const PRODUCT_STATUS = {
 window.colegioLibreConfig = Object.freeze({
   supabaseUrl: SUPABASE_URL,
   supabaseKey: SUPABASE_KEY,
-  publicSiteUrl: "https://www.colegiolibre.com"
+  publicSiteUrl: "https://www.colego.com.ar"
 });
 
 function createUnavailableError() {

@@ -3,12 +3,12 @@
   "appName": "ColeGo",
   "webDir": "www",
   "server": {
-    "url": "https://www.colegiolibre.com",
+    "url": "https://www.colego.com.ar",
     "cleartext": false,
     "androidScheme": "https",
     "allowNavigation": [
-      "www.colegiolibre.com",
-      "colegiolibre.com"
+      "www.colego.com.ar",
+      "colego.com.ar"
     ]
   },
   "plugins": {

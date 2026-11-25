@@ -9,8 +9,8 @@ Phone users complete the reset in the browser. The callback no longer launches t
 
 In Authentication → URL Configuration:
 
-- Site URL: `https://www.colegiolibre.com`
-- Allow this exact Redirect URL: `https://www.colegiolibre.com/recovery-callback`
+- Site URL: `https://www.colego.com.ar`
+- Allow this exact Redirect URL: `https://www.colego.com.ar/recovery-callback`
 - Keep existing OAuth/signup callback entries. Do not replace the entire list.
 
 In Authentication → Email Templates → Reset Password, the standard link should use `{{ .ConfirmationURL }}`. A link pointing only to `{{ .SiteURL }}` has no recovery credentials and cannot authorize a password change. Restore the default reset template if it was customized incorrectly. The application also accepts `token_hash` with `type=recovery` for deliberately configured templates.

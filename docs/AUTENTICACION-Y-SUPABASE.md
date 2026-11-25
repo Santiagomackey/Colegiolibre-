@@ -4,8 +4,8 @@
 
 En Supabase > Authentication > URL Configuration:
 
-- Site URL: `https://colegiolibre.com`
-- Redirect URL: `https://colegiolibre.com/**`
+- Site URL: `https://colego.com.ar`
+- Redirect URL: `https://colego.com.ar/**`
 - Mientras se use Vercel: `https://colegiolibre.vercel.app/**`
 - Callback obligatorio de verificación: `https://colegiolibre.vercel.app/auth-callback.html`
 

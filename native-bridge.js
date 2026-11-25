@@ -32,12 +32,12 @@
       let nextInput = input;
 
       if (typeof input === "string" && input.startsWith("/api/")) {
-        nextInput = `https://www.colegiolibre.com${input}`;
+        nextInput = `https://www.colego.com.ar${input}`;
       } else if (input instanceof Request) {
         try {
           const url = new URL(input.url);
           if ((url.hostname === "localhost" || url.hostname.endsWith(".localhost")) && url.pathname.startsWith("/api/")) {
-            nextInput = new Request(`https://www.colegiolibre.com${url.pathname}${url.search}`, input);
+            nextInput = new Request(`https://www.colego.com.ar${url.pathname}${url.search}`, input);
           }
         } catch (_error) {
           // Keep the original request if it cannot be normalized.
@@ -77,8 +77,8 @@
   const plugin = name => capacitor?.Plugins?.[name] || (isNative ? capacitor?.registerPlugin?.(name) : null);
   const notificationPath = value => {
     try {
-      const url = new URL(value || '/', 'https://www.colegiolibre.com/');
-      if (!['https://www.colegiolibre.com','https://colegiolibre.com',window.location?.origin].includes(url.origin)) return '/';
+      const url = new URL(value || '/', 'https://www.colego.com.ar/');
+      if (!['https://www.colego.com.ar','https://colego.com.ar','https://colegiolibre.com','https://www.colegiolibre.com',window.location?.origin].includes(url.origin)) return '/';
       const page = url.pathname.replace(/\.html$/, '') || '/';
       return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco', '/compra', '/pedidos','/portal-colegio'].includes(page) ? page+url.search : '/';
     } catch (_) {return '/'}

@@ -6,7 +6,7 @@ import {buildPushMessage,safePushPath} from '../server/push-payload.js';
 const read=file=>fs.readFileSync(new URL('../'+file,import.meta.url),'utf8');
 test('Apple OAuth uses the existing callback and recovers from a disabled provider',async()=>{
  const requests=[],status={textContent:''},buttons=[{},{}],assigned=[];let fail=false;
- const window={location:{origin:'https://www.colegiolibre.com',assign:url=>assigned.push(url)},colegioLibreSupabase:{auth:{signInWithOAuth:async request=>{requests.push(request);return fail?{error:{code:'provider_disabled'}}:{data:{url:'https://appleid.apple.com/auth/authorize?state=test'}}}}}};
+ const window={location:{origin:'https://www.colego.com.ar',assign:url=>assigned.push(url)},colegioLibreSupabase:{auth:{signInWithOAuth:async request=>{requests.push(request);return fail?{error:{code:'provider_disabled'}}:{data:{url:'https://appleid.apple.com/auth/authorize?state=test'}}}}}};
  const document={documentElement:{dataset:{}},querySelector:()=>status,querySelectorAll:()=>buttons};
  vm.runInNewContext(read('social-auth.js'),{window,document,URL,console:{error(){}}});
  await window.colegioLibreSocialAuth.signIn('apple','/busco');
@@ -24,7 +24,7 @@ test('native opt-in registers the device and displays foreground pushes without 
  const callbacks={},registered=[],scheduled=[],events=[];let permission='granted';
  const push={checkPermissions:async()=>({receive:permission}),requestPermissions:async()=>({receive:permission}),createChannel:async()=>{},addListener:async(key,fn)=>{callbacks[key]=fn},register:async()=>{await callbacks.registration({value:'fcm-test-device-token-123456789'})}};
  const local={checkPermissions:async()=>({display:'granted'}),createChannel:async()=>{},addListener:async()=>{},schedule:async data=>scheduled.push(data)};
- const window={Capacitor:{isNativePlatform:()=>true,getPlatform:()=> 'android',Plugins:{PushNotifications:push,LocalNotifications:local}},location:{origin:'https://www.colegiolibre.com'},fetch:async()=>({}),addEventListener(){},dispatchEvent:event=>events.push(event),setTimeout(){},localStorage:{},colegioLibreApi:{getCurrentUser:async()=>({id:'user'})},colegioLibreSupabase:{rpc:async(name,args)=>{registered.push([name,args]);return {}},auth:{onAuthStateChange(){}}}};
+ const window={Capacitor:{isNativePlatform:()=>true,getPlatform:()=> 'android',Plugins:{PushNotifications:push,LocalNotifications:local}},location:{origin:'https://www.colego.com.ar'},fetch:async()=>({}),addEventListener(){},dispatchEvent:event=>events.push(event),setTimeout(){},localStorage:{},colegioLibreApi:{getCurrentUser:async()=>({id:'user'})},colegioLibreSupabase:{rpc:async(name,args)=>{registered.push([name,args]);return {}},auth:{onAuthStateChange(){}}}};
  const document={documentElement:{dataset:{}},addEventListener(){}};
  vm.runInNewContext(read('native-bridge.js'),{window,document,URL,Request,File:class{},CustomEvent:class {constructor(type,options){this.type=type;this.detail=options.detail}},console});
  await new Promise(resolve=>setImmediate(resolve));
@@ -55,7 +55,7 @@ for (const platform of ['android', 'ios']) {
     };
     const window = {
       Capacitor: { isNativePlatform: () => true, getPlatform: () => platform, Plugins: { PushNotifications: push } },
-      location: { origin:'https://www.colegiolibre.com' }, fetch:async()=>({}), addEventListener(){}, dispatchEvent(){},
+      location: { origin:'https://www.colego.com.ar' }, fetch:async()=>({}), addEventListener(){}, dispatchEvent(){},
       colegioLibreApi:{getCurrentUser:async()=>user}, colegioLibreSupabase:{auth:{},rpc:async(name,args)=>{saved.push(args);return {};}}
     };
     vm.runInNewContext(read('native-bridge.js'), {window,document:{documentElement:{dataset:{}},addEventListener(){}},URL,Request,CustomEvent:class{}});

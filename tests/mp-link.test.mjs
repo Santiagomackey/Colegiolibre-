@@ -8,7 +8,7 @@ const ids={seller:'10000000-0000-0000-0000-000000000001',buyer:'20000000-0000-00
 test('MP linking uses PKCE, a private cookie, and read-only authorization',()=>{
  const verifier='dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
  assert.equal(challenge(verifier),'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM');
- const url=new URL(authorizationUrl({clientId:'app',redirect:'https://www.colegiolibre.com/api/mercadopago-link'},'s'.repeat(43),verifier));
+ const url=new URL(authorizationUrl({clientId:'app',redirect:'https://www.colego.com.ar/api/mercadopago-link'},'s'.repeat(43),verifier));
  assert.equal(url.origin,'https://auth.mercadopago.com');assert.equal(url.searchParams.get('scope'),'read');assert.equal(url.searchParams.get('code_challenge_method'),'S256');assert.equal(url.searchParams.has('client_secret'),false);
  assert.match(cookie('x'),/HttpOnly; Secure; SameSite=Lax/);assert.equal(validNonce('x'.repeat(43)),true);assert.equal(validNonce('bad'),false);
  assert.throws(()=>configuration({MERCADOPAGO_REDIRECT_URI:'http://bad.invalid/api/mercadopago-link'}));
@@ -45,7 +45,7 @@ test('link attempts are one-use, private, owner-bound, and cannot approve paymen
 });
 test('OAuth server binds verified seller identity and never returns or persists provider tokens',async()=>{
  const keys=['MERCADOPAGO_CLIENT_ID','MERCADOPAGO_CLIENT_SECRET','MERCADOPAGO_REDIRECT_URI','SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY'];const previous=Object.fromEntries(keys.map(k=>[k,process.env[k]]));const saved=globalThis.fetch;
- Object.assign(process.env,{MERCADOPAGO_CLIENT_ID:'test-app',MERCADOPAGO_CLIENT_SECRET:'private-test-secret',MERCADOPAGO_REDIRECT_URI:'https://www.colegiolibre.com/api/mercadopago-link',SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'service-test'});
+ Object.assign(process.env,{MERCADOPAGO_CLIENT_ID:'test-app',MERCADOPAGO_CLIENT_SECRET:'private-test-secret',MERCADOPAGO_REDIRECT_URI:'https://www.colego.com.ar/api/mercadopago-link',SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'service-test'});
  const calls=[];let prepared;
  const response=body=>new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
  globalThis.fetch=async(url,options={})=>{
@@ -91,7 +91,7 @@ test('provider errors expose fixed diagnostic codes without leaking provider res
  try{
   for(const [provider,expected] of Object.entries({invalid_client:'PROVIDER_INVALID_CLIENT',invalid_grant:'PROVIDER_INVALID_GRANT',invalid_scope:'PROVIDER_INVALID_SCOPE',unauthorized_client:'PROVIDER_UNAUTHORIZED_CLIENT',unknown:'PROVIDER_AUTH_FAILED'})){
    globalThis.fetch=async()=>new Response(JSON.stringify({error:provider,message:'private-provider-details',access_token:'secret-test-token'}),{status:400});
-   await assert.rejects(exchangeIdentity({clientId:'test',clientSecret:'secret',redirect:'https://www.colegiolibre.com/api/mercadopago-link'},'code','verifier'),error=>error.message===expected);
+   await assert.rejects(exchangeIdentity({clientId:'test',clientSecret:'secret',redirect:'https://www.colego.com.ar/api/mercadopago-link'},'code','verifier'),error=>error.message===expected);
   }
  }finally{globalThis.fetch=previous;}
 });

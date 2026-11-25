@@ -12,6 +12,14 @@
       buttons.forEach(button => {button.disabled=true});
       if(status) status.textContent=text(`Conectando con ${name}…`,`Connecting to ${name}…`);
       try {
+        const config = window.colegioLibreConfig;
+        if (provider === 'apple' && config?.supabaseUrl && config.supabaseKey) {
+          const settings = await fetch(config.supabaseUrl + '/auth/v1/settings', {headers:{apikey:config.supabaseKey}});
+          if (settings.ok && (await settings.json()).external?.apple === false) {
+            if (status) status.textContent = text('Apple todavía no está habilitado. Podés ingresar con Google o email.', 'Apple sign-in is not available yet. Use Google or email.');
+            return;
+          }
+        }
         const native=Boolean(window.Capacitor?.isNativePlatform?.());
         const base=String(window.colegioLibreConfig?.publicSiteUrl || window.location.origin).replace(/\/$/,'');
         const callback=new URL('/auth-callback',base);

@@ -393,7 +393,7 @@
     elements.verificationResend.disabled = true;
     setMessage(elements.verificationMessage, "Enviando un enlace nuevo…", "loading");
     try {
-      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com").replace(/\/$/, "");
+      const publicSiteUrl = String(window.colegioLibreConfig?.publicSiteUrl || "https://www.colego.com.ar").replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(
         "source",
@@ -605,7 +605,7 @@
   }
 
   function recoveryRedirectUrl() {
-    const publicSiteUrl=String(window.colegioLibreConfig?.publicSiteUrl||"https://www.colegiolibre.com").replace(/\/$/,"");
+    const publicSiteUrl=String(window.colegioLibreConfig?.publicSiteUrl||"https://www.colego.com.ar").replace(/\/$/,"");
     // A static destination matches Supabase's exact allow-list entry. Recovery
     // completes in the browser on phones too, without an automatic app launch.
     window.sessionStorage.setItem("colegiolibre-recovery-next",nextPage);
@@ -659,7 +659,7 @@
     try {
       await assertEmailConfirmationEnabled();
       const publicSiteUrl = String(
-        window.colegioLibreConfig?.publicSiteUrl || "https://www.colegiolibre.com"
+        window.colegioLibreConfig?.publicSiteUrl || "https://www.colego.com.ar"
       ).replace(/\/$/, "");
       const verificationUrl = new URL(`${publicSiteUrl}/auth-callback`);
       verificationUrl.searchParams.set(

@@ -5,10 +5,10 @@ export const challenge=value=>crypto.createHash('sha256').update(value).digest('
 export const validNonce=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{43}$/.test(value);
 export function configuration(env=process.env){
  env=Object.fromEntries(Object.entries(env).map(([key,value])=>[key,typeof value==='string'?value.trim():value]));
- const redirect=new URL(env.MERCADOPAGO_REDIRECT_URI||'https://www.colegiolibre.com/api/mercadopago-link');
+ const redirect=new URL(env.MERCADOPAGO_REDIRECT_URI||'https://www.colego.com.ar/api/mercadopago-link');
  if(redirect.protocol!=='https:'||redirect.pathname!=='/api/mercadopago-link'||redirect.search||redirect.hash)throw Error('CONFIGURATION_REQUIRED');
  if(!env.MERCADOPAGO_CLIENT_ID||!env.MERCADOPAGO_CLIENT_SECRET||!env.SUPABASE_URL||!env.SUPABASE_SERVICE_ROLE_KEY)throw Error('CONFIGURATION_REQUIRED');
- return {redirect:redirect.href,origin:redirect.origin,clientId:env.MERCADOPAGO_CLIENT_ID,clientSecret:env.MERCADOPAGO_CLIENT_SECRET,supabase:env.SUPABASE_URL,key:env.SUPABASE_SERVICE_ROLE_KEY};
+ return {redirect:redirect.href,origin:['colegiolibre.com','www.colegiolibre.com'].includes(redirect.hostname)?'https://www.colego.com.ar':redirect.origin,clientId:env.MERCADOPAGO_CLIENT_ID,clientSecret:env.MERCADOPAGO_CLIENT_SECRET,supabase:env.SUPABASE_URL,key:env.SUPABASE_SERVICE_ROLE_KEY};
 }
 export function authorizationUrl(config,state,verifier,forCheckout=false){const url=new URL('https://auth.mercadopago.com/authorization');Object.entries({client_id:config.clientId,response_type:'code',platform_id:'mp',state,redirect_uri:config.redirect,code_challenge:challenge(verifier),code_challenge_method:'S256',...(!forCheckout&&{scope:'read'})}).forEach(([key,value])=>url.searchParams.set(key,value));return url.href;}
 export function getCookie(header){return String(header||'').split(';').map(value=>value.trim()).find(value=>value.startsWith('__Host-cl-mp='))?.slice('__Host-cl-mp='.length)||'';}
