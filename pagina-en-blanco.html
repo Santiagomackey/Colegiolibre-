@@ -6,7 +6,17 @@
   <meta name="robots" content="noindex, follow">
   <title>ColeGo</title>
   <link rel="stylesheet" href="/site-header.css?v=yellow-1">
-  <style>html,html[data-theme] body{margin:0;background:#fff}.colego-publish-floating{display:none!important}</style>
+  <style>html,html[data-theme] body{margin:0;background:#fff}.colego-publish-floating{display:none!important}
+html body .cl-site-header .cl-site-top{min-height:62px;padding-block:3px}
+.cl-site-header .cl-site-brand{height:53px}
+html body .cl-site-header .cl-site-search{height:40px}
+html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-basis:32px}
+@media(max-width:700px){
+  html body .cl-site-header .cl-site-top{min-height:0;padding-bottom:7px}
+  .cl-site-header .cl-site-brand{height:43px}
+  html body .cl-site-header .cl-site-search{height:36px!important}
+}
+</style>
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -26,29 +36,6 @@
    </nav></details>
   </div>
  </div>
- <div class="cl-site-subnav"><div class="cl-site-subnav-inner">
-  <details class="cl-site-categories"><summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-site-text="all">Todo</span></summary><nav class="cl-site-menu-panel" aria-label="Categorías" data-site-label="categories">
-   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
-   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
-   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
-   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
-   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
-   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
-   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
-   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
-  </nav></details>
-  <nav class="cl-site-nav-scroll" aria-label="Categorías" data-site-label="categories">
-   <a href="/colegio" data-site-text="school" data-site-nav="colegio">Mi colegio</a>
-   <a href="/explorar?category=Libros" data-site-text="Libros">Libros</a>
-   <a href="/explorar?category=Apuntes" data-site-text="Apuntes">Apuntes</a>
-   <a href="/explorar?category=Cuadernos" data-site-text="Cuadernos">Cuadernos</a>
-   <a href="/explorar?category=%C3%9Atiles" data-site-text="Útiles">Útiles</a>
-   <a href="/explorar?category=Mochilas" data-site-text="Mochilas">Mochilas</a>
-   <a href="/explorar?category=Tecnolog%C3%ADa" data-site-text="Tecnología">Tecnología</a>
-   <a href="/explorar?category=Uniformes" data-site-text="Uniformes">Uniformes</a>
-   <a href="/explorar?category=Otros" data-site-text="Otros">Otros</a>
-    </nav>
- </div></div>
 </header>
 <script src="/vendor/supabase.js?v=20261109-release25" defer></script>
 <script src="/supabase.js?v=20261110-recovery31" defer></script>
