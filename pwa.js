@@ -5,7 +5,7 @@
   const APK_DISMISS_KEY = "colegiolibre-apk-dismissed-at";
   const INSTALLED_KEY = "colegiolibre-pwa-installed";
   const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
+    ["standalone", "minimal-ui", "window-controls-overlay", "fullscreen"].some(mode => window.matchMedia(`(display-mode: ${mode})`).matches) ||
     window.navigator.standalone === true;
   const isIOS =
     /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
@@ -17,10 +17,12 @@
     isAndroid;
   const isNativeApp =
     window.Capacitor?.isNativePlatform?.() === true ||
-    window.location.protocol === "capacitor:";
+    window.location.protocol === "capacitor:" ||
+    Boolean(document.documentElement.dataset.nativeApp);
   const isHome = ["", "/", "/"].includes(window.location.pathname);
   let installPrompt = null;
   let refreshing = false;
+  let installedHere = false;
 
   if (isStandalone) {
     document.documentElement.dataset.displayMode = "standalone";
@@ -87,6 +89,9 @@
   }
 
   function rememberInstalled() {
+    installedHere = true;
+    installPrompt = null;
+    document.getElementById("pwa-ios-guide")?.remove();
     try {
       localStorage.setItem(INSTALLED_KEY, "true");
       sessionStorage.removeItem(DISMISS_KEY);
@@ -120,7 +125,7 @@
       }
     }
 
-    return false;
+    return installedHere || wasInstalledFromThisBrowser();
   }
 
   function apkPromptWasDismissedRecently() {
@@ -256,18 +261,18 @@
   async function showInstallCard() {
     // Never show the install card when ColeGo is already running as an
     // installed PWA/native app. This check must also run on Android.
-    if (await detectInstalledApp()) return;
+    if (await detectInstalledApp() || installedHere || wasInstalledFromThisBrowser()) {
+      document.getElementById("pwa-install-card")?.remove();
+      return;
+    }
+    if (isAndroid && !installPrompt) return;
     if (!isAndroid && sessionStorage.getItem(DISMISS_KEY) === "true") return;
 
     const card = createInstallCard();
     if (!card) return;
     const installButton = card.querySelector("#pwa-install-button");
     installButton.hidden = !isAndroid && !isIOS && !installPrompt;
-    if (isAndroid) {
-      window.setTimeout(() => { card.hidden = false; }, 900);
-    } else {
-      card.hidden = !(installPrompt || isIOS);
-    }
+    card.hidden = !(installPrompt || isIOS);
   }
 
   function showUpdate(registration) {
@@ -297,9 +302,18 @@
 
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
+    if (isStandalone || isNativeApp) return;
+    // A fresh install offer also covers a PWA uninstalled since the last visit.
+    installedHere = false;
+    try { localStorage.removeItem(INSTALLED_KEY); } catch (_error) {}
     installPrompt = event;
     void showInstallCard();
   });
+
+  window.addEventListener("storage", event => {
+    if (event.key === INSTALLED_KEY && event.newValue === "true") rememberInstalled();
+  });
+  window.addEventListener("pageshow", () => void showInstallCard());
 
   window.addEventListener("appinstalled", () => {
     installPrompt = null;
