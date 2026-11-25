@@ -6,15 +6,33 @@ export default async function handler(req, res) {
   try {
     const cfg = config();
     const user = await userFor(cfg, req);
+    if (req.method === 'POST' && ['director_lookup','director_send'].includes(req.body?.action)) {
+      const school = await schoolFor(cfg,req.body.school);
+      if (!school) throw fail(404,'No encontramos el colegio.');
+      const [director] = await select(cfg,'school_director_directory','email',{school_id:school.id});
+      const verified = Boolean(director && user.email_confirmed_at && user.email?.toLowerCase() === director.email);
+      if (req.body.action === 'director_lookup') return send(res,200,{available:Boolean(director),verified});
+      if (!director || !user.email_confirmed_at) throw fail(403,'La verificación por correo no está disponible.');
+      const reserved = await rest(cfg,'rpc/reserve_school_director_mail',{method:'POST',body:{p_school:school.id}});
+      if (!reserved) throw fail(429,'Esperá diez minutos antes de pedir otro enlace.');
+      const callback = new URL('/auth-callback',cfg.origin);
+      callback.searchParams.set('next','/solicitar-portal?' + new URLSearchParams({school:school.code,cycle:req.body.cycle === 'annual' ? 'annual' : 'monthly'}));
+      const endpoint = new URL('/auth/v1/otp',cfg.supabase);
+      endpoint.searchParams.set('redirect_to',callback.href);
+      const delivery = await fetch(endpoint,{method:'POST',headers:{apikey:cfg.key,'Content-Type':'application/json'},
+        body:JSON.stringify({email:director.email,create_user:true}),signal:AbortSignal.timeout(8000)});
+      if (!delivery.ok) throw fail(503,'No pudimos enviar el enlace a dirección.');
+      return send(res,200,{sent:true});
+    }
     const id = req.method === 'GET' ? req.query?.request_id : req.body?.request_id;
     if (typeof id !== 'string' || !UUID.test(id)) throw fail(400, 'Solicitud inválida.');
     const [request] = await select(cfg,'institution_requests','id,official_school_code,requested_plan,billing_cycle,status,contact_email',
       { id, applicant_user_id:user.id });
     if (!request) throw fail(403, 'No encontramos esa inscripción en tu cuenta.');
-    const school = await schoolFor(cfg, request.official_school_code);
+    let school = await schoolFor(cfg, request.official_school_code);
     if (!school) throw fail(404, 'No encontramos el colegio.');
     const access = await schoolAccess(cfg,user,school);
-    const manager = request.status === 'approved' && access.manager;
+    let manager = request.status === 'approved' && access.manager;
     const [stored] = await select(cfg,'institution_subscriptions',subscriptionFields,{ request_id:id, user_id:user.id });
     const enabled = Boolean(cfg.mpToken && cfg.webhook);
     if (req.method === 'GET') {
@@ -29,6 +47,13 @@ export default async function handler(req, res) {
         }
       }
       const paid = active(current);
+      if (paid && !manager && request.status === 'pending') {
+        const [approved] = await select(cfg,'institution_requests','id',{id,status:'approved',applicant_user_id:user.id});
+        if (approved) {
+          school = await schoolFor(cfg,request.official_school_code);
+          manager = school && (await schoolAccess(cfg,user,school)).manager;
+        }
+      }
       return send(res, 200, {
         enabled, active:paid, status:current?.status || 'none', paidThrough:current?.paid_through,
         nextPaymentDate:current?.nextPaymentDate, renewalFailed:current?.renewalFailed,
@@ -60,6 +85,10 @@ export default async function handler(req, res) {
       return send(res,200,{status:'cancelled'});
     }
     if (access.manager === undefined || (request.status !== 'pending' && !manager)) throw fail(403, 'Esta inscripción no admite nuevos pagos.');
+    if (!manager) {
+      const [claim] = await select(cfg,'school_director_claims','request_id',{request_id:id,school_id:school.id,user_id:user.id});
+      if (!claim) throw fail(403,'Verificá el correo oficial de dirección en Activar mi colegio antes de pagar.');
+    }
     return send(res,200,{ init_point:await beginSubscription(cfg,request,school,user,req.body?.cycle || request.billing_cycle,stored) });
   } catch (error) {
     return send(res,error.status || 503,{ error:error.status ? error.message : 'No pudimos completar la solicitud. Volvé a intentar.' });

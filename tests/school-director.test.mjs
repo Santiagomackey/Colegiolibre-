@@ -1,0 +1,38 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {PGlite} from '@electric-sql/pglite';
+
+test('school ownership requires the verified mailbox and a paid period; expiry preserves the role', async t => {
+  const db = new PGlite();
+  t.after(() => db.close());
+  await db.exec(`create schema auth; create role anon; create role authenticated; create role service_role;
+    create function auth.uid() returns uuid language sql as $$select current_setting('app.user_id')::uuid$$;
+    create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz);
+    create table schools(id uuid primary key,code text,name text,is_active boolean,community_code text,short_name text,portal_enabled boolean,membership_status text,updated_at timestamptz);
+    create table school_admins(school_code text,user_id uuid,role text,is_active boolean,unique(school_code,user_id));
+    create table institution_requests(id uuid primary key default gen_random_uuid(),official_school_code text,official_school_name text,applicant_user_id uuid,requested_code text,short_name text,contact_email text,requested_plan text,billing_cycle text,status text,reviewed_at timestamptz);
+    create unique index institution_requests_one_pending_school_idx on institution_requests(upper(official_school_code)) where status='pending';
+    create table institution_subscriptions(request_id uuid,school_id uuid,user_id uuid,provider_subscription_id text,paid_through timestamptz);`);
+  await db.exec(readFileSync(new URL('../database/24_school_director_activation.sql',import.meta.url),'utf8'));
+  const director='00000000-0000-4000-8000-000000000001',student='00000000-0000-4000-8000-000000000002',school='00000000-0000-4000-8000-000000000003';
+  await db.exec(`insert into schools(id,code,name,is_active) values ('${school}','TEST','Colegio',true);
+    insert into auth.users values ('${director}','direccion@example.edu.ar',null),('${student}','alumno@example.edu.ar',now());
+    insert into school_director_directory(school_id,email,source_url) values ('${school}','direccion@example.edu.ar','https://example.edu.ar');
+    set role authenticated; set app.user_id='${student}';`);
+  const claim = async () => (await db.query("select claim_school_directorship('TEST','colegio','Colegio','monthly') as id")).rows[0].id;
+  await assert.rejects(() => db.query('select email from school_director_directory'),/permission denied/);
+  await assert.rejects(claim,/Verificá/);
+  await db.exec(`set app.user_id='${director}'`);
+  await assert.rejects(claim,/Verificá/);
+  await db.exec(`reset role; update auth.users set email_confirmed_at=now() where id='${director}'; set role authenticated;`);
+  const id=await claim();
+  assert.equal(await claim(),id);
+  await db.exec(`reset role; insert into institution_subscriptions values ('${id}','${school}','${director}','verified-provider',null)`);
+  const managers=async()=> (await db.query('select user_id,is_active from school_admins')).rows;
+  assert.deepEqual(await managers(),[]);
+  await db.exec("update institution_subscriptions set paid_through=now()+interval '1 month'");
+  assert.deepEqual(await managers(),[{user_id:director,is_active:true}]);
+  await db.exec("update institution_subscriptions set paid_through=now()-interval '1 day'");
+  assert.deepEqual(await managers(),[{user_id:director,is_active:true}]);
+});

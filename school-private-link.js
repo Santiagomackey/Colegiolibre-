@@ -6,8 +6,13 @@ window.colegoPrivateSchoolPath = async function (code) {
       headers: { Authorization:'Bearer ' + data.session.access_token }, cache:'no-store'
     });
     if (!response.ok) return;
-    const { path } = await response.json();
+    const { path,manager } = await response.json();
     if (!/^\/(?:comunidad\/[a-z0-9_-]{1,80}|[a-z0-9_-]+-school|colegio-[a-z0-9_-]+)$/.test(path || '')) return;
+    const action = document.getElementById('school-activate-link');
+    if (action) {
+      action.hidden = !manager;
+      if (manager) { action.href = path + '/editor'; action.textContent = 'Administrar colegio'; }
+    }
     return path;
   } catch (_) { return null; }
 };
@@ -15,6 +20,8 @@ window.colegoPrivateSchoolPath = async function (code) {
   const link = document.querySelector('#school-private-link');
   const code = location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] || new URLSearchParams(location.search).get('code');
   if (!link || !code) return;
+  const action = document.getElementById('school-activate-link');
+  if (action) action.href = '/solicitar-portal?school=' + encodeURIComponent(code);
   async function showBillingLink() {
     const client = window.colegioLibreSupabase;
     const {data} = await client.auth.getSession();
