@@ -48,11 +48,14 @@
   <style>
     .social-auth button[data-social-provider] {
       display: grid !important;
-      grid-template-columns: 23px minmax(0, 178px);
+      grid-template-columns: 23px minmax(0, 190px);
       justify-content: center;
       align-items: center;
       column-gap: 12px;
       text-align: left;
+    }
+    .social-auth button[data-social-provider] > span {
+      white-space: nowrap;
     }
     .social-auth button[data-social-provider] > svg {
       display: block;
