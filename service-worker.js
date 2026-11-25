@@ -1,11 +1,10 @@
-const CACHE_VERSION = "colegiolibre-pwa-v98";
+const CACHE_VERSION = "colegiolibre-pwa-v99";
 const APP_SHELL = [
   "/",
   "/404.html",
   "/styles.css",
   "/marketplace-layout.css",
   "/home-experience.css",
-  "/home-experience.js",
   "/mobile.css",
   "/chrome-theme.css",
   "/home-header.css",
