@@ -183,3 +183,12 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
     block-size: auto !important;
   }
 }
+
+/* Show focus on the rounded composer instead of inside the message text. */
+#message-form #message-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+#message-form .message-composer:focus-within {
+  border-color: #526f98;
+}
