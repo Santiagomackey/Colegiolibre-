@@ -98,13 +98,13 @@
       return;
     }
     if (!currentUser) {
-      if (returning) {
+      if (returning || requestList) {
         const login = document.createElement("a");
         login.href = "/login?next=" + encodeURIComponent(location.pathname + location.search);
         login.textContent = "Iniciar sesión para consultar el pago";
         showPaymentReturn("Consultá tu suscripción", "Entrá con la cuenta que solicitó el portal.", login);
       }
-      requestList.innerHTML = "<p>Iniciá sesión para ver tus solicitudes.</p>";
+      requestList.textContent = "";
       return;
     }
     await renderRequests();
@@ -306,7 +306,7 @@
       }
       requestList.appendChild(item);
     });
-    if (!requestList.children.length) requestList.innerHTML = "<p>Todavía no enviaste solicitudes.</p>";
+    if (!requestList.children.length) requestList.textContent = "Todavía no tenés una suscripción.";
   }
 
   async function billing(requestId, options) {
@@ -390,12 +390,22 @@
       const plan = await billing(request.id);
       if (!item.isConnected) return;
       if (fromReturn) updatePaymentReturn(plan,request,item);
-      label.textContent = plan.active ? "Plan activo" : plan.status === "authorized" ? "Esperando primer cobro" :
+      label.textContent = plan.status === "cancelled" ? "Renovación cancelada" : plan.status === "paused" ? "Renovación pausada" : plan.active ? "Plan activo" : plan.paidThrough ? "Período pago vencido" : plan.status === "authorized" ? "Esperando primer cobro" :
         plan.status === "pending" ? "Pago pendiente" : plan.status === "cancelled" ? "Renovación cancelada" : "Aprobada";
       if (plan.paidThrough) {
         const until = document.createElement("small");
         until.textContent = "Pago hasta el " + new Date(plan.paidThrough).toLocaleDateString("es-AR");
         controls.append(until);
+      }
+      if (plan.nextPaymentDate && plan.status === "authorized") {
+        const next = document.createElement("small");
+        next.textContent = "Próximo cobro: " + new Date(plan.nextPaymentDate).toLocaleDateString("es-AR", {timeZone:"America/Argentina/Buenos_Aires"}) + " · " + currency.format(plan.amount);
+        controls.append(next);
+      }
+      if (plan.renewalFailed) {
+        const warning = document.createElement("p");
+        warning.textContent = "El último cobro fue rechazado. Revisá el medio de pago de la suscripción en Mercado Pago.";
+        controls.append(warning);
       }
       const editor = plan.active && editorLink(plan.portalPath);
       if (editor) controls.append(editor);
@@ -420,7 +430,7 @@
         cycle.value = plan.cycle || request.billing_cycle || "monthly";
         cycle.disabled = Boolean(plan.cycle);
         const recipient = document.createElement("small");
-        recipient.textContent = "Pagás la suscripción a ColeGo desde el checkout de Mercado Pago.";
+        recipient.textContent = "Mercado Pago cobrará automáticamente con la frecuencia elegida hasta que canceles.";
         checkout.append(cycle,recipient);
         controls.append(checkout);
         addBillingButton(checkout,plan.checkoutReady ? "Continuar en Mercado Pago" : "Comprar suscripción", async () => {

@@ -115,6 +115,11 @@
       const link = element('a','Administrar sitio','school-admin-link');
       link.href = editorUrl();
       nav.append(link);
+      if (!demo && portal.billingOwner) {
+        const planLink = element('a','Gestionar suscripción');
+        planLink.href = '/instituciones?gestion=1';
+        nav.append(planLink);
+      }
     }
     if (nav.childElementCount) header.append(nav);
     host.append(header);
