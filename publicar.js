@@ -235,7 +235,7 @@ async function initPublishPage() {
 }
 
 function getPublishDestination() {
-  return `publicar.html${window.location.search}`;
+  return `/publicar${window.location.search}`;
 }
 
 async function ensurePublishAccess() {

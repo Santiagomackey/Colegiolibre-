@@ -49,3 +49,6 @@
   .chat-scroll { height:clamp(225px,45dvh,420px); }
   .chat-welcome img { width:44px; height:44px; }
 }
+
+.chat-message .chat-action { display:inline-flex; align-items:center; min-height:44px; margin-top:6px; padding:8px 16px; border-radius:12px; background:#103773; color:white; font-weight:650; text-decoration:none; }
+.chat-message .chat-action:hover { background:#214e89; }
