@@ -1285,9 +1285,10 @@
   }
 
   function renderEmptyChat(
-    message = "Elegí un chat de la izquierda para empezar."
+    message = "Acá vas a ver los mensajes del chat."
   ) {
     state.renderedConversationId = null;
+    if (!state.activeConversationId) document.body.dataset.view = "list";
     elements.chatAvatar.hidden = true;
     elements.messageForm.hidden = true;
     elements.chatAvatar.textContent = "";
@@ -1297,7 +1298,8 @@
     elements.chatSafetyActions.hidden = true;
     elements.messagesList.innerHTML = `
       <div class="empty-chat">
-        <strong>No hay conversación abierta.</strong>
+        <div class="empty-chat-mark" aria-hidden="true"><svg class="icon"><use href="#icon-message"></use></svg></div>
+        <strong>Elegí una conversación</strong>
         <span>${escapeHtml(message)}</span>
       </div>
     `;
