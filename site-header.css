@@ -361,15 +361,6 @@ body :is(.product-card,.profile-card,.settings-panel,.publication-panel,.wanted-
 }
 body a.colego-publish-cta { background: var(--colego-butter); color: var(--colego-ink); }
 body a.colego-publish-cta:hover { background: #ffda7e; }
-html[data-theme] body footer.cl-editorial-footer.site-footer .colego-footer-brand {
-  display: block;
-  color: var(--colego-ink) !important;
-  font: 900 clamp(4rem, 17vw, 14rem)/.8 Inter, system-ui, sans-serif;
-  letter-spacing: -.085em;
-  margin: 26px 0;
-  text-align: center;
-  text-shadow: -.028em .022em 0 var(--colego-sky);
-}
 html[data-theme] body footer.cl-editorial-footer.site-footer .cl-footer-contact-link {
   background: var(--colego-brick);
   color: #fff !important;
