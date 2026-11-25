@@ -1,9 +1,9 @@
 :root {
-  --blue: #0b2e6b;
+  --blue: #3b2722;
   --green: #67c23a;
-  --ink: #172235;
-  --muted: #68758a;
-  --line: #dce3ee;
+  --ink: #3b2722;
+  --muted: #805f54;
+  --line: #e8dbd5;
   --surface: #f6f8fb;
   --card: #fff;
 }
@@ -132,7 +132,7 @@ button, input, select, textarea { font: inherit; }
   min-height: 44px;
   margin-top: 7px;
   padding: 0 13px;
-  border: 1px solid #ccd6e5;
+  border: 1px solid #d0e1e6;
   border-radius: 12px;
   background: var(--card);
   color: var(--ink);
@@ -164,23 +164,23 @@ button, input, select, textarea { font: inherit; }
 .beta-report__badge {
   padding: 5px 9px;
   border-radius: 999px;
-  background: #edf2f8;
-  color: #526176;
+  background: #f7f1ec;
+  color: #6f4e44;
   font-size: 10px;
   font-weight: 800;
 }
 .beta-report__badge--bug { background: #fee8e8; color: #a52b2b; }
 .beta-report__badge--positive { background: #e8f7df; color: #387e22; }
-.beta-report__badge--suggestion { background: #e7effd; color: #194888; }
+.beta-report__badge--suggestion { background: #e9f4f7; color: #3b2722; }
 .beta-report__badge--confusing { background: #fff2cd; color: #88630d; }
 .beta-report__rating { color: var(--blue); font-size: 13px; font-weight: 800; }
 .beta-report h2 { margin: 16px 0 8px; color: var(--blue); font-size: 18px; }
-.beta-report > p { margin: 0; color: #354258; line-height: 1.6; white-space: pre-wrap; }
+.beta-report > p { margin: 0; color: #3b2722; line-height: 1.6; white-space: pre-wrap; }
 .beta-report__steps {
   margin-top: 14px !important;
   padding: 13px;
   border-radius: 12px;
-  background: #f4f7fb;
+  background: #e9f4f7;
   font-size: 13px;
 }
 .beta-report__meta {
@@ -193,7 +193,7 @@ button, input, select, textarea { font: inherit; }
   min-height: 76px;
   margin-top: 16px;
   padding: 12px;
-  border: 1px solid #ccd6e5;
+  border: 1px solid #d0e1e6;
   border-radius: 12px;
   resize: vertical;
   background: var(--card);
@@ -203,7 +203,7 @@ button, input, select, textarea { font: inherit; }
 .beta-report__actions button {
   min-height: 38px;
   padding: 0 13px;
-  border: 1px solid #cdd7e5;
+  border: 1px solid #d0e1e6;
   border-radius: 10px;
   background: var(--card);
   color: var(--blue);
@@ -221,7 +221,7 @@ button, input, select, textarea { font: inherit; }
 
 .beta-admin-empty {
   padding: 50px 20px;
-  border: 1px dashed #ccd7e6;
+  border: 1px dashed #d0e1e6;
   border-radius: 18px;
   color: var(--muted);
   text-align: center;
@@ -236,19 +236,19 @@ button, input, select, textarea { font: inherit; }
   border-radius: 13px;
   background: var(--blue);
   color: #fff;
-  box-shadow: 0 14px 38px rgba(11, 46, 107, .25);
+  box-shadow: 0 14px 38px rgba(59, 39, 34, .25);
   font-size: 13px;
   font-weight: 700;
 }
 
 :root[data-theme="dark"] {
-  --ink: #eef3fb;
-  --muted: #a7b2c3;
-  --line: #27354a;
-  --surface: #080d14;
-  --card: #101823;
+  --ink: #e9f4f7;
+  --muted: #805f54;
+  --line: #3b2722;
+  --surface: #2a1c18;
+  --card: #2a1c18;
 }
-:root[data-theme="dark"] .beta-report__steps { background: #151f2d; }
+:root[data-theme="dark"] .beta-report__steps { background: #3b2722; }
 
 @media (max-width: 760px) {
   .beta-admin-header .beta-admin-shell {
