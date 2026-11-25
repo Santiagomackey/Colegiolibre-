@@ -78,7 +78,15 @@
     next.type = 'button';
     next.hidden = true;
     heading.append(title,sort);
+    const request = node('a','button secondary','¿Lo necesitás? Pedilo en tu colegio');
+    request.hidden = true;
+    if (!demo && !preview) {
+      const requests = node('a','button secondary','Ver pedidos de mi colegio');
+      requests.href = '/busco?view=school#pedidos';
+      place.append(requests);
+    }
     place.append(heading,status,grid,next);
+    if (!demo && !preview) place.append(request);
     form.append(search,searchButton);
     header.after(categoryNav);
     header.append(form);
@@ -99,6 +107,7 @@
       return button;
     });
     async function update(append = false) {
+      request.hidden = true;
       const revision = ++sequence;
       const offset = append ? page + 1 : 0;
       if (!append) grid.replaceChildren();
@@ -121,6 +130,8 @@
         for (const item of result.products) grid.append(card(item,school,demo));
         status.textContent = grid.children.length ? '' :
           (category || query ? 'No encontramos publicaciones para esta búsqueda.' : 'Todavía no hay publicaciones disponibles en tu colegio.');
+        request.href = '/busco?' + new URLSearchParams({scope:'school', title:query, category}) + '#crear-pedido';
+        request.hidden = grid.children.length > 0;
         next.hidden = !result.more;
       } catch (_) {
         if (revision === sequence) {

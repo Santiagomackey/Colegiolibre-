@@ -15,7 +15,7 @@
   } = window.colegioLibreApi;
 
   const params = new URLSearchParams(window.location.search);
-  const requestedConversationId =
+  let requestedConversationId =
     params.get("id") || params.get("conversation");
 
   const elements = {
@@ -117,6 +117,16 @@
     }
 
     if (elements.accountLink) elements.accountLink.href = "/perfil";
+    if (params.has("wanted")) {
+      try {
+        const {data, error} = await window.colegioLibreSupabase.rpc("open_wanted_chat", {p_wanted_id:params.get("wanted")});
+        if (error || !data) throw error;
+        requestedConversationId = data;
+        history.replaceState(null, "", "/mensajes?id=" + encodeURIComponent(data));
+      } catch (_) {
+        showToast("No pudimos abrir el pedido. Revisá que siga activo y que tengas acceso.");
+      }
+    }
     await refreshConversations({ preserveSelection: false });
 
     if (requestedConversationId) {
@@ -242,9 +252,9 @@
     const registry = new Map();
 
     rows
-      .filter((row) => row.product_id && row.buyer_id && row.seller_id)
+      .filter((row) => (row.product_id || row.wanted_post_id) && row.buyer_id && row.seller_id)
       .forEach((row) => {
-        const key = [row.product_id, row.buyer_id, row.seller_id].join("|");
+        const key = [row.product_id || "pedido:" + row.wanted_post_id, row.buyer_id, row.seller_id].join("|");
         const previous = registry.get(key);
         if (!previous || getConversationSortTime(row) >= getConversationSortTime(previous)) {
           registry.set(key, row);
@@ -421,7 +431,7 @@
     const query = normalize(state.searchTerm);
     const filtered = state.conversations.filter((conversation) => {
       const haystack = normalize(
-        `${getConversationName(conversation)} ${getConversationSchool(conversation)} ${conversation.product?.title || ""} ${conversation.lastMessage?.body || ""}`
+        `${getConversationName(conversation)} ${getConversationSchool(conversation)} ${conversation.wanted_title || conversation.product?.title || ""} ${conversation.lastMessage?.body || ""}`
       );
       return !query || haystack.includes(query);
     });
@@ -457,7 +467,7 @@
         .join(" ");
       item.setAttribute(
         "aria-label",
-        `${getConversationName(conversation)}, ${conversation.product?.title || "producto"}${unreadCount ? `, ${unreadCount} sin leer` : ""}`
+        `${getConversationName(conversation)}, ${conversation.wanted_title || conversation.product?.title || "producto"}${unreadCount ? `, ${unreadCount} sin leer` : ""}`
       );
       item.innerHTML = `
         <div class="conversation-avatar">${escapeHtml(
@@ -485,7 +495,7 @@
             getConversationSchool(conversation)
           )}</p>
           <p class="conversation-product">${escapeHtml(
-            conversation.product?.title || "Producto no disponible"
+            conversation.wanted_title || conversation.product?.title || "Producto no disponible"
           )}</p>
           <p class="conversation-last">${escapeHtml(
             conversation.lastMessage?.body ||
@@ -571,6 +581,11 @@
 
   function renderProductPanel(conversation) {
     const product = conversation.product;
+    if (conversation.wanted_post_id) {
+      elements.productPanel.innerHTML = '<div class="product-empty"><strong>Pedido de material</strong><span></span></div>';
+      elements.productPanel.querySelector("span").textContent = conversation.wanted_title;
+      return;
+    }
     if (!product) {
       renderProductPlaceholder("El producto asociado ya no está disponible.");
       return;

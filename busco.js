@@ -18,7 +18,17 @@
 
   async function init() {
     try { user = await api.getCurrentUser(true); profile = user ? await api.getCurrentProfile(true) : null; } catch (_) {}
-    if (!profile?.school_code) {form.querySelector('[name="scope"][value="country"]').checked=true;form.dispatchEvent(new Event('change',{bubbles:true}));}
+    const params = new URLSearchParams(location.search);
+    if (params.get("scope") === "school") {
+      const title = form.elements.title;
+      title.value = (params.get("title") || "").slice(0,120);
+      if (Array.from(form.elements.category.options).some(option => option.value === params.get("category"))) {
+        form.elements.category.value = params.get("category");
+      }
+      title.dispatchEvent(new Event("input",{bubbles:true}));
+    }
+    if (params.get("view") === "school" || params.get("scope") === "school") filter.value = "school";
+    if (params.get("scope") !== "school" && !profile?.school_code) {form.querySelector('[name="scope"][value="country"]').checked=true;form.dispatchEvent(new Event('change',{bubbles:true}));}
     document.querySelectorAll('[data-alert-view]').forEach(button=>button.addEventListener('click',()=>{
       view=button.dataset.alertView;
       document.querySelectorAll('[data-alert-view]').forEach(tab=>tab.setAttribute('aria-pressed',String(tab===button)));
@@ -26,16 +36,22 @@
     }));
     window.addEventListener('colegiolibre:languagechange',render);
     form.addEventListener("submit", submit);
-    filter.addEventListener("change", render);
+    filter.addEventListener("change", load);
     search?.addEventListener("input", render);
     await load();
   }
 
+  let loadSequence = 0;
   async function load() {
     list.setAttribute("aria-busy","true");
+    const sequence = ++loadSequence;
     let result;
-    try {result = await client.from("wanted_posts").select("*").eq("status", "active")
-      .order("created_at", { ascending: false }).limit(100);}catch(_){showFeedError();return;}
+    try {
+      let query = client.from("wanted_posts").select("*").eq("status", "active");
+      if (filter.value === "school" && profile?.school_code) query = query.eq("scope","school").eq("school_code",profile.school_code);
+      result = await query.order("created_at", { ascending: false }).limit(100);
+    } catch (_) { if (sequence === loadSequence) showFeedError(); return; }
+    if (sequence !== loadSequence) return;
     list.setAttribute("aria-busy","false");
     posts = result.data || [];
     if (result.error) {
@@ -68,7 +84,7 @@
     visible.forEach((post) => {
       const item = document.createElement("article");
       item.className = "wanted-item";
-      item.innerHTML = '<div class="wanted-item__top"><h3 data-no-translate></h3><span class="wanted-chip"></span></div><div class="wanted-item__meta"><span data-category></span><span data-transaction></span><span data-place></span></div><p class="wanted-description" data-no-translate></p><div class="wanted-item__actions"><span class="wanted-time"></span><a class="wanted-have">Tengo este material</a></div>';
+      item.innerHTML = '<div class="wanted-item__top"><h3 data-no-translate></h3><span class="wanted-chip"></span></div><div class="wanted-item__meta"><span data-category></span><span data-transaction></span><span data-place></span></div><p class="wanted-description" data-no-translate></p><div class="wanted-item__actions"><span class="wanted-time"></span><a class="wanted-have">Lo tengo</a></div>';
       item.querySelector("h3").textContent = post.title;
       item.querySelector(".wanted-chip").textContent = post.scope === "school" ? "Colegio" : post.scope === "zone" ? "Zona" : "Argentina";
       item.querySelector(".wanted-description").textContent = post.description || post.category || "Material escolar";
@@ -78,7 +94,7 @@
       item.querySelector(".wanted-time").textContent = relativeTime(post.created_at);
       if (Number(post.max_price)>0) {const budget=document.createElement('span');budget.className='wanted-item__budget';budget.textContent=translate('Presupuesto máximo')+': '+new Intl.NumberFormat(document.documentElement.lang==='en'?'en-US':'es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(post.max_price);item.querySelector('.wanted-item__actions').before(budget);}
       const haveLink = item.querySelector(".wanted-have");
-      haveLink.href = `/publicar?wanted=${encodeURIComponent(post.id)}&title=${encodeURIComponent(post.title)}`;
+      haveLink.href = `/mensajes?wanted=${encodeURIComponent(post.id)}`;
       if (user && post.user_id === user.id) {
         haveLink.remove();
         const close = document.createElement("button");
@@ -109,7 +125,7 @@
   async function submit(event) {
     event.preventDefault();
     if(creating)return;
-    if (!user) { window.location.href = "/login?next=/busco"; return; }
+    if (!user) { window.location.href = "/login?next=" + encodeURIComponent("/busco" + location.search + "#crear-pedido"); return; }
     const data = new FormData(form);
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();

@@ -109,6 +109,7 @@
       const total = Number(count ?? data.length);
       $('#count').textContent = `${total} ${total === 1 ? 'resultado' : 'resultados'}`;
       $('#empty').hidden = total > 0;
+      if (!total) $('#ask-school').href = '/busco?' + new URLSearchParams({scope:'school', title:state.q, category:state.category}) + '#crear-pedido';
       $('#load-more').hidden = (page + 1) * pageSize >= total;
     } catch (_) {
       if (request !== controller) return;
