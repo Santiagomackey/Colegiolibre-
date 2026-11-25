@@ -191,7 +191,7 @@ function moderationMessage(result, isEditMode) {
 
   if (result?.decision === "rejected") {
     return `No pudimos publicar este producto: ${
-      result.reason || "no cumple las reglas de Colestores."
+      result.reason || "no cumple las reglas de ColeGo."
     }`;
   }
 
@@ -412,7 +412,7 @@ async function initializeEditMode() {
 }
 
 function configureEditModeUi() {
-  document.title = "Colestores | Editar publicación";
+  document.title = "ColeGo | Editar publicación";
   pageHeading.textContent = "Editá tu publicación";
   pageSubtitle.textContent = "Actualizá la información de tu material y guardá los cambios.";
   submitButton.textContent = "Guardar cambios";
@@ -1171,7 +1171,7 @@ async function handleSubmit(event) {
       school_name: profile.school_name || null,
       seller_name:
         profile.name ||
-        "Usuario Colestores",
+        "Usuario ColeGo",
 
       user_id: user.id,
       zone: profile.zone_code || null,

@@ -64,7 +64,7 @@
         p_endpoint: endpoint, p_p256dh: keys.p256dh, p_auth: keys.auth
       });
       if (error) throw error;
-    }).catch(() => console.warn('Colestores could not register this browser for phone notifications.'));
+    }).catch(() => console.warn('ColeGo could not register this browser for phone notifications.'));
   }
   function requestPermission(event) {
     if (!event.isTrusted || !activeUser) return;

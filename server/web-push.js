@@ -9,7 +9,7 @@ export async function sendWebPush(device, notice) {
   if (!services.has(endpoint.origin) || endpoint.username || endpoint.password) {
     throw new Error('Invalid push service');
   }
-  const payload = JSON.stringify({id: String(notice.id), title: String(notice.title || 'Colestores').slice(0,120),
+  const payload = JSON.stringify({id: String(notice.id), title: String(notice.title || 'ColeGo').slice(0,120),
     body: String(notice.body || '').slice(0,240), url: safePushPath(notice.action_url)});
   await webpush.sendNotification({endpoint: device.endpoint, keys: {auth: device.auth, p256dh: device.p256dh}}, payload, {
     TTL: 86400, urgency: 'high', timeout: 8000,

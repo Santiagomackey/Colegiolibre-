@@ -9,7 +9,7 @@
     es: {
       badge: "Programa beta",
       eyebrow: "Ayudanos a mejorar",
-      title: "Probá Colestores desde tu celular",
+      title: "Probá ColeGo desde tu celular",
       intro: "Completá estas pruebas como usarías normalmente la aplicación. Si algo falla o resulta confuso, reportalo al final.",
       progressLabel: "Tu progreso",
       tasksEyebrow: "Recorrido recomendado",
@@ -52,7 +52,7 @@
     en: {
       badge: "Beta program",
       eyebrow: "Help us improve",
-      title: "Test Colestores from your phone",
+      title: "Test ColeGo from your phone",
       intro: "Complete these tasks as you would normally use the app. If something fails or feels confusing, report it below.",
       progressLabel: "Your progress",
       tasksEyebrow: "Recommended journey",

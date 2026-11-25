@@ -3,8 +3,8 @@
   const loader = document.createElement("div");
   loader.className = "cl-app-loader";
   loader.setAttribute("role", "status");
-  loader.setAttribute("aria-label", "Abriendo Colestores");
-  loader.innerHTML = `<div class="cl-app-loader__content"><img class="cl-app-loader__logo" src="images/colestores-logo.svg" alt="Colestores"><span class="cl-app-loader__bar" aria-hidden="true"></span></div>`;
+  loader.setAttribute("aria-label", "Abriendo ColeGo");
+  loader.innerHTML = `<div class="cl-app-loader__content"><img class="cl-app-loader__logo" src="images/colego-logo.svg" alt="ColeGo"><span class="cl-app-loader__bar" aria-hidden="true"></span></div>`;
   document.documentElement.appendChild(loader);
   const started = performance.now();
   const close = () => {

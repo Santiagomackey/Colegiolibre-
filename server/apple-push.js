@@ -36,7 +36,7 @@ export async function sendApplePush(device, notice) {
       req.on('end', () => status === 200 ? resolve() : reject(Object.assign(Error('APNs rechazó el envío.'), { status })));
       req.resume();
       req.end(JSON.stringify({
-        aps: { alert: { title: String(notice.title || 'Colestores').slice(0,120), body: String(notice.body || '').slice(0,240) }, sound: 'default' },
+        aps: { alert: { title: String(notice.title || 'ColeGo').slice(0,120), body: String(notice.body || '').slice(0,240) }, sound: 'default' },
         url: safePushPath(notice.action_url), notification_id: String(notice.id)
       }));
     });

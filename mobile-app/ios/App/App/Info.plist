@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Colestores</string>
+        <string>ColeGo</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -25,11 +25,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Colestores usa la cámara para agregar fotos a tus publicaciones.</string>
+	<string>ColeGo usa la cámara para agregar fotos a tus publicaciones.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Colestores accede a tus fotos únicamente cuando elegís imágenes para una publicación.</string>
+	<string>ColeGo accede a tus fotos únicamente cuando elegís imágenes para una publicación.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Colestores puede guardar una foto solo cuando vos lo solicitás.</string>
+	<string>ColeGo puede guardar una foto solo cuando vos lo solicitás.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

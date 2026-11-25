@@ -97,7 +97,7 @@ function createProductPageFallbackApi() {
         product && product.school_year !== null && product.school_year !== undefined
           ? Number(product.school_year)
           : null,
-      seller_name: (product && product.seller_name) || "Usuario Colestores",
+      seller_name: (product && product.seller_name) || "Usuario ColeGo",
       size: (product && product.size) || null,
       status: (product && product.status) || "available",
       subject: (product && product.subject) || null,
@@ -225,7 +225,7 @@ function updateProductSeo(product) {
   const canonicalUrl = new URL(`/producto?id=${encodeURIComponent(product.id)}`, window.location.origin).href;
   const description = String(
     product.description ||
-      `${product.title}, material escolar publicado en Colestores.`
+      `${product.title}, material escolar publicado en ColeGo.`
   )
     .replace(/\s+/g, " ")
     .trim()
@@ -244,17 +244,17 @@ function updateProductSeo(product) {
   canonical.href = canonicalUrl;
 
   upsertMeta('meta[name="description"]', { name: "description" }, description);
-  upsertMeta('meta[property="og:title"]', { property: "og:title" }, `${product.title} | Colestores`);
+  upsertMeta('meta[property="og:title"]', { property: "og:title" }, `${product.title} | ColeGo`);
   upsertMeta('meta[property="og:description"]', { property: "og:description" }, description);
   upsertMeta('meta[property="og:type"]', { property: "og:type" }, "product");
   upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonicalUrl);
   upsertMeta('meta[property="og:image"]', { property: "og:image" }, imageUrl);
   upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
-  upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, `${product.title} | Colestores`);
+  upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, `${product.title} | ColeGo`);
   upsertMeta('meta[name="twitter:description"]', { name: "twitter:description" }, description);
   upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, imageUrl);
 
-  document.title = `${product.title} | Colestores`;
+  document.title = `${product.title} | ColeGo`;
   let jsonLd = document.head.querySelector('#product-structured-data');
   if (!jsonLd) {
     jsonLd = document.createElement('script');
@@ -526,7 +526,7 @@ function showProductUnavailable() {
   const content = document.getElementById("contenido");
   if (content) content.innerHTML = '<section class="empty-state" style="padding:48px 24px;max-width:700px;margin:auto"><h1>Publicación no disponible</h1><p>Esta publicación no está disponible o no pudimos cargarla.</p><p><a href="/explorar">Explorar productos</a></p><button type="button" id="retry-product">Volver a intentar</button></section>';
   document.getElementById("retry-product")?.addEventListener("click", () => location.reload());
-  document.title = "Publicación no disponible | Colestores";
+  document.title = "Publicación no disponible | ColeGo";
 }
 
 async function loadProduct() {
@@ -632,7 +632,7 @@ async function loadFavoriteCount(id) {
 }
 
 function renderProduct(product) {
-  document.title = `Colestores | ${product.title}`;
+  document.title = `ColeGo | ${product.title}`;
   updateProductSeo(product);
 
   elements.productTitle.textContent = product.title;
@@ -686,7 +686,7 @@ async function shareCurrentProduct() {
 
   const shareData = {
     title: currentProduct.title,
-    text: `${currentProduct.title} en Colestores`,
+    text: `${currentProduct.title} en ColeGo`,
     url: sharedUrl
   };
 
@@ -708,7 +708,7 @@ async function shareCurrentProduct() {
 function shareCurrentProductOnWhatsApp() {
   if (!currentProduct) return;
   const url = new URL(`/producto?id=${encodeURIComponent(currentProduct.id)}`, window.location.origin).href;
-  const message = `${currentProduct.title} — lo encontré en Colestores ${url}`;
+  const message = `${currentProduct.title} — lo encontré en ColeGo ${url}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
 }
 
@@ -906,7 +906,7 @@ async function hydrateSellerTrust(userId) {
 
   if (error || !data) {
     elements.sellerRatingSummary.innerHTML =
-      "<span>Miembro de la comunidad Colestores</span>";
+      "<span>Miembro de la comunidad ColeGo</span>";
     return;
   }
 

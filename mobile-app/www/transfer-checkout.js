@@ -157,13 +157,13 @@
   const payment=add(content,'section','pay-card pay-instructions');
   if(order.payment && (order.listing_available!==false || order.status==='awaiting_confirmation' || !buyer)){
    add(payment,'h2','',buyer?(order.status==='payment_pending'?T.text('Transferí al vendedor','Transfer to the seller'):T.text('Datos de tu transferencia','Your transfer details')):T.text('Cuenta indicada para este pedido','Account specified for this order'));
-   add(payment,'p','pay-muted',order.status==='awaiting_confirmation'&&buyer?T.text('Ya avisaste que transferiste. No vuelvas a enviar dinero.','You reported a transfer. Do not send the money again.'):T.text('Usá Mercado Pago o tu banco. El dinero se transfiere fuera de Colestores.','Use Mercado Pago or your bank. The money is transferred outside Colestores.'));
+   add(payment,'p','pay-muted',order.status==='awaiting_confirmation'&&buyer?T.text('Ya avisaste que transferiste. No vuelvas a enviar dinero.','You reported a transfer. Do not send the money again.'):T.text('Usá Mercado Pago o tu banco. El dinero se transfiere fuera de ColeGo.','Use Mercado Pago or your bank. The money is transferred outside ColeGo.'));
    const details=add(payment,'dl','pay-details');
    const fields=[[T.text('Método','Method'),order.payment.method==='mercado_pago'?'Mercado Pago':T.text('Transferencia bancaria','Bank transfer')],[T.text('Titular','Account holder'),order.payment.holder_name],['Alias',order.payment.alias],['CBU / CVU',order.payment.account_number]];
    for(const [label,value] of fields.filter(([,value])=>value)){add(details,'dt','',label);const data=add(details,'dd','',value);data.dataset.noTranslate='';}
    if(buyer&&order.status==='payment_pending'){button(payment,T.text('Copiar alias','Copy alias'),()=>copy(order.payment.alias),true);
    if(order.payment.account_number)button(payment,T.text('Copiar CBU / CVU','Copy CBU / CVU'),()=>copy(order.payment.account_number),true);}
-   add(payment,'p','pay-small',T.text('Antes de transferir, verificá en tu banco el titular y el importe. Colestores no verifica automáticamente el movimiento.','Before transferring, check the recipient and amount in your bank. Colestores does not verify the transfer automatically.'));
+   add(payment,'p','pay-small',T.text('Antes de transferir, verificá en tu banco el titular y el importe. ColeGo no verifica automáticamente el movimiento.','Before transferring, check the recipient and amount in your bank. ColeGo does not verify the transfer automatically.'));
   }else{
    add(payment,'h2','',T.status(order.status));
    add(payment,'p','pay-muted',order.status==='paid'?T.text('El vendedor confirmó el dinero recibido. Coordiná la entrega en el colegio.','The seller confirmed receipt of the money. Arrange delivery at school.'):order.status==='delivered'?T.text('El comprador confirmó que recibió el material.','The buyer confirmed receiving the item.'):T.text('No transfieras: esta publicación ya no está disponible. Si ya pagaste, avisale al vendedor y coordiná por chat.','Do not transfer: this listing is no longer available. If you already paid, notify the seller and coordinate in chat.'));

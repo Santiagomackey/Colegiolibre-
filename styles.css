@@ -2417,7 +2417,7 @@ body.menu-open {
 }
 
 
-/* === Footer moderno Colestores === */
+/* === Footer moderno ColeGo === */
 .site-footer {
   margin-top: 3rem;
   padding: 0;
@@ -2693,7 +2693,7 @@ body.menu-open {
   }
 }
 
-/* === Footer mediano con newsletter (Colestores) === */
+/* === Footer mediano con newsletter (ColeGo) === */
 .footer-medium.site-footer{
   margin-top: 3.2rem;
   padding: 2.45rem 0 1.35rem;
@@ -5558,7 +5558,7 @@ body.has-blocking-modal {
   }
 }
 
-/* Colestores editorial footer — Givingli-inspired layout */
+/* ColeGo editorial footer — Givingli-inspired layout */
 .cl-editorial-footer.footer-medium.site-footer {background:#0b2e6b!important;color:#f5f8ff!important;border-radius:0!important;padding:88px 0 30px!important;margin-top:60px!important;}
 .cl-editorial-footer .footer-medium-inner{max-width:1460px!important;}
 .cl-editorial-footer .footer-medium-grid{display:grid!important;grid-template-columns:minmax(210px,1.5fr) repeat(3,minmax(120px,1fr)) minmax(190px,1.15fr)!important;gap:clamp(20px,3.3vw,60px)!important;align-items:start!important;}
@@ -5581,7 +5581,7 @@ body.has-blocking-modal {
 @media(max-width:760px){.cl-editorial-footer.footer-medium.site-footer{padding:44px 0 26px!important;margin-top:35px!important;}.cl-editorial-footer .footer-medium-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:30px 18px!important;}.cl-editorial-footer .footer-medium-brand{grid-column:span 2!important;display:flex!important;}.cl-editorial-footer .footer-medium-col{display:flex!important;}.cl-editorial-footer .footer-medium-col h3{min-height:0!important;}.cl-editorial-footer .footer-medium-col a{display:block!important;font-size:13px!important;}.cl-editorial-footer .footer-medium-contact{grid-column:span 2!important;padding-top:18px!important;border-top:1px solid #365989!important;}.cl-editorial-footer .footer-medium-bottom{margin-top:34px!important;flex-direction:column;align-items:flex-start!important;}.cl-editorial-footer .footer-medium-bottom p{display:block!important;}.cl-footer-bottom-links{gap:22px;}}
 @media(max-width:380px){.cl-editorial-footer .footer-medium-grid{column-gap:14px!important;}.cl-editorial-footer .footer-medium-col a{font-size:12px!important;}}
 
-/* Colestores official logo in footer */
+/* ColeGo official logo in footer */
 .cl-editorial-footer .cl-footer-logo-link{display:inline-flex!important;align-items:center!important;max-width:min(100%,290px)!important;width:100%!important;line-height:1!important;}
 .cl-editorial-footer .cl-footer-logo-link img{display:block!important;width:100%!important;height:auto!important;max-height:105px!important;object-fit:contain!important;object-position:left center!important;}
 @media(max-width:760px){.cl-editorial-footer .cl-footer-logo-link{max-width:245px!important;}}
@@ -5620,10 +5620,10 @@ body.has-blocking-modal {
   cursor: pointer;
 }
 
-/* Hide website footer inside the installed Colestores Android/iOS application only. */
+/* Hide website footer inside the installed ColeGo Android/iOS application only. */
 html[data-native-app] footer, html[data-native-app] .site-footer, html[data-native-app] .cl-editorial-footer { display:none!important; }
 
-/* Colestores: on phone-sized screens the desktop website footer is not shown. */
+/* ColeGo: on phone-sized screens the desktop website footer is not shown. */
 @media (max-width: 760px) {
   footer.site-footer, footer.cl-editorial-footer, .footer-medium.site-footer { display: none !important; }
 }

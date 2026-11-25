@@ -338,7 +338,7 @@ function safeProductRecord(product) {
       product && product.school_year !== null && product.school_year !== undefined
         ? Number(product.school_year)
         : null,
-    seller_name: (product && product.seller_name) || "Usuario Colestores",
+    seller_name: (product && product.seller_name) || "Usuario ColeGo",
     size: (product && product.size) || null,
     status: (product && product.status) || "available",
     subject: (product && product.subject) || null,
@@ -420,7 +420,7 @@ function safeProfileRecord(profile) {
     moderation_restriction_until:
       (profile && profile.moderation_restriction_until) || null,
     moderation_strikes: Number((profile && profile.moderation_strikes) || 0),
-    name: (profile && profile.name) || "Usuario Colestores",
+    name: (profile && profile.name) || "Usuario ColeGo",
     rating: Number((profile && profile.rating) || 0),
     rating_count: Number((profile && profile.rating_count) || 0),
     response_time: Number((profile && profile.response_time) || 0),

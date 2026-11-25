@@ -201,7 +201,7 @@ async function reportClientError(kind, message, source) {
 window.addEventListener("error", (e) => reportClientError("error", e.message, e.filename));
 window.addEventListener("unhandledrejection", (e) => reportClientError("unhandledrejection", e.reason?.message || e.reason, location.pathname));
 
-if (GA_DEBUG_MODE) console.info("[Colestores] GA4 debug mode enabled");
+if (GA_DEBUG_MODE) console.info("[ColeGo] GA4 debug mode enabled");
 initAuthAnalytics();
 bindMarketplaceTracking();
 

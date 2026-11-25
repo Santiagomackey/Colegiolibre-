@@ -57,9 +57,9 @@
         }).toString();
         const deepLink = `colegiolibre://auth/callback?type=verification&next=${encodeURIComponent(next)}#${tokenHash}`;
         title.textContent = "¡Email verificado!";
-        message.textContent = "Estamos abriendo la aplicación de Colestores…";
+        message.textContent = "Estamos abriendo la aplicación de ColeGo…";
         action.href = deepLink;
-        action.textContent = "Abrir Colestores";
+        action.textContent = "Abrir ColeGo";
         action.hidden = false;
         location.href = deepLink;
         window.setTimeout(() => {
@@ -70,7 +70,7 @@
         return;
       }
       title.textContent = "¡Email verificado!";
-      message.textContent = "Tu cuenta ya está activa. Estamos abriendo Colestores…";
+      message.textContent = "Tu cuenta ya está activa. Estamos abriendo ColeGo…";
       window.setTimeout(() => location.replace(next), 750);
     } catch (error) {
       console.error("Error verificando email:", error);

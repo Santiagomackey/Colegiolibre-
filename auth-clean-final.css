@@ -1,4 +1,4 @@
-/* Colestores auth rebuild: intentional white canvas across all themes and devices. */
+/* ColeGo auth rebuild: intentional white canvas across all themes and devices. */
 html,html[data-theme],html[data-native-app],body,body[data-theme]{background:#fff!important;color:#24242a!important;overflow-x:clip!important}
 body .auth-shell,html[data-native-app] body .auth-shell{display:block!important;min-height:100dvh!important;width:100%!important;background:#fff!important;padding:0!important;margin:0!important;overflow:visible!important}
 body .auth-showcase{display:none!important}

@@ -30,7 +30,7 @@ test('refreshing translated nodes does not write again or lose new server text',
  f.node.nodeValue='No pudimos cargar las publicaciones.';f.api.refresh();assert.equal(f.node.nodeValue,'We could not load the listings.');f.api.setLanguage('es');assert.equal(f.node.nodeValue,'No pudimos cargar las publicaciones.');
 });
 test('new public sections and their status messages have English translations',()=>{
- const f=fixture();for(const text of ['DESCUBRÍ EN COLESTORES','Escribinos por correo','Crear portal gratis','Revisá tu email','Activá los avisos para enterarte a tiempo.','Guardar esta búsqueda','Navegación principal','Apuntes y exámenes'])assert.notEqual(f.api.translate(text),text,text);
+ const f=fixture();for(const text of ['DESCUBRÍ EN ColeGo','Escribinos por correo','Crear portal gratis','Revisá tu email','Activá los avisos para enterarte a tiempo.','Guardar esta búsqueda','Navegación principal','Apuntes y exámenes'])assert.notEqual(f.api.translate(text),text,text);
  assert.equal(f.api.translate('Resultados para “Cambridge”'),'Results for “Cambridge”');assert.equal(f.api.translate('4.º año'),'Year 4');
 });
 

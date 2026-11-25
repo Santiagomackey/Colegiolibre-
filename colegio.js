@@ -69,7 +69,7 @@ function updateSchoolSeo(schoolName, schoolLocation) {
 
   const metaEntries = [
     ["name", "description", description],
-    ["property", "og:title", `${schoolName} | Colestores`],
+    ["property", "og:title", `${schoolName} | ColeGo`],
     ["property", "og:description", description],
     ["property", "og:type", "website"],
     ["property", "og:url", canonicalUrl]
@@ -263,7 +263,7 @@ function renderHero() {
   const publishers = getUniquePublishers();
   const categories = new Set(state.products.map((product) => product.category).filter(Boolean));
 
-  document.title = `Colestores | ${schoolName}`;
+  document.title = `ColeGo | ${schoolName}`;
   updateSchoolSeo(schoolName, schoolLocation);
   elements.name.textContent = schoolName;
   elements.location.innerHTML = `
@@ -300,7 +300,7 @@ function renderHero() {
 }
 
 function renderSchoolNotFound() {
-  document.title = "Colestores | Colegio no encontrado";
+  document.title = "ColeGo | Colegio no encontrado";
   elements.name.textContent = "No encontramos este colegio";
   elements.location.innerHTML = `
     <svg class="icon"><use href="#icon-pin"></use></svg>
@@ -357,7 +357,7 @@ function getUniquePublishers() {
     const existing = registry.get(product.user_id) || {
       count: 0,
       name: product.seller_name || "Estudiante",
-      school_name: product.school_name || "Colestores",
+      school_name: product.school_name || "ColeGo",
       user_id: product.user_id,
       zone_code: product.zone_code || "Zona no especificada"
     };

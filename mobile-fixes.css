@@ -1,4 +1,4 @@
-/* Colestores mobile fixes - load after existing styles */
+/* ColeGo mobile fixes - load after existing styles */
 @media(max-width:700px){
  .cl-site-account-menu{position:relative!important;min-width:22px;margin-left:0!important}
  .cl-site-account-menu .cl-site-menu-panel{position:absolute!important;left:auto!important;right:0!important;width:min(230px,calc(100vw - 28px))!important;max-width:calc(100vw - 28px)!important;max-height:min(65dvh,420px)!important;overflow-y:auto!important;overscroll-behavior:contain;box-sizing:border-box!important;z-index:9999!important}

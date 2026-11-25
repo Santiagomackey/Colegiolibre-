@@ -9,7 +9,7 @@ const topics = [
   ['editar eliminar borrar pausar modificar precio publicación anuncio revision pausada', 'Abrí Mi perfil, entrá en Mis publicaciones y buscá el menú de la tarjeta. Si figura «en revisión», la publicación está esperando una decisión de administración.'],
   ['comprar producto pagar pago compra cobro duplicado mercadopago pedido venta transferencia plata dinero', 'Abrí Mis compras y ventas y revisá el estado del pedido. Si ves un cobro que no reconocés o el pago sigue pendiente, comprobá el movimiento en tu cuenta antes de volver a pagar. Podés usar Escribir a soporte para pedir una revisión.'],
   ['entrega entregar retirar coordinar vendedor contactar mensaje mensajes chat escribir comprador', 'Abrí Mensajes y entrá en la conversación del producto para coordinar con la otra persona. Si no podés escribir, revisá si la publicación sigue disponible o si existe un bloqueo.'],
-  ['notificacion notificaciones avisos llegan android iphone celular permiso push', 'En los ajustes de notificaciones de tu teléfono, buscá Colestores y permití los avisos. Abrí la app y comprobá que iniciaste sesión con la cuenta en la que esperás recibirlos.'],
+  ['notificacion notificaciones avisos llegan android iphone celular permiso push', 'En los ajustes de notificaciones de tu teléfono, buscá ColeGo y permití los avisos. Abrí la app y comprobá que iniciaste sesión con la cuenta en la que esperás recibirlos.'],
   ['humano persona soporte correo ayuda contacto agente reclamo', 'Tocá Escribir a soporte, debajo de la consulta. Contá en qué pantalla estabas y qué mensaje apareció.']
 ];
 const stops = new Set('como para tengo quiero puedo esta esto desde sobre puedo donde una del los las que con por mis mas sin hay soy son ese esa entonces hacer'.split(' '));

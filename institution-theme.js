@@ -200,13 +200,13 @@
     strip.replaceChildren();
     strip.appendChild(brandNode(config));
     var text = document.createElement("span");
-    text.innerHTML = "Comunidad de <strong></strong> <small>· impulsada por Colestores</small>";
+    text.innerHTML = "Comunidad de <strong></strong> <small>· impulsada por ColeGo</small>";
     text.querySelector("strong").textContent = config.name;
     strip.appendChild(text);
     var generalLink = document.createElement("a");
     generalLink.className = "cl-general-link";
     generalLink.href = "/";
-    generalLink.textContent = "Ir a Colestores Argentina ↗";
+    generalLink.textContent = "Ir a ColeGo Argentina ↗";
     strip.appendChild(generalLink);
   }
 
@@ -238,7 +238,7 @@
       lockup.appendChild(identityMark(config, "cl-school-lockup-logo"));
       var copy = document.createElement("span");
       copy.className = "cl-school-lockup-copy";
-      copy.innerHTML = "<small>MARKETPLACE OFICIAL</small><strong></strong><span>con tecnología de Colestores</span>";
+      copy.innerHTML = "<small>MARKETPLACE OFICIAL</small><strong></strong><span>con tecnología de ColeGo</span>";
       copy.querySelector("strong").textContent = config.shortName || config.name;
       lockup.appendChild(copy);
       brand.setAttribute("aria-label", "Inicio de la comunidad de " + config.name);
@@ -298,7 +298,7 @@
   }
 
   function enhanceInstitutionHomepage(config) {
-    document.title = (config.shortName || config.name) + " Marketplace | Colestores";
+    document.title = (config.shortName || config.name) + " Marketplace | ColeGo";
     var canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) {
       canonical.href = window.location.origin + "/colegio/" + encodeURIComponent(portal.code);
@@ -355,7 +355,7 @@
       note.innerHTML =
         '<span class="cl-market-note__icon">' + initials(config.name).slice(0, 1) + '</span>' +
         '<span><strong>Marketplace cerrado de <span data-institution-short></span></strong>' +
-        '<small>Solo ves publicaciones asociadas al colegio. Tu cuenta y tus mensajes siguen siendo los mismos de Colestores.</small></span>';
+        '<small>Solo ves publicaciones asociadas al colegio. Tu cuenta y tus mensajes siguen siendo los mismos de ColeGo.</small></span>';
       productsSection.insertBefore(note, productsSection.firstChild);
     }
 
@@ -385,7 +385,7 @@
     if (footerCopy) {
       footerCopy.textContent =
         "La comunidad de " + (config.shortName || config.name) +
-        " para comprar, vender e intercambiar materiales escolares, impulsada por Colestores.";
+        " para comprar, vender e intercambiar materiales escolares, impulsada por ColeGo.";
     }
   }
 
@@ -432,7 +432,7 @@
       '<form class="cl-inst-form">',
       '<input name="preset" type="hidden" value="eccleston">',
       '<div class="cl-inst-workspace">',
-      '<aside class="cl-inst-preview-column"><span class="cl-inst-section-label">VISTA PREVIA EN VIVO</span><div class="cl-inst-preview"><div class="cl-inst-preview-top"><span data-preview-mark>CL</span><span>Comunidad de <b data-preview-name>Eccleston</b></span></div><div class="cl-inst-preview-body"><div class="cl-inst-preview-lockup"><span data-preview-large-mark>CL</span><span><small>MARKETPLACE OFICIAL</small><strong data-preview-short>Eccleston</strong><em>con tecnología de Colestores</em></span></div><div class="cl-inst-preview-hero"><small>EXCLUSIVO PARA NUESTRAS FAMILIAS</small><strong>Lo que ya no usás le sirve a alguien del cole.</strong><i></i></div></div></div><p class="cl-inst-preview-help">La vista previa muestra cómo quedarán el encabezado y los colores principales.</p></aside>',
+      '<aside class="cl-inst-preview-column"><span class="cl-inst-section-label">VISTA PREVIA EN VIVO</span><div class="cl-inst-preview"><div class="cl-inst-preview-top"><span data-preview-mark>CL</span><span>Comunidad de <b data-preview-name>Eccleston</b></span></div><div class="cl-inst-preview-body"><div class="cl-inst-preview-lockup"><span data-preview-large-mark>CL</span><span><small>MARKETPLACE OFICIAL</small><strong data-preview-short>Eccleston</strong><em>con tecnología de ColeGo</em></span></div><div class="cl-inst-preview-hero"><small>EXCLUSIVO PARA NUESTRAS FAMILIAS</small><strong>Lo que ya no usás le sirve a alguien del cole.</strong><i></i></div></div></div><p class="cl-inst-preview-help">La vista previa muestra cómo quedarán el encabezado y los colores principales.</p></aside>',
       '<div class="cl-inst-controls"><section class="cl-inst-control-section"><span class="cl-inst-section-label">INFORMACIÓN</span><label class="cl-inst-field">Nombre visible<input name="name" maxlength="80" required></label></section>',
       '<section class="cl-inst-control-section"><span class="cl-inst-section-label">COLORES</span><div class="cl-inst-colors"><label class="cl-inst-field">Principal<span class="cl-inst-color-control"><input name="primary" type="color"></span></label><label class="cl-inst-field">Acento<span class="cl-inst-color-control"><input name="accent" type="color"></span></label><label class="cl-inst-field">Fondo del logo<span class="cl-inst-color-control"><input name="logoBackground" type="color"></span></label></div></section>',
       '<section class="cl-inst-control-section"><span class="cl-inst-section-label">LOGO DEL COLEGIO</span><div class="cl-inst-upload"><span class="cl-inst-upload-preview" data-logo-preview></span><label><strong>Elegir archivo</strong><small>PNG o SVG con transparencia funciona mejor</small><input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label><button type="button" data-logo-remove>Quitar</button></div>',

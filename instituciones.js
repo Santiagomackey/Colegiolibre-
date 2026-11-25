@@ -420,7 +420,7 @@
         cycle.value = plan.cycle || request.billing_cycle || "monthly";
         cycle.disabled = Boolean(plan.cycle);
         const recipient = document.createElement("small");
-        recipient.textContent = "Pagás la suscripción a Colestores desde el checkout de Mercado Pago.";
+        recipient.textContent = "Pagás la suscripción a ColeGo desde el checkout de Mercado Pago.";
         checkout.append(cycle,recipient);
         controls.append(checkout);
         addBillingButton(checkout,plan.checkoutReady ? "Continuar en Mercado Pago" : "Comprar suscripción", async () => {

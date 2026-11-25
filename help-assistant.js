@@ -7,7 +7,7 @@
   let history = [];
   function show(role,text,source) {
     const label = document.createElement('strong');
-    label.textContent = role === 'user' ? 'Vos' : source === 'guide' ? 'Guía de Colestores' : 'Colestores IA';
+    label.textContent = role === 'user' ? 'Vos' : source === 'guide' ? 'Guía de ColeGo' : 'ColeGo IA';
     const p = document.createElement('p');
     p.textContent = text;
     log.append(label,p);

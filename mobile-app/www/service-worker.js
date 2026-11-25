@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v86";
+const CACHE_VERSION = "colegiolibre-pwa-v87";
 const APP_SHELL = [
   "/",
   "/404.html",
@@ -22,7 +22,7 @@ const APP_SHELL = [
   "/telemetry.js",
   "/products.js",
   "/vendor/supabase.js",
-  "/images/colestores-logo.svg",
+  "/images/colego-logo.svg",
   "/images/materiales.webp",
   "/images/icon-192.png",
   "/images/icon-512.png",

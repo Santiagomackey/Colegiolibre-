@@ -24,7 +24,7 @@
 
   // Capacitor serves bundled HTML/JS from a local app origin. Relative `/api/...`
   // requests would otherwise stay inside the WebView and never reach Vercel.
-  // Route all Colestores backend calls through the production web origin.
+  // Route all ColeGo backend calls through the production web origin.
   if (isNative && !window.__colegioLibreNativeFetchPatched) {
     window.__colegioLibreNativeFetchPatched = true;
     const originalFetch = window.fetch.bind(window);
@@ -255,7 +255,7 @@
       await pushNotifications.addListener("pushNotificationReceived", (notification) => {
         if (capacitor.getPlatform?.() === "ios") return;
         const data = notification?.data || {};
-        void showNotification(notification?.title || "Colestores", {
+        void showNotification(notification?.title || "ColeGo", {
           body: notification?.body || "Tenés un nuevo aviso.",
           data: { url: data.url || data.action_url || "/" }
         });

@@ -105,7 +105,7 @@
     elements.verifiedBadge.hidden = true;
     elements.profileActions.hidden = true;
     elements.productsEmpty.hidden = false;
-    document.title = "Perfil no disponible | Colestores";
+    document.title = "Perfil no disponible | ColeGo";
     const retry = document.createElement("button");
     retry.type = "button"; retry.textContent = "Volver a intentar";
     retry.addEventListener("click", () => window.location.reload());
@@ -134,7 +134,7 @@
     const ratingCount = Number(profile.rating_count || 0);
     const salesCount = Number(profile.sales_count || 0);
 
-    const profileName = profile.name || "Usuario Colestores";
+    const profileName = profile.name || "Usuario ColeGo";
     const schoolName = profile.school_name || "Colegio no especificado";
     elements.name.textContent = profileName;
     elements.avatar.textContent = getInitials(profile.name);
@@ -147,7 +147,7 @@
       ? `${rating.toFixed(1)} ★`
       : "Sin calificaciones";
 
-    document.title = `${profileName} | Colestores`;
+    document.title = `${profileName} | ColeGo`;
     const canonicalUrl = new URL(
       `/perfil-publico?id=${encodeURIComponent(profileId)}`,
       window.location.origin
@@ -179,7 +179,7 @@
     elements.ratingCount.textContent = String(ratingCount);
     elements.salesCount.textContent = String(salesCount);
     elements.verifiedBadge.hidden = true;
-    document.title = `${profile.name || "Perfil"} | Colestores`;
+    document.title = `${profile.name || "Perfil"} | ColeGo`;
   }
 
   function renderProducts(products) {
@@ -230,7 +230,7 @@
       card.className = "review-card";
       card.innerHTML = `
         <div class="review-card__head">
-          <strong>${escapeHtml(names.get(review.reviewer_id) || "Usuario de Colestores")}</strong>
+          <strong>${escapeHtml(names.get(review.reviewer_id) || "Usuario de ColeGo")}</strong>
           <span class="review-card__stars">${"★".repeat(
             Number(review.rating)
           )}${"☆".repeat(5 - Number(review.rating))}</span>

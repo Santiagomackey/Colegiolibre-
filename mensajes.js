@@ -825,7 +825,7 @@
                   )}. `
                 : ""
             }
-            Colestores no procesa pagos. Coordinen el intercambio en un
+            ColeGo no procesa pagos. Coordinen el intercambio en un
             lugar seguro y revisen el producto antes de pagar.
           </span>
           ${
