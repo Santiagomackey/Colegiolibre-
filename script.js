@@ -1777,7 +1777,7 @@ function buildSummary(total, productLimit = getCurrentProductLimit()) {
   if (!total) {
     return state.showOnlyFavorites
       ? "Todavía no tenés favoritos para estos filtros."
-      : "Sin resultados para los filtros actuales.";
+      : "";
   }
 
   const shown = Math.min(total, productLimit);

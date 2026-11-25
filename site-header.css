@@ -135,3 +135,22 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
 /* Start the brand at the safe left edge, including on wide screens. */
 .cl-site-header .cl-site-top{width:auto;max-width:none;margin-left:env(safe-area-inset-left,0px);margin-right:max(16px,env(safe-area-inset-right,0px));}
 @media(max-width:700px){.cl-site-header .cl-site-search{margin-left:14px!important;width:calc(100% - 14px)!important;}}
+
+body a.colego-publish-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: #ffc72c;
+  color: #102d57;
+  font-weight: 750;
+  text-decoration: none;
+  white-space: nowrap;
+}
+body a.colego-publish-cta:hover { background: #ffda63; }
+.cl-site-header a.colego-publish-cta { flex: none; margin-left: auto; min-height: 30px; padding: 0 12px; font-size: 13px; }
+@media (max-width: 700px) {
+  .products-section .section-heading, #productos .section-heading { flex-wrap: wrap; gap: 10px; }
+}

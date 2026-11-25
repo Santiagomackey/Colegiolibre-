@@ -7,6 +7,10 @@
  labels.mercadoPagoAlias=['Mercado Pago','Mercado Pago'];
  labels.browseCategories=['Ver todas las categorías','Browse all categories'];
  function addMenuLinks(){
+  if (!document.querySelector('.colego-publish-cta') && !/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
+   header.querySelector('.cl-site-subnav-inner')?.insertAdjacentHTML('beforeend',
+    '<a class="colego-publish-cta" href="/publicar" aria-label="Publicar un producto" data-site-text="sell">Publicar</a>');
+  }
   header.querySelector('.cl-site-account-menu [data-site-text="settings"]')?.insertAdjacentHTML(
    'afterend','<a class="cl-site-mp-link" href="/perfil?view=settings#datos-cobro" data-site-text="mercadoPagoAlias">Mercado Pago</a>'
   );
