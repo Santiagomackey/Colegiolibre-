@@ -286,11 +286,13 @@ html body .cl-site-header.cl-transition-header .cl-site-top {
   transform: translateX(-50%);
   min-height: 54px;
   background: #fffdfa;
-  transition: width .32s cubic-bezier(.22,.72,.25,1), border-radius .32s ease, background-color .26s ease;
+  --cl-nav-easing: cubic-bezier(.22,1,.36,1);
+  transition: width .65s var(--cl-nav-easing), height .65s var(--cl-nav-easing),
+    min-height .65s var(--cl-nav-easing), border-radius .65s var(--cl-nav-easing), background-color .45s ease;
 }
-.cl-transition-header .cl-site-top > :not(.cl-pastel-dock) { transition: opacity .16s ease; }
+.cl-transition-header .cl-site-top > :not(.cl-pastel-dock) { transition: opacity .26s ease .09s; }
 html body .cl-site-header.cl-header-compact .cl-site-top { width: min(275px, calc(100% - 24px)); border-radius: 999px; background: var(--colego-cream); }
-.cl-header-compact .cl-site-top > :not(.cl-pastel-dock) { opacity: 0; pointer-events: none; }
+.cl-header-compact .cl-site-top > :not(.cl-pastel-dock) { opacity: 0; pointer-events: none; transition-delay: 0s; }
 .cl-pastel-dock {
   position: absolute;
   inset: 0;
@@ -301,9 +303,9 @@ html body .cl-site-header.cl-header-compact .cl-site-top { width: min(275px, cal
   padding: 4px 8px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity .14s ease, visibility .14s;
+  transition: opacity .22s ease, visibility 0s linear .22s;
 }
-.cl-header-compact .cl-pastel-dock { opacity: 1; visibility: visible; transition-delay: .09s; }
+.cl-header-compact .cl-pastel-dock { opacity: 1; visibility: visible; transition-delay: .16s, 0s; }
 body.cl-marketplace:has(.cl-header-compact) .colego-publish-floating,
 body:not(.mobile-messages[data-view=chat]):has(.cl-header-compact) .colego-publish-floating { display: none !important; }
 .cl-pastel-dock :is(a,button) {
