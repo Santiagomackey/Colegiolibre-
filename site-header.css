@@ -433,3 +433,13 @@ html body .cl-site-header.cl-header-compact .cl-site-top { min-height: 54px; }
   .cl-site-header .cl-site-brand { height: 43px; }
   html body .cl-site-header .cl-site-search { height: 36px !important; }
 }
+
+/* Installed web apps and the native shell use their own navigation. */
+html[data-native-app] body footer { display: none !important; }
+
+@media (display-mode: standalone), (display-mode: minimal-ui), (display-mode: window-controls-overlay) {
+  html body footer,
+  html[data-theme] body #contenido-principal + footer.cl-editorial-footer.site-footer {
+    display: none !important;
+  }
+}
