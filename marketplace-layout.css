@@ -333,3 +333,41 @@ html[data-theme] body.product-detail-body #contact-button { background: var(--st
   body.mobile-messages[data-view=chat] .messages-screen-title { display: none; }
   html[data-theme] body.mobile-messages[data-view=chat] .chat-panel { border: 0; border-radius: 0; }
 }
+
+/* The uploader sits in a narrow column even at desktop viewport widths. */
+html[data-theme] body.publish-body .publish-media-column .upload-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+html[data-theme] body.publish-body .publish-media-column .upload-tile {
+  min-width: 0;
+  width: 100%;
+}
+html[data-theme] body.publish-body .publish-media-column .upload-tile--hero {
+  grid-column: 1 / -1;
+  min-height: 154px;
+  justify-content: center;
+  text-align: left;
+}
+html[data-theme] body.publish-body .publish-media-column .upload-tile--mini { min-height: 68px; }
+html[data-theme] body.publish-body .publish-media-column .upload-help-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+html[data-theme] body.publish-body .publish-media-column .camera-button { white-space: nowrap; }
+html[data-theme] body.publish-body .publish-fields-column :is(.field-row,.field-group) { min-width: 0; }
+html[data-theme] body.publish-body .condition-selector label { flex: 1 1 110px; min-width: 0; }
+html[data-theme] body.publish-body .condition-selector input:checked + label,
+html[data-theme] body.publish-body #preview-condition {
+  background: var(--studio-blue-soft);
+  border-color: var(--studio-blue);
+  color: var(--studio-coffee);
+  box-shadow: none;
+}
+html[data-theme] body.publish-body .upload-tile--hero .icon { color: var(--studio-coffee); }
+html[data-theme] body.publish-body #submit-product,
+html[data-theme] body.mobile-profile #publish-product-link,
+html[data-theme] body.mobile-profile #publish-product-link span {
+  color: var(--studio-coffee) !important;
+  -webkit-text-fill-color: var(--studio-coffee) !important;
+}

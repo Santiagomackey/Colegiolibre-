@@ -1,4 +1,4 @@
-const CACHE_VERSION = "colegiolibre-pwa-v95";
+const CACHE_VERSION = "colegiolibre-pwa-v96";
 const APP_SHELL = [
   "/",
   "/404.html",
