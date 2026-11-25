@@ -13,32 +13,130 @@
   let posts = [];
   let view = "all";
   let creating = false;
+  let reviewed = false;
+  const review = document.getElementById("match-review");
+  const submitLabel = form.querySelector("[type=submit] span");
   const translate = text => window.colegioLibrePreferences?.translate?.(text) || text;
   init().catch(() => showFeedError());
 
   async function init() {
     try { user = await api.getCurrentUser(true); profile = user ? await api.getCurrentProfile(true) : null; } catch (_) {}
     const params = new URLSearchParams(location.search);
-    if (params.get("scope") === "school") {
+    if (params.get("scope") === "school" || params.has("title")) {
       const title = form.elements.title;
-      title.value = (params.get("title") || "").slice(0,120);
+      title.value = (params.get("title") || "").slice(0,600);
       if (Array.from(form.elements.category.options).some(option => option.value === params.get("category"))) {
         form.elements.category.value = params.get("category");
       }
       title.dispatchEvent(new Event("input",{bubbles:true}));
     }
     if (params.get("view") === "school" || params.get("scope") === "school") filter.value = "school";
-    if (params.get("scope") !== "school" && !profile?.school_code) {form.querySelector('[name="scope"][value="country"]').checked=true;form.dispatchEvent(new Event('change',{bubbles:true}));}
+    if (params.get("scope") !== "school" && profile?.school_verification_status !== "verified") {
+      const defaultScope = profile?.zone_code ? "zone" : "country";
+      form.querySelector('[name="scope"][value="' + defaultScope + '"]').checked=true;form.dispatchEvent(new Event('change',{bubbles:true}));}
     document.querySelectorAll('[data-alert-view]').forEach(button=>button.addEventListener('click',()=>{
       view=button.dataset.alertView;
+      document.getElementById("match-feed-title").textContent = view === "mine" ? "Mis búsquedas" : "Lo que están buscando";
       document.querySelectorAll('[data-alert-view]').forEach(tab=>tab.setAttribute('aria-pressed',String(tab===button)));
-      render();
+      void load();
     }));
     window.addEventListener('colegiolibre:languagechange',render);
     form.addEventListener("submit", submit);
     filter.addEventListener("change", load);
     search?.addEventListener("input", render);
-    await load();
+    form.elements.title.addEventListener("input",clearReview);
+    if (params.get("view") !== "school" && params.get("scope") !== "school") document.querySelector('[data-alert-view="mine"]').click();
+    else await load();
+  }
+
+  function clearReview() {
+    reviewed = false;
+    review.hidden = true;
+    review.replaceChildren();
+    submitLabel.textContent = "Revisar búsquedas";
+  }
+
+  function reviewMaterials(value) {
+    const materials = value.split(/\n|\s+y\s+(?=(?:un[ao]?|el|la|libro|uniforme|cuaderno)\s)/i)
+      .map(line => line.trim().replace(/^(?:necesito|busco|quiero)\s+/i,"")).filter(Boolean);
+    if (!materials.length || materials.length > 8) return false;
+    materials.forEach((material,index) => {
+      const label = document.createElement("label");
+      label.textContent = "Material " + (index + 1);
+      const input = document.createElement("input");
+      input.name = "match_material";
+      input.minLength = 3;
+      input.maxLength = 120;
+      input.required = true;
+      input.value = material;
+      label.append(input);
+      review.append(label);
+    });
+    reviewed = true;
+    review.hidden = false;
+    submitLabel.textContent = "Activar búsquedas";
+    review.querySelector("input").focus();
+    return true;
+  }
+
+  function addMatchControls(item, post) {
+    const actions = item.querySelector(".wanted-item__actions");
+    const result = document.createElement("div");
+    result.setAttribute("aria-live","polite");
+    item.append(result);
+    const show = document.createElement("button");
+    show.type = "button";
+    show.className = "wanted-close";
+    show.textContent = "Ver coincidencias";
+    show.hidden = post.match_paused;
+    async function showMatches() {
+      result.textContent = "Buscando…";
+      show.disabled = true;
+      try {
+        const {data,error} = await client.rpc("colego_match_results",{p_wanted:post.id});
+        if (error) throw error;
+        result.replaceChildren();
+        if (!data.length) result.textContent = "Todavía no hay coincidencias. ColeGo sigue buscando.";
+        for (const product of data) {
+          const row = document.createElement("p");
+          const link = document.createElement("a");
+          link.href = "/producto?id=" + encodeURIComponent(product.id);
+          link.textContent = product.title + " · " + Number(product.price).toLocaleString("es-AR",{style:"currency",currency:"ARS"}) +
+            (product.exact_isbn ? " · ISBN exacto" : " · Título compatible");
+          row.append(link);
+          result.append(row);
+        }
+      } catch (_) { result.textContent = "No pudimos cargar las coincidencias. Volvé a intentar."; }
+      finally { show.disabled = false; }
+    }
+    show.onclick = showMatches;
+    const pause = document.createElement("button");
+    pause.type = "button";
+    pause.className = "wanted-close";
+    pause.textContent = post.match_paused ? "Reanudar" : "Pausar";
+    const label = document.createElement("label");
+    label.textContent = "Avisos ";
+    const frequency = document.createElement("select");
+    for (const [value,text] of [["hourly","Hasta uno por hora"],["daily","Hasta uno por día"],["off","Desactivados"]]) {
+      frequency.add(new Option(text,value));
+    }
+    frequency.value = post.match_frequency || "hourly";
+    label.append(frequency);
+    async function save(patch) {
+      pause.disabled = frequency.disabled = true;
+      try {
+        const {error} = await client.from("wanted_posts").update(patch).eq("id",post.id);
+        if (error) throw error;
+        await load();
+      } catch (_) {
+        result.textContent = "No pudimos guardar el cambio.";
+        frequency.value = post.match_frequency || "hourly";
+        pause.disabled = frequency.disabled = false;
+      }
+    }
+    pause.onclick = () => save({match_paused:!post.match_paused});
+    frequency.onchange = () => save({match_frequency:frequency.value});
+    actions.append(show,pause,label);
   }
 
   let loadSequence = 0;
@@ -48,7 +146,8 @@
     let result;
     try {
       let query = client.from("wanted_posts").select("*").eq("status", "active");
-      if (filter.value === "school" && profile?.school_code) query = query.eq("scope","school").eq("school_code",profile.school_code);
+      if (view === "mine" && user) query = query.eq("user_id",user.id);
+      else if (filter.value === "school" && profile?.school_code) query = query.eq("scope","school").eq("school_code",profile.school_code);
       result = await query.order("created_at", { ascending: false }).limit(100);
     } catch (_) { if (sequence === loadSequence) showFeedError(); return; }
     if (sequence !== loadSequence) return;
@@ -69,13 +168,13 @@
   }
 
   function render() {
-    const mode = filter.value;
+    const mode = view === "mine" ? "all" : filter.value;
     if ((view==='mine' || mode==='school' || mode==='zone') && !user) {
       resultCount.textContent='0';list.innerHTML='<div class="wanted-empty"><b>Iniciá sesión para ver tus alertas</b><p>Guardá tus búsquedas y seguí las coincidencias desde tu cuenta.</p><a class="wanted-have" href="/login?next=/busco">Iniciar sesión</a></div>';window.colegioLibrePreferences?.refresh?.(list);return;
     }
     const query = String(search?.value || "").trim().toLowerCase();
     const visible = posts.filter((post) => {
-      const matchesScope = (view !== 'mine' || post.user_id === user?.id) && (mode === 'all' || (mode==='country' && post.scope==='country') || (mode==='school' && post.scope==='school' && profile?.school_code && post.school_code===profile.school_code) || (mode==='zone' && post.scope==='zone' && profile?.zone_code && post.zone_code===profile.zone_code));
+      const matchesScope = (view === 'mine' ? post.user_id === user?.id : !post.match_private) && (mode === 'all' || (mode==='country' && post.scope==='country') || (mode==='school' && post.scope==='school' && profile?.school_code && post.school_code===profile.school_code) || (mode==='zone' && post.scope==='zone' && profile?.zone_code && post.zone_code===profile.zone_code));
       const searchable = `${post.title || ""} ${post.description || ""} ${post.category || ""}`.toLowerCase();
       return matchesScope && (!query || searchable.includes(query));
     });
@@ -96,6 +195,7 @@
       const haveLink = item.querySelector(".wanted-have");
       haveLink.href = `/mensajes?wanted=${encodeURIComponent(post.id)}`;
       if (user && post.user_id === user.id) {
+        if (view === "mine") addMatchControls(item,post);
         haveLink.remove();
         const close = document.createElement("button");
         close.className = "wanted-close";
@@ -129,19 +229,43 @@
     const data = new FormData(form);
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();
-    if(title.length<3 || title.length>120){status.dataset.state='error';status.textContent=translate('Escribí al menos 3 letras para tu búsqueda.');return;}
+    if(title.length<3 || title.length>600){status.dataset.state='error';status.textContent=translate('Escribí al menos 3 letras para tu búsqueda.');return;}
+    if (!reviewed) {
+      if (!reviewMaterials(title)) status.textContent = "Agregá hasta 8 materiales, uno por línea.";
+      return;
+    }
+    const materials = data.getAll("match_material").map(value => value.trim());
+    if (!materials.length || materials.some(value => value.length < 3 || value.length > 120)) {
+      status.textContent = "Cada material tiene que tener entre 3 y 120 caracteres.";
+      return;
+    }
+    const isbn = String(data.get("isbn") || "").replace(/[\s-]/g,"").toUpperCase();
+    const edition = String(data.get("edition") || "").trim();
+    const size = String(data.get("size") || "").trim();
+    if (isbn && !/^(?:[0-9]{9}[0-9X]|[0-9]{13})$/.test(isbn)) {
+      status.textContent = "Revisá el ISBN. Debe tener 10 o 13 caracteres.";
+      return;
+    }
+    if (materials.length > 1 && (isbn || edition || size || data.get("max_price"))) {
+      status.textContent = "Para asignar un presupuesto, ISBN, edición o talle, activá una búsqueda por material.";
+      return;
+    }
     const budget=String(data.get('max_price')||'').trim();
     if(budget && (!Number.isFinite(Number(budget)) || Number(budget)<0 || Number(budget)>100000000)){status.dataset.state='error';status.textContent=translate('Revisá el presupuesto máximo.');return;}
     status.dataset.state = "loading";
     status.textContent = "Creando tu alerta…";
-    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: Number(data.get("max_price") || 0) || null };
-    if (scope === "school" && !record.school_code) { status.dataset.state = "error"; status.textContent = "Primero elegí tu colegio desde Mi perfil."; return; }
-    if (scope === "zone" && !record.zone_code) { status.dataset.state = "error"; status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
+    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: budget === "" ? null : Number(budget),
+      match_isbn:isbn || null, match_edition:edition || null, match_size:size || null,
+      match_frequency:data.get("frequency"), match_private:!data.has("community") };
+    if (["school","both"].includes(scope) && profile?.school_verification_status !== "verified") { status.dataset.state = "error"; status.textContent = "Verificá tu pertenencia al colegio o elegí buscar por zona."; return; }
+    if (["zone","both"].includes(scope) && !record.zone_code) { status.dataset.state = "error"; status.textContent = "Primero completá tu zona desde Mi perfil."; return; }
     const button = form.querySelector('[type="submit"]');
     button.disabled = true;
     creating=true;
     let result;
-    try { result = await client.from("wanted_posts").insert(record); }
+    try {
+      result = await client.from("wanted_posts").insert(materials.map(material => ({...record,title:material,query:material}))).select("id");
+    }
     catch (_) { result = {error: true}; }
     finally { button.disabled = false; creating=false; }
     if (result.error) {
@@ -151,7 +275,23 @@
     }
     status.dataset.state = "success";
     form.reset();
-    status.textContent = "¡Alerta creada! Te avisaremos cuando aparezca una coincidencia.";
-    await load();
+    clearReview();
+    status.textContent = "Búsquedas activadas. ColeGo sigue buscando cuando aparezcan nuevas publicaciones.";
+    document.querySelector('[data-alert-view="mine"]').click();
+    const matchesBySearch = await Promise.allSettled(result.data.map(row =>
+      client.rpc("colego_match_results",{p_wanted:row.id})
+    ));
+    const matches = matchesBySearch.flatMap(response => response.status === "fulfilled" && !response.value.error ? response.value.data || [] : []);
+    const error = matchesBySearch.some(response => response.status === "rejected" || response.value.error);
+    if (matches.length) {
+      const link = document.createElement("a");
+      link.href = "/producto?id=" + encodeURIComponent(matches[0].id);
+      link.textContent = " Ver la primera coincidencia";
+      status.append(link);
+    } else if (error) {
+      status.append(" Podés volver a consultar desde Mis búsquedas.");
+    } else {
+      status.append(" Todavía no hay coincidencias.");
+    }
   }
 })();

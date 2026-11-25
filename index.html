@@ -38,7 +38,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css?v=20261121-mobilefooter2" />
-    <link rel="stylesheet" href="home-wanted.css?v=20261109-release25" />
+    <link rel="stylesheet" href="home-wanted.css?v=colego-match-1" />
     <link rel="stylesheet" href="notifications.css?v=20261109-release25" />
     <link rel="stylesheet" href="polish.css?v=20261109-release25" />
     <link rel="stylesheet" href="./preferences.css?v=20261110-release35f" />
@@ -1912,6 +1912,15 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
 
       <main id="contenido-principal">
 
+        <section class="container home-match" aria-labelledby="home-match-title">
+          <h2 id="home-match-title">Vos pedilo. ColeGo lo encuentra.</h2>
+          <p>Decinos qué necesitás y te avisamos cuando alguien lo venda en tu zona o dentro de tu colegio.</p>
+          <form action="/busco#crear-pedido" method="get">
+            <label class="sr-only" for="home-match-query">Materiales que necesitás</label>
+            <input id="home-match-query" name="title" type="search" maxlength="600" required placeholder="Ej. Libro de Historia y uniforme talle M">
+            <button class="colego-publish-cta" type="submit">Buscar materiales</button>
+          </form>
+        </section>
         <section class="products-section" id="productos">
           <div class="container products-layout">
             <div class="products-column">

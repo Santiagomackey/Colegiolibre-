@@ -1237,3 +1237,35 @@ async function handleSubmit(event) {
 }
 
 })();
+
+const demandStatus = document.getElementById("match-demand");
+const demandFields = [titleInput, categorySelect, priceInput, sizeSelect,
+  document.getElementById("book-isbn"), document.getElementById("book-edition")];
+let demandTimer;
+let demandRevision = 0;
+
+function refreshMatchDemand() {
+  const revision = ++demandRevision;
+  clearTimeout(demandTimer);
+  demandStatus.hidden = true;
+  const [title,category,price,size,isbn,edition] = demandFields.map(field => field.value.trim());
+  if (title.length < 3 || !category || !Number.isSafeInteger(Number(price)) || Number(price) <= 0) return;
+  demandTimer = setTimeout(async () => {
+    try {
+      const {data,error} = await window.colegioLibreSupabase.rpc("colego_match_demand",{
+        p_title:title,p_category:category,p_price:Number(price),p_size:size || null,
+        p_isbn:category === "Libros" ? isbn.replace(/[\s-]/g,"").toUpperCase() || null : null,
+        p_edition:category === "Libros" ? edition || null : null
+      });
+      if (error || revision !== demandRevision) return;
+      const result = data?.[0];
+      const counts = [result?.school && result.school + " en tu colegio",result?.zone && result.zone + " en tu zona"].filter(Boolean);
+      demandStatus.textContent = counts.length ? "Personas buscando un material compatible · " + counts.join(" · ") : "";
+      demandStatus.hidden = !counts.length;
+    } catch (_) { /* Publication is available even if the demand query fails. */ }
+  }, 650);
+}
+for (const field of demandFields) {
+  field.addEventListener("input",refreshMatchDemand);
+  field.addEventListener("change",refreshMatchDemand);
+}

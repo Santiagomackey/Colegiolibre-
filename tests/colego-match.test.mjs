@@ -1,0 +1,64 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { PGlite } from '@electric-sql/pglite';
+
+test('Match applies verified school, edition, ISBN, budget, availability and delivery idempotency', async t => {
+  const db = new PGlite();
+  t.after(() => db.close());
+  const [buyer,seller,book,wanted,variant] = [1,2,3,4,5].map(n => '00000000-0000-4000-8000-00000000000' + n);
+  await db.exec(`
+    create role anon; create role authenticated; create role service_role;
+    create schema auth;
+    create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.actor',true),'')::uuid$$;
+    create table auth.users(id uuid primary key);
+    create table profiles(id uuid primary key, school_code text, zone_code text, school_verification_status text);
+    create table wanted_posts(id uuid primary key,user_id uuid,title text,query text,category text,scope text check(scope in ('country','school','zone')), school_code text,zone_code text,max_price numeric,status text,created_at timestamptz default now());
+    create table products(id uuid primary key,user_id uuid,title text,price integer,condition text,size text,category text,status text,moderation_status text,school_code text,zone_code text,isbn text,book_edition text);
+    create table notifications(user_id uuid,actor_id uuid,type text,title text,body text,product_id uuid,action_url text,metadata jsonb);
+    create table conversations(id uuid default gen_random_uuid(),wanted_post_id uuid,wanted_title text,buyer_id uuid,seller_id uuid,unique(wanted_post_id,seller_id));
+    create function are_users_blocked(uuid,uuid) returns boolean language sql as $$select false$$;
+    create function account_can_trade(uuid) returns boolean language sql as $$select true$$;
+    create function notify_wanted_product_matches() returns trigger language plpgsql as $$begin return new; end;$$;
+    create trigger products_notify_wanted_matches after insert on products for each row execute function notify_wanted_product_matches();
+    alter table wanted_posts enable row level security;
+    create policy readable on wanted_posts for select using (true);
+    grant select on wanted_posts to authenticated;
+  `);
+  await db.exec(await readFile(new URL('../database/26_colego_match.sql',import.meta.url),'utf8'));
+  await db.exec(`
+    insert into auth.users values ('${buyer}'),('${seller}');
+    insert into profiles values ('${buyer}','A','Florida','verified'),('${seller}','A','Florida','unverified');
+    set request.actor='${buyer}';
+    insert into wanted_posts (id,user_id,title,query,category,scope,school_code,zone_code,max_price,status,match_isbn,match_edition,match_private)
+    values ('${wanted}','${buyer}','Matemática','matemática','Libros','school','A','Florida',12000,'active','9780306406157','5','true');
+    insert into products values ('${book}','${seller}','Libro de matemáticas',11000,'Usado',null,'Libros','available','approved','A','Florida','9780306406157','5');
+  `);
+  const rows = async sql => (await db.query(sql)).rows;
+  const results = () => rows(`select * from colego_match_results('${wanted}')`);
+  const notifications = () => rows('select * from notifications');
+  const dispatch = async () => (await rows(`select colego_match_push_current('${wanted}','${book}','${buyer}') as sent`))[0].sent;
+  assert.equal((await results()).length,0);
+  await db.exec(`set role authenticated; set request.actor='${seller}';`);
+  assert.equal((await rows('select * from wanted_posts')).length,0);
+  await assert.rejects(() => rows(`select open_wanted_chat('${wanted}')`),/no está disponible/);
+  await db.exec(`reset role; set request.actor='${buyer}'; update profiles set school_verification_status='verified'; update products set price=14000;`);
+  assert.equal((await results()).length,0);
+  await db.exec('update products set price=10000,book_edition=\'4\'');
+  assert.equal((await results()).length,0);
+  await db.exec('update products set book_edition=\'5\'');
+  assert.equal((await results())[0].id,book);
+  assert.equal((await notifications()).length,1);
+  await db.exec("update products set status='sold'");
+  assert.equal(await dispatch(),false);
+  assert.equal((await results()).length,0);
+  await db.exec("update products set status='available'");
+  assert.equal(await dispatch(),true);
+  assert.equal(await dispatch(),false);
+  await db.exec(`insert into products values ('${variant}','${seller}','Libro de matemáticas',9000,'Usado',null,'Libros','available','approved','A','Florida','9780306406158','5')`);
+  assert.equal((await results()).length,1);
+  assert.equal((await notifications()).length,1);
+  await db.exec("update wanted_posts set match_paused=true");
+  assert.equal((await results()).length,0);
+  assert.equal((await rows("select colego_match_words('Mates') @@ colego_match_query('matemática',' & ') as match"))[0].match,true);
+});
