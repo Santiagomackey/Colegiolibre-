@@ -88,7 +88,7 @@ export default async function handler(req, res) {
       const products = await rest(cfg,'products?' + query);
       return send(res,200,{products:products.slice(0,24),more:products.length>24});
     }
-    if (req.query?.summary === '1') return send(res,200,{ available:true, path:schoolPortalPath(school) });
+    if (req.query?.summary === '1') return send(res,200,{ available:true, manager, path:schoolPortalPath(school) });
     const members = manage
       ? await select(cfg,'school_portal_members','email',{school_id:school.id},{order:'email.asc',limit:'1000'}) : undefined;
     const { code, city, name, display_name } = school;

@@ -4,7 +4,7 @@
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Registrá tu colegio | ColeGo</title>
+  <title>Activá tu colegio | ColeGo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -74,7 +74,7 @@
         <header class="request-heading">
           <a href="/instituciones#planes">← Volver al plan</a>
           <h1 id="request-title">Registrá tu colegio</h1>
-          <p>Pagá la suscripción en Mercado Pago. El acceso al editor se habilita cuando se acredita el pago y verificamos que representás al colegio.</p>
+          <p>Verificá la casilla oficial de dirección. Cuando se acredite el primer pago, esa cuenta podrá personalizar el portal.</p>
         </header>
 
         <div id="login-required" class="request-sign-in" hidden>
@@ -97,10 +97,10 @@
               <div><span>Colegio seleccionado</span><strong></strong><small></small></div>
               <button type="button" id="change-school">Cambiar</button>
             </div>
-            <label>Correo institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
+            <p id="director-status" role="status"></p><button type="button" class="ib-submit" id="verify-director" hidden>Enviar enlace a dirección</button>
           </fieldset>
 
-          <fieldset class="request-fields">
+          <fieldset class="request-fields" id="director-details" disabled hidden>
             <legend>Página del colegio</legend>
             <div class="ib-two">
               <label>Nombre público<input name="short_name" required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
@@ -110,8 +110,8 @@
 
           </fieldset>
 
-          <div class="request-submit">
-            <label class="request-confirm"><input name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
+          <div class="request-submit" id="director-checkout" hidden>
+            
             <p>Al pagar, autorizás el cobro automático con la frecuencia elegida. Podés cancelar la renovación y usar el portal hasta que termine el período pago.</p>
             <button class="ib-submit" type="submit" id="request-submit-label">Pagar con Mercado Pago</button>
             <p id="request-status" class="ib-status" role="status" tabindex="-1"></p>
@@ -125,7 +125,7 @@
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
   <script src="./supabase.js?v=20261110-recovery31"></script>
-  <script src="./instituciones.js?v=school-billing-9"></script>
+  <script src="./instituciones.js?v=director-1"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/notifications.js?v=20261110-shell32"></script>
 <script src="/site-header.js?v=20261111-flow38"></script>

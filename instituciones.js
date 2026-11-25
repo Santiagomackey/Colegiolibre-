@@ -93,7 +93,11 @@
       renderSelectedPlan();
       if (currentUser) {
         bind();
-        form.elements.contact_email.value = currentUser.email || "";
+        const code = query.get("school");
+        if (code && /^[a-z0-9_-]{1,80}$/i.test(code)) {
+          const school = await api.getSchoolByCode(code);
+          if (school) chooseSchool(school);
+        }
       }
       return;
     }
@@ -149,7 +153,41 @@
     form.addEventListener("submit", submit);
   }
 
+  function setDirectorReady(ready) {
+    const details = document.getElementById("director-details");
+    details.hidden = details.disabled = !ready;
+    document.getElementById("director-checkout").hidden = !ready;
+  }
+  async function checkDirector(code) {
+    const button = document.getElementById("verify-director");
+    const message = document.getElementById("director-status");
+    button.hidden = true;
+    setDirectorReady(false);
+    message.textContent = "Consultando la casilla de dirección…";
+    try {
+      const info = await billing(null,{action:"director_lookup",school:code});
+      if (officialCode.value !== code) return;
+      setDirectorReady(info.verified);
+      message.textContent = info.verified ? "Dirección verificada. Podés continuar al pago." :
+        info.available ? "Pedí el enlace de acceso a la casilla oficial de dirección." :
+        "Este colegio todavía no tiene una casilla de dirección verificada en ColeGo.";
+      button.hidden = !info.available || info.verified;
+      button.disabled = false;
+      button.onclick = async () => {
+        button.disabled = true;
+        try {
+          await billing(null,{action:"director_send",school:code,cycle:selectedBilling});
+          if (officialCode.value === code) message.textContent = "Abrí el enlace desde la casilla de dirección para continuar.";
+        } catch (error) {
+          if (officialCode.value === code) message.textContent = error.message;
+        } finally { if (officialCode.value === code) button.disabled = false; }
+      };
+    } catch (error) { if (officialCode.value === code) message.textContent = error.message; }
+  }
   function clearSchool() {
+    document.getElementById("verify-director").hidden = true;
+    document.getElementById("director-status").textContent = "";
+    setDirectorReady(false);
     officialCode.value = "";
     officialName.value = "";
     selected.hidden = true;
@@ -208,6 +246,7 @@
     updateAddress();
     results.replaceChildren();
     document.getElementById("change-school").focus();
+    void checkDirector(officialCode.value);
   }
 
   async function submit(event) {
@@ -219,40 +258,16 @@
       return;
     }
     var data = new FormData(form);
-    var record = {
-      applicant_user_id: currentUser.id,
-      official_school_code: officialCode.value,
-      official_school_name: officialName.value,
-      requested_code: slugify(data.get("requested_code")),
-      short_name: String(data.get("short_name") || "").trim(),
-      contact_email: String(data.get("contact_email") || "").trim(),
-      primary_color: "#0B2E6B",
-      secondary_color: "#67C23A",
-      accent_color: "#FFC72C",
-      requested_plan: String(data.get("requested_plan") || selectedPlan),
-      billing_cycle: String(data.get("billing_cycle") || selectedBilling),
-      status: "pending"
-    };
-    if (!record.requested_code || !record.short_name) {
-      status.textContent = "Completá el nombre visible y la dirección del portal.";
-      status.focus();
-      return;
-    }
+    if (document.getElementById("director-details").disabled) return;
     sending = true;
     var button = document.getElementById("request-submit-label");
     button.disabled = true;
     status.textContent = "Preparando el pago…";
     try {
-      var result = await client.from("institution_requests").insert(record).select("id").single();
-      let requestId = result.data?.id;
-      if (result.error?.code === "23505") {
-        const existing = await client.from("institution_requests").select("id,billing_cycle")
-          .eq("applicant_user_id",currentUser.id).eq("official_school_code",officialCode.value)
-          .eq("requested_plan",selectedPlan).eq("status","pending").maybeSingle();
-        if (!existing.data) throw Error("Este colegio ya tiene una inscripción en curso.");
-        requestId = existing.data.id;
-      }
-      if (!requestId) throw Error("No pudimos guardar los datos del colegio. Volvé a intentar.");
+      const {data:requestId,error} = await client.rpc("claim_school_directorship",{
+        p_code:officialCode.value,p_slug:slugify(data.get("requested_code")),p_name:String(data.get("short_name") || "").trim(),p_cycle:selectedBilling
+      });
+      if (error || !requestId) throw Error(error?.message || "No pudimos verificar la dirección.");
       const checkout = await billing(requestId,{cycle:selectedBilling});
       if (!checkout.init_point) throw Error("No pudimos abrir Mercado Pago. Volvé a intentar.");
       window.location.assign(checkout.init_point);
@@ -392,6 +407,13 @@
       if (fromReturn) updatePaymentReturn(plan,request,item);
       label.textContent = plan.status === "cancelled" ? "Renovación cancelada" : plan.status === "paused" ? "Renovación pausada" : plan.active ? "Plan activo" : plan.paidThrough ? "Período pago vencido" : plan.status === "authorized" ? "Esperando primer cobro" :
         plan.status === "pending" ? "Pago pendiente" : plan.status === "cancelled" ? "Renovación cancelada" : "Aprobada";
+      if (plan.status === "cancelled" && !plan.active) {
+        const renew = document.createElement("a");
+        renew.className = "ib-editor-link";
+        renew.href = "/solicitar-portal?school=" + encodeURIComponent(request.official_school_code);
+        renew.textContent = "Renovar mi colegio";
+        controls.append(renew);
+      }
       if (plan.paidThrough) {
         const until = document.createElement("small");
         until.textContent = "Pago hasta el " + new Date(plan.paidThrough).toLocaleDateString("es-AR");
