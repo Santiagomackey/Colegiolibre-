@@ -1241,8 +1241,7 @@ html[data-theme="dark"] :is(.forgot-link, .auth-switch-copy button) {
    una segunda barra que compita con el formulario. */
 @media (min-width: 1221px) {
   .publish-body .preview-panel {
-    position: sticky !important;
-    top: calc(var(--cl-header-height, 94px) + 22px) !important;
+    position: static !important;
     align-self: start !important;
     height: auto !important;
     max-height: none !important;

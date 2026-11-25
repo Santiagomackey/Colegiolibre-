@@ -714,8 +714,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 }
 
 .cl-inst-preview-column {
-  position: sticky;
-  top: 94px;
+  align-self: start;
 }
 
 .cl-inst-section-label {
