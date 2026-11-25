@@ -51,6 +51,32 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  window.addEventListener('colegiolibre:languagechange',()=>{render();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function initialize(){addMenuLinks();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initializeCompactNavigation(){
+  if (typeof IntersectionObserver !== 'function') return;
+  const input=header.querySelector('input[type=search]');
+  if (!input) return;
+  const dock=document.createElement('nav');
+  dock.className='cl-pastel-dock';
+  dock.hidden=true;
+  dock.setAttribute('aria-label','Accesos rápidos');
+  dock.innerHTML='<a href="/" aria-label="Inicio"><img src="/images/colego-cart-192.png" alt=""></a><button type="button" aria-label="Buscar materiales"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>';
+  if (!/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
+   const publish=document.createElement('a');
+   publish.className='cl-pastel-dock-publish';
+   publish.href='/publicar';
+   publish.textContent=text('sell');
+   dock.append(publish);
+  }
+  dock.querySelector('button').addEventListener('click',()=>{
+   window.scrollTo({top:0});
+   input.focus();
+  });
+  document.body.append(dock);
+  const observer=new IntersectionObserver(([entry])=>{
+   dock.hidden=entry.isIntersecting || entry.boundingClientRect.bottom>0;
+  });
+  observer.observe(header);
+ }
+ function initialize(){addMenuLinks();initializeCompactNavigation();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();
