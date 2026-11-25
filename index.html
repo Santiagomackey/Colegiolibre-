@@ -1693,6 +1693,7 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
     box-shadow: none;
   }
 </style>
+<link rel="stylesheet" href="/marketplace-layout.css?v=1">
 </head>
   
   <body class="cl-marketplace">
@@ -1915,6 +1916,7 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
         <section class="products-section" id="productos">
           <div class="container products-layout">
             <div class="products-column">
+              <div class="catalog-masthead">
               <div class="section-heading">
                 <div>
                   <p class="section-kicker" id="products-kicker">Selección nacional</p>
@@ -1941,13 +1943,18 @@ html[data-theme="dark"] body.wanted-page .wanted-header{background:#07090c!impor
                   </button>
                 </div>
               </div>
+              </div>
+              <div class="catalog-toolbar">
               <p class="home-catalog-link"><a class="text-link text-link--dark" id="home-catalog-link" href="/explorar">Explorar catálogo <span aria-hidden="true">→</span></a></p><div id="filter-summary" aria-live="polite"></div>
+              </div>
               <div class="product-grid" id="product-grid" aria-live="polite"></div>
               <div class="empty-state" id="empty-state" hidden>
                 <h3>No encontramos productos para esa búsqueda.</h3>
                 <p>Probá con otro término, otro estado o volvé a ver todos los destacados.</p>
+                <div class="catalog-empty-actions">
                 <a class="text-link" id="ask-school" href="/busco?scope=school#crear-pedido">¿Lo necesitás? Pedilo en tu colegio</a>
                 <button class="ghost-button" id="clear-filters" type="button">Limpiar filtros</button>
+                </div>
               </div>
             </div>
 
