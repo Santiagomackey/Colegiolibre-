@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/site-header.css?v=brand-2">
     <link rel="stylesheet" href="./mensajes-layout-fix.css?v=20261123-phone-chat" />
+<link rel="stylesheet" href="/marketplace-layout.css?v=2">
 </head>
   <body class="mobile-subpage mobile-messages" data-view="list">
 <header class="cl-site-header" data-no-translate>
@@ -140,13 +141,13 @@
     
 
     <main class="site-shell messages-page">
+      <h1 class="messages-screen-title">Mensajes</h1>
       <section class="messages-app">
         <aside class="inbox-panel" aria-label="Conversaciones">
           <div class="inbox-header">
             <div>
-              <p class="section-kicker">Mensajes</p>
               <div class="inbox-title-row">
-                <h1>Tus conversaciones</h1>
+                <h2>Tus conversaciones</h2>
                 <span class="inbox-count" id="inbox-count" hidden>0</span>
               </div>
             </div>
@@ -214,7 +215,7 @@
               </div>
             </div>
             <button type="submit" aria-label="Enviar mensaje" disabled>
-              <svg class="icon"><use href="#icon-send"></use></svg>
+              <svg class="icon" aria-hidden="true"><use href="#icon-send"></use></svg><span>Enviar</span>
             </button>
           </form>
         </section>
