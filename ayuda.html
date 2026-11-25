@@ -32,8 +32,8 @@
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>
 <link rel="stylesheet" href="/mobile.css?v=20261109-release25">
-<link rel="stylesheet" href="/help-assistant.css">
-<script defer src="/help-assistant.js"></script>
+<link rel="stylesheet" href="/help-assistant.css?v=chat2">
+<script defer src="/help-assistant.js?v=chat2"></script>
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -82,20 +82,26 @@
 <script src="/opening.js?v=20261109-release25"></script>
   
   <main class="legal-main">
-    <div class="legal-hero"><p class="legal-kicker">Estamos para ayudarte</p><h1>Centro de ayuda</h1><p class="legal-lead">Respuestas rápidas para publicar, comprar, vender y utilizar tu comunidad escolar.</p></div>
+    <section class="help-chat" id="asistente" aria-labelledby="chat-title">
+      <header class="chat-header"><div class="chat-identity"><img src="/images/colego-cart-192.png" alt="" width="36" height="36"><h1 id="chat-title">Asistente de ColeGo</h1></div><a href="#cuenta">Ver guía de ayuda</a></header>
+      <div class="chat-scroll" id="chat-scroll">
+        <div class="chat-welcome" id="chat-welcome">
+          <img src="/images/colego-cart-192.png" alt="" width="64" height="64">
+          <h2>¿En qué te puedo ayudar?</h2>
+          <div class="chat-starters">
+            <button type="button">¿Cómo publico un libro?</button><button type="button">¿Dónde veo mi compra?</button><button type="button">¿Cómo entro a mi colegio?</button>
+          </div>
+        </div>
+        <div id="help-log" role="log" aria-label="Conversación" aria-live="polite"></div>
+      </div>
+      <div class="chat-bottom">
+        <p id="help-status" role="status"></p>
+        <form id="help-form"><textarea id="help-question" aria-label="Tu mensaje" rows="1" maxlength="700" placeholder="Escribí tu mensaje…" required></textarea><button type="submit" aria-label="Enviar mensaje" title="Enviar mensaje"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7 7-7 7 7"/></svg></button></form>
+        <div class="chat-foot"><span>Evitá compartir datos personales.</span><a href="mailto:colegiolibreayuda@gmail.com">Escribir a soporte</a></div>
+      </div>
+    </section>
     <div class="legal-grid">
       <article class="legal-document">
-        <section class="legal-section help-chat" id="asistente">
-          <h2>Asistente de ColeGo</h2>
-          <p>Preguntale a la IA sobre tu colegio, una compra o una publicación. Evitá incluir datos personales.</p>
-          <div id="help-log" role="log" aria-label="Conversación con el asistente" aria-live="polite"></div>
-          <form id="help-form">
-            <label for="help-question">Tu consulta</label>
-            <textarea id="help-question" rows="2" maxlength="700" placeholder="¿Cómo pido acceso a mi colegio?" required></textarea>
-            <div class="help-actions"><button type="submit">Enviar consulta</button><a href="mailto:colegiolibreayuda@gmail.com">Escribir a soporte</a></div>
-          </form>
-          <p id="help-status" role="status"></p>
-        </section>
         <section class="legal-section" id="cuenta"><h2>Cuenta e inicio de sesión</h2><h3>¿Cómo creo una cuenta?</h3><p>Entrá en “Iniciar sesión”, elegí “Crear cuenta” y completá el registro. Después seleccioná tu colegio para ingresar a tu comunidad.</p><h3>Olvidé mi contraseña</h3><p>Utilizá “¿Olvidaste tu contraseña?” en el acceso. Recibirás las instrucciones en el email registrado.</p></section>
         <section class="legal-section" id="publicar"><h2>Publicar y editar</h2><h3>¿Qué puedo publicar?</h3><p>Libros, apuntes, cuadernos, útiles, mochilas, tecnología y uniformes permitidos. Revisá la lista de <a href="/productos-prohibidos">productos prohibidos</a>.</p><h3>¿Por qué quedó en revisión?</h3><p>El sistema revisa la publicación. Los casos dudosos se mantienen pausados hasta que un administrador pueda decidir.</p><h3>¿Cómo la edito o pauso?</h3><p>Ingresá en tu perfil, abrí “Mis publicaciones” y utilizá el menú de la tarjeta.</p></section>
         <section class="legal-section" id="comprar"><h2>Comprar y reservar</h2><p>Abrí el producto para ver las opciones de compra disponibles. Consultá el estado en <a href="/pedidos">Mis compras y ventas</a> y usá el chat para coordinar la entrega.</p></section>
