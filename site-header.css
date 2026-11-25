@@ -150,7 +150,21 @@ body a.colego-publish-cta {
   white-space: nowrap;
 }
 body a.colego-publish-cta:hover { background: #ffda63; }
-.cl-site-header a.colego-publish-cta { flex: none; margin-left: auto; min-height: 30px; padding: 0 12px; font-size: 13px; }
+body a.colego-publish-floating {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+@media (max-width: 700px) {
+  body[data-mobile-nav] a.colego-publish-floating {
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+}
 @media (max-width: 700px) {
   .products-section .section-heading, #productos .section-heading { flex-wrap: wrap; gap: 10px; }
 }
