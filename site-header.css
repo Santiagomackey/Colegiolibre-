@@ -171,14 +171,14 @@ body a.colego-publish-floating {
 
 /* Shared pastel marketplace surfaces. */
 :root {
-  --colego-ink: #10234a;
-  --colego-sky: #99cfff;
-  --colego-sky-tint: #e6f3ff;
-  --colego-butter: #ffea9b;
-  --colego-cream: #fffae6;
-  --colego-pistachio: #cae4a5;
-  --colego-green-tint: #f2f8e9;
-  --colego-line: #dbe6f2;
+  --colego-ink: #3b2722;
+  --colego-sky: #6aacc2;
+  --colego-sky-tint: #e9f4f7;
+  --colego-butter: #ffca50;
+  --colego-cream: #fffaed;
+  --colego-brick: #a0342a;
+  --colego-brick-tint: #f9ebe7;
+  --colego-line: #e8dbd5;
 }
 html body .cl-site-header {
   padding: calc(8px + env(safe-area-inset-top, 0px)) 0 0;
@@ -240,7 +240,7 @@ body .dynamic-product-fields {
   border-radius: 18px;
 }
 .dynamic-product-fields:has(#size-field-group:not([hidden])) {
-  background: var(--colego-green-tint);
+  background: var(--colego-brick-tint);
 }
 #book-fields {
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -264,7 +264,7 @@ html body :is(.cl-editorial-footer,.footer-medium.site-footer) {
   padding: clamp(20px, 4vw, 48px) !important;
   border: 1px solid var(--colego-line);
   border-radius: 28px !important;
-  background: var(--colego-sky-tint) !important;
+  background: var(--colego-butter) !important;
   color: var(--colego-ink) !important;
 }
 html body :is(.cl-editorial-footer,.footer-medium.site-footer) :is(a,p,h3) {
@@ -274,28 +274,38 @@ html body .cl-editorial-footer .cl-footer-contact-link {
   display: inline-block;
   padding: 9px 14px;
   border-radius: 999px;
-  background: var(--colego-pistachio);
+  background: var(--colego-butter);
 }
-.cl-pastel-dock {
+/* The fixed surface stays mounted while its width and contents change. */
+html body .cl-transition-header { padding-top: calc(8px + env(safe-area-inset-top, 0px) + var(--cl-top-height, 78px)); }
+html body .cl-site-header.cl-transition-header .cl-site-top {
   position: fixed;
-  z-index: 109;
-  top: calc(9px + env(safe-area-inset-top, 0px));
+  z-index: 1;
+  top: calc(8px + env(safe-area-inset-top, 0px));
   left: 50%;
   transform: translateX(-50%);
+  min-height: 54px;
+  background: #fffdfa;
+  transition: width .32s cubic-bezier(.22,.72,.25,1), border-radius .32s ease, background-color .26s ease;
+}
+.cl-transition-header .cl-site-top > :not(.cl-pastel-dock) { transition: opacity .16s ease; }
+html body .cl-site-header.cl-header-compact .cl-site-top { width: min(275px, calc(100% - 24px)); border-radius: 999px; background: var(--colego-cream); }
+.cl-header-compact .cl-site-top > :not(.cl-pastel-dock) { opacity: 0; pointer-events: none; }
+.cl-pastel-dock {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 7px;
-  max-width: calc(100vw - 24px);
-  border: 1px solid var(--colego-line);
-  border-radius: 999px;
-  background: #fffffff5;
-  box-shadow: 0 6px 22px #142f4b24;
-  color: var(--colego-ink);
+  justify-content: center;
+  gap: 9px;
+  padding: 4px 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .14s ease, visibility .14s;
 }
-.cl-pastel-dock[hidden],
-body.mobile-messages[data-view=chat] .cl-pastel-dock,
-body:has(.cl-pastel-dock:not([hidden])) .colego-publish-floating { display: none !important; }
+.cl-header-compact .cl-pastel-dock { opacity: 1; visibility: visible; transition-delay: .09s; }
+body.cl-marketplace:has(.cl-header-compact) .colego-publish-floating,
+body:not(.mobile-messages[data-view=chat]):has(.cl-header-compact) .colego-publish-floating { display: none !important; }
 .cl-pastel-dock :is(a,button) {
   display: grid;
   min-height: 40px;
@@ -315,9 +325,10 @@ body:has(.cl-pastel-dock:not([hidden])) .colego-publish-floating { display: none
   background: var(--colego-butter);
   font-weight: 700;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .cl-pastel-dock:not([hidden]) { animation: colego-dock-in .18s ease-out; }
-  @keyframes colego-dock-in { from { opacity: 0; translate: 0 -8px; } }
+@media (prefers-reduced-motion: reduce) {
+  html body .cl-site-header.cl-transition-header .cl-site-top,
+  .cl-transition-header .cl-site-top > *,
+  .cl-header-compact .cl-pastel-dock { transition: none; }
 }
 @media (max-width: 700px) {
   html body .cl-site-header .cl-site-top { padding: 3px 10px 9px; }
@@ -331,9 +342,49 @@ html[data-theme] body #contenido-principal + footer.cl-editorial-footer.site-foo
   width: min(1440px, calc(100% - 32px)) !important;
   margin: 24px auto 16px !important;
   border-radius: 28px !important;
-  background: var(--colego-sky-tint) !important;
+  background: var(--colego-butter) !important;
   color: var(--colego-ink) !important;
 }
 html[data-theme] body footer.cl-editorial-footer.site-footer :is(a,p,h3) {
   color: var(--colego-ink) !important;
+}
+
+/* Brand accents shared by the marketplace, profile and publication screens. */
+html[data-theme] body { background-color: #fffdfa; color: var(--colego-ink); }
+html body .cl-site-header .cl-site-search button,
+body :is(#submit-product,.wanted-submit) {
+  background: var(--colego-ink) !important;
+  color: white !important;
+}
+body :is(.product-card,.profile-card,.settings-panel,.publication-panel,.wanted-card,.inbox-panel,.chat-panel,.school-products-panel,.favorites-toolbar) {
+  border-color: var(--colego-line);
+}
+body a.colego-publish-cta { background: var(--colego-butter); color: var(--colego-ink); }
+body a.colego-publish-cta:hover { background: #ffda7e; }
+html[data-theme] body footer.cl-editorial-footer.site-footer .colego-footer-brand {
+  display: block;
+  color: var(--colego-ink) !important;
+  font: 900 clamp(4rem, 17vw, 14rem)/.8 Inter, system-ui, sans-serif;
+  letter-spacing: -.085em;
+  margin: 26px 0;
+  text-align: center;
+  text-shadow: -.028em .022em 0 var(--colego-sky);
+}
+html[data-theme] body footer.cl-editorial-footer.site-footer .cl-footer-contact-link {
+  background: var(--colego-brick);
+  color: #fff !important;
+}
+html body .cl-site-header.cl-header-compact .cl-site-top {
+  height: 54px;
+  min-height: 54px;
+}
+html body .cl-site-header.cl-header-compact .cl-site-top > :not(.cl-pastel-dock) { min-height: 0; }
+html[data-theme] body :is(.products-section,.publish-page,.messages-page,.favorites-main,.wanted-shell,.school-page) {
+  color: var(--colego-ink);
+}
+html[data-theme] body :is(.products-section,.publish-page,.messages-page,.favorites-main,.wanted-shell,.school-page) :is(h1,h2,h3) {
+  color: var(--colego-ink);
+}
+html[data-theme]:not([data-native-app]) body #contenido-principal + footer.cl-editorial-footer.site-footer {
+  display: block !important;
 }
