@@ -1,166 +1,266 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "routes": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
     {
-      "src": "^/admin$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
+      "source": "/:path((?!api/|\\.well-known/).*)",
+      "has": [{ "type": "host", "value": "(www\\.)?colegiolibre\\.com" }],
+      "destination": "https://www.colego.com.ar/:path",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/:slug([a-z0-9_-]+-school)/editor", "destination": "/portal-colegio" },
+    { "source": "/:slug([a-z0-9_-]+-school)", "destination": "/portal-colegio" },
+    { "source": "/colegio-:slug([a-z0-9_-]+)/editor", "destination": "/portal-colegio" },
+    { "source": "/colegio-:slug([a-z0-9_-]+)", "destination": "/portal-colegio" },
+    {
+      "source": "/comunidad/:code/editor",
+      "destination": "/portal-colegio"
     },
     {
-      "src": "^/moderacion$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
+      "source": "/comunidad/:code",
+      "destination": "/portal-colegio"
     },
     {
-      "src": "^/mensajes$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
+      "source": "/materias/:slug",
+      "destination": "/materia?materia=:slug"
     },
     {
-      "src": "^/perfil$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
+      "source": "/cursos/:year",
+      "destination": "/curso?anio=:year"
     },
     {
-      "src": "^/publicar$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
+      "source": "/colegio/:code",
+      "destination": "/colegio"
+    }
+  ],
+  "headers": [
     {
-      "src": "^/analytics$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/beta\\-admin$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/auth\\-callback$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/recovery\\-callback$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/api(?:/.*)?$",
-      "headers": {
-        "Cache-Control": "no-store, max-age=0",
-        "X-Content-Type-Options": "nosniff"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/service\\-worker\\.js$",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/manifest\\.webmanifest$",
-      "headers": {
-        "Content-Type": "application/manifest+json; charset=utf-8",
-        "Cache-Control": "public, max-age=3600"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/$",
-      "headers": {
-        "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://riqhwmszshleyyaxlwqu.supabase.co wss://riqhwmszshleyyaxlwqu.supabase.co https://*.googleapis.com https://fcmregistrations.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
-        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Permissions-Policy": "camera=(self), microphone=(), geolocation=(), payment=()",
-        "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/.*$",
-      "headers": {
-        "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://riqhwmszshleyyaxlwqu.supabase.co wss://riqhwmszshleyyaxlwqu.supabase.co https://*.googleapis.com https://fcmregistrations.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
-        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Permissions-Policy": "camera=(self), microphone=(), geolocation=(), payment=()",
-        "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/compra$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow",
-        "Cache-Control": "no-store"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/pedidos$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow",
-        "Cache-Control": "no-store"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/mp\\-vinculado$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow",
-        "Cache-Control": "no-store"
-      },
-      "continue": true
-    },
-    {
-      "src": "^/(?!api(?:/|$)|\\.well-known(?:/|$))(.*)$",
-      "has": [
+      "source": "/admin",
+      "headers": [
         {
-          "type": "host",
-          "value": "(www\\.)?colegiolibre\\.com"
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
-      ],
-      "status": 307,
-      "headers": {
-        "Location": "https://www.colego.com.ar/$1"
-      }
+      ]
     },
     {
-      "src": "^/(?!api(?:/|$)|\\.well-known(?:/|$))(?:[^.]*|.*\\.html?)$",
-      "dest": "/pagina-en-blanco.html",
-      "headers": {
-        "Cache-Control": "no-store",
-        "X-Robots-Tag": "noindex, follow"
-      }
+      "source": "/moderacion",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
-      "handle": "filesystem"
+      "source": "/mensajes",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/perfil",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/publicar",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/analytics",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/beta-admin",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/auth-callback",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/recovery-callback",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://riqhwmszshleyyaxlwqu.supabase.co wss://riqhwmszshleyyaxlwqu.supabase.co https://*.googleapis.com https://fcmregistrations.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    },
+    {
+      "source": "/:path*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://riqhwmszshleyyaxlwqu.supabase.co wss://riqhwmszshleyyaxlwqu.supabase.co https://*.googleapis.com https://fcmregistrations.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    },
+    {
+      "source": "/compra",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/pedidos",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/mp-vinculado",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }

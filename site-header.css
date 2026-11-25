@@ -419,3 +419,17 @@ body :is(.scope-btn,.ghost-button,.action-button,#submit-product,.wanted-submit)
 body :is(.publish-page,.settings-panel,.wanted-card) :is(input:not([type=checkbox],[type=radio],[type=file]),select,textarea) {
   border-radius: 12px;
 }
+
+
+/* Compact proportions for the shared web header. */
+html body .cl-site-header .cl-site-subnav { display: none !important; }
+html body .cl-site-header .cl-site-top { min-height: 62px; padding-block: 3px; }
+.cl-site-header .cl-site-brand { height: 53px; }
+html body .cl-site-header .cl-site-search { height: 40px; }
+html body .cl-site-header .cl-site-search button { width: 32px; height: 32px; flex-basis: 32px; }
+html body .cl-site-header.cl-header-compact .cl-site-top { min-height: 54px; }
+@media(max-width:700px) {
+  html body .cl-site-header .cl-site-top { min-height: 0; padding-bottom: 7px; }
+  .cl-site-header .cl-site-brand { height: 43px; }
+  html body .cl-site-header .cl-site-search { height: 36px !important; }
+}
