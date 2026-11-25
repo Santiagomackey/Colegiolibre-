@@ -5581,13 +5581,24 @@ body.has-blocking-modal {
 @media(max-width:760px){.cl-editorial-footer.footer-medium.site-footer{padding:44px 0 26px!important;margin-top:35px!important;}.cl-editorial-footer .footer-medium-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:30px 18px!important;}.cl-editorial-footer .footer-medium-brand{grid-column:span 2!important;display:flex!important;}.cl-editorial-footer .footer-medium-col{display:flex!important;}.cl-editorial-footer .footer-medium-col h3{min-height:0!important;}.cl-editorial-footer .footer-medium-col a{display:block!important;font-size:13px!important;}.cl-editorial-footer .footer-medium-contact{grid-column:span 2!important;padding-top:18px!important;border-top:1px solid #365989!important;}.cl-editorial-footer .footer-medium-bottom{margin-top:34px!important;flex-direction:column;align-items:flex-start!important;}.cl-editorial-footer .footer-medium-bottom p{display:block!important;}.cl-footer-bottom-links{gap:22px;}}
 @media(max-width:380px){.cl-editorial-footer .footer-medium-grid{column-gap:14px!important;}.cl-editorial-footer .footer-medium-col a{font-size:12px!important;}}
 
-/* ColeGo official logo in footer */
-.cl-editorial-footer .cl-footer-logo-link{display:inline-flex!important;align-items:center!important;max-width:min(100%,290px)!important;width:100%!important;line-height:1!important;}
-.cl-editorial-footer .cl-footer-logo-link img{display:block!important;width:100%!important;height:auto!important;max-height:105px!important;object-fit:contain!important;object-position:left center!important;}
-@media(max-width:760px){.cl-editorial-footer .cl-footer-logo-link{max-width:245px!important;}}
+/* The shared wordmark includes trailing space for the header. Trim it in the footer. */
+.cl-editorial-footer .cl-footer-logo-link {
+  display: block !important;
+  box-sizing: border-box;
+  width: min(100%, 216px) !important;
+  overflow: hidden;
+  padding: 8px 14px 8px 8px;
+  border-radius: 10px;
+  background: #fff !important;
+  line-height: 0 !important;
+}
+.cl-editorial-footer .cl-footer-logo-link img {
+  display: block !important;
+  width: 126% !important;
+  max-width: none !important;
+  height: auto !important;
+}
 
-/* Preserve the official dark-lettered logo on the blue footer. */
-.cl-editorial-footer .cl-footer-logo-link{background:#fff!important;border-radius:12px;padding:10px 12px;}
 
 
 #onboarding-modal .onboarding-card {
