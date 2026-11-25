@@ -18,12 +18,13 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 }
 body{min-height:calc(100vh + 220px)}
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
+.cl-site-header .cl-site-brand img{width:auto;max-width:100%;height:100%;object-fit:contain;transform:none}
 </style>
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
  <div class="cl-site-top">
-  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colego-logo.svg" alt="ColeGo" fetchpriority="high"></a>
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colego-header-palette.webp" alt="ColeGo" fetchpriority="high"></a>
   <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
    <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
    <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
@@ -41,6 +42,6 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </header>
 <script src="/vendor/supabase.js?v=20261109-release25" defer></script>
 <script src="/supabase.js?v=20261110-recovery31" defer></script>
-<script src="/site-header.js?v=app-footer-1" defer></script>
+<script src="/site-header.js?v=palette-logo-1" defer></script>
 </body>
 </html>

@@ -64,7 +64,7 @@
   const dock=document.createElement('div');
   dock.className='cl-pastel-dock';
   dock.inert=true;
-  dock.innerHTML='<a href="/" aria-label="Inicio"><img src="/images/colego-cart-192.png" alt=""></a><button type="button" aria-label="Buscar materiales"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>';
+  dock.innerHTML='<a href="/" aria-label="Inicio"><img src="/images/colego-cart-palette.webp" alt=""></a><button type="button" aria-label="Buscar materiales"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>';
   if (!/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
    const publish=document.createElement('a');
    publish.className='cl-pastel-dock-publish';
