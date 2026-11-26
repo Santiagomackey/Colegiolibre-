@@ -92,9 +92,17 @@
           <label><input type="radio" name="scope" value="country"><b>Argentina</b><small>Todo el país</small></label>
         </div></fieldset>
         <details class="wanted-extra">
-          <summary>Detalles del material y avisos <small>Opcional</small></summary>
+          <summary>Datos del material <small>Opcional</small></summary>
           <div class="wanted-extra-fields">
-            <label>ISBN<input name="isbn" maxlength="32"></label><label>Edición<input name="edition" maxlength="80"></label><label>Talle<input name="size" maxlength="40"></label><label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
+            <label>ISBN<input name="isbn" maxlength="32"></label>
+            <label>Edición<input name="edition" maxlength="80"></label>
+            <label>Talle<input name="size" maxlength="40"></label>
+            <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
+          </div>
+        </details>
+        <details class="wanted-extra">
+          <summary>Preferencias del pedido <small>Opcional</small></summary>
+          <div class="wanted-extra-fields">
             <label>Tipo de búsqueda<select name="transaction_type" aria-label="Tipo de búsqueda"><option value="buy">Quiero comprar</option><option value="exchange">Acepto intercambio</option><option value="either">Compra o intercambio</option></select></label>
             <label>Frecuencia de avisos<select name="frequency"><option value="hourly">Hasta uno por hora</option><option value="daily">Hasta uno por día</option><option value="off">Sin avisos</option></select></label>
         <label class="wanted-community"><input name="community" type="checkbox"> Compartir el pedido con la comunidad</label>
