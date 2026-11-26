@@ -1,12 +1,12 @@
 :root {
   --beta-blue: #3b2722;
-  --beta-green: #67c23a;
-  --beta-yellow: #ffc72c;
-  --beta-bg: #e9f4f7;
+  --beta-green: #805427;
+  --beta-yellow: #ffca50;
+  --beta-bg: #f4f9fa;
   --beta-surface: #fff;
   --beta-text: #3b2722;
-  --beta-muted: #805f54;
-  --beta-border: #e8dbd5;
+  --beta-muted: #645049;
+  --beta-border: #e4f2f6;
 }
 
 * {
@@ -41,7 +41,7 @@ textarea {
   justify-content: space-between;
   min-height: 76px;
   padding: 10px max(20px, calc((100vw - 1160px) / 2));
-  border-bottom: 1px solid rgba(232, 219, 213, 0.94);
+  border-bottom: 1px solid rgba(228, 242, 246, 0.94);
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
 }
@@ -55,8 +55,8 @@ textarea {
 .beta-header span {
   padding: 8px 12px;
   border-radius: 999px;
-  background: #eaf6e4;
-  color: #3e7f20;
+  background: #fff1c9;
+  color: #805427;
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -78,8 +78,8 @@ textarea {
   overflow: hidden;
   border-radius: 32px;
   background:
-    radial-gradient(circle at 92% 10%, rgba(103, 194, 58, 0.24), transparent 32%),
-    linear-gradient(145deg, #3b2722, #3b2722);
+    radial-gradient(circle at 92% 10%, rgba(128, 84, 39, 0.24), transparent 32%),
+    linear-gradient(145deg, #3b2722, #624237);
   color: #fff;
   box-shadow: 0 28px 64px rgba(59, 39, 34, 0.2);
 }
@@ -112,7 +112,7 @@ textarea {
 .beta-hero img {
   width: clamp(110px, 16vw, 180px);
   border-radius: 30%;
-  box-shadow: 0 20px 40px rgba(42, 28, 24, 0.32);
+  box-shadow: 0 20px 40px rgba(59, 39, 34, 0.32);
 }
 
 .beta-progress,
@@ -153,7 +153,7 @@ textarea {
   height: 10px;
   overflow: hidden;
   border-radius: 99px;
-  background: #daecf1;
+  background: #e4f2f6;
 }
 
 .beta-progress__track span {
@@ -161,7 +161,7 @@ textarea {
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--beta-green), #8ddb61);
+  background: linear-gradient(90deg, var(--beta-green), #805427);
   transition: width 220ms ease;
 }
 
@@ -193,7 +193,7 @@ textarea {
   padding: 0 14px;
   border: 1px solid var(--beta-border);
   border-radius: 13px;
-  background: #f7f9fc;
+  background: #f4f9fa;
   color: var(--beta-blue);
   font-weight: 750;
   cursor: pointer;
@@ -219,8 +219,8 @@ textarea {
 }
 
 .beta-task.is-complete {
-  border-color: rgba(103, 194, 58, 0.42);
-  background: #f5fbf2;
+  border-color: rgba(128, 84, 39, 0.42);
+  background: #fff1c9;
 }
 
 .beta-task input {
@@ -249,7 +249,7 @@ textarea {
   min-height: 39px;
   padding: 0 12px;
   border-radius: 12px;
-  background: #e9f4f7;
+  background: #f4f9fa;
   color: var(--beta-blue);
   font-size: 0.75rem;
   font-weight: 800;
@@ -358,11 +358,11 @@ textarea {
   min-height: 54px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--beta-green), #56b92b);
+  background: linear-gradient(135deg, var(--beta-green), #805427);
   color: #3b2722;
   font-weight: 850;
   cursor: pointer;
-  box-shadow: 0 14px 28px rgba(103, 194, 58, 0.2);
+  box-shadow: 0 14px 28px rgba(128, 84, 39, 0.2);
 }
 
 .beta-submit:disabled {
@@ -379,11 +379,11 @@ textarea {
 }
 
 .beta-form-status[data-state="success"] {
-  color: #3f7f21;
+  color: #805427;
 }
 
 .beta-form-status[data-state="error"] {
-  color: #b4232d;
+  color: #a0342a;
 }
 
 @media (max-width: 720px) {
@@ -435,10 +435,10 @@ textarea {
 }
 
 html[data-theme="dark"] {
-  --beta-bg: #2a1c18;
-  --beta-surface: #2a1c18;
-  --beta-text: #e9f4f7;
-  --beta-muted: #805f54;
+  --beta-bg: #3b2722;
+  --beta-surface: #3b2722;
+  --beta-text: #f4f9fa;
+  --beta-muted: #74645e;
   --beta-border: #3b2722;
 }
 
@@ -447,11 +447,11 @@ html[data-theme="dark"] .beta-task,
 html[data-theme="dark"] #beta-feedback-form select,
 html[data-theme="dark"] #beta-feedback-form textarea,
 html[data-theme="dark"] .beta-rating span {
-  background: #2a1c18;
+  background: #3b2722;
 }
 
 html[data-theme="dark"] .beta-task.is-complete {
-  background: #14221a;
+  background: #805427;
 }
 
 html[data-theme="dark"] .beta-section__heading h2,
@@ -459,6 +459,6 @@ html[data-theme="dark"] .beta-task strong,
 html[data-theme="dark"] .beta-progress strong,
 html[data-theme="dark"] #beta-feedback-form label,
 html[data-theme="dark"] .beta-rating legend {
-  color: #e9f4f7;
+  color: #f4f9fa;
 }
 

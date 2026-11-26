@@ -54,51 +54,6 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  window.addEventListener('colegiolibre:languagechange',()=>{render();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function initializeCompactNavigation(){
-  if (typeof ResizeObserver !== 'function') return;
-  const top=header.querySelector('.cl-site-top');
-  const input=top?.querySelector('input[type=search]');
-  if (!input) return;
-
-  const fullControls=Array.from(top.children);
-  const dock=document.createElement('div');
-  dock.className='cl-pastel-dock';
-  dock.inert=true;
-  dock.innerHTML='<a href="/" aria-label="Inicio"><img src="/images/colego-cart-palette.webp" alt=""></a><button type="button" aria-label="Buscar materiales"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>';
-  if (!/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
-   const publish=document.createElement('a');
-   publish.className='cl-pastel-dock-publish';
-   publish.href='/publicar';
-   publish.dataset.siteText='sell';
-   dock.append(publish);
-  }
-  top.append(dock);
-  header.classList.add('cl-transition-header');
-
-  let compact=false;
-  function update(){
-   const next=window.scrollY>90 && !fullControls.some(node=>node.contains(document.activeElement));
-   if (next===compact) return;
-   compact=next;
-   header.classList.toggle('cl-header-compact',compact);
-   for (const control of fullControls) control.inert=compact;
-   dock.inert=!compact;
-  }
-  function reserveSpace(){
-   if (!compact) header.style.setProperty('--cl-top-height',top.offsetHeight+'px');
-  }
-  const size=new ResizeObserver(reserveSpace);
-  size.observe(top);
-  reserveSpace();
-  window.addEventListener('scroll',update,{passive:true});
-  top.addEventListener('focusout',()=>queueMicrotask(update));
-  dock.querySelector('button').addEventListener('click',()=>{
-   window.scrollTo({top:0,behavior:'instant'});
-   update();
-   input.focus({preventScroll:true});
-  });
-  update();
- }
- function initialize(){addMenuLinks();initializeCompactNavigation();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initialize(){addMenuLinks();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();

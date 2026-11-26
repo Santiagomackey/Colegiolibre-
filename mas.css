@@ -1,7 +1,7 @@
 body.more-page {
   margin: 0;
   min-height: 100vh;
-  background: #f4f6fa;
+  background: #f4f9fa;
   color: #3b2722;
   font: 1rem/1.45 Inter, system-ui, sans-serif;
 }
@@ -12,12 +12,12 @@ body.more-page {
   display: flex;
   padding: calc(var(--mobile-safe-top, env(safe-area-inset-top, 0px)) + 4px) max(16px, calc((100% - 600px) / 2)) 4px;
   background: #fff;
-  border-bottom: 1px solid #e8dbd5;
+  border-bottom: 1px solid #e4f2f6;
 }
 .more-header img { display: block; object-fit: contain; }
 .more-main { width: min(600px, calc(100% - 32px)); margin: 0 auto; padding: 20px 0 24px; }
 .more-main h1 { margin: 0 0 14px; color: #3b2722; font-size: 1.625rem; letter-spacing: -.025em; }
-.more-account, .more-rows { border: 1px solid #e8dbd5; border-radius: 12px; background: #fff; }
+.more-account, .more-rows { border: 1px solid #e4f2f6; border-radius: 12px; background: #fff; }
 .more-account { display: flex; align-items: center; gap: 10px; min-height: 72px; padding: 10px 12px; }
 .more-avatar {
   display: grid;
@@ -26,7 +26,7 @@ body.more-page {
   height: 40px;
   border-radius: 50%;
   color: #3b2722;
-  background: #e9f4f7;
+  background: #e4f2f6;
 }
 .more-main svg {
   width: 21px;
@@ -39,11 +39,11 @@ body.more-page {
   stroke-linejoin: round;
 }
 .more-identity { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.more-identity span { display: block; color: #6f4e44; font-size: .8rem; }
+.more-identity span { display: block; color: #645049; font-size: .8rem; }
 .more-account-action, .more-legal a { color: #3b2722; font-size: .875rem; font-weight: 650; }
 .more-account-action { display: grid; align-items: center; min-height: 44px; text-align: right; }
 .more-group { margin-top: 20px; }
-.more-group h2 { margin: 0 0 7px; color: #6f4e44; font-size: .8rem; font-weight: 700; }
+.more-group h2 { margin: 0 0 7px; color: #645049; font-size: .8rem; font-weight: 700; }
 .more-row {
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@ body.more-page {
   text-decoration: none;
   font-size: .94rem;
 }
-.more-row + .more-row { border-top: 1px solid #f7f1ec; }
+.more-row + .more-row { border-top: 1px solid #e4f2f6; }
 .more-row:first-child { border-radius: 11px 11px 0 0; }
 .more-row:last-child { border-radius: 0 0 11px 11px; }
 .more-row svg { color: #3b2722; }
@@ -63,12 +63,12 @@ body.more-page {
   width: 7px;
   height: 7px;
   margin-left: auto;
-  border-right: 1.5px solid #805f54;
-  border-top: 1.5px solid #805f54;
+  border-right: 1.5px solid #645049;
+  border-top: 1.5px solid #645049;
   transform: rotate(45deg);
 }
-.more-row:hover { background: #f6f8fc; }
-.more-page :is(a, button):focus-visible { outline: 2px solid #805f54; outline-offset: -2px; }
+.more-row:hover { background: #f4f9fa; }
+.more-page :is(a, button):focus-visible { outline: 2px solid #624237; outline-offset: -2px; }
 .more-legal { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-inline: 4px; }
 .more-legal a { display: grid; align-items: center; min-height: 44px; }
 .more-logout {
@@ -76,7 +76,7 @@ body.more-page {
   padding: 6px 4px;
   border: 0;
   background: transparent;
-  color: #a12c36;
+  color: #a0342a;
   font: inherit;
   font-weight: 650;
   cursor: pointer;
@@ -89,9 +89,9 @@ body.more-page {
   align-items: start;
   margin-top: 16px;
   padding: 16px;
-  border: 1px solid #daecf1;
+  border: 1px solid #e4f2f6;
   border-radius: 12px;
-  background: #e9f4f7;
+  background: #f4f9fa;
 }
 .more-mp-card h2 {
   margin: 0 0 5px;
@@ -100,7 +100,7 @@ body.more-page {
 }
 .more-mp-card p {
   margin: 0 0 10px;
-  color: #6f4e44;
+  color: #645049;
   font-size: .875rem;
   overflow-wrap: anywhere;
 }
@@ -111,7 +111,7 @@ body.more-page {
   width: 100%;
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid #d0e1e6;
+  border: 1px solid #bcdde7;
   border-radius: 8px;
   background: #fff;
   color: #3b2722;
@@ -133,5 +133,5 @@ body.more-page {
   text-decoration: none;
   cursor: pointer;
 }
-.more-mp-action:hover { background: #3b2722; }
+.more-mp-action:hover { background: #624237; }
 .more-mp-action:disabled { opacity: .65; cursor: wait; }

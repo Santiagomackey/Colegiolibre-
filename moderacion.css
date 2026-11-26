@@ -1,10 +1,10 @@
 :root {
   --blue: #3b2722;
-  --green: #67c23a;
+  --green: #805427;
   --ink: #3b2722;
-  --muted: #805f54;
-  --line: #e8dbd5;
-  --surface: #f7f9fc;
+  --muted: #645049;
+  --line: #e4f2f6;
+  --surface: #f4f9fa;
   --shell: 1180px;
 }
 
@@ -98,7 +98,7 @@ textarea {
   border: 0;
   border-radius: 11px;
   background: transparent;
-  color: #6f4e44;
+  color: #645049;
   font-size: 12px;
   font-weight: 750;
   white-space: nowrap;
@@ -118,8 +118,8 @@ textarea {
   height: 20px;
   padding: 0 5px;
   border-radius: 999px;
-  background: rgba(103, 194, 58, 0.18);
-  color: #438b29;
+  background: rgba(128, 84, 39, 0.18);
+  color: #805427;
   font-size: 10px;
 }
 
@@ -286,7 +286,7 @@ textarea {
 
 .admin-card__main > p {
   margin: 0;
-  color: #6f4e44;
+  color: #645049;
   font-size: 13px;
 }
 
@@ -304,7 +304,7 @@ textarea {
   padding: 10px 12px;
   border-radius: 11px;
   background: #fff2f2;
-  color: #a43434;
+  color: #a0342a;
   font-size: 12px;
 }
 
@@ -338,7 +338,7 @@ textarea {
 }
 
 .admin-card__actions button.danger-button {
-  background: #b93636;
+  background: #a0342a;
 }
 
 .admin-card__actions button:disabled,
@@ -351,8 +351,8 @@ textarea {
   display: inline-flex;
   padding: 5px 8px;
   border-radius: 999px;
-  background: #f7f1ec;
-  color: #805f54;
+  background: #f4f9fa;
+  color: #645049;
   font-size: 9px;
   font-weight: 850;
   letter-spacing: 0.04em;
@@ -369,14 +369,14 @@ textarea {
 .status-pill[data-status="verified"],
 .status-pill[data-status="approved"],
 .status-pill[data-status="active"] {
-  background: #eaf7e3;
-  color: #36791f;
+  background: #fff1c9;
+  color: #805427;
 }
 
 .status-pill[data-status="rejected"],
 .status-pill[data-status="banned"] {
   background: #ffe8e8;
-  color: #a83232;
+  color: #a0342a;
 }
 
 .admin-self-label {
@@ -437,9 +437,9 @@ textarea {
   gap: 20px;
   margin-top: 16px;
   padding: 20px;
-  border: 1px solid rgba(103, 194, 58, 0.45);
+  border: 1px solid rgba(128, 84, 39, 0.45);
   border-radius: 17px;
-  background: #f4fbf0;
+  background: #fff1c9;
 }
 
 .generated-code[hidden] {
@@ -453,7 +453,7 @@ textarea {
 }
 
 .generated-code span {
-  color: #4a922e;
+  color: #805427;
   font-size: 10px;
   font-weight: 850;
   letter-spacing: 0.08em;
@@ -504,8 +504,8 @@ textarea {
 }
 
 .report-card__type {
-  background: #e9f4f7;
-  color: #6f4e44;
+  background: #f4f9fa;
+  color: #624237;
 }
 
 .report-card__status {
@@ -515,13 +515,13 @@ textarea {
 }
 
 .report-card__status[data-status="resolved"] {
-  background: #eaf7e3;
-  color: #36791f;
+  background: #fff1c9;
+  color: #805427;
 }
 
 .report-card__status[data-status="dismissed"] {
-  background: #eff1f4;
-  color: #805f54;
+  background: #e4f2f6;
+  color: #645049;
 }
 
 .report-card__meta {
@@ -538,7 +538,7 @@ textarea {
   padding: 13px;
   border-radius: 13px;
   background: var(--surface);
-  color: #6f4e44;
+  color: #645049;
   font-size: 13px;
   line-height: 1.55;
 }
@@ -546,7 +546,7 @@ textarea {
 .report-evidence {
   margin-top: 12px;
   padding: 12px;
-  border: 1px solid #e8dbd5;
+  border: 1px solid #e4f2f6;
   border-radius: 13px;
 }
 
@@ -566,7 +566,7 @@ textarea {
 .report-evidence article {
   padding: 10px;
   border-radius: 10px;
-  background: #f7f9fc;
+  background: #f4f9fa;
 }
 
 .report-evidence strong,
@@ -576,12 +576,12 @@ textarea {
 
 .report-evidence span {
   margin-left: 8px;
-  color: #805f54;
+  color: #74645e;
 }
 
 .report-evidence p {
   margin: 5px 0 0;
-  color: #6f4e44;
+  color: #645049;
   font-size: 12px;
 }
 
@@ -627,7 +627,7 @@ textarea {
 
 .empty-reports {
   padding: 35px;
-  border: 1px dashed #d0e1e6;
+  border: 1px dashed #bcdde7;
   border-radius: 18px;
   color: var(--muted);
   text-align: center;
@@ -637,7 +637,7 @@ textarea {
   display: grid;
   gap: 12px;
   padding: 20px;
-  border: 1px solid #e8dbd5;
+  border: 1px solid #e4f2f6;
   border-radius: 18px;
   background: #fff;
 }
@@ -650,7 +650,7 @@ textarea {
 }
 
 .audit-card__head span {
-  color: #4d9f29;
+  color: #805427;
   font-size: 0.72rem;
   font-weight: 850;
   letter-spacing: 0.08em;
@@ -664,7 +664,7 @@ textarea {
 
 .audit-card__head time,
 .audit-card p {
-  color: #805f54;
+  color: #645049;
   font-size: 0.84rem;
 }
 
@@ -674,7 +674,7 @@ textarea {
 
 .audit-card details {
   padding-top: 8px;
-  border-top: 1px solid #e8dbd5;
+  border-top: 1px solid #e4f2f6;
 }
 
 .audit-card summary {
@@ -688,7 +688,7 @@ textarea {
   margin: 12px 0 0;
   padding: 14px;
   border-radius: 12px;
-  background: #f5f7fa;
+  background: #f4f9fa;
   color: #3b2722;
   font-size: 0.75rem;
 }

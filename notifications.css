@@ -1,9 +1,9 @@
 :root {
   --cl-notification-blue: #3b2722;
-  --cl-notification-green: #67c23a;
-  --cl-notification-yellow: #ffc72c;
-  --cl-notification-border: #e8dbd5;
-  --cl-notification-muted: #805f54;
+  --cl-notification-green: #805427;
+  --cl-notification-yellow: #ffca50;
+  --cl-notification-border: #e4f2f6;
+  --cl-notification-muted: #645049;
 }
 
 .cl-notification-trigger {
@@ -35,7 +35,7 @@
 .cl-notification-trigger:focus-visible,
 .cl-notification-panel button:focus-visible,
 .cl-notification-item:focus-visible {
-  outline: 3px solid rgba(103, 194, 58, 0.2);
+  outline: 3px solid rgba(128, 84, 39, 0.2);
   outline-offset: 2px;
 }
 
@@ -66,12 +66,12 @@
   padding: 0 0.32rem;
   border: 2px solid #fff;
   border-radius: 999px;
-  background: #e53e5f;
+  background: #a0342a;
   color: #fff;
   font-size: 0.65rem;
   font-weight: 800;
   line-height: 1;
-  box-shadow: 0 8px 18px rgba(196, 43, 73, 0.25);
+  box-shadow: 0 8px 18px rgba(160, 52, 42, 0.25);
 }
 
 .cl-notification-panel {
@@ -80,7 +80,7 @@
   width: min(410px, calc(100vw - 24px));
   max-height: min(620px, calc(100vh - 96px));
   overflow: hidden;
-  border: 1px solid rgba(232, 219, 213, 0.96);
+  border: 1px solid rgba(228, 242, 246, 0.96);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.98);
   color: #3b2722;
@@ -98,7 +98,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1.15rem 1.2rem;
-  border-bottom: 1px solid rgba(232, 219, 213, 0.82);
+  border-bottom: 1px solid rgba(228, 242, 246, 0.82);
 }
 
 .cl-notification-panel__title {
@@ -139,8 +139,8 @@
   padding: 0 10px;
   border: 1px solid rgba(59, 39, 34, 0.15);
   border-radius: 10px;
-  background: rgba(103, 194, 58, 0.12);
-  color: #32731f;
+  background: rgba(128, 84, 39, 0.12);
+  color: #805427;
   font-size: 11px;
   font-weight: 800;
   cursor: pointer;
@@ -170,7 +170,7 @@
   width: 100%;
   padding: 1rem 1.15rem;
   border: 0;
-  border-bottom: 1px solid rgba(232, 219, 213, 0.65);
+  border-bottom: 1px solid rgba(228, 242, 246, 0.65);
   background: #fff;
   color: inherit;
   text-align: left;
@@ -180,11 +180,11 @@
 }
 
 .cl-notification-item:hover {
-  background: #e9f4f7;
+  background: #f8faff;
 }
 
 .cl-notification-item.is-unread {
-  background: rgba(103, 194, 58, 0.075);
+  background: rgba(128, 84, 39, 0.075);
 }
 
 .cl-notification-item.is-unread::after {
@@ -220,8 +220,8 @@
 }
 
 .cl-notification-item__icon[data-type="sold"] {
-  background: #eaf6e4;
-  color: #3f8a25;
+  background: #fff1c9;
+  color: #805427;
 }
 
 .cl-notification-item__icon svg {
@@ -253,7 +253,7 @@
   display: -webkit-box;
   margin: 0.28rem 0 0;
   overflow: hidden;
-  color: #6f4e44;
+  color: #645049;
   font-size: 0.79rem;
   line-height: 1.38;
   -webkit-box-orient: vertical;
@@ -263,7 +263,7 @@
 .cl-notification-item__time {
   display: block;
   margin-top: 0.42rem;
-  color: #805f54;
+  color: #74645e;
   font-size: 0.69rem;
   font-weight: 600;
 }
