@@ -96,3 +96,17 @@ html[data-theme] .wanted-page .wanted-empty { min-height: 150px; }
   html[data-theme] .wanted-page .scope-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   html[data-theme] .wanted-page .wanted-submit { justify-self: stretch; }
 }
+
+html[data-theme] .wanted-page :is(#wanted-create-intro,#wanted-form,#pedidos,#match-review)[hidden] { display: none !important; }
+.wanted-new-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 15px; margin-bottom: 14px; border-radius: 999px; background: #ffca50; color: #3b2722; font-weight: 700; }
+html[data-theme] .wanted-page #match-review {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #cde5ec;
+  border-radius: 18px;
+  background: #e5f2f5;
+}
+#match-review h3 { margin: 0; font-size: 1rem; }
+.wanted-success-actions { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 8px; }
+.wanted-success-actions a { color: #3b2722; text-decoration: underline; }

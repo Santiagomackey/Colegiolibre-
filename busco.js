@@ -60,26 +60,37 @@
       document.querySelectorAll('[data-alert-view]').forEach(tab=>tab.setAttribute('aria-pressed',String(tab===button)));
       void load();
     }));
-    window.addEventListener('colegiolibre:languagechange',render);
+    window.addEventListener("colegiolibre:languagechange", () => {
+      if (!document.getElementById("pedidos").hidden) render();
+    });
     form.addEventListener("submit", submit);
     filter.addEventListener("change", load);
     search?.addEventListener("input", render);
     form.elements.title.addEventListener("input",clearReview);
-    if (params.get("view") !== "school" && params.get("scope") !== "school") document.querySelector('[data-alert-view="mine"]').click();
-    else await load();
+    const feedView = params.get("view");
+    if (["mine", "all", "school"].includes(feedView) || location.hash === "#pedidos") {
+      document.getElementById("pedidos").hidden = false;
+      document.getElementById("wanted-create-intro").hidden = true;
+      form.hidden = true;
+      document.querySelector(feedView === "mine" || !feedView
+        ? '[data-alert-view="mine"]' : '[data-alert-view="all"]').click();
+    }
   }
 
   function clearReview() {
     reviewed = false;
     review.hidden = true;
     review.replaceChildren();
-    submitLabel.textContent = "Revisar búsquedas";
+    submitLabel.textContent = "Revisar pedido";
   }
 
   function reviewMaterials(value) {
     const materials = value.split(/\n|\s+y\s+(?=(?:un[ao]?|el|la|libro|uniforme|cuaderno)\s)/i)
       .map(line => line.trim().replace(/^(?:necesito|busco|quiero)\s+/i,"")).filter(Boolean);
     if (!materials.length || materials.length > 8) return false;
+    const heading = document.createElement("h3");
+    heading.textContent = "Confirmá lo que vas a buscar";
+    review.append(heading);
     materials.forEach((material,index) => {
       const label = document.createElement("label");
       label.textContent = "Material " + (index + 1);
@@ -94,7 +105,7 @@
     });
     reviewed = true;
     review.hidden = false;
-    submitLabel.textContent = "Activar búsquedas";
+    submitLabel.textContent = materials.length === 1 ? "Activar pedido" : "Activar pedidos";
     review.querySelector("input").focus();
     return true;
   }
@@ -304,7 +315,13 @@
     form.reset();
     clearReview();
     status.textContent = "Búsquedas activadas. ColeGo sigue buscando cuando aparezcan nuevas publicaciones.";
-    document.querySelector('[data-alert-view="mine"]').click();
+    const manage = document.createElement("a");
+    manage.href = "/busco?view=mine#pedidos";
+    manage.textContent = "Ver mis pedidos";
+    const actions = document.createElement("span");
+    actions.className = "wanted-success-actions";
+    actions.append(manage);
+    status.append(actions);
     const matchesBySearch = await Promise.allSettled(result.data.map(row =>
       client.rpc("colego_match_results",{p_wanted:row.id})
     ));
@@ -314,11 +331,9 @@
       const link = document.createElement("a");
       link.href = "/producto?id=" + encodeURIComponent(matches[0].id);
       link.textContent = " Ver la primera coincidencia";
-      status.append(link);
-    } else if (error) {
-      status.append(" Podés volver a consultar desde Mis búsquedas.");
-    } else {
-      status.append(" Todavía no hay coincidencias.");
+      actions.append(link);
+    } else if (!error) {
+      actions.append("Todavía no hay coincidencias.");
     }
   }
 })();
