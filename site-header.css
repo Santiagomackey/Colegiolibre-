@@ -135,3 +135,54 @@ body.cl-marketplace .section-heading #products-title{margin:0;font-size:clamp(26
 /* Start the brand at the safe left edge, including on wide screens. */
 .cl-site-header .cl-site-top{width:auto;max-width:none;margin-left:env(safe-area-inset-left,0px);margin-right:max(16px,env(safe-area-inset-right,0px));}
 @media(max-width:700px){.cl-site-header .cl-site-search{margin-left:14px!important;width:calc(100% - 14px)!important;}}
+
+
+/* Account actions use a single visual capsule while keeping both controls operable. */
+html body .cl-site-header .cl-site-actions {
+  --cl-action-gap: 8px;
+  gap: var(--cl-action-gap) !important;
+}
+html body .cl-site-header .cl-site-actions > .cl-site-action {
+  flex-direction: row;
+  min-height: 40px;
+  padding: 0 11px;
+  gap: 7px;
+  border-radius: 999px;
+  color: #3b2722;
+}
+html body .cl-site-header .cl-site-actions > .cl-site-desktop-action:is(:hover,[aria-current="page"]) {
+  background: #fff0c9;
+  color: #3b2722 !important;
+}
+html body .cl-site-header .cl-site-actions > .cl-site-account {
+  min-width: 0;
+  margin-left: 0;
+  padding-right: 5px;
+  border: 1px solid #c5e3ec;
+  border-right: 0;
+  border-radius: 999px 0 0 999px;
+  background: #e4f2f6;
+  color: #3b2722 !important;
+}
+html body .cl-site-header .cl-site-actions > .cl-site-account-menu {
+  margin-left: calc(-1 * var(--cl-action-gap)) !important;
+}
+html body .cl-site-header .cl-site-actions > .cl-site-account-menu > summary {
+  box-sizing: border-box;
+  width: 32px !important;
+  height: 40px;
+  padding: 0 5px 0 0;
+  border: 1px solid #c5e3ec;
+  border-left: 0;
+  border-radius: 0 999px 999px 0;
+  background: #e4f2f6;
+  color: #3b2722;
+}
+html body .cl-site-header .cl-site-actions :is(.cl-site-action,.cl-site-account-menu > summary):focus-visible {
+  outline: 2px solid #3b2722;
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  html body .cl-site-header .cl-site-actions > .cl-site-account-menu > summary { height: 44px; }
+  html body .cl-site-header .cl-site-actions > .cl-site-account { padding-left: 8px; }
+}

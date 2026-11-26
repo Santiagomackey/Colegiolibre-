@@ -26,6 +26,10 @@
   const category=new URLSearchParams(location.search).get('category');
   header.querySelectorAll('.cl-site-nav-scroll a, .cl-site-categories .cl-site-menu-panel a').forEach(link=>{if(new URL(link.href,location.origin).searchParams.get('category')===category&&category)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
   const route=location.pathname.replace(/\.html$/,'').split('/').filter(Boolean).pop()||'';
+  header.querySelectorAll('#header-messages-link, #header-favorites-link').forEach(link=>{
+   if(link.getAttribute('href')==='/'+route)link.setAttribute('aria-current','page');
+   else link.removeAttribute('aria-current');
+  });
   header.querySelectorAll('[data-site-nav]').forEach(link=>{if(link.dataset.siteNav===route)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
  }
  async function hydrate(){
