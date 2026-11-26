@@ -38,6 +38,18 @@
       form.elements.max_price.closest("details").open = true;
       form.elements.max_price.value = budget === "custom" ? "" : budget;
     }
+    const minimum = params.get("min_price");
+    if (/^\d+$/.test(minimum || "") && Number(minimum) <= 100000000) {
+      form.elements.min_price.closest("details").open = true;
+      form.elements.min_price.value = minimum;
+    }
+    for (const field of ["isbn", "edition", "size"]) {
+      const value = params.get(field);
+      if (value) {
+        form.elements[field].value = value.slice(0, form.elements[field].maxLength);
+        form.elements[field].closest("details").open = true;
+      }
+    }
     if (params.get("view") === "school" || scope === "school") filter.value = "school";
     const defaultScope = profile?.school_verification_status === "verified"
       ? "school"
@@ -256,15 +268,22 @@
       status.textContent = "Revisá el ISBN. Debe tener 10 o 13 caracteres.";
       return;
     }
-    if (materials.length > 1 && (isbn || edition || size || data.get("max_price"))) {
+    if (materials.length > 1 && (isbn || edition || size || data.get("max_price") || data.get("min_price"))) {
       status.textContent = "Para asignar un presupuesto, ISBN, edición o talle, activá una búsqueda por material.";
       return;
     }
     const budget=String(data.get('max_price')||'').trim();
     if(budget && (!Number.isFinite(Number(budget)) || Number(budget)<0 || Number(budget)>100000000)){status.dataset.state='error';status.textContent=translate('Revisá el presupuesto máximo.');return;}
+    const minimum = String(data.get("min_price") || "").trim();
+    if (minimum && (!/^\d+$/.test(minimum) || Number(minimum) > 100000000 ||
+        (budget !== "" && Number(minimum) > Number(budget)))) {
+      status.dataset.state = "error";
+      status.textContent = "El presupuesto desde debe ser menor o igual al presupuesto hasta.";
+      return;
+    }
     status.dataset.state = "loading";
     status.textContent = "Creando tu alerta…";
-    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: budget === "" ? null : Number(budget),
+    const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: budget === "" ? null : Number(budget), min_price: minimum === "" ? null : Number(minimum),
       match_isbn:isbn || null, match_edition:edition || null, match_size:size || null,
       match_frequency:data.get("frequency"), match_private:!data.has("community") };
     if (["school","both"].includes(scope) && profile?.school_verification_status !== "verified") { status.dataset.state = "error"; status.textContent = "Verificá tu pertenencia al colegio o elegí buscar por zona."; return; }

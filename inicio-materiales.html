@@ -21,7 +21,7 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </style>
-  <link rel="stylesheet" href="/inicio-materiales.css?v=footer-2">
+  <link rel="stylesheet" href="/inicio-materiales.css?v=mi-lista-1">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -49,34 +49,43 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
   <form class="materials-composer" action="/busco#crear-pedido" method="get">
    <label class="cl-site-sr" for="material-title">Material que necesitás</label>
    <input id="material-title" name="title" placeholder="Ej. Libro de Matemática" required minlength="3" maxlength="120">
-   <label class="cl-site-sr" for="material-budget">Presupuesto máximo en pesos (opcional)</label>
-   <input id="material-budget" name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="Presupuesto ($)" list="material-budget-options">
-   <datalist id="material-budget-options">
-    <option value="8000"></option>
-    <option value="10000"></option>
-    <option value="15000"></option>
-    <option value="30000"></option>
-   </datalist>
+   <div class="materials-budget">
+    <label>Desde ($)<input name="min_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="8.000"></label>
+    <label>Hasta ($)<input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="10.000"></label>
+   </div>
    <fieldset class="materials-scopes">
     <legend class="cl-site-sr">Dónde buscar</legend>
-    <label><input type="checkbox" name="scope" value="school"> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6m4-2v7"/></svg>Mi colegio</label>
+    <label><input type="checkbox" name="scope" value="school" disabled> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6m4-2v7"/></svg>Mi colegio</label>
     <label><input type="checkbox" name="scope" value="zone" checked> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Mi zona</label>
    </fieldset>
-   <button class="materials-submit" type="submit">Pedir material</button>
+   <button class="materials-submit" type="submit">Guardar en mi lista</button>
+   <details class="materials-specifics">
+    <summary>Agregar ISBN, edición o talle</summary>
+    <div>
+     <label>ISBN<input name="isbn" maxlength="32" placeholder="978…"></label>
+     <label>Edición<input name="edition" maxlength="80" placeholder="Ej. 4"></label>
+     <label>Talle<input name="size" maxlength="40" placeholder="Ej. M"></label>
+    </div>
+   </details>
   </form>
  </section>
  <div class="materials-panels">
-  <section class="materials-card" aria-labelledby="published-title">
-   <h2 id="published-title">Explorá lo que ya está publicado</h2>
-   <div id="materials-products" aria-live="polite">Cargando publicaciones…</div>
-   <a class="materials-link" href="/explorar">Ver catálogo</a>
-  </section>
   <section class="materials-card materials-card--requests" aria-labelledby="requests-title">
-   <h2 id="requests-title">Mis pedidos</h2>
+   <h2 id="requests-title">Estoy buscando</h2>
    <div id="materials-requests" aria-live="polite">Cargando pedidos…</div>
-   <a class="materials-link" href="/colegio">Mi colegio</a>
+   <p class="materials-feedback" id="materials-feedback" role="status"></p>
+   <a class="materials-link" href="/busco">Gestionar mis pedidos</a>
+  </section>
+  <section class="materials-card" aria-labelledby="found-title">
+   <h2 id="found-title">Encontramos para vos</h2>
+   <div id="materials-matches" aria-live="polite">Elegí un material de tu lista para ver sus coincidencias.</div>
+   <a class="materials-link" href="/explorar">Ver todo el catálogo</a>
   </section>
  </div>
+ <section class="materials-school" aria-labelledby="school-title">
+  <div><h2 id="school-title">Mi colegio</h2><p id="materials-school-status">🔒 Se habilita con una suscripción activa y acceso verificado.</p></div>
+  <a class="materials-link" id="materials-school-link" hidden>Entrar a mi colegio</a>
+ </section>
 </main>
 <footer class="materials-footer">
  <div class="materials-footer__intro">
@@ -92,7 +101,7 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
   </div>
   <div>
    <h2>Colegios</h2>
-   <a href="/colegio">Mi colegio</a>
+   <a href="#school-title">Mi colegio</a>
    <a href="/instituciones">ColeGo para colegios</a>
   </div>
   <div>
@@ -112,6 +121,7 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 <script src="/vendor/supabase.js?v=20261109-release25" defer></script>
 <script src="/supabase.js?v=20261110-recovery31" defer></script>
 <script src="/site-header.js?v=palette-logo-1" defer></script>
-<script src="/inicio-materiales.js" defer></script>
+<script src="/school-private-link.js" defer></script>
+<script src="/inicio-materiales.js?v=mi-lista-1" defer></script>
 </body>
 </html>
