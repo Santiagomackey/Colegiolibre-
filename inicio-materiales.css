@@ -86,35 +86,39 @@
 }
 
 .materials-footer {
-  width: min(85%, 1552px);
+  width: min(calc(100% - 32px), 1760px);
+  display: grid;
+  grid-template-columns: minmax(180px, 1.15fr) minmax(0, 4fr);
+  gap: 16px clamp(22px, 3vw, 52px);
   box-sizing: border-box;
-  margin: 0 auto clamp(16px, 3vw, 44px);
-  padding: clamp(28px, 5vw, 76px) clamp(22px, 6vw, 112px) 0;
+  margin: 0 auto 16px;
+  padding: 22px clamp(18px, 3vw, 52px) 0;
   border: 1px solid #e9ded5;
-  border-radius: 32px;
+  border-radius: 24px;
   background: #fcfaf4;
   color: #3b2722;
   font-family: Inter, system-ui, sans-serif;
 }
-.materials-footer__intro { text-align: center; }
+.materials-footer__intro { text-align: left; }
 .materials-footer__intro a { display: inline-block; }
-.materials-footer__intro img { display: block; max-width: 100%; height: auto; }
+.materials-footer__intro img { display: block; width: 126px; max-width: 100%; height: auto; }
 .materials-footer__intro p {
   max-width: 35ch;
-  margin: 14px auto 0;
+  margin: 7px 0 0;
+  font-size: .9rem;
   line-height: 1.55;
 }
 .materials-footer__links {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 28px clamp(12px, 3vw, 48px);
-  margin: clamp(32px, 5vw, 72px) 0;
+  gap: 16px clamp(12px, 2vw, 32px);
+  margin: 0;
 }
-.materials-footer__links h2 { margin: 0 0 9px; font-size: 1rem; }
+.materials-footer__links h2 { margin: 0 0 4px; font-size: 1rem; }
 .materials-footer__links a {
   display: flex;
   align-items: center;
-  min-height: 36px;
+  min-height: 30px;
   width: fit-content;
   color: #65534a;
   font-size: .94rem;
@@ -125,16 +129,19 @@
 .materials-footer a:focus-visible { outline: 2px solid #a0342a; outline-offset: 3px; border-radius: 5px; }
 .materials-footer__bottom {
   border-top: 1px solid #e9ded5;
-  padding: 18px 0;
+  grid-column: 1 / -1;
+  padding: 9px 0;
   color: #65534a;
   text-align: center;
   font-size: .875rem;
 }
-@media (max-width: 1050px) {
-  .materials-footer { width: min(92%, 1552px); }
+@media (max-width: 860px) {
+  .materials-footer { grid-template-columns: minmax(0, 1fr); }
+  .materials-footer__intro { text-align: center; }
+  .materials-footer__intro p { margin-inline: auto; }
 }
 @media (max-width: 650px) {
-  .materials-footer { border-radius: 24px; }
+  .materials-footer { width: calc(100% - 24px); border-radius: 20px; }
   .materials-footer__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .materials-footer__links a { min-height: 44px; }
 }
