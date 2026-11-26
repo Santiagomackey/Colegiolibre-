@@ -172,12 +172,16 @@
       "dest": "/colegio.html"
     },
     {
-      "src": "^/(?!api(?:/|$)|\\.well-known(?:/|$))(?:[^.]*|.*\\.html?)$",
-      "dest": "/pagina-en-blanco.html",
-      "headers": {
-        "Cache-Control": "no-store",
-        "X-Robots-Tag": "noindex, follow"
-      }
+      "src": "^/(mas|apuntes|curso|materia|productos-prohibidos)(?:\\.html)?/?$",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "^/materias/([^/]+)/?$",
+      "dest": "/materia.html?materia=$1"
+    },
+    {
+      "src": "^/cursos/([^/]+)/?$",
+      "dest": "/curso.html?anio=$1"
     },
     {
       "handle": "filesystem"

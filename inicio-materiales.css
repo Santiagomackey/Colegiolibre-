@@ -180,3 +180,25 @@ html[data-native-app] .materials-footer { display: none; }
  .materials-composer .materials-budget input { width: 100%; }
  .materials-row { flex-wrap: wrap; }
 }
+
+.materials-catalog { margin-top: clamp(28px, 5vw, 56px); }
+.materials-section-heading, .materials-sell { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.materials-section-heading h2, .materials-sell h2 { margin: 0; font-size: clamp(1.25rem, 2.2vw, 2rem); letter-spacing: -.03em; }
+.materials-section-heading a { margin-top: 0; }
+.materials-categories { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+.materials-categories a, .materials-sell a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; color: var(--ink); font-weight: 650; text-decoration: none; }
+.materials-categories a { border: 1px solid #cde5ec; background: var(--sky); }
+.materials-categories a:hover { background: #d5ebf2; }
+.materials-catalog-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+.materials-listing { display: block; min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: var(--paper); color: var(--ink); text-decoration: none; }
+.materials-listing:hover { border-color: #6aacc2; }
+.materials-listing :is(img,.materials-listing-placeholder) { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: #f1ece5; }
+.materials-listing-placeholder { display: grid !important; place-items: center; color: #65534a; font-size: .9rem; }
+.materials-listing-copy { display: grid; gap: 5px; padding: 12px; overflow-wrap: anywhere; }
+.materials-listing-copy small { color: #65534a; }
+.materials-listing-price { font-size: 1.15rem; }
+.materials-sell { margin-top: 22px; padding: clamp(16px, 3vw, 28px); border: 1px solid var(--border); border-radius: 22px; background: #fff6dc; }
+.materials-sell p { margin: 6px 0 0; }
+.materials-sell a { background: var(--yellow); }
+.materials-sell a:hover { background: #ffd577; }
+@media (max-width: 760px) { .materials-catalog-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }

@@ -371,3 +371,26 @@ html[data-theme] body.mobile-profile #publish-product-link span {
   color: var(--studio-coffee) !important;
   -webkit-text-fill-color: var(--studio-coffee) !important;
 }
+
+/* Shared surfaces and actions for the marketplace. */
+html[data-theme] body:is(.mobile-explore,.mobile-favorites,.mobile-profile,.publish-body,.product-detail-body,.school-community-body) {
+  background: #fff !important;
+}
+html[data-theme] body.mobile-explore .ex-hero input {
+  color: var(--studio-coffee);
+  background: #e5f2f5;
+}
+html[data-theme] body.mobile-explore :is(.ex-hero form,#catalog-filters) { border-radius: 24px; }
+html[data-theme] body.mobile-explore .grid .card { overflow: hidden; border-radius: 20px; background: #fcfaf7; }
+html[data-theme] body.mobile-explore .grid .card .price {
+  color: var(--studio-coffee);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+html[data-theme] body.publish-body .page-intro { padding: clamp(16px, 3vw, 28px); background: #e5f2f5; }
+html[data-theme] body.publish-body .page-intro h1 { font-size: clamp(26px, 4vw, 40px) !important; }
+html[data-theme] body.product-detail-body :is(.details-column,.gallery-wrap) { background: #fcfaf7; }
+html[data-theme] body.product-detail-body .detail-actions { gap: 10px; }
+html[data-theme] body.product-detail-body #buy-transfer-button { background: #ffca50; color: #3b2722; }
+html[data-theme] body.mobile-favorites .favorites-card { background: #fcfaf7; }
+html[data-theme] body.school-community-body .school-products-panel { background: #fcfaf7; }

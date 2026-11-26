@@ -502,3 +502,8 @@ html body .cl-site-header .cl-site-actions :is(.cl-site-action,.cl-site-account-
   html body .cl-site-header .cl-site-actions > .cl-site-account-menu > summary { height: 44px; }
   html body .cl-site-header .cl-site-actions > .cl-site-account { padding-left: 8px; }
 }
+
+.cl-site-header .cl-site-brand img[src="/images/colego-logo.svg"] {
+  content: url("/images/colego-header-palette.webp");
+  object-fit: contain;
+}
