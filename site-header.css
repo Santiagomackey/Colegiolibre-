@@ -485,6 +485,15 @@ html body .cl-site-header .cl-site-actions > .cl-site-account-menu > summary {
   background: transparent;
   color: #3b2722;
 }
+@media (hover: hover) {
+  html body .cl-site-header .cl-site-actions:has(> .cl-site-account:hover, > .cl-site-account-menu > summary:hover)
+    > .cl-site-account,
+  html body .cl-site-header .cl-site-actions:has(> .cl-site-account:hover, > .cl-site-account-menu > summary:hover)
+    > .cl-site-account-menu > summary {
+    background: #fff0c9;
+    color: #3b2722;
+  }
+}
 html body .cl-site-header .cl-site-actions :is(.cl-site-action,.cl-site-account-menu > summary):focus-visible {
   outline: 2px solid #3b2722;
   outline-offset: 2px;
