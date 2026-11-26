@@ -22,18 +22,28 @@
   async function init() {
     try { user = await api.getCurrentUser(true); profile = user ? await api.getCurrentProfile(true) : null; } catch (_) {}
     const params = new URLSearchParams(location.search);
-    if (params.get("scope") === "school" || params.has("title")) {
-      const title = form.elements.title;
-      title.value = (params.get("title") || "").slice(0,600);
+    const requestedScopes = params.getAll("scope");
+    const scope = requestedScopes.includes("school") && requestedScopes.includes("zone")
+      ? "both"
+      : requestedScopes[0];
+    if (scope === "school" || params.has("title")) {
+      form.elements.title.value = (params.get("title") || "").slice(0, 600);
       if (Array.from(form.elements.category.options).some(option => option.value === params.get("category"))) {
         form.elements.category.value = params.get("category");
       }
-      title.dispatchEvent(new Event("input",{bubbles:true}));
+      form.elements.title.dispatchEvent(new Event("input", { bubbles: true }));
     }
-    if (params.get("view") === "school" || params.get("scope") === "school") filter.value = "school";
-    if (params.get("scope") !== "school" && profile?.school_verification_status !== "verified") {
-      const defaultScope = profile?.zone_code ? "zone" : "country";
-      form.querySelector('[name="scope"][value="' + defaultScope + '"]').checked=true;form.dispatchEvent(new Event('change',{bubbles:true}));}
+    const budget = params.get("max_price");
+    if (budget === "custom" || (/^\d+$/.test(budget || "") && Number(budget) <= 100000000)) {
+      form.elements.max_price.closest("details").open = true;
+      form.elements.max_price.value = budget === "custom" ? "" : budget;
+    }
+    if (params.get("view") === "school" || scope === "school") filter.value = "school";
+    const defaultScope = profile?.school_verification_status === "verified"
+      ? "school"
+      : profile?.zone_code ? "zone" : "country";
+    form.elements.scope.value = ["school", "zone", "both", "country"].includes(scope) ? scope : defaultScope;
+    form.dispatchEvent(new Event("change", { bubbles: true }));
     document.querySelectorAll('[data-alert-view]').forEach(button=>button.addEventListener('click',()=>{
       view=button.dataset.alertView;
       document.getElementById("match-feed-title").textContent = view === "mine" ? "Mis búsquedas" : "Lo que están buscando";

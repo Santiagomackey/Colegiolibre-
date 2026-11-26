@@ -152,6 +152,26 @@
       }
     },
     {
+      "src": "^/(?:index(?:\\.html)?)?$",
+      "dest": "/inicio-materiales.html"
+    },
+    {
+      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio)/?$",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio)\\.html$",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "^/(?:[a-z0-9_-]+-school|colegio-[a-z0-9_-]+|comunidad/[a-z0-9_-]+)(?:/editor)?/?$",
+      "dest": "/portal-colegio.html"
+    },
+    {
+      "src": "^/colegio/[a-z0-9_-]+/?$",
+      "dest": "/colegio.html"
+    },
+    {
       "src": "^/(?!api(?:/|$)|\\.well-known(?:/|$))(?:[^.]*|.*\\.html?)$",
       "dest": "/pagina-en-blanco.html",
       "headers": {
