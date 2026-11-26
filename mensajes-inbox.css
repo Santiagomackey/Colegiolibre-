@@ -76,3 +76,118 @@ html[data-theme] body.mobile-messages .message.is-mine .message__body { backgrou
 @media(max-width: 880px) {
   html[data-theme] body.mobile-messages[data-view=chat] .messages-page { width: 100%; }
 }
+
+html[data-theme] body.mobile-messages { background: #fff; }
+html[data-theme] body.mobile-messages .messages-app {
+  gap: 0;
+  border: 1px solid #e9ded5;
+  border-radius: 24px;
+  background: #fcfaf7;
+  overflow: hidden;
+}
+html[data-theme] body.mobile-messages .inbox-header {
+  display: grid;
+  gap: 0;
+  background: transparent;
+}
+html[data-theme] body.mobile-messages .inbox-title-row { margin: 0; }
+html[data-theme] body.mobile-messages .messages-list { background: #fff; }
+html[data-theme] body.mobile-messages .chat-header { background: #fcfaf7; }
+html[data-theme] body.mobile-messages .chat-avatar { border-radius: 50%; box-shadow: none; }
+#chat-safety-actions { position: relative; z-index: 3; }
+#chat-safety-actions summary {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #e9ded5;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #3b2722;
+  line-height: 1;
+  list-style: none;
+}
+#chat-safety-actions summary::-webkit-details-marker { display: none; }
+.chat-safety-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  padding: 6px;
+  border: 1px solid #e9ded5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px #3b272214;
+}
+html[data-theme] body.mobile-messages .chat-safety-menu button {
+  width: 100%;
+  min-width: 136px;
+  padding: 8px 12px;
+  justify-content: flex-start;
+}
+html[data-theme] body.mobile-messages .chat-safety-menu span {
+  position: static;
+  width: auto;
+  height: auto;
+  clip-path: none;
+}
+html[data-theme] body.mobile-messages #message-form .message-composer {
+  border: 1px solid #e9ded5;
+  border-radius: 22px;
+  background: #fcfaf7;
+  box-shadow: none;
+}
+html[data-theme] body.mobile-messages #message-form .message-composer:focus-within {
+  outline: 2px solid #6aacc2;
+  outline-offset: 1px;
+}
+html[data-theme] body.mobile-messages #message-form button {
+  border-radius: 999px;
+  background: #ffca50;
+  color: #3b2722;
+  box-shadow: none;
+}
+@media (min-width: 881px) {
+  html[data-theme] body.mobile-messages .messages-app {
+    grid-template-columns: minmax(245px, 31%) minmax(0, 1fr);
+    height: clamp(500px, calc(100dvh - 110px), 980px) !important;
+    min-height: 500px !important;
+  }
+  html[data-theme] body.mobile-messages .messages-app :is(.inbox-panel,.chat-panel) {
+    border-radius: 0;
+    box-shadow: none;
+    border: 0;
+  }
+  html[data-theme] body.mobile-messages .messages-app .inbox-panel { border-inline-end: 1px solid #e9ded5; }
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel {
+    flex: none;
+    max-height: min(34vh, 280px);
+    overflow: auto;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #fff;
+  }
+  .chat-panel > .product-panel .product-card {
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid #e9ded5;
+    border-radius: 16px;
+    background: #fcfaf7;
+  }
+  .chat-panel > .product-panel .product-card__media { padding: 0; height: 62px; min-height: 0; border-radius: 12px; }
+  .chat-panel > .product-panel .product-card__media img { width: 100%; height: 100%; object-fit: cover; }
+  .chat-panel > .product-panel :is(.product-card__status,.product-card__meta) { display: none; }
+  .chat-panel > .product-panel .product-card__body { padding: 0; }
+  .chat-panel > .product-panel .product-card__body h3 { font-size: 1rem; }
+  .chat-panel > .product-panel .product-card__price { margin: 4px 0 0; font-size: .95rem; }
+  .chat-panel > .product-panel .product-card__actions { padding: 0; }
+  .chat-panel > .product-panel .conversation-trust:not(:empty) { grid-column: 1 / -1; }
+}
+@media (max-width: 880px) {
+  html[data-theme] body.mobile-messages[data-view="chat"] .messages-app { border: 0; border-radius: 0; }
+}
+html[data-theme] body.mobile-messages .messages-app { box-shadow: none; }

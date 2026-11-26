@@ -71,8 +71,8 @@
     if (!productDetails) return;
     productDetails.open = false;
     productDetails.hidden = !phoneLayout.matches;
-    const parent = phoneLayout.matches ? productDetails : document.querySelector(".messages-app");
-    parent.append(elements.productPanel);
+    if (phoneLayout.matches) productDetails.append(elements.productPanel);
+    else productDetails.after(elements.productPanel);
     sizePhoneChat();
   }
 
@@ -575,6 +575,7 @@
     elements.chatTitle.textContent = name;
     elements.chatSubtitle.textContent = getConversationSchool(conversation);
     elements.typingIndicator.hidden = true;
+    elements.chatSafetyActions.open = false;
     elements.chatSafetyActions.hidden = false;
     void hydrateBlockState(conversation);
   }
@@ -631,7 +632,7 @@
           <a class="view-product-link" href="/producto?id=${encodeURIComponent(
             product.id
           )}">
-            <span>Ver producto</span>
+            <span>Ver publicación</span>
             <svg class="icon"><use href="#icon-open"></use></svg>
           </a>
         </div>

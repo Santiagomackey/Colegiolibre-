@@ -29,6 +29,7 @@ const dashboardOverview = document.querySelector("#dashboard-overview");
 const publicationPanel = document.querySelector("#publication-panel");
 const securityBanner = document.querySelector("#security-banner");
 const utilityPanel = document.querySelector("#utility-panel");
+const accountPreferences = document.querySelector("#account-preferences");
 const settingsPanel = document.querySelector("#settings-panel");
 const settingsForm = document.querySelector("#settings-form");
 const settingsName = document.querySelector("#settings-name");
@@ -53,7 +54,7 @@ const dashboardResponseTime = document.querySelector("#dashboard-response-time")
 const dashboardSalesCount = document.querySelector("#dashboard-sales-count");
 
 const state = {
-  currentSection: "publications",
+  currentSection: "profile",
   currentState: "active",
   currentUser: null,
   favoriteCountMap: new Map(),
@@ -102,6 +103,7 @@ const sectionMeta = {
     description: "Revisá tus materiales vendidos y el rendimiento de tus publicaciones cerradas.",
     title: "Ventas"
   },
+  profile: { title: "Mi perfil", description: "" },
   settings: {
     description: "Actualizá tu perfil, tu colegio y la zona usada para personalizar la experiencia.",
     title: "Ajustes"
@@ -143,7 +145,7 @@ async function initPerfil() {
   renderCurrentSection();
 
   if (state.currentSection === "settings" &&
-      new URLSearchParams(window.location.search).get("section") === "cobro") {
+      (new URLSearchParams(window.location.search).get("section") === "cobro" || location.hash === "#datos-cobro")) {
     document.getElementById("datos-cobro")?.scrollIntoView({ block: "start" });
   }
 
@@ -182,7 +184,8 @@ function hydrateViewState() {
     "messages",
     "purchases",
     "sales",
-    "settings"
+    "settings",
+    "profile"
   ]);
 
   if (rawView === "favorites") {
@@ -190,7 +193,7 @@ function hydrateViewState() {
     return;
   }
 
-  state.currentSection = allowedViews.has(rawView) ? rawView : "publications";
+  state.currentSection = allowedViews.has(rawView) ? rawView : "profile";
 
   if (state.currentSection === "sales") {
     state.currentState = "sold";
@@ -361,6 +364,8 @@ function renderDashboard() {
 function renderSettingsForm() {
   if (!settingsForm) return;
 
+  document.getElementById("account-name").textContent = state.profile?.name || "Mi cuenta";
+  document.getElementById("account-avatar").textContent = getInitials(state.profile?.name);
   settingsName.value = state.profile?.name || "";
   settingsEmail.value = state.currentUser?.email || "";
   settingsSchoolCode.value = state.profile?.school_code || "";
@@ -381,7 +386,7 @@ function renderCurrentSection() {
     return;
   }
 
-  if (state.currentSection === "settings") {
+  if (state.currentSection === "profile" || state.currentSection === "settings") {
     renderSettingsForm();
     return;
   }
@@ -413,6 +418,8 @@ function updateSectionUi() {
   const meta = sectionMeta[state.currentSection] || sectionMeta.publications;
   const showsPublicationContent = state.currentSection === "publications" || state.currentSection === "sales";
   const showsSettings = state.currentSection === "settings";
+  const showsProfile = state.currentSection === "profile";
+  sectionTitle.closest(".content-header").hidden = showsProfile || showsSettings;
 
   sectionTitle.textContent = meta.title;
   sectionDescription.textContent = meta.description;
@@ -420,8 +427,9 @@ function updateSectionUi() {
   dashboardOverview.hidden = !showsPublicationContent;
   publicationPanel.hidden = !showsPublicationContent;
   securityBanner.hidden = !showsPublicationContent;
-  utilityPanel.hidden = showsPublicationContent || showsSettings;
-  settingsPanel.hidden = !showsSettings;
+  utilityPanel.hidden = showsPublicationContent || showsSettings || showsProfile;
+  settingsPanel.hidden = !showsProfile;
+  accountPreferences.hidden = !showsSettings;
   publishButton.hidden = state.currentSection !== "publications";
   publicationTabs.hidden = state.currentSection !== "publications";
 
@@ -1069,9 +1077,10 @@ function activateSection(nextSection) {
     "messages",
     "purchases",
     "sales",
-    "settings"
+    "settings",
+    "profile"
   ]);
-  state.currentSection = allowedViews.has(nextSection) ? nextSection : "publications";
+  state.currentSection = allowedViews.has(nextSection) ? nextSection : "profile";
 
   if (state.currentSection === "sales") {
     state.currentState = "sold";
@@ -1086,7 +1095,7 @@ function activateSection(nextSection) {
   });
 
   const url = new URL(window.location.href);
-  if (state.currentSection === "publications") {
+  if (state.currentSection === "profile") {
     url.searchParams.delete("view");
   } else {
     url.searchParams.set("view", state.currentSection);

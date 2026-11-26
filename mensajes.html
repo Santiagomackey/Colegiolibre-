@@ -39,12 +39,12 @@
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
     <link rel="stylesheet" href="./mensajes-layout-fix.css?v=20261123-phone-chat" />
 <link rel="stylesheet" href="/marketplace-layout.css?v=2">
-<link rel="stylesheet" href="/mensajes-inbox.css?v=1">
+<link rel="stylesheet" href="/mensajes-inbox.css?v=2">
 </head>
   <body class="mobile-subpage mobile-messages" data-view="list">
 <header class="cl-site-header" data-no-translate>
  <div class="cl-site-top">
-  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colego-logo.svg" alt="ColeGo" fetchpriority="high"></a>
+  <a class="cl-site-brand" href="/" data-site-label="home" aria-label="Inicio"><img src="/images/colego-header-palette.webp" alt="ColeGo" fetchpriority="high"></a>
   <form class="cl-site-search" id="search-form-desktop" action="/explorar" method="get" role="search">
    <label class="cl-site-sr" for="desktop-search" data-site-text="searchLabel">Buscar material escolar</label>
    <input id="desktop-search" name="q" type="search" autocomplete="off" placeholder="¿Qué material estás buscando?">
@@ -141,21 +141,20 @@
 
     
 
-    <main class="site-shell messages-page">
-      <h1 class="messages-screen-title">Mensajes</h1>
+    <main class="site-shell messages-page" aria-label="Mensajes">
       <section class="messages-app">
         <aside class="inbox-panel" aria-label="Conversaciones">
           <div class="inbox-header">
             <div>
               <div class="inbox-title-row">
-                <h2>Tus conversaciones</h2>
+                <h2 class="sr-only">Tus conversaciones</h2>
                 <span class="inbox-count" id="inbox-count" hidden>0</span>
               </div>
             </div>
 
             <label class="conversation-search" for="conversation-search">
               <svg class="icon"><use href="#icon-search"></use></svg>
-              <input id="conversation-search" type="search" placeholder="Buscar por persona o producto" />
+              <input id="conversation-search" type="search" aria-label="Buscar conversación por persona o producto" placeholder="Buscar conversación" />
             </label>
           </div>
 
@@ -176,7 +175,9 @@
               <p class="typing-indicator" id="typing-indicator" hidden>Escribiendo…</p>
             </div>
 
-            <div class="chat-safety-actions" id="chat-safety-actions" hidden>
+            <details class="chat-safety-actions" id="chat-safety-actions" hidden>
+              <summary aria-label="Opciones de conversación">•••</summary>
+              <div class="chat-safety-menu">
               <button id="report-conversation-button" type="button">
                 <svg class="icon"><use href="#icon-flag"></use></svg>
                 <span>Reportar</span>
@@ -185,7 +186,8 @@
                 <svg class="icon"><use href="#icon-block"></use></svg>
                 <span>Bloquear</span>
               </button>
-            </div>
+              </div>
+            </details>
           </header>
 
           <details class="mobile-product-details" hidden>
@@ -296,13 +298,13 @@
     <script src="./vendor/supabase.js?v=20261109-release25"></script>
     <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
-    <script src="./mensajes.js?v=inbox-1"></script>
+    <script src="./mensajes.js?v=inbox-2"></script>
     <script src="./native-bridge.js?v=20261111-more42"></script>
     <script src="./notifications.js?v=20261109-transfer27"></script>
     <script src="./mobile-ui.js?v=20261111-more42"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/marketplace-upgrades.js?v=20261111-direct-buy"></script>
-<script src="/site-header.js?v=app-footer-1"></script>
+<script src="/site-header.js?v=palette-logo-1"></script>
 </body>
 </html>
