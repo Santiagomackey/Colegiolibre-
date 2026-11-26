@@ -156,11 +156,11 @@
       "dest": "/inicio-materiales.html"
     },
     {
-      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio)/?$",
+      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio|instituciones|ayuda|seguridad|terminos|privacidad|solicitar-portal)/?$",
       "dest": "/$1.html"
     },
     {
-      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio)\\.html$",
+      "src": "^/(busco|explorar|producto|publicar|colegio|login|perfil|mensajes|favoritos|pedidos|auth-callback|recovery-callback|compra|reportar|perfil-publico|mp-vinculado|portal-colegio|instituciones|ayuda|seguridad|terminos|privacidad|solicitar-portal)\\.html$",
       "dest": "/$1.html"
     },
     {
