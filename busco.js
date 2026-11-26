@@ -51,8 +51,8 @@
     if (params.get("view") === "school" || scope === "school") filter.value = "school";
     const defaultScope = profile?.school_verification_status === "verified"
       ? "school"
-      : profile?.zone_code ? "zone" : "country";
-    form.elements.scope.value = ["school", "zone", "both", "country"].includes(scope) ? scope : defaultScope;
+      : "zone";
+    form.elements.scope.value = ["school", "zone", "both"].includes(scope) ? scope : defaultScope;
     form.dispatchEvent(new Event("change", { bubbles: true }));
     document.querySelectorAll('[data-alert-view]').forEach(button=>button.addEventListener('click',()=>{
       view=button.dataset.alertView;
