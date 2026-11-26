@@ -1,7 +1,7 @@
 /* Match the public homepage's spacing, colors and rounded surfaces. */
 html[data-theme] body.wanted-page { background: #fff !important; color: #3b2722; }
 html[data-theme] .wanted-page .wanted-shell {
-  width: min(92%, 1240px);
+  width: min(92%, 940px);
   margin: clamp(24px, 4vw, 62px) auto;
 }
 .wanted-intro { text-align: center; margin-bottom: clamp(22px, 4vw, 42px); }
@@ -9,7 +9,7 @@ html[data-theme] .wanted-page .wanted-shell {
 .wanted-intro p { margin: 12px 0 0; color: #65534a; font-size: clamp(.95rem, 1.55vw, 1.18rem); }
 html[data-theme] .wanted-page .wanted-layout {
   display: grid;
-  grid-template-columns: minmax(320px, .9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
   scroll-margin-top: 96px;
@@ -39,7 +39,7 @@ html[data-theme] .wanted-page .wanted-create :is(select,textarea,input:not([type
 }
 html[data-theme] .wanted-page .wanted-create textarea[name="title"] { background: #e5f2f5; border-color: #cde5ec; }
 .wanted-create :is(input,textarea,select,summary,button):focus-visible { outline: 2px solid #6aacc2; outline-offset: 2px; }
-html[data-theme] .wanted-page .scope-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+html[data-theme] .wanted-page .scope-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
 html[data-theme] .wanted-page .scope-grid label { background: white; border-radius: 16px; }
 html[data-theme] .wanted-page .scope-grid label:has(input:checked) { background: #e5f2f5; border-color: #6aacc2; }
 .wanted-create .wanted-extra { border: 1px solid #e9ded5; border-radius: 16px; padding: 12px; background: #fff; }
@@ -58,6 +58,41 @@ html[data-theme] .wanted-page .wanted-submit {
 }
 html[data-theme] .wanted-page .wanted-view-tabs { background: #e1eff3; border-radius: 999px; }
 html[data-theme] .wanted-page .wanted-view-tabs button { border-radius: 999px; min-height: 42px; }
-@media (max-width: 760px) {
-  html[data-theme] .wanted-page .wanted-layout { grid-template-columns: minmax(0,1fr); }
+
+html[data-theme] .wanted-page .wanted-create { gap: 20px; padding: clamp(18px, 4vw, 36px); }
+.wanted-request-row, .wanted-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+}
+.wanted-request-row .wanted-budget,
+.wanted-request-row > label { min-width: 0; }
+.wanted-request-row .wanted-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wanted-options { align-items: start; }
+html[data-theme] .wanted-page .wanted-create textarea[name="title"] { margin-bottom: 6px; }
+html[data-theme] .wanted-page .scope-grid label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  gap: 4px 8px;
+  min-height: 62px;
+  padding: 10px 12px;
+}
+html[data-theme] .wanted-page .scope-grid input { margin: 0; align-self: center; }
+html[data-theme] .wanted-page .scope-grid small { grid-column: 2; margin: 0; }
+html[data-theme] .wanted-page .wanted-submit {
+  justify-self: end;
+  width: auto;
+  min-width: 168px;
+  padding-inline: 20px;
+}
+html[data-theme] .wanted-page .wanted-submit:hover { background: #ffd577 !important; }
+.wanted-create .wanted-status:empty { display: none; }
+html[data-theme] .wanted-page .wanted-feed-search input { border-radius: 999px; background: #fff; }
+html[data-theme] .wanted-page .wanted-empty { min-height: 150px; }
+@media (max-width: 680px) {
+  .wanted-request-row, .wanted-options { grid-template-columns: minmax(0, 1fr); }
+  html[data-theme] .wanted-page .scope-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  html[data-theme] .wanted-page .wanted-submit { justify-self: stretch; }
 }

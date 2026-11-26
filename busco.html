@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 <link rel="stylesheet" href="/marketplace-layout.css?v=2">
-<link rel="stylesheet" href="/busco-form.css?v=1">
+<link rel="stylesheet" href="/busco-form.css?v=2">
 </head>
 <body class="wanted-page mobile-subpage mobile-wanted">
 <header class="cl-site-header" data-no-translate>
@@ -77,6 +77,7 @@
       <form id="wanted-form" class="wanted-card wanted-create">
         <header class="wanted-section-head"><h2>Nuevo pedido</h2></header>
         <label>Nombre del material<textarea name="title" rows="3" maxlength="600" required placeholder="Ej. English File Intermediate, 4.ª edición"></textarea><small>Si buscás varios materiales, escribí uno por línea.</small></label>
+        <div class="wanted-request-row">
         <label>Categoría<select name="category"><option value="">Todas las categorías</option><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Apuntes</option><option>Cuadernos</option><option>Mochilas</option><option>Otros</option></select></label>
         <fieldset class="wanted-budget">
           <legend>Presupuesto <small>Opcional · en pesos</small></legend>
@@ -85,12 +86,14 @@
             <label>Hasta<input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="10.000"></label>
           </div>
         </fieldset>
+        </div>
         <fieldset><legend>¿Dónde querés que busquemos?</legend><div class="scope-grid">
           <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b><small>Solo tu comunidad</small></label>
           <label><input type="radio" name="scope" value="zone"><b>Mi zona</b><small>Colegios cercanos</small></label>
           <label><input type="radio" name="scope" value="both"><b>Mi colegio y mi zona</b></label>
           <label><input type="radio" name="scope" value="country"><b>Argentina</b><small>Todo el país</small></label>
         </div></fieldset>
+        <div class="wanted-options">
         <details class="wanted-extra">
           <summary>Datos del material <small>Opcional</small></summary>
           <div class="wanted-extra-fields">
@@ -108,6 +111,7 @@
         <label class="wanted-community"><input name="community" type="checkbox"> Compartir el pedido con la comunidad</label>
           </div>
         </details>
+        </div>
         <section id="match-review" hidden aria-label="Revisar materiales"></section>
         <button class="wanted-submit" type="submit"><span>Revisar búsquedas</span></button>
         <p id="wanted-status" class="wanted-status" role="status"></p>
