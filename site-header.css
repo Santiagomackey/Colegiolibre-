@@ -507,3 +507,22 @@ html body .cl-site-header .cl-site-actions :is(.cl-site-action,.cl-site-account-
   content: url("/images/colego-header-palette.webp");
   object-fit: contain;
 }
+
+
+/* Give the full wordmark breathing room inside the shared navigation. */
+html body .cl-site-header .cl-site-top > .cl-site-brand {
+  width: 152px;
+  overflow: visible;
+}
+html body .cl-site-header .cl-site-top > .cl-site-brand img {
+  width: auto;
+  height: auto;
+  max-width: 142px;
+  max-height: 37px;
+  transform: none;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  html body .cl-site-header .cl-site-top > .cl-site-brand { width: 124px; }
+  html body .cl-site-header .cl-site-top > .cl-site-brand img { max-width: 116px; max-height: 30px; }
+}

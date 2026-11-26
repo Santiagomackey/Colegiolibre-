@@ -60,7 +60,7 @@
 }
 .materials-footer__intro { text-align: left; }
 .materials-footer__intro a { display: inline-block; }
-.materials-footer__intro img { display: block; width: 126px; max-width: 100%; height: auto; }
+.materials-footer__intro img { display: block; width: 112px; max-width: 100%; height: auto; }
 .materials-footer__intro p {
   max-width: 35ch;
   margin: 7px 0 0;
