@@ -34,7 +34,7 @@
   border-radius: 30px;
   background: var(--paper);
 }
-.materials-composer :is(input:not([type="checkbox"]), select, button, .materials-scopes label) {
+.materials-composer :is(input:not([type="checkbox"]), button, .materials-scopes label) {
   min-height: clamp(44px, 3.5vw, 65px);
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -43,9 +43,10 @@
   font-size: clamp(.95rem, 1.23vw, 1.4rem);
   padding: 0 clamp(14px, 1.5vw, 28px);
 }
-.materials-composer > input { min-width: 0; background: var(--sky); }
-.materials-composer select { background: #fff; padding-right: 22px; }
-.materials-composer select:hover { border-color: #6aacc2; }
+.materials-composer > input { min-width: 0; }
+#material-title { background: var(--sky); }
+#material-budget { width: clamp(10rem, 13vw, 15rem); background: #fff; }
+#material-budget:hover { border-color: #6aacc2; }
 .materials-scopes { display: flex; gap: 10px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .materials-scopes label { display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; cursor: pointer; background: #fff; position: relative; }
 .materials-scopes label:has(input:checked) { background: var(--sky); border-color: #6aacc2; }
@@ -74,7 +75,8 @@
 }
 @media (max-width: 820px) {
   .materials-composer { grid-template-columns: minmax(0, 1fr) auto; }
-  .materials-composer > input { grid-column: 1 / -1; }
+  #material-title { grid-column: 1 / -1; }
+  #material-budget { width: 100%; }
   .materials-submit { grid-column: 1 / -1; }
 }
 @media (max-width: 600px) {

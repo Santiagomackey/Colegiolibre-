@@ -20,7 +20,7 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </style>
-  <link rel="stylesheet" href="/inicio-materiales.css">
+  <link rel="stylesheet" href="/inicio-materiales.css?v=presupuesto-1">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -48,15 +48,14 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
   <form class="materials-composer" action="/busco#crear-pedido" method="get">
    <label class="cl-site-sr" for="material-title">Material que necesitás</label>
    <input id="material-title" name="title" placeholder="Ej. Libro de Matemática" required minlength="3" maxlength="120">
-   <label class="cl-site-sr" for="material-budget">Presupuesto máximo</label>
-   <select id="material-budget" name="max_price">
-    <option value="">Sin presupuesto</option>
-    <option value="8000">Hasta $8.000</option>
-    <option value="10000" selected>Hasta $10.000</option>
-    <option value="15000">Hasta $15.000</option>
-    <option value="30000">Hasta $30.000</option>
-    <option value="custom">Otro monto</option>
-   </select>
+   <label class="cl-site-sr" for="material-budget">Presupuesto máximo en pesos (opcional)</label>
+   <input id="material-budget" name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="Presupuesto ($)" list="material-budget-options">
+   <datalist id="material-budget-options">
+    <option value="8000"></option>
+    <option value="10000"></option>
+    <option value="15000"></option>
+    <option value="30000"></option>
+   </datalist>
    <fieldset class="materials-scopes">
     <legend class="cl-site-sr">Dónde buscar</legend>
     <label><input type="checkbox" name="scope" value="school"> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6m4-2v7"/></svg>Mi colegio</label>
