@@ -5,11 +5,11 @@
   right: 18px;
   bottom: 18px;
   width: min(390px, calc(100vw - 36px));
-  border: 1px solid rgba(188, 221, 231, 0.95);
+  border: 1px solid rgba(202, 214, 231, 0.95);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.98);
-  color: #3b2722;
-  box-shadow: 0 22px 54px rgba(59, 39, 34, 0.2);
+  color: #182438;
+  box-shadow: 0 22px 54px rgba(7, 25, 58, 0.2);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -39,7 +39,7 @@
 .pwa-install-card strong,
 .pwa-update-toast strong {
   display: block;
-  color: #3b2722;
+  color: #0b2e6b;
   font-size: 0.9rem;
   line-height: 1.25;
 }
@@ -47,7 +47,7 @@
 .pwa-install-card p,
 .pwa-update-toast p {
   margin: 4px 0 0;
-  color: #645049;
+  color: #637087;
   font-size: 0.76rem;
   line-height: 1.4;
 }
@@ -64,7 +64,7 @@
   padding: 0 12px;
   border: 0;
   border-radius: 12px;
-  background: #3b2722;
+  background: #0b2e6b;
   color: #fff;
   font: inherit;
   font-size: 0.76rem;
@@ -75,8 +75,8 @@
 .pwa-install-card .pwa-install-card__dismiss {
   width: 38px;
   padding: 0;
-  background: #f4f9fa;
-  color: #645049;
+  background: #eef2f7;
+  color: #506078;
   font-size: 1.1rem;
 }
 
@@ -91,8 +91,8 @@
 }
 
 .pwa-update-toast__later {
-  background: #e4f2f6 !important;
-  color: #645049 !important;
+  background: #edf1f6 !important;
+  color: #43516a !important;
 }
 
 @media (max-width: 760px) {
@@ -118,7 +118,7 @@
   .pwa-install-card__icon {
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(188, 221, 231, 0.75);
+    border: 1px solid rgba(202, 214, 231, 0.75);
     border-radius: 15px;
   }
 
@@ -162,20 +162,20 @@
 
 html[data-theme="dark"] .pwa-install-card,
 html[data-theme="dark"] .pwa-update-toast {
-  border-color: rgba(116, 100, 94, 0.3);
-  background: rgba(59, 39, 34, 0.98);
-  color: #f4f9fa;
+  border-color: rgba(107, 132, 168, 0.3);
+  background: rgba(10, 15, 24, 0.98);
+  color: #edf4ff;
   box-shadow: 0 24px 58px rgba(0, 0, 0, 0.5);
 }
 
 html[data-theme="dark"] .pwa-install-card strong,
 html[data-theme="dark"] .pwa-update-toast strong {
-  color: #f4f9fa;
+  color: #f4f8ff;
 }
 
 html[data-theme="dark"] .pwa-install-card p,
 html[data-theme="dark"] .pwa-update-toast p {
-  color: #74645e;
+  color: #9dadc5;
 }
 
 .pwa-ios-guide {
@@ -196,11 +196,11 @@ html[data-theme="dark"] .pwa-update-toast p {
 .pwa-ios-guide__card {
   width: min(440px, 100%);
   padding: 22px;
-  border: 1px solid #e4f2f6;
+  border: 1px solid #d8e1ee;
   border-radius: 26px;
   background: #fff;
-  color: #3b2722;
-  box-shadow: 0 28px 80px rgba(59, 39, 34, 0.34);
+  color: #182438;
+  box-shadow: 0 28px 80px rgba(2, 12, 29, 0.34);
 }
 
 .pwa-ios-guide__card > img {
@@ -212,7 +212,7 @@ html[data-theme="dark"] .pwa-update-toast p {
 
 .pwa-ios-guide__card strong {
   display: block;
-  color: #3b2722;
+  color: #0b2e6b;
   font-size: 1.08rem;
 }
 
@@ -221,7 +221,7 @@ html[data-theme="dark"] .pwa-update-toast p {
   gap: 11px;
   margin: 16px 0 20px;
   padding-left: 22px;
-  color: #645049;
+  color: #53627a;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -231,24 +231,24 @@ html[data-theme="dark"] .pwa-update-toast p {
   min-height: 46px;
   border: 0;
   border-radius: 14px;
-  background: #3b2722;
+  background: #0b2e6b;
   color: #fff;
   font: inherit;
   font-weight: 800;
 }
 
 html[data-theme="dark"] .pwa-ios-guide__card {
-  border-color: rgba(116, 100, 94, 0.35);
-  background: #3b2722;
-  color: #f4f9fa;
+  border-color: rgba(107, 132, 168, 0.35);
+  background: #0d1521;
+  color: #f4f8ff;
 }
 
 html[data-theme="dark"] .pwa-ios-guide__card strong {
-  color: #f4f9fa;
+  color: #f4f8ff;
 }
 
 html[data-theme="dark"] .pwa-ios-guide__card ol {
-  color: #bcdde7;
+  color: #b7c3d6;
 }
 
 /* Android APK callout: compact, clear and above the floating mobile nav. */
@@ -256,11 +256,11 @@ html[data-theme="dark"] .pwa-ios-guide__card ol {
   .pwa-install-card {
     bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     border-radius: 20px;
-    box-shadow: 0 18px 50px rgba(59, 39, 34, .24);
+    box-shadow: 0 18px 50px rgba(4, 18, 45, .24);
   }
   .pwa-install-card__actions button:first-child {
     white-space: nowrap;
-    background: #805427;
-    color: #3b2722;
+    background: #67c23a;
+    color: #092356;
   }
 }

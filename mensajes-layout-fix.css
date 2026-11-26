@@ -122,7 +122,7 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
   body.mobile-messages .conversation-list { overflow: visible; padding: 0 0 calc(88px + env(safe-area-inset-bottom)); }
   body.mobile-messages .conversation-item {
     grid-template-columns: 44px minmax(0,1fr); gap: 12px; align-items: center;
-    padding: 14px 16px; margin: 0; border-radius: 0; border-bottom: 1px solid #e8dbd5;
+    padding: 14px 16px; margin: 0; border-radius: 0; border-bottom: 1px solid #e8edf3;
   }
   body.mobile-messages .conversation-avatar, body.mobile-messages .chat-avatar {
     width: 42px; height: 42px; border-radius: 50%; font-size: 15px; box-shadow: none;
@@ -158,12 +158,12 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
   body.mobile-messages .chat-safety-actions span {
     display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
   }
-  .mobile-product-details { flex: none; border-bottom: 1px solid #e8dbd5; }
+  .mobile-product-details { flex: none; border-bottom: 1px solid #e1e7ef; }
   .mobile-product-details summary { padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 600; }
   body.mobile-messages[data-view="chat"] .mobile-product-details .product-panel {
     max-height: min(34dvh, 250px); overflow-y: auto; padding: 8px 16px;
   }
-  body.mobile-messages .messages-list { flex: 1 1 0; min-height: 0; padding: 12px 14px; background: #f4f9fa; }
+  body.mobile-messages .messages-list { flex: 1 1 0; min-height: 0; padding: 12px 14px; background: #f7f9fc; }
   body.mobile-messages .message { max-width: 86%; overflow-wrap: anywhere; }
   body.mobile-messages .message-form {
     min-height: 0; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), var(--cl-native-bottom, 0px))); gap: 8px; background: white;
@@ -182,13 +182,4 @@ body.mobile-messages :is(.inbox-header, .chat-header, .message-form) {
     min-height: 540px !important;
     block-size: auto !important;
   }
-}
-
-/* Show focus on the rounded composer instead of inside the message text. */
-#message-form #message-input:focus {
-  outline: none;
-  box-shadow: none;
-}
-#message-form .message-composer:focus-within {
-  border-color: #6f4e44;
 }

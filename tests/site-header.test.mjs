@@ -20,15 +20,13 @@ test('shared account labels preserve the seller name across language changes and
  function node(id){if(!nodes.has(id))nodes.set(id,{textContent:'',dataset:{},listeners:{},attrs:{},setAttribute(k,v){this.attrs[k]=v},removeAttribute(k){delete this.attrs[k]},addEventListener(k,v){this.listeners[k]=v},insertAdjacentHTML(position,html){menuLinks.push({id,position,html});}});return nodes.get(id);}
  const message=node('message');message.dataset.siteText='messages';
  const header={querySelector:node,querySelectorAll:selector=>selector==='[data-site-text]'?[message]:[],contains:()=>false};
- const document={body:node('body'),readyState:'complete',documentElement:{dataset:{language:'es'}},querySelector:selector=>selector==='.cl-site-header'?header:null,addEventListener(){}};
+ const document={readyState:'complete',documentElement:{dataset:{language:'es'}},querySelector:selector=>selector==='.cl-site-header'?header:null,addEventListener(){}};
  const window={addEventListener:(k,v)=>events[k]=v,colegioLibreApi:{getCurrentUser:async()=>currentUser,getCurrentProfile:async()=>({name:'Santiago Pérez'})},colegioLibreSupabase:{auth:{onAuthStateChange:fn=>{onAuth=fn},signOut:async()=>({error:null})}}};
  vm.runInNewContext(source('site-header.js'),{document,window,URL,URLSearchParams,location:{pathname:'/mensajes',assign:p=>navigations.push(p)},queueMicrotask});
  const settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();
- assert.equal(menuLinks.length,3);
- assert.equal(menuLinks[0].id,'body');
- assert.match(menuLinks[0].html,/href="\/publicar"/);
- assert.match(menuLinks[1].html,/href="\/perfil\?view=settings#datos-cobro"/);
- assert.match(menuLinks[2].html,/href="\/explorar"/);
+ assert.equal(menuLinks.length,2);
+ assert.match(menuLinks[0].html,/href="\/perfil\?view=settings#datos-cobro"/);
+ assert.match(menuLinks[1].html,/href="\/explorar"/);
  assert.equal(node('#accountText').textContent,'Santiago');assert.equal(node('#accountButton').href,'/perfil');
  document.documentElement.dataset.language='en';events['colegiolibre:languagechange']();assert.equal(message.textContent,'Messages');assert.equal(node('#accountText').textContent,'Santiago');
  currentUser=null;onAuth();await settle();assert.equal(node('#accountText').textContent,'Sign in');assert.equal(node('#accountButton').href,'/login');assert.equal(node('[data-site-logout]').hidden,true);

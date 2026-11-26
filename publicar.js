@@ -235,7 +235,7 @@ async function initPublishPage() {
 }
 
 function getPublishDestination() {
-  return `/publicar${window.location.search}`;
+  return `publicar.html${window.location.search}`;
 }
 
 async function ensurePublishAccess() {
@@ -431,8 +431,6 @@ function populateFormForEditing(product) {
   subjectSelect.value = product.subject || "";
   subcategorySelect.value = product.subcategory || "";
   sizeSelect.value = product.size || "";
-  document.getElementById("book-edition").value = product.book_edition || "";
-  document.getElementById("book-isbn").value = product.isbn || "";
   priceInput.value = product.price ?? "";
   descriptionInput.value = product.description || "";
 
@@ -632,7 +630,6 @@ function resetDynamicFieldValues() {
 function updateCategoryFields() {
   const config = categoryFieldConfig[categorySelect.value] || null;
 
-  document.getElementById("book-fields").hidden = categorySelect.value !== "Libros";
   resetDynamicFieldValues();
   dynamicProductFields.hidden = !config;
   academicFieldsRow.hidden = !config?.academic;
@@ -1005,13 +1002,6 @@ async function handleSubmit(event) {
     const priceValue = Number(priceInput.value);
     const finalLocation = getFinalLocation();
     const category = categorySelect.value;
-    const edition = category === "Libros" ? document.getElementById("book-edition").value.trim() : "";
-    const isbn = category === "Libros" ? document.getElementById("book-isbn").value.trim().replace(/[\s-]/g,"").toUpperCase() : "";
-    if (isbn && !/^(?:[0-9]{9}[0-9X]|[0-9]{13})$/.test(isbn)) {
-      showToast("Revisá el ISBN: tiene que tener 10 o 13 caracteres.");
-      document.getElementById("book-isbn").focus();
-      return;
-    }
     const categoryConfig = categoryFieldConfig[category] || null;
     const schoolLevel = categoryConfig?.academic
       ? schoolLevelSelect.value
@@ -1124,8 +1114,6 @@ async function handleSubmit(event) {
       condition: getSelectedCondition(),
       price: priceValue,
       description: description,
-      book_edition: edition || null,
-      isbn: isbn || null,
       image_url: imageUrl,
       image_urls: uploadedImageUrls,
 
@@ -1237,35 +1225,3 @@ async function handleSubmit(event) {
 }
 
 })();
-
-const demandStatus = document.getElementById("match-demand");
-const demandFields = [titleInput, categorySelect, priceInput, sizeSelect,
-  document.getElementById("book-isbn"), document.getElementById("book-edition")];
-let demandTimer;
-let demandRevision = 0;
-
-function refreshMatchDemand() {
-  const revision = ++demandRevision;
-  clearTimeout(demandTimer);
-  demandStatus.hidden = true;
-  const [title,category,price,size,isbn,edition] = demandFields.map(field => field.value.trim());
-  if (title.length < 3 || !category || !Number.isSafeInteger(Number(price)) || Number(price) <= 0) return;
-  demandTimer = setTimeout(async () => {
-    try {
-      const {data,error} = await window.colegioLibreSupabase.rpc("colego_match_demand",{
-        p_title:title,p_category:category,p_price:Number(price),p_size:size || null,
-        p_isbn:category === "Libros" ? isbn.replace(/[\s-]/g,"").toUpperCase() || null : null,
-        p_edition:category === "Libros" ? edition || null : null
-      });
-      if (error || revision !== demandRevision) return;
-      const result = data?.[0];
-      const counts = [result?.school && result.school + " en tu colegio",result?.zone && result.zone + " en tu zona"].filter(Boolean);
-      demandStatus.textContent = counts.length ? "Personas buscando un material compatible · " + counts.join(" · ") : "";
-      demandStatus.hidden = !counts.length;
-    } catch (_) { /* Publication is available even if the demand query fails. */ }
-  }, 650);
-}
-for (const field of demandFields) {
-  field.addEventListener("input",refreshMatchDemand);
-  field.addEventListener("change",refreshMatchDemand);
-}

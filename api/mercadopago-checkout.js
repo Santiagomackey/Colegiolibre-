@@ -1,4 +1,3 @@
-import subscriptionWebhook from './mercadopago-webhook.js';
 import { authenticatedUser } from '../server/mp-link.js';
 import { available, checkoutConfig, linked, reconcileNotification, resume, start, synchronize, UUID, verifiedNotification } from '../server/mp-checkout.js';
 
@@ -11,11 +10,6 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Referrer-Policy', 'no-referrer');
   if (!['GET', 'POST'].includes(req.method)) return send(res, 405, { error: 'METHOD_NOT_ALLOWED' });
-  const topic = req.query?.type || req.body?.type;
-  if (req.method === 'POST' && req.query?.webhook === '1' &&
-      ['subscription_preapproval', 'subscription_authorized_payment'].includes(topic)) {
-    return subscriptionWebhook(req,res);
-  }
   let config;
   try { config = checkoutConfig(); }
   catch { return send(res, 503, { error: 'MP_CHECKOUT_NOT_CONFIGURED' }); }

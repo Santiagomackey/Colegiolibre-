@@ -1,4 +1,4 @@
-const pages=new Set(['/','/producto','/mensajes','/perfil','/favoritos','/busco','/compra','/pedidos','/instituciones','/portal-colegio']);
+const pages=new Set(['/','/producto','/mensajes','/perfil','/favoritos','/busco','/compra','/pedidos','/portal-colegio']);
 export function safePushPath(value) {
   try {
     const url=new URL(value||'/','https://www.colego.com.ar/');

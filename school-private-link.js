@@ -15,15 +15,6 @@ window.colegoPrivateSchoolPath = async function (code) {
   const link = document.querySelector('#school-private-link');
   const code = location.pathname.match(/^\/colegio\/([a-z0-9_-]{1,80})\/?$/i)?.[1] || new URLSearchParams(location.search).get('code');
   if (!link || !code) return;
-  async function showBillingLink() {
-    const client = window.colegioLibreSupabase;
-    const {data} = await client.auth.getSession();
-    if (!data?.session?.user) return;
-    const result = await client.from('institution_requests').select('id').eq('applicant_user_id',data.session.user.id)
-      .eq('official_school_code',code.toUpperCase()).in('status',['pending','approved']).limit(1);
-    if (result.data?.length) document.querySelector('#school-billing-link').hidden = false;
-  }
-  void showBillingLink().catch(() => {});
   const path = await window.colegoPrivateSchoolPath(code);
   if (path) {
     link.href = path;

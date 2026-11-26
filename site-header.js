@@ -1,8 +1,5 @@
 (() => {
  'use strict';
- if (window.Capacitor?.isNativePlatform?.() || window.navigator?.standalone === true) {
-  document.documentElement.dataset.nativeApp ||= window.Capacitor?.getPlatform?.() || 'true';
- }
  const header=document.querySelector('.cl-site-header');if(!header)return;
  const labels={searchLabel:['Buscar material escolar','Search school supplies'],searchPlaceholder:['¿Qué material estás buscando?','What school supplies are you looking for?'],messages:['Mensajes','Messages'],favorites:['Favoritos','Favorites'],profile:['Mi perfil','My profile'],settings:['Configuración','Settings'],orders:['Mis compras y ventas','My purchases and sales'],logout:['Cerrar sesión','Sign out'],accountMenu:['Abrir menú de cuenta','Open account menu'],categories:['Categorías','Categories'],accountActions:['Acciones de tu cuenta','Account actions'],all:['Todo','All'],explore:['Explorar','Browse'],newest:['Recién publicados','New arrivals'],notes:['Apuntes y exámenes','Notes and exams'],alerts:['Alertas','Alerts'],school:['Mi colegio','My school'],help:['Ayuda','Help'],sell:['Publicar','Sell'],home:['Inicio','Home'],login:['Iniciar sesión','Sign in'],Libros:['Libros','Books'],Apuntes:['Apuntes','Notes'],Cuadernos:['Cuadernos','Notebooks'],'Útiles':['Útiles','Supplies'],Mochilas:['Mochilas','Backpacks'],'Tecnología':['Tecnología','Technology'],Uniformes:['Uniformes','Uniforms'],Otros:['Otros','Other']};
  let user=null,profile=null,run=0;
@@ -10,10 +7,6 @@
  labels.mercadoPagoAlias=['Mercado Pago','Mercado Pago'];
  labels.browseCategories=['Ver todas las categorías','Browse all categories'];
  function addMenuLinks(){
-  if (!document.querySelector('.colego-publish-cta') && !/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
-   document.body.insertAdjacentHTML('beforeend',
-    '<a class="colego-publish-cta colego-publish-floating" href="/publicar" aria-label="Publicar un producto" data-site-text="sell">Publicar</a>');
-  }
   header.querySelector('.cl-site-account-menu [data-site-text="settings"]')?.insertAdjacentHTML(
    'afterend','<a class="cl-site-mp-link" href="/perfil?view=settings#datos-cobro" data-site-text="mercadoPagoAlias">Mercado Pago</a>'
   );

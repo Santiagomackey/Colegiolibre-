@@ -1,17 +1,17 @@
 :root {
-  --color-primary: #3b2722;
-  --color-primary-strong: #3b2722;
-  --color-accent-green: #805427;
-  --color-accent-green-soft: #fff1c9;
-  --color-accent-yellow: #ffca50;
+  --color-primary: #0b2e6b;
+  --color-primary-strong: #08275d;
+  --color-accent-green: #67c23a;
+  --color-accent-green-soft: #eef8e8;
+  --color-accent-yellow: #ffc72c;
   --color-accent-yellow-soft: #fff3ca;
   --color-bg: #ffffff;
-  --color-bg-soft: #f4f9fa;
-  --color-border: #e4f2f6;
-  --color-text: #3b2722;
-  --color-text-soft: #645049;
-  --shadow-soft: 0 18px 45px rgba(59, 39, 34, 0.08);
-  --shadow-card: 0 26px 60px rgba(59, 39, 34, 0.1);
+  --color-bg-soft: #f7f9fc;
+  --color-border: #dce4ef;
+  --color-text: #1f2937;
+  --color-text-soft: #5d6d86;
+  --shadow-soft: 0 18px 45px rgba(10, 34, 78, 0.08);
+  --shadow-card: 0 26px 60px rgba(10, 34, 78, 0.1);
   --radius-xl: 30px;
   --radius-lg: 24px;
   --radius-md: 18px;
@@ -34,8 +34,8 @@ body {
   font-family: "Inter", sans-serif;
   color: var(--color-text);
   background:
-    radial-gradient(circle at top left, rgba(59, 39, 34, 0.08), transparent 25%),
-    radial-gradient(circle at top right, rgba(255, 202, 80, 0.12), transparent 18%),
+    radial-gradient(circle at top left, rgba(11, 46, 107, 0.08), transparent 25%),
+    radial-gradient(circle at top right, rgba(255, 199, 44, 0.12), transparent 18%),
     linear-gradient(180deg, #ffffff 0%, #f9fbff 48%, #ffffff 100%);
 }
 
@@ -119,8 +119,8 @@ img {
   z-index: 40;
   backdrop-filter: blur(18px);
   background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(228, 242, 246, 0.85);
-  box-shadow: 0 12px 28px rgba(59, 39, 34, 0.04);
+  border-bottom: 1px solid rgba(220, 228, 239, 0.85);
+  box-shadow: 0 12px 28px rgba(11, 46, 107, 0.04);
 }
 
 .site-header__row {
@@ -142,7 +142,7 @@ img {
   gap: 0.75rem;
   min-height: 56px;
   padding: 0.35rem 0.35rem 0.35rem 1.3rem;
-  border: 1px solid rgba(188, 221, 231, 0.95);
+  border: 1px solid rgba(211, 220, 233, 0.95);
   border-radius: 999px;
   background: #fff;
   box-shadow: var(--shadow-soft);
@@ -159,7 +159,7 @@ img {
 }
 
 .search-bar input::placeholder {
-  color: #74645e;
+  color: #7b899e;
 }
 
 .search-submit {
@@ -172,14 +172,14 @@ img {
   border-radius: 50%;
   background: var(--color-accent-green);
   color: #fff;
-  box-shadow: 0 14px 28px rgba(128, 84, 39, 0.26);
+  box-shadow: 0 14px 28px rgba(103, 194, 58, 0.26);
   transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .search-submit:hover,
 .search-submit:focus-visible {
   transform: translateY(-1px);
-  background: #805427;
+  background: #58b22d;
 }
 
 .header-actions {
@@ -210,7 +210,7 @@ img {
 .header-action:hover,
 .header-action:focus-visible {
   transform: translateY(-1px);
-  background: rgba(59, 39, 34, 0.05);
+  background: rgba(11, 46, 107, 0.05);
 }
 
 .header-cta {
@@ -222,7 +222,7 @@ img {
   color: var(--color-primary);
   font-weight: 800;
   white-space: nowrap;
-  box-shadow: 0 16px 30px rgba(255, 202, 80, 0.22);
+  box-shadow: 0 16px 30px rgba(255, 199, 44, 0.22);
   transition: transform var(--transition-fast);
 }
 
@@ -264,7 +264,7 @@ img {
 
 .breadcrumbs a:hover,
 .breadcrumbs a:focus-visible {
-  color: #624237;
+  color: #0d5bd7;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -272,7 +272,7 @@ img {
 .breadcrumbs .icon {
   width: 1rem;
   height: 1rem;
-  color: #74645e;
+  color: #8ea0bb;
 }
 
 .product-layout {
@@ -352,7 +352,7 @@ img {
 }
 
 .gallery-thumb.is-active {
-  border-color: rgba(128, 84, 39, 0.9);
+  border-color: rgba(103, 194, 58, 0.9);
 }
 
 .gallery-thumb:hover,
@@ -393,7 +393,7 @@ img {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.96);
   color: var(--color-primary);
-  box-shadow: 0 16px 28px rgba(59, 39, 34, 0.16);
+  box-shadow: 0 16px 28px rgba(10, 34, 78, 0.16);
   transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
 }
 
@@ -405,7 +405,7 @@ img {
 
 .favorite-fab.is-active {
   background: #fff1f1;
-  color: #a0342a;
+  color: #dc4f6a;
 }
 
 .details-column {
@@ -449,28 +449,28 @@ img {
   min-height: 30px;
   padding: 0 0.95rem;
   border-radius: 999px;
-  background: #f4f9fa;
-  color: #624237;
+  background: #eef2f7;
+  color: #364a65;
   font-size: 0.875rem;
   font-weight: 700;
 }
 
 .condition-badge[data-condition="Nuevo"] {
-  background: linear-gradient(135deg, #3b2722 0%, #624237 100%);
+  background: linear-gradient(135deg, #0b2e6b 0%, #164989 100%);
   color: #fff;
-  box-shadow: 0 10px 22px rgba(59, 39, 34, 0.2);
+  box-shadow: 0 10px 22px rgba(11, 46, 107, 0.2);
 }
 
 .condition-badge[data-condition="Como nuevo"] {
-  background: linear-gradient(135deg, #f4f9fa 0%, #e4f2f6 100%);
-  color: #624237;
-  box-shadow: 0 10px 22px rgba(106, 172, 194, 0.16);
+  background: linear-gradient(135deg, #ebf5ff 0%, #d6e8ff 100%);
+  color: #1d4c9b;
+  box-shadow: 0 10px 22px rgba(96, 143, 210, 0.16);
 }
 
 .condition-badge[data-condition="Muy usado"] {
-  background: linear-gradient(135deg, #ffca50 0%, #ffca50 100%);
+  background: linear-gradient(135deg, #ffd25f 0%, #f4b227 100%);
   color: #744d00;
-  box-shadow: 0 10px 22px rgba(255, 202, 80, 0.18);
+  box-shadow: 0 10px 22px rgba(244, 178, 39, 0.18);
 }
 
 .availability-badge {
@@ -480,15 +480,15 @@ img {
   min-height: 30px;
   padding: 0 0.95rem;
   border-radius: 999px;
-  background: #fff1c9;
-  color: #805427;
+  background: #eef8e8;
+  color: #387b1f;
   font-size: 0.9rem;
   font-weight: 800;
 }
 
 .availability-badge[data-status="paused"] {
-  background: #f4f9fa;
-  color: #645049;
+  background: #eef2f7;
+  color: #57667c;
 }
 
 .availability-badge[data-status="reserved"] {
@@ -514,7 +514,7 @@ img {
 .product-taxonomy .icon {
   width: 1rem;
   height: 1rem;
-  color: #74645e;
+  color: #8ea0bb;
 }
 
 .product-side-panel {
@@ -567,7 +567,7 @@ img {
 .availability-notice {
   margin: 0;
   padding: 0.95rem 1.1rem;
-  border: 1px solid rgba(255, 202, 80, 0.4);
+  border: 1px solid rgba(255, 199, 44, 0.4);
   border-radius: 16px;
   background: var(--color-accent-yellow-soft);
   color: #674d00;
@@ -576,15 +576,15 @@ img {
 }
 
 .availability-notice[data-status="sold"] {
-  border-color: rgba(160, 52, 42, 0.22);
+  border-color: rgba(220, 79, 106, 0.22);
   background: #fff2f4;
   color: #9a2945;
 }
 
 .availability-notice[data-status="paused"] {
-  border-color: rgba(100, 80, 73, 0.18);
-  background: #f4f9fa;
-  color: #645049;
+  border-color: rgba(93, 109, 134, 0.18);
+  background: #f2f5f9;
+  color: #4f5e74;
 }
 
 .attributes-section {
@@ -727,9 +727,9 @@ img {
 
 .primary-action {
   border: 0;
-  background: linear-gradient(135deg, #805427 0%, #805427 100%);
+  background: linear-gradient(135deg, #67c23a 0%, #4ea52b 100%);
   color: #fff;
-  box-shadow: 0 18px 35px rgba(128, 84, 39, 0.24);
+  box-shadow: 0 18px 35px rgba(103, 194, 58, 0.24);
 }
 
 .owner-edit-action {
@@ -737,7 +737,7 @@ img {
 }
 
 .secondary-action {
-  border: 1px solid rgba(188, 221, 231, 0.95);
+  border: 1px solid rgba(182, 195, 214, 0.95);
   background: #fff;
   color: var(--color-primary);
 }
@@ -819,7 +819,7 @@ img {
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 50%;
-  background: linear-gradient(180deg, #624237 0%, #3b2722 100%);
+  background: linear-gradient(180deg, #163f83 0%, #0b2e6b 100%);
   color: #fff;
   font-size: 0.95rem;
   font-weight: 800;
@@ -862,17 +862,17 @@ img {
 .seller-link {
   display: inline-block;
   margin-top: 0.25rem;
-  color: #624237;
+  color: #0d5bd7;
   font-weight: 600;
 }
 
 .seller-school-link {
   display: inline-block;
   margin-top: 0.2rem;
-  color: #624237;
+  color: #0d5bd7;
   font-weight: 700;
   text-decoration: underline;
-  text-decoration-color: rgba(98, 66, 55, 0.25);
+  text-decoration-color: rgba(13, 91, 215, 0.25);
   text-underline-offset: 3px;
 }
 
@@ -925,7 +925,7 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #624237;
+  color: #0d5bd7;
   font-weight: 600;
 }
 
@@ -969,19 +969,19 @@ img {
   min-height: 28px;
   padding: 0 0.75rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, #805427 0%, #805427 100%);
+  background: linear-gradient(135deg, #6dc647 0%, #4da82b 100%);
   color: #fff;
   font-size: 0.88rem;
   font-weight: 700;
 }
 
 .similar-card__badge[data-condition="Como nuevo"] {
-  background: linear-gradient(135deg, #f4f9fa 0%, #e4f2f6 100%);
-  color: #624237;
+  background: linear-gradient(135deg, #ebf5ff 0%, #d6e8ff 100%);
+  color: #1d4c9b;
 }
 
 .similar-card__badge[data-condition="Muy usado"] {
-  background: linear-gradient(135deg, #ffca50 0%, #ffca50 100%);
+  background: linear-gradient(135deg, #ffd25f 0%, #f4b227 100%);
   color: #744d00;
 }
 
@@ -999,12 +999,12 @@ img {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.96);
   color: var(--color-primary);
-  box-shadow: 0 12px 24px rgba(59, 39, 34, 0.14);
+  box-shadow: 0 12px 24px rgba(10, 34, 78, 0.14);
 }
 
 .similar-card__favorite.is-active {
   background: #fff1f1;
-  color: #a0342a;
+  color: #dc4f6a;
 }
 
 .similar-card__image {
@@ -1042,7 +1042,7 @@ img {
 .similar-empty {
   margin: 0;
   padding: 1.1rem;
-  border: 1px dashed rgba(59, 39, 34, 0.18);
+  border: 1px dashed rgba(11, 46, 107, 0.18);
   border-radius: 16px;
   background: var(--color-bg-soft);
   color: var(--color-text-soft);
@@ -1056,14 +1056,14 @@ img {
   z-index: 60;
   padding: 0.95rem 1.15rem;
   border-radius: 16px;
-  background: rgba(59, 39, 34, 0.96);
+  background: rgba(11, 46, 107, 0.96);
   color: #fff;
-  box-shadow: 0 18px 32px rgba(59, 39, 34, 0.24);
+  box-shadow: 0 18px 32px rgba(10, 34, 78, 0.24);
 }
 
 button:focus-visible,
 input:focus-visible {
-  outline: 3px solid rgba(128, 84, 39, 0.16);
+  outline: 3px solid rgba(103, 194, 58, 0.16);
   outline-offset: 2px;
 }
 
@@ -1173,7 +1173,7 @@ input:focus-visible {
   padding: 0 14px;
   border: 0;
   background: transparent;
-  color: #645049;
+  color: #69778d;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -1188,12 +1188,12 @@ input:focus-visible {
 }
 
 #seller-rating-summary strong {
-  color: #3b2722;
+  color: #0b2e6b;
   font-size: 13px;
 }
 
 #seller-rating-summary span {
-  color: #645049;
+  color: #67758b;
   font-size: 12px;
 }
 
@@ -1201,14 +1201,14 @@ input:focus-visible {
   display: inline-flex;
   padding: 2px 5px;
   border-radius: 999px;
-  background: #fff1c9;
-  color: #805427;
+  background: #eaf7e3;
+  color: #36791f;
   font-size: 10px;
   font-weight: 800;
 }
 
 .report-action:hover {
-  color: #a0342a;
+  color: #a33131;
 }
 
 .report-action .icon {
@@ -1233,7 +1233,7 @@ input:focus-visible {
   position: absolute;
   inset: 0;
   border: 0;
-  background: rgba(59, 39, 34, 0.56);
+  background: rgba(4, 18, 44, 0.56);
   backdrop-filter: blur(4px);
 }
 
@@ -1243,7 +1243,7 @@ input:focus-visible {
   padding: 24px;
   border-radius: 22px;
   background: #fff;
-  box-shadow: 0 28px 80px rgba(59, 39, 34, 0.28);
+  box-shadow: 0 28px 80px rgba(7, 31, 76, 0.28);
 }
 
 .safety-modal__head {
@@ -1255,7 +1255,7 @@ input:focus-visible {
 
 .report-kicker {
   margin: 0;
-  color: #805427;
+  color: #67c23a;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1264,24 +1264,24 @@ input:focus-visible {
 
 .safety-modal__head h2 {
   margin: 4px 0 0;
-  color: #3b2722;
+  color: #0b2e6b;
   font-size: 23px;
 }
 
 .safety-modal__close {
   width: 38px;
   height: 38px;
-  border: 1px solid #e4f2f6;
+  border: 1px solid #dce3ee;
   border-radius: 12px;
   background: #fff;
-  color: #645049;
+  color: #40506a;
   font-size: 24px;
   cursor: pointer;
 }
 
 .safety-modal__intro {
   margin: 14px 0 18px;
-  color: #645049;
+  color: #64718a;
   font-size: 13px;
   line-height: 1.55;
 }
@@ -1297,7 +1297,7 @@ input:focus-visible {
 }
 
 .safety-modal label span {
-  color: #3b2722;
+  color: #152f63;
   font-size: 13px;
   font-weight: 750;
 }
@@ -1306,10 +1306,10 @@ input:focus-visible {
 .safety-modal textarea {
   width: 100%;
   padding: 12px 13px;
-  border: 1px solid #bcdde7;
+  border: 1px solid #d6deea;
   border-radius: 13px;
   background: #fff;
-  color: #3b2722;
+  color: #15233a;
   font: inherit;
 }
 
@@ -1329,14 +1329,14 @@ input:focus-visible {
 }
 
 .safety-modal__cancel {
-  border: 1px solid #bcdde7;
+  border: 1px solid #d5deea;
   background: #fff;
-  color: #645049;
+  color: #42516a;
 }
 
 .safety-modal__submit {
   border: 0;
-  background: #3b2722;
+  background: #0b2e6b;
   color: #fff;
 }
 

@@ -435,8 +435,6 @@ function normalizeProductRecord(product) {
 
   return {
     ...normalized,
-    book_edition: product?.book_edition,
-    isbn: product?.isbn,
     images:
       product && Array.isArray(product.images)
         ? product.images
@@ -639,9 +637,6 @@ function renderProduct(product) {
 
   elements.productTitle.textContent = product.title;
   elements.productPrice.textContent = formatPrice(product.price);
-  const details = document.getElementById("book-details");
-  details.textContent = product.category === "Libros" ? [product.book_edition, product.isbn && "ISBN " + product.isbn].filter(Boolean).join(" · ") : "";
-  details.hidden = !details.textContent;
   elements.productPublishedDate.textContent = formatPublishedDate(product.created_at);
   renderUpdatedDate(product);
   elements.productViews.textContent = formatViews(product.views);

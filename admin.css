@@ -1,15 +1,15 @@
 :root {
-  --primary: #3b2722;
-  --primary-strong: #3b2722;
-  --green: #805427;
-  --yellow: #ffca50;
-  --background: #f4f9fa;
+  --primary: #0b2e6b;
+  --primary-strong: #08275d;
+  --green: #67c23a;
+  --yellow: #ffc72c;
+  --background: #f4f7fb;
   --surface: #ffffff;
-  --border: #e4f2f6;
-  --text: #3b2722;
-  --text-soft: #645049;
-  --danger: #a0342a;
-  --shadow: 0 22px 55px rgba(59, 39, 34, 0.09);
+  --border: #dce4ef;
+  --text: #1f2937;
+  --text-soft: #617089;
+  --danger: #c23e58;
+  --shadow: 0 22px 55px rgba(11, 46, 107, 0.09);
   --radius-xl: 28px;
   --radius-lg: 22px;
   --radius-md: 16px;
@@ -30,8 +30,8 @@ body {
   font-family: "Inter", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(59, 39, 34, 0.09), transparent 24%),
-    radial-gradient(circle at top right, rgba(255, 202, 80, 0.14), transparent 19%),
+    radial-gradient(circle at top left, rgba(11, 46, 107, 0.09), transparent 24%),
+    radial-gradient(circle at top right, rgba(255, 199, 44, 0.14), transparent 19%),
     var(--background);
 }
 
@@ -89,7 +89,7 @@ img {
   position: sticky;
   top: 0;
   z-index: 40;
-  border-bottom: 1px solid rgba(228, 242, 246, 0.9);
+  border-bottom: 1px solid rgba(220, 228, 239, 0.9);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
 }
@@ -115,7 +115,7 @@ img {
 .admin-brand span {
   padding: 0.45rem 0.72rem;
   border-radius: 999px;
-  background: rgba(59, 39, 34, 0.08);
+  background: rgba(11, 46, 107, 0.08);
   color: var(--primary);
   font-size: 0.78rem;
   font-weight: 800;
@@ -162,7 +162,7 @@ img {
 .access-card__loader {
   width: 46px;
   height: 46px;
-  border: 4px solid rgba(59, 39, 34, 0.12);
+  border: 4px solid rgba(11, 46, 107, 0.12);
   border-top-color: var(--green);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -265,10 +265,10 @@ img {
 
 .metric-card {
   padding: 1.2rem 1.3rem;
-  border: 1px solid rgba(59, 39, 34, 0.11);
+  border: 1px solid rgba(11, 46, 107, 0.11);
   border-radius: var(--radius-lg);
   background: #fff;
-  box-shadow: 0 16px 38px rgba(59, 39, 34, 0.06);
+  box-shadow: 0 16px 38px rgba(11, 46, 107, 0.06);
 }
 
 .metric-card span,
@@ -350,7 +350,7 @@ img {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #624237;
+  color: #0d5bd7;
   font-weight: 750;
 }
 
@@ -395,7 +395,7 @@ img {
 .school-list-filters input:focus,
 .school-list-filters select:focus {
   border-color: var(--green);
-  box-shadow: 0 0 0 4px rgba(128, 84, 39, 0.13);
+  box-shadow: 0 0 0 4px rgba(103, 194, 58, 0.13);
 }
 
 .field small,
@@ -466,7 +466,7 @@ img {
   gap: 1rem;
   padding: 0.85rem 0.95rem;
   border-radius: 14px;
-  background: #f4f9fa;
+  background: #edf3ff;
   color: var(--primary);
 }
 
@@ -485,10 +485,10 @@ img {
   min-height: 50px;
   border: 0;
   border-radius: 15px;
-  background: linear-gradient(135deg, var(--green), #805427);
+  background: linear-gradient(135deg, var(--green), #4da52b);
   color: #fff;
   font-weight: 850;
-  box-shadow: 0 15px 30px rgba(128, 84, 39, 0.22);
+  box-shadow: 0 15px 30px rgba(103, 194, 58, 0.22);
 }
 
 .panel-heading--list {
@@ -522,7 +522,7 @@ img {
 .schools-table th,
 .schools-table td {
   padding: 0.9rem 0.75rem;
-  border-bottom: 1px solid rgba(228, 242, 246, 0.82);
+  border-bottom: 1px solid rgba(220, 228, 239, 0.82);
   text-align: left;
   vertical-align: middle;
 }
@@ -589,7 +589,7 @@ img {
 .code-cell code {
   padding: 0.38rem 0.55rem;
   border-radius: 9px;
-  background: #f4f9fa;
+  background: #eef3fb;
   color: var(--primary);
   font-family: "Inter", sans-serif;
   font-size: 0.76rem;
@@ -601,7 +601,7 @@ img {
   border: 1px solid var(--border);
   border-radius: 9px;
   background: #fff;
-  color: #624237;
+  color: #0d5bd7;
   font-size: 0.68rem;
   font-weight: 750;
 }
@@ -622,15 +622,15 @@ img {
   min-height: 28px;
   padding: 0 0.7rem;
   border-radius: 999px;
-  background: #fff1c9;
-  color: #805427;
+  background: #eaf7e4;
+  color: #36781f;
   font-size: 0.7rem;
   font-weight: 820;
 }
 
 .status-badge.is-inactive {
-  background: #e4f2f6;
-  color: #645049;
+  background: #edf1f6;
+  color: #5e6c80;
 }
 
 .row-actions {
@@ -654,13 +654,13 @@ img {
 }
 
 .row-actions button[data-next-active="true"] {
-  color: #805427;
+  color: #387b1f;
 }
 
 .schools-empty {
   margin-top: 0.8rem;
   padding: 1.1rem;
-  border: 1px dashed rgba(59, 39, 34, 0.2);
+  border: 1px dashed rgba(11, 46, 107, 0.2);
   border-radius: 14px;
   background: var(--background);
   color: var(--text-soft);
@@ -668,11 +668,11 @@ img {
 }
 
 .metric-card--red {
-  border-color: rgba(160, 52, 42, 0.22);
+  border-color: rgba(220, 79, 106, 0.22);
 }
 
 .metric-card--red strong {
-  color: #a0342a;
+  color: #c6344e;
 }
 
 .technical-panel {
@@ -721,14 +721,14 @@ img {
   flex: 0 0 auto;
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
-  background: rgba(59, 39, 34, 0.08);
+  background: rgba(11, 46, 107, 0.08);
   color: var(--primary);
   font-size: 0.72rem;
   font-weight: 800;
 }
 
 .technical-error--setup {
-  border-color: rgba(255, 202, 80, 0.4);
+  border-color: rgba(255, 199, 44, 0.4);
 }
 
 @media (max-width: 680px) {
@@ -745,10 +745,10 @@ img {
   max-width: min(360px, calc(100% - 2.4rem));
   padding: 0.9rem 1.05rem;
   border-radius: 14px;
-  background: rgba(59, 39, 34, 0.97);
+  background: rgba(11, 46, 107, 0.97);
   color: #fff;
   font-weight: 750;
-  box-shadow: 0 18px 36px rgba(59, 39, 34, 0.24);
+  box-shadow: 0 18px 36px rgba(11, 46, 107, 0.24);
 }
 
 @media (max-width: 1120px) {

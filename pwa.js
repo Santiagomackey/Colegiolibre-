@@ -38,9 +38,9 @@
   function copy() {
     return language() === "en"
       ? {
-          installTitle: "Install the app",
+          installTitle: "Install ColeGo",
           installText: "Use it like an app from your home screen.",
-
+          apkTitle: "ColeGo for Android",
           apkText: "Install ColeGo directly on your home screen.",
           apkInstall: "Install app",
           iosText: "Install the iPhone version from Safari.",
@@ -58,9 +58,9 @@
           later: "Later"
         }
       : {
-          installTitle: "Instalar la app",
+          installTitle: "Instalá ColeGo",
           installText: "Usala como una app desde tu pantalla de inicio.",
-
+          apkTitle: "ColeGo para Android",
           apkText: "Instalá ColeGo directamente en tu pantalla de inicio.",
           apkInstall: "Instalar app",
           iosText: "Instalá la versión para iPhone desde Safari.",
@@ -158,7 +158,7 @@
     card.innerHTML = `
       <img class="pwa-install-card__icon" src="/images/colego-cart-192.png" alt="" />
       <div class="pwa-install-card__copy">
-        <strong>${text.installTitle}</strong>
+        <strong>${isAndroid ? text.apkTitle : text.installTitle}</strong>
         <p>${isAndroid ? text.apkText : (isIOS ? text.iosText : text.installText)}</p>
       </div>
       <div class="pwa-install-card__actions">

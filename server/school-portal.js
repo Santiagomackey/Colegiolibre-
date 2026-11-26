@@ -104,7 +104,7 @@ export async function paidSubscription(cfg, school) {
   const ids = requests.filter(request => Object.hasOwn(prices, request.requested_plan)).map(request => request.id);
   if (!ids.length) return null;
   const query = new URLSearchParams({
-    select: 'user_id,plan,billing_cycle,amount,currency,status,paid_through',
+    select: 'plan,billing_cycle,amount,currency,status,paid_through',
     request_id: 'in.(' + ids.join(',') + ')',
     paid_through: 'gt.' + new Date().toISOString(), order: 'paid_through.desc', limit: '1'
   });

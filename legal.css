@@ -1,13 +1,13 @@
 :root {
   color-scheme: light;
-  --navy: #3b2722;
-  --navy-deep: #3b2722;
-  --green: #805427;
-  --yellow: #ffca50;
-  --ink: #3b2722;
-  --muted: #645049;
-  --line: #e4f2f6;
-  --surface: #f4f9fa;
+  --navy: #0b2e6b;
+  --navy-deep: #071f4b;
+  --green: #67c23a;
+  --yellow: #ffc72c;
+  --ink: #1f2937;
+  --muted: #64748b;
+  --line: #dce4ef;
+  --surface: #f7f9fc;
   --white: #fff;
   font-family: "Inter", system-ui, sans-serif;
 }
@@ -27,8 +27,8 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at 8% 0%, rgba(128, 84, 39, 0.1), transparent 26rem),
-    radial-gradient(circle at 92% 2%, rgba(255, 202, 80, 0.16), transparent 22rem),
+    radial-gradient(circle at 8% 0%, rgba(103, 194, 58, 0.1), transparent 26rem),
+    radial-gradient(circle at 92% 2%, rgba(255, 199, 44, 0.16), transparent 22rem),
     var(--surface);
   color: var(--ink);
   line-height: 1.65;
@@ -42,7 +42,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid rgba(59, 39, 34, 0.09);
+  border-bottom: 1px solid rgba(11, 46, 107, 0.09);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
 }
@@ -80,7 +80,7 @@ a {
 }
 
 .legal-nav a:hover {
-  color: #805427;
+  color: #3f9829;
 }
 
 .legal-main {
@@ -94,7 +94,7 @@ a {
 
 .legal-kicker {
   margin: 0 0 8px;
-  color: #805427;
+  color: #46992d;
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.11em;
@@ -121,7 +121,7 @@ a {
   margin-top: 18px;
   padding: 7px 11px;
   border-radius: 999px;
-  background: #f4f9fa;
+  background: #edf3ff;
   color: var(--navy);
   font-size: 0.8rem;
   font-weight: 750;
@@ -139,7 +139,7 @@ a {
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--white);
-  box-shadow: 0 18px 50px rgba(59, 39, 34, 0.06);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
 }
 
 .legal-document {
@@ -149,7 +149,7 @@ a {
 .legal-section + .legal-section {
   margin-top: 38px;
   padding-top: 34px;
-  border-top: 1px solid #e4f2f6;
+  border-top: 1px solid #e8edf4;
 }
 
 .legal-section h2 {
@@ -167,7 +167,7 @@ a {
 
 .legal-section p,
 .legal-section li {
-  color: #645049;
+  color: #526174;
 }
 
 .legal-section ul,
@@ -185,8 +185,8 @@ a {
 
 .legal-note--safe {
   border-left-color: var(--green);
-  background: #fff1c9;
-  color: #805427;
+  background: #f2faed;
+  color: #2f621f;
 }
 
 .legal-aside {
@@ -204,8 +204,8 @@ a {
 .legal-aside a {
   display: block;
   padding: 9px 0;
-  border-bottom: 1px solid #e4f2f6;
-  color: #645049;
+  border-bottom: 1px solid #edf0f5;
+  color: #586579;
   font-size: 0.88rem;
   text-decoration: none;
 }

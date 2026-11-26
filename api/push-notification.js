@@ -136,14 +136,6 @@ export default async function handler(request, response) {
   }
 
   try {
-    if (notification.type === "wanted_match") {
-      const check = await fetch(new URL("/rest/v1/rpc/colego_match_push_current",process.env.SUPABASE_URL),{
-        method:"POST",headers:supabaseHeaders(),signal:AbortSignal.timeout(5000),
-        body:JSON.stringify({p_wanted:notification.metadata?.wanted_post_id,p_product:notification.product_id,p_user:notification.user_id})
-      });
-      if (!check.ok) throw new Error("No pudimos revalidar la coincidencia.");
-      if (!await check.json()) return sendJson(response,200,{sent:0,skipped:true});
-    }
     const webUrl = new URL('/rest/v1/web_push_devices', process.env.SUPABASE_URL);
     webUrl.searchParams.set('user_id', 'eq.' + notification.user_id);
     webUrl.searchParams.set('select', 'endpoint,p256dh,auth');

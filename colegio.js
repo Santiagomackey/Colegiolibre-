@@ -391,7 +391,6 @@ function renderProducts() {
 
   if (!products.length) {
     elements.emptyState.hidden = state.productsLoadFailed;
-    document.getElementById("ask-school").href = "/busco?" + new URLSearchParams({scope:"school", title:state.searchTerm, category:state.selectedCategory}) + "#crear-pedido";
     return;
   }
 

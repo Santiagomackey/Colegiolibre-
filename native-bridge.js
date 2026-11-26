@@ -80,7 +80,7 @@
       const url = new URL(value || '/', 'https://www.colego.com.ar/');
       if (!['https://www.colego.com.ar','https://colego.com.ar','https://colegiolibre.com','https://www.colegiolibre.com',window.location?.origin].includes(url.origin)) return '/';
       const page = url.pathname.replace(/\.html$/, '') || '/';
-      return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco', '/compra', '/pedidos','/instituciones','/portal-colegio'].includes(page) ? page+url.search : '/';
+      return ['/', '/producto', '/mensajes', '/perfil', '/favoritos', '/busco', '/compra', '/pedidos','/portal-colegio'].includes(page) ? page+url.search : '/';
     } catch (_) {return '/'}
   };
   const publishPushState = () => window.dispatchEvent(new CustomEvent('colegiolibre:pushstatechange',{detail:{...pushState}}));

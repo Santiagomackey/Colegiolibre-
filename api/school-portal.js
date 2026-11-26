@@ -96,7 +96,7 @@ export default async function handler(req, res) {
       name:school.short_name, primary:school.primary_color, accent:school.accent_color
     }) : portalDefaults;
     return send(res, 200, {
-      school: { code, city, name: display_name || name, path:schoolPortalPath(school) }, manager, billingOwner:manager && subscription.user_id === user.id, subscription: manage ? {...subscription,user_id:undefined} : undefined,
+      school: { code, city, name: display_name || name, path:schoolPortalPath(school) }, manager, subscription: manage ? subscription : undefined,
       publishedAt: portal?.published_at || null, members,
       accessRequests: manage ? await select(cfg,'school_portal_access_requests','user_id,name,email,status',
         {school_id:school.id},{status:'in.(pending,approved)',order:'status.desc,created_at.asc'}) : undefined,
