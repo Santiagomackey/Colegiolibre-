@@ -21,7 +21,7 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </style>
-  <link rel="stylesheet" href="/inicio-materiales.css?v=market-2">
+  <link rel="stylesheet" href="/inicio-materiales.css?v=nuevo-pedido-1">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -46,20 +46,7 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
  <section class="materials-hero" aria-labelledby="materials-title">
   <h1 id="materials-title">¿Qué necesitás para el cole?</h1>
   <p>Pedilo y te avisamos cuando aparezca.</p>
-  <form class="materials-composer" action="/busco#crear-pedido" method="get">
-   <label class="cl-site-sr" for="material-title">Material que necesitás</label>
-   <input id="material-title" name="title" placeholder="Ej. Libro de Matemática" required minlength="3" maxlength="120">
-   <div class="materials-budget">
-    <label>Desde ($)<input name="min_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="8.000"></label>
-    <label>Hasta ($)<input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="10.000"></label>
-   </div>
-   <fieldset class="materials-scopes">
-    <legend class="cl-site-sr">Dónde buscar</legend>
-    <label><input type="checkbox" name="scope" value="school" disabled> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6m4-2v7"/></svg>Mi colegio</label>
-    <label><input type="checkbox" name="scope" value="zone" checked> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Mi zona</label>
-   </fieldset>
-   <button class="materials-submit" type="submit">Guardar en mi lista</button>
-  </form>
+  <a class="materials-new-request" href="/busco#crear-pedido">Nuevo pedido</a>
  </section>
  <div class="materials-panels">
   <section class="materials-card materials-card--requests" aria-labelledby="requests-title">
@@ -133,6 +120,6 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 <script src="/supabase.js?v=20261110-recovery31" defer></script>
 <script src="/site-header.js?v=palette-logo-1" defer></script>
 <script src="/school-private-link.js" defer></script>
-<script src="/inicio-materiales.js?v=market-2" defer></script>
+<script src="/inicio-materiales.js?v=nuevo-pedido-1" defer></script>
 </body>
 </html>

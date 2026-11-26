@@ -4,7 +4,6 @@
   const list = document.getElementById("materials-requests");
   const results = document.getElementById("materials-matches");
   const feedback = document.getElementById("materials-feedback");
-  const composer = document.querySelector(".materials-composer");
   const money = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
   let lastSelection = 0;
 
@@ -153,20 +152,9 @@
     link.href = path;
     link.hidden = false;
     document.getElementById("materials-school-status").textContent = "Tu comunidad está habilitada.";
-    if (profile.school_verification_status === "verified") composer.querySelector('[value="school"]').disabled = false;
   }
 
-  function validate() {
-    const { min_price: min, max_price: max } = composer.elements;
-    max.setCustomValidity(min.value && max.value && Number(min.value) > Number(max.value)
-      ? "El monto hasta debe ser mayor o igual al monto desde." : "");
-    const zone = composer.querySelector('[value="zone"]');
-    const school = composer.querySelector('[value="school"]');
-    zone.setCustomValidity(zone.checked || (school.checked && !school.disabled) ? "" : "Elegí dónde buscar.");
-  }
   void loadCatalog();
-  composer.addEventListener("input", validate);
-  window.addEventListener("pageshow", validate);
   Promise.resolve().then(() => api.getCurrentUser()).then(user => {
     if (user) void loadSchool().catch(() => {});
     return loadRequests(user);
