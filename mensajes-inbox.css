@@ -211,3 +211,53 @@ html[data-theme] body.mobile-messages .conversation-product { font-weight: 550; 
   html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-empty { padding: 8px 12px; }
   html[data-theme] body.mobile-messages #message-form button { min-width: 92px; }
 }
+
+
+/* Keep the context visible without crowding out the conversation. */
+html[data-theme] body.mobile-messages .chat-panel .chat-header {
+  gap: 10px;
+  padding: 10px 16px;
+  min-height: 60px;
+  background: #fff;
+  border-bottom-color: #eee7e0;
+}
+html[data-theme] body.mobile-messages .chat-header .chat-avatar:not([hidden]) {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  background: #e5f2f5;
+  color: #3b2722;
+  font-size: .85rem;
+}
+html[data-theme] body.mobile-messages .chat-header__copy h2 { font-size: 1rem; line-height: 1.25; }
+html[data-theme] body.mobile-messages .chat-header__copy p { margin: 3px 0 0; font-size: .8rem; color: #65534a; }
+html[data-theme] body.mobile-messages #chat-safety-actions summary { border-color: transparent; }
+html[data-theme] body.mobile-messages #chat-safety-actions summary:hover { background: #fff0c9; }
+html[data-theme] body.mobile-messages .product-card .view-product-link {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #cde5ec;
+  border-radius: 999px;
+  background: #e5f2f5;
+  color: #3b2722;
+  font-size: .82rem;
+  font-weight: 650;
+  box-shadow: none;
+}
+html[data-theme] body.mobile-messages .product-card .view-product-link:hover { background: #fff0c9; border-color: #ffdf92; }
+html[data-theme] body.mobile-messages .product-card .view-product-link .icon { width: 14px; height: 14px; }
+@media (min-width: 881px) {
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-card {
+    grid-template-columns: 42px minmax(0,1fr) auto;
+    padding: 6px 10px;
+    border-radius: 14px;
+    gap: 8px 10px;
+  }
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-card__media { height: 42px; border-radius: 8px; }
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-card__body h3 { font-size: .9rem; }
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-card__price { margin-top: 2px; font-size: .85rem; }
+}
+@media (max-width: 880px) {
+  html[data-theme] body.mobile-messages .chat-panel .chat-header { padding: 6px 8px; gap: 6px; }
+  html[data-theme] body.mobile-messages .product-card .view-product-link { min-height: 44px; }
+}
