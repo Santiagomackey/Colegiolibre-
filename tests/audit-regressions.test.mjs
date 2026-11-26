@@ -43,10 +43,11 @@ test('Explore exposes retry and truthful empty states after server failures',asy
  const window={addEventListener(){},colegioLibreSupabase:{from:()=>query(result,calls)}};
  const document={querySelector:element,querySelectorAll:()=>[]};
  const history={replaceState(){}};
- vm.runInNewContext(read('explorar.js'),{window,document,location:{href:'https://www.colego.com.ar/explorar'},history,URL,AbortController,setTimeout,clearTimeout,matchMedia:()=>({matches:true,addEventListener(){}})});
+ vm.runInNewContext(read('explorar.js'),{window,document,location:{href:'https://www.colego.com.ar/explorar'},history,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,matchMedia:()=>({matches:true,addEventListener(){}})});
  await new Promise(resolve=>setImmediate(resolve));assert.equal(element('#results-error').hidden,false);assert.equal(element('#catalog-filters').open,false);assert.equal(element('#empty').hidden,true);
  result={data:[],error:null,count:0};await element('#retry').onclick();
  assert.equal(element('#results-error').hidden,true);assert.equal(element('#empty').hidden,false);assert.equal(element('#count').textContent,'0 resultados');
+ assert.equal(new URL(element('#ask-school').href,'https://colego.com.ar').searchParams.get('scope'),'school');
  assert.ok(calls.some(([method,start,end])=>method==='range'&&start===0&&end===23));
 });
 

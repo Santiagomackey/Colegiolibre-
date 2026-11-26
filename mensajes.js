@@ -15,7 +15,7 @@
   } = window.colegioLibreApi;
 
   const params = new URLSearchParams(window.location.search);
-  const requestedConversationId =
+  let requestedConversationId =
     params.get("id") || params.get("conversation");
 
   const elements = {
@@ -71,8 +71,8 @@
     if (!productDetails) return;
     productDetails.open = false;
     productDetails.hidden = !phoneLayout.matches;
-    const parent = phoneLayout.matches ? productDetails : document.querySelector(".messages-app");
-    parent.append(elements.productPanel);
+    if (phoneLayout.matches) productDetails.append(elements.productPanel);
+    else productDetails.after(elements.productPanel);
     sizePhoneChat();
   }
 
@@ -117,10 +117,22 @@
     }
 
     if (elements.accountLink) elements.accountLink.href = "/perfil";
+    if (params.has("wanted")) {
+      try {
+        const {data, error} = await window.colegioLibreSupabase.rpc("open_wanted_chat", {p_wanted_id:params.get("wanted")});
+        if (error || !data) throw error;
+        requestedConversationId = data;
+        history.replaceState(null, "", "/mensajes?id=" + encodeURIComponent(data));
+      } catch (_) {
+        showToast("No pudimos abrir el pedido. Revisá que siga activo y que tengas acceso.");
+      }
+    }
     await refreshConversations({ preserveSelection: false });
 
     if (requestedConversationId) {
       await openConversation(requestedConversationId, { pushHistory: false });
+    } else if (!phoneLayout.matches && state.conversations.length) {
+      await openConversation(state.conversations[0].id, { pushHistory: false, markRead: false });
     } else {
       renderConversationList();
       renderEmptyChat();
@@ -242,9 +254,9 @@
     const registry = new Map();
 
     rows
-      .filter((row) => row.product_id && row.buyer_id && row.seller_id)
+      .filter((row) => (row.product_id || row.wanted_post_id) && row.buyer_id && row.seller_id)
       .forEach((row) => {
-        const key = [row.product_id, row.buyer_id, row.seller_id].join("|");
+        const key = [row.product_id || "pedido:" + row.wanted_post_id, row.buyer_id, row.seller_id].join("|");
         const previous = registry.get(key);
         if (!previous || getConversationSortTime(row) >= getConversationSortTime(previous)) {
           registry.set(key, row);
@@ -421,7 +433,7 @@
     const query = normalize(state.searchTerm);
     const filtered = state.conversations.filter((conversation) => {
       const haystack = normalize(
-        `${getConversationName(conversation)} ${getConversationSchool(conversation)} ${conversation.product?.title || ""} ${conversation.lastMessage?.body || ""}`
+        `${getConversationName(conversation)} ${getConversationSchool(conversation)} ${conversation.wanted_title || conversation.product?.title || ""} ${conversation.lastMessage?.body || ""}`
       );
       return !query || haystack.includes(query);
     });
@@ -455,9 +467,10 @@
       ]
         .filter(Boolean)
         .join(" ");
+      item.setAttribute("aria-pressed", String(conversation.id === state.activeConversationId));
       item.setAttribute(
         "aria-label",
-        `${getConversationName(conversation)}, ${conversation.product?.title || "producto"}${unreadCount ? `, ${unreadCount} sin leer` : ""}`
+        `${getConversationName(conversation)}, ${conversation.wanted_title || conversation.product?.title || "producto"}${unreadCount ? `, ${unreadCount} sin leer` : ""}`
       );
       item.innerHTML = `
         <div class="conversation-avatar">${escapeHtml(
@@ -485,7 +498,7 @@
             getConversationSchool(conversation)
           )}</p>
           <p class="conversation-product">${escapeHtml(
-            conversation.product?.title || "Producto no disponible"
+            conversation.wanted_title || conversation.product?.title || "Producto no disponible"
           )}</p>
           <p class="conversation-last">${escapeHtml(
             conversation.lastMessage?.body ||
@@ -498,7 +511,7 @@
     });
   }
 
-  async function openConversation(conversationId, { pushHistory = true } = {}) {
+  async function openConversation(conversationId, { pushHistory = true, markRead = true } = {}) {
     if (!conversationId) return;
 
     let conversation = state.conversations.find(
@@ -553,8 +566,8 @@
     document.body.dataset.view = "chat";
     sizePhoneChat();
     await subscribeTyping(conversation.id);
-    await loadMessages(conversation.id);
-    await markConversationNotificationsRead(conversation.id);
+    await loadMessages(conversation.id, { markRead });
+    if (markRead) await markConversationNotificationsRead(conversation.id);
   }
 
   function renderConversationHeader(conversation) {
@@ -565,12 +578,18 @@
     elements.chatTitle.textContent = name;
     elements.chatSubtitle.textContent = getConversationSchool(conversation);
     elements.typingIndicator.hidden = true;
+    elements.chatSafetyActions.open = false;
     elements.chatSafetyActions.hidden = false;
     void hydrateBlockState(conversation);
   }
 
   function renderProductPanel(conversation) {
     const product = conversation.product;
+    if (conversation.wanted_post_id) {
+      elements.productPanel.innerHTML = '<div class="product-empty"><strong>Pedido de material</strong><span></span></div>';
+      elements.productPanel.querySelector("span").textContent = conversation.wanted_title;
+      return;
+    }
     if (!product) {
       renderProductPlaceholder("El producto asociado ya no está disponible.");
       return;
@@ -616,7 +635,7 @@
           <a class="view-product-link" href="/producto?id=${encodeURIComponent(
             product.id
           )}">
-            <span>Ver producto</span>
+            <span>Ver publicación</span>
             <svg class="icon"><use href="#icon-open"></use></svg>
           </a>
         </div>
@@ -1133,7 +1152,7 @@
     `;
   }
 
-  async function loadMessages(conversationId, { scrollToLatest = false } = {}) {
+  async function loadMessages(conversationId, { scrollToLatest = false, markRead = true } = {}) {
     const columns = state.readAtSupported ? "*" : "id, conversation_id, sender_id, body, created_at";
     const { data, error } = await window.colegioLibreSupabase
       .from("messages")
@@ -1149,7 +1168,7 @@
       isMissingColumnError(error, "read_at")
     ) {
       state.readAtSupported = false;
-      await loadMessages(conversationId, { scrollToLatest });
+      await loadMessages(conversationId, { scrollToLatest, markRead });
       return;
     }
 
@@ -1159,7 +1178,7 @@
       return;
     }
 
-    await markConversationRead(conversationId);
+    if (markRead) await markConversationRead(conversationId);
     if (state.activeConversationId !== conversationId) return;
 
     state.activeMessages = data || [];
@@ -1270,9 +1289,10 @@
   }
 
   function renderEmptyChat(
-    message = "Elegí un chat de la izquierda para empezar."
+    message = "Acá vas a ver los mensajes del chat."
   ) {
     state.renderedConversationId = null;
+    if (!state.activeConversationId) document.body.dataset.view = "list";
     elements.chatAvatar.hidden = true;
     elements.messageForm.hidden = true;
     elements.chatAvatar.textContent = "";
@@ -1282,7 +1302,8 @@
     elements.chatSafetyActions.hidden = true;
     elements.messagesList.innerHTML = `
       <div class="empty-chat">
-        <strong>No hay conversación abierta.</strong>
+        <div class="empty-chat-mark" aria-hidden="true"><svg class="icon"><use href="#icon-message"></use></svg></div>
+        <strong>Elegí una conversación</strong>
         <span>${escapeHtml(message)}</span>
       </div>
     `;

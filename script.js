@@ -1777,7 +1777,7 @@ function buildSummary(total, productLimit = getCurrentProductLimit()) {
   if (!total) {
     return state.showOnlyFavorites
       ? "Todavía no tenés favoritos para estos filtros."
-      : "Sin resultados para los filtros actuales.";
+      : "";
   }
 
   const shown = Math.min(total, productLimit);
@@ -1834,6 +1834,11 @@ function renderProductGrid(products, total, productLimit = getCurrentProductLimi
   if (!products.length) {
     elements.productGrid.innerHTML = "";
     elements.emptyState.hidden = false;
+    const request = document.getElementById("ask-school");
+    if (request) {
+      request.hidden = Boolean(state.loadError);
+      request.href = "/busco?" + new URLSearchParams({scope:"school", title:state.searchTerm}) + "#crear-pedido";
+    }
     const title = elements.emptyState.querySelector("h3");
     const copy = elements.emptyState.querySelector("p");
     if (state.loadError) {

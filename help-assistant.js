@@ -21,6 +21,26 @@
     return message;
   }
 
+  function actionFor(question, answer) {
+    const words = question.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    if (/\b(edit\w*|elimin\w*|paus\w*|mis publicaciones)\b/.test(words) && /mis publicaciones/i.test(answer)) {
+      return ['/perfil', 'Ver mis publicaciones'];
+    }
+    if (/\b(public\w*|vend\w*|subir)\b/.test(words) && /publicar/i.test(answer)) {
+      return ['/publicar', 'Publicar un libro'];
+    }
+    if (/\b(compra\w*|pedido\w*|pago\w*|pague|cobro\w*)\b/.test(words) && /pedido|mis compras|compras y ventas/i.test(answer)) {
+      return ['/pedidos', 'Ver mis compras'];
+    }
+    if (/\b(colegio|escuela|portal)\b/.test(words) && /mi colegio/i.test(answer)) {
+      return ['/colegio', 'Ir a mi colegio'];
+    }
+    if (/\b(mensaje\w*|entrega\w*|contactar|chat)\b/.test(words) && /mensajes/i.test(answer)) {
+      return ['/mensajes', 'Abrir mensajes'];
+    }
+    return null;
+  }
+
   function resize() {
     field.style.height = 'auto';
     field.style.height = Math.min(field.scrollHeight, 96) + 'px';
@@ -59,7 +79,15 @@
       if (!response.ok || typeof data.answer !== 'string' || !data.answer.trim()) {
         throw new Error(response.status === 429 ? 'limit' : 'unavailable');
       }
-      show('assistant', data.answer, data.source);
+      const reply = show('assistant', data.answer, data.source);
+      const action = actionFor(question, data.answer);
+      if (action) {
+        const link = document.createElement('a');
+        [link.href, link.textContent] = action;
+        link.className = 'chat-action';
+        reply.append(link);
+        scroll.scrollTop = scroll.scrollHeight;
+      }
       history = [...messages, {role:'assistant', content:data.answer}];
       status.textContent = '';
     } catch (error) {

@@ -1,12 +1,12 @@
 :root {
-  --beta-blue: #0b2e6b;
+  --beta-blue: #3b2722;
   --beta-green: #67c23a;
   --beta-yellow: #ffc72c;
-  --beta-bg: #f3f6fb;
+  --beta-bg: #e9f4f7;
   --beta-surface: #fff;
-  --beta-text: #192437;
-  --beta-muted: #68758a;
-  --beta-border: #dce4ef;
+  --beta-text: #3b2722;
+  --beta-muted: #805f54;
+  --beta-border: #e8dbd5;
 }
 
 * {
@@ -41,7 +41,7 @@ textarea {
   justify-content: space-between;
   min-height: 76px;
   padding: 10px max(20px, calc((100vw - 1160px) / 2));
-  border-bottom: 1px solid rgba(220, 228, 239, 0.94);
+  border-bottom: 1px solid rgba(232, 219, 213, 0.94);
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
 }
@@ -79,9 +79,9 @@ textarea {
   border-radius: 32px;
   background:
     radial-gradient(circle at 92% 10%, rgba(103, 194, 58, 0.24), transparent 32%),
-    linear-gradient(145deg, #0b2e6b, #123f86);
+    linear-gradient(145deg, #3b2722, #3b2722);
   color: #fff;
-  box-shadow: 0 28px 64px rgba(11, 46, 107, 0.2);
+  box-shadow: 0 28px 64px rgba(59, 39, 34, 0.2);
 }
 
 .beta-hero p:first-child,
@@ -112,7 +112,7 @@ textarea {
 .beta-hero img {
   width: clamp(110px, 16vw, 180px);
   border-radius: 30%;
-  box-shadow: 0 20px 40px rgba(3, 18, 46, 0.32);
+  box-shadow: 0 20px 40px rgba(42, 28, 24, 0.32);
 }
 
 .beta-progress,
@@ -121,7 +121,7 @@ textarea {
   border: 1px solid var(--beta-border);
   border-radius: 26px;
   background: var(--beta-surface);
-  box-shadow: 0 16px 40px rgba(15, 38, 72, 0.07);
+  box-shadow: 0 16px 40px rgba(59, 39, 34, 0.07);
 }
 
 .beta-progress {
@@ -153,7 +153,7 @@ textarea {
   height: 10px;
   overflow: hidden;
   border-radius: 99px;
-  background: #e9eef6;
+  background: #daecf1;
 }
 
 .beta-progress__track span {
@@ -249,7 +249,7 @@ textarea {
   min-height: 39px;
   padding: 0 12px;
   border-radius: 12px;
-  background: #edf3fb;
+  background: #e9f4f7;
   color: var(--beta-blue);
   font-size: 0.75rem;
   font-weight: 800;
@@ -299,7 +299,7 @@ textarea {
 #beta-feedback-form select:focus,
 #beta-feedback-form textarea:focus {
   border-color: var(--beta-blue);
-  box-shadow: 0 0 0 3px rgba(11, 46, 107, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 39, 34, 0.1);
 }
 
 .beta-rating {
@@ -359,7 +359,7 @@ textarea {
   border: 0;
   border-radius: 16px;
   background: linear-gradient(135deg, var(--beta-green), #56b92b);
-  color: #092356;
+  color: #3b2722;
   font-weight: 850;
   cursor: pointer;
   box-shadow: 0 14px 28px rgba(103, 194, 58, 0.2);
@@ -435,11 +435,11 @@ textarea {
 }
 
 html[data-theme="dark"] {
-  --beta-bg: #080c13;
-  --beta-surface: #111822;
-  --beta-text: #eff5ff;
-  --beta-muted: #9aa9bf;
-  --beta-border: #26354a;
+  --beta-bg: #2a1c18;
+  --beta-surface: #2a1c18;
+  --beta-text: #e9f4f7;
+  --beta-muted: #805f54;
+  --beta-border: #3b2722;
 }
 
 html[data-theme="dark"] .beta-header,
@@ -447,7 +447,7 @@ html[data-theme="dark"] .beta-task,
 html[data-theme="dark"] #beta-feedback-form select,
 html[data-theme="dark"] #beta-feedback-form textarea,
 html[data-theme="dark"] .beta-rating span {
-  background: #111822;
+  background: #2a1c18;
 }
 
 html[data-theme="dark"] .beta-task.is-complete {
@@ -459,6 +459,6 @@ html[data-theme="dark"] .beta-task strong,
 html[data-theme="dark"] .beta-progress strong,
 html[data-theme="dark"] #beta-feedback-form label,
 html[data-theme="dark"] .beta-rating legend {
-  color: #f4f8ff;
+  color: #e9f4f7;
 }
 

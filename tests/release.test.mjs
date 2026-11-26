@@ -130,7 +130,7 @@ test("los logos oscuros están acotados por página y publicar conserva su vista
   assert.match(publishHtml, /class="[^"]*\bpublish-body\b[^"]*"/);
   assert.match(preferences, /\.publish-body/);
   assert.doesNotMatch(preferences, /:is\(\.brand-link,\s*\.legal-brand\)/);
-  assert.match(publishCss, /\.preview-panel\s*\{[\s\S]*?position: sticky/);
+  assert.match(publishCss, /\.preview-panel\s*\{[^}]*position: static/);
   assert.doesNotMatch(publishCss, /\.preview-panel\s*\{[^}]*overflow-y:\s*auto/);
   assert.match(preferences, /\)\s+\.site-header \.brand-link img\s*\{[\s\S]*?width:\s*188px !important/);
   assert.match(publishCss, /@media \(max-width: 1220px\)[\s\S]*?\.preview-panel\s*\{[\s\S]*?position: relative/);

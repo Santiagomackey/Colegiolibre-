@@ -1,7 +1,7 @@
 :root {
-  --institution-primary: #0b2e6b;
+  --institution-primary: #3b2722;
   --institution-accent: #67c23a;
-  --institution-soft: #eef4fb;
+  --institution-soft: #e9f4f7;
   --institution-primary-rgb: 11, 46, 107;
 }
 
@@ -81,7 +81,7 @@ body.institution-themed textarea:focus {
 
 body.institution-themed .site-header {
   border-top: 4px solid var(--institution-accent);
-  box-shadow: 0 12px 34px rgba(15, 25, 40, .065);
+  box-shadow: 0 12px 34px rgba(42, 28, 24, .065);
 }
 
 .cl-school-lockup {
@@ -89,7 +89,7 @@ body.institution-themed .site-header {
   display: flex;
   align-items: center;
   gap: 11px;
-  color: #17212b;
+  color: #3b2722;
 }
 
 .cl-school-lockup-logo {
@@ -192,7 +192,7 @@ body.institution-themed .site-header {
 .cl-school-lockup-copy strong {
   max-width: 156px;
   overflow: hidden;
-  color: #182430;
+  color: #3b2722;
   font-size: 13px;
   line-height: 1.15;
   text-overflow: ellipsis;
@@ -301,7 +301,7 @@ body.institution-themed .hero-panel {
   grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr);
   gap: 1rem;
   background:
-    linear-gradient(90deg, rgba(2, 15, 40, .12) 0%, transparent 45%),
+    linear-gradient(90deg, rgba(42, 28, 24, .12) 0%, transparent 45%),
     radial-gradient(circle at 76% 22%, rgba(255,255,255,.14), transparent 27%),
     linear-gradient(135deg, var(--institution-primary) 0%, var(--color-primary-deep) 100%) !important;
   border: 1px solid rgba(255, 255, 255, .13);
@@ -340,7 +340,7 @@ body.institution-themed .hero-cta-row .cta-button {
   padding-inline: 22px;
   background: var(--institution-accent) !important;
   border-color: var(--institution-accent) !important;
-  color: #07172c !important;
+  color: #2a1c18 !important;
   box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
 }
 
@@ -364,7 +364,7 @@ body.institution-themed .hero-copy h1 em {
   padding: 8px 11px;
   border-radius: 12px;
   color: #fff;
-  background: rgba(7, 18, 35, .5);
+  background: rgba(42, 28, 24, .5);
   backdrop-filter: blur(10px);
   font-size: 9px;
   font-weight: 700;
@@ -433,7 +433,7 @@ body.institution-themed .hero-copy h1 em {
 }
 
 .cl-trust-heading strong {
-  color: #162131;
+  color: #3b2722;
   font-size: clamp(20px, 2.2vw, 30px);
   letter-spacing: -.035em;
 }
@@ -448,7 +448,7 @@ body.institution-themed .trust-card {
   border: 1px solid rgba(var(--institution-primary-rgb), .09);
   border-radius: 18px;
   background: rgba(255, 255, 255, .88);
-  box-shadow: 0 14px 38px rgba(30, 45, 65, .06);
+  box-shadow: 0 14px 38px rgba(59, 39, 34, .06);
 }
 
 body.institution-themed .trust-icon {
@@ -488,7 +488,7 @@ body.institution-themed .trust-icon {
 }
 
 .cl-market-note strong {
-  color: #172333;
+  color: #3b2722;
   font-size: 11px;
 }
 
@@ -502,7 +502,7 @@ body.institution-themed .trust-icon {
 
 body.institution-themed .product-card {
   border: 1px solid rgba(var(--institution-primary-rgb), .075);
-  box-shadow: 0 12px 34px rgba(23, 39, 62, .065);
+  box-shadow: 0 12px 34px rgba(59, 39, 34, .065);
 }
 
 body.institution-themed .product-card:hover {
@@ -517,7 +517,7 @@ body.institution-themed .steps-panel {
   background:
     radial-gradient(circle at 92% 8%, rgba(var(--institution-primary-rgb), .1), transparent 25rem),
     #fff;
-  box-shadow: 0 24px 70px rgba(30, 45, 65, .08);
+  box-shadow: 0 24px 70px rgba(59, 39, 34, .08);
 }
 
 body.institution-themed .site-footer {
@@ -525,39 +525,39 @@ body.institution-themed .site-footer {
 }
 
 html[data-theme="dark"] body.institution-themed {
-  background: #06090e;
+  background: #2a1c18;
 }
 
 html[data-theme="dark"] body.institution-themed .site-header .brand.cl-branded {
-  border-color: #26303b !important;
-  background: #10151b !important;
+  border-color: #3b2722 !important;
+  background: #2a1c18 !important;
 }
 
 html[data-theme="dark"] .cl-school-lockup-copy strong,
 html[data-theme="dark"] .cl-trust-heading strong,
 html[data-theme="dark"] .cl-market-note strong {
-  color: #f3f6fa;
+  color: #f7f1ec;
 }
 
 html[data-theme="dark"] body.institution-themed .trust-card,
 html[data-theme="dark"] body.institution-themed .steps-panel {
-  border-color: #252d37;
-  background: #10151b;
+  border-color: #3b2722;
+  background: #2a1c18;
 }
 
 html[data-theme="dark"] .cl-market-note {
-  border-color: #26303b;
-  background: linear-gradient(100deg, #101a28, #10151b);
+  border-color: #3b2722;
+  background: linear-gradient(100deg, #2a1c18, #2a1c18);
 }
 
 html[data-theme="dark"] .cl-market-note small,
 html[data-theme="dark"] .cl-school-only-scope small {
-  color: #9ca8b4;
+  color: #805f54;
 }
 
 html[data-theme="dark"] .cl-school-only-scope {
-  border-color: #26303b !important;
-  background: #101923 !important;
+  border-color: #3b2722 !important;
+  background: #2a1c18 !important;
 }
 
 .cl-school-signature .cl-school-monogram,
@@ -610,8 +610,8 @@ html[data-theme="dark"] .cl-school-only-scope {
   align-items: center;
   gap: 9px;
   color: #fff;
-  background: rgba(17, 26, 38, .9);
-  box-shadow: 0 15px 40px rgba(10, 25, 45, .24);
+  background: rgba(42, 28, 24, .9);
+  box-shadow: 0 15px 40px rgba(42, 28, 24, .24);
   font: 750 10px Inter, system-ui, sans-serif;
   opacity: .82;
   transition: transform .2s ease, box-shadow .2s ease;
@@ -619,7 +619,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 
 .cl-inst-trigger:hover {
   transform: translateY(-2px);
-  box-shadow: 0 19px 46px rgba(10, 25, 45, .3);
+  box-shadow: 0 19px 46px rgba(42, 28, 24, .3);
   opacity: 1;
 }
 
@@ -636,7 +636,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(9, 17, 27, .42);
+  background: rgba(42, 28, 24, .42);
   backdrop-filter: blur(5px);
 }
 
@@ -651,8 +651,8 @@ html[data-theme="dark"] .cl-school-only-scope {
   border: 1px solid rgba(255,255,255,.55);
   border-radius: 24px;
   background: #fff;
-  box-shadow: 0 28px 80px rgba(7, 18, 33, .32);
-  color: #17212b;
+  box-shadow: 0 28px 80px rgba(42, 28, 24, .32);
+  color: #3b2722;
   font-family: Inter, system-ui, sans-serif;
 }
 
@@ -665,7 +665,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   justify-content: space-between;
   gap: 20px;
   padding: 25px 28px 20px;
-  border-bottom: 1px solid #e8ecef;
+  border-bottom: 1px solid #e8dbd5;
   background: rgba(255, 255, 255, .96);
   backdrop-filter: blur(12px);
 }
@@ -695,10 +695,10 @@ html[data-theme="dark"] .cl-school-only-scope {
 .cl-inst-panel-header button {
   width: 34px;
   height: 34px;
-  border: 1px solid #e1e6e9;
+  border: 1px solid #e8dbd5;
   border-radius: 10px;
   background: #fff;
-  color: #52606b;
+  color: #6f4e44;
   font-size: 20px;
 }
 
@@ -714,8 +714,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 }
 
 .cl-inst-preview-column {
-  position: sticky;
-  top: 94px;
+  align-self: start;
 }
 
 .cl-inst-section-label {
@@ -730,7 +729,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 .cl-inst-control-section {
   margin-bottom: 17px;
   padding: 17px;
-  border: 1px solid #e8ecef;
+  border: 1px solid #e8dbd5;
   border-radius: 15px;
   background: #fbfcfd;
 }
@@ -739,7 +738,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   display: grid;
   gap: 7px;
   margin-bottom: 15px;
-  color: #53616c;
+  color: #6f4e44;
   font-size: 11px;
   font-weight: 750;
 }
@@ -748,12 +747,12 @@ html[data-theme="dark"] .cl-school-only-scope {
 .cl-inst-field select {
   width: 100%;
   height: 43px;
-  border: 1px solid #dce2e6;
+  border: 1px solid #e8dbd5;
   border-radius: 10px;
   padding: 0 12px;
   outline: 0;
   background: #fff;
-  color: #1d2933;
+  color: #3b2722;
   font: 500 12px Inter, system-ui, sans-serif;
 }
 
@@ -775,7 +774,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 
 .cl-inst-upload {
   min-height: 72px;
-  border: 1px dashed #bcc8d0;
+  border: 1px dashed #d0e1e6;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -791,7 +790,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   display: grid;
   place-items: center;
   overflow: hidden;
-  border: 1px solid #e0e5e8;
+  border: 1px solid #e8dbd5;
   border-radius: 50%;
   background: var(--institution-logo-bg, #fff);
   color: var(--institution-primary);
@@ -824,7 +823,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 }
 
 .cl-inst-upload strong {
-  color: #26333d;
+  color: #3b2722;
   font-size: 11px;
 }
 
@@ -845,7 +844,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 .cl-inst-upload > button {
   margin-left: auto;
   padding: 7px 9px;
-  border: 1px solid #dce3e7;
+  border: 1px solid #e8dbd5;
   border-radius: 8px;
   color: #6f7b85;
   background: #fff;
@@ -857,7 +856,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   gap: 12px;
   margin-top: 15px;
   padding-top: 15px;
-  border-top: 1px solid #e7ebee;
+  border-top: 1px solid #e8dbd5;
 }
 
 .cl-inst-logo-controls > label,
@@ -905,9 +904,9 @@ html[data-theme="dark"] .cl-school-only-scope {
 .cl-inst-preview {
   margin: 0 0 11px;
   overflow: hidden;
-  border: 1px solid #e1e6e9;
+  border: 1px solid #e8dbd5;
   border-radius: 18px;
-  box-shadow: 0 22px 50px rgba(15, 31, 50, .12);
+  box-shadow: 0 22px 50px rgba(59, 39, 34, .12);
 }
 
 .cl-inst-preview-top {
@@ -954,7 +953,7 @@ html[data-theme="dark"] .cl-school-only-scope {
   align-items: center;
   gap: 10px;
   padding: 11px;
-  border: 1px solid #e8edf0;
+  border: 1px solid #e8dbd5;
   border-radius: 12px;
 }
 
@@ -988,7 +987,7 @@ html[data-theme="dark"] .cl-school-only-scope {
 
 .cl-inst-preview-lockup strong {
   margin: 3px 0;
-  color: #17212b;
+  color: #3b2722;
   font-size: 12px;
 }
 
@@ -1038,15 +1037,15 @@ html[data-theme="dark"] .cl-school-only-scope {
   gap: 11px;
   margin-top: 22px;
   padding-top: 20px;
-  border-top: 1px solid #e7ebee;
+  border-top: 1px solid #e8dbd5;
 }
 
 .cl-inst-button {
   height: 43px;
-  border: 1px solid #dce2e6;
+  border: 1px solid #e8dbd5;
   border-radius: 10px;
   background: #fff;
-  color: #53616c;
+  color: #6f4e44;
   font: 750 11px Inter, system-ui, sans-serif;
 }
 

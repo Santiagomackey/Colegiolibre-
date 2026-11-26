@@ -1,5 +1,8 @@
 (() => {
  'use strict';
+ if (window.Capacitor?.isNativePlatform?.() || window.navigator?.standalone === true) {
+  document.documentElement.dataset.nativeApp ||= window.Capacitor?.getPlatform?.() || 'true';
+ }
  const header=document.querySelector('.cl-site-header');if(!header)return;
  const labels={searchLabel:['Buscar material escolar','Search school supplies'],searchPlaceholder:['¿Qué material estás buscando?','What school supplies are you looking for?'],messages:['Mensajes','Messages'],favorites:['Favoritos','Favorites'],profile:['Mi perfil','My profile'],settings:['Configuración','Settings'],orders:['Mis compras y ventas','My purchases and sales'],logout:['Cerrar sesión','Sign out'],accountMenu:['Abrir menú de cuenta','Open account menu'],categories:['Categorías','Categories'],accountActions:['Acciones de tu cuenta','Account actions'],all:['Todo','All'],explore:['Explorar','Browse'],newest:['Recién publicados','New arrivals'],notes:['Apuntes y exámenes','Notes and exams'],alerts:['Alertas','Alerts'],school:['Mi colegio','My school'],help:['Ayuda','Help'],sell:['Publicar','Sell'],home:['Inicio','Home'],login:['Iniciar sesión','Sign in'],Libros:['Libros','Books'],Apuntes:['Apuntes','Notes'],Cuadernos:['Cuadernos','Notebooks'],'Útiles':['Útiles','Supplies'],Mochilas:['Mochilas','Backpacks'],'Tecnología':['Tecnología','Technology'],Uniformes:['Uniformes','Uniforms'],Otros:['Otros','Other']};
  let user=null,profile=null,run=0;
@@ -7,6 +10,10 @@
  labels.mercadoPagoAlias=['Mercado Pago','Mercado Pago'];
  labels.browseCategories=['Ver todas las categorías','Browse all categories'];
  function addMenuLinks(){
+  if (!document.querySelector('.colego-publish-cta') && !/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
+   document.body.insertAdjacentHTML('beforeend',
+    '<a class="colego-publish-cta colego-publish-floating" href="/publicar" aria-label="Publicar un producto" data-site-text="sell">Publicar</a>');
+  }
   header.querySelector('.cl-site-account-menu [data-site-text="settings"]')?.insertAdjacentHTML(
    'afterend','<a class="cl-site-mp-link" href="/perfil?view=settings#datos-cobro" data-site-text="mercadoPagoAlias">Mercado Pago</a>'
   );
@@ -27,7 +34,7 @@
   header.querySelectorAll('.cl-site-nav-scroll a, .cl-site-categories .cl-site-menu-panel a').forEach(link=>{if(new URL(link.href,location.origin).searchParams.get('category')===category&&category)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
   const route=location.pathname.replace(/\.html$/,'').split('/').filter(Boolean).pop()||'';
   header.querySelectorAll('#header-messages-link, #header-favorites-link').forEach(link=>{
-   if(link.getAttribute('href')==='/'+route)link.setAttribute('aria-current','page');
+   if (link.getAttribute('href') === '/' + route) link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
   });
   header.querySelectorAll('[data-site-nav]').forEach(link=>{if(link.dataset.siteNav===route)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
@@ -51,6 +58,51 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')header.querySelectorAll('details[open]').forEach(menu=>menu.open=false);});
  window.addEventListener('colegiolibre:languagechange',()=>{render();});
  window.addEventListener('pageshow',event=>{if(event.persisted)void hydrate();});
- function initialize(){addMenuLinks();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
+ function initializeCompactNavigation(){
+  if (typeof ResizeObserver !== 'function') return;
+  const top=header.querySelector('.cl-site-top');
+  const input=top?.querySelector('input[type=search]');
+  if (!input) return;
+
+  const fullControls=Array.from(top.children);
+  const dock=document.createElement('div');
+  dock.className='cl-pastel-dock';
+  dock.inert=true;
+  dock.innerHTML='<a href="/" aria-label="Inicio"><img src="/images/colego-cart-palette.webp" alt=""></a><button type="button" aria-label="Buscar materiales"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>';
+  if (!/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
+   const publish=document.createElement('a');
+   publish.className='cl-pastel-dock-publish';
+   publish.href='/publicar';
+   publish.dataset.siteText='sell';
+   dock.append(publish);
+  }
+  top.append(dock);
+  header.classList.add('cl-transition-header');
+
+  let compact=false;
+  function update(){
+   const next=window.scrollY>90 && !fullControls.some(node=>node.contains(document.activeElement));
+   if (next===compact) return;
+   compact=next;
+   header.classList.toggle('cl-header-compact',compact);
+   for (const control of fullControls) control.inert=compact;
+   dock.inert=!compact;
+  }
+  function reserveSpace(){
+   if (!compact) header.style.setProperty('--cl-top-height',top.offsetHeight+'px');
+  }
+  const size=new ResizeObserver(reserveSpace);
+  size.observe(top);
+  reserveSpace();
+  window.addEventListener('scroll',update,{passive:true});
+  top.addEventListener('focusout',()=>queueMicrotask(update));
+  dock.querySelector('button').addEventListener('click',()=>{
+   window.scrollTo({top:0,behavior:'instant'});
+   update();
+   input.focus({preventScroll:true});
+  });
+  update();
+ }
+ function initialize(){addMenuLinks();initializeCompactNavigation();render();void hydrate();window.colegioLibreSupabase?.auth?.onAuthStateChange?.(()=>{queueMicrotask(()=>void hydrate());});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();

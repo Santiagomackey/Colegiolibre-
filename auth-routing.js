@@ -9,6 +9,22 @@
  window.colegioLibreRecovery={safeNext,readMarker,mark,clear};
  const query=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,''));
  const recovery=query.get('type')==='recovery'||hash.get('type')==='recovery';
+ if (!recovery && location.pathname === '/' && (hash.has('access_token') || query.has('code'))) {
+  try {
+   const saved = JSON.parse(sessionStorage.getItem('colego-oauth-return') || 'null');
+   if (saved && Date.now() >= saved.at && Date.now() - saved.at < 30 * 60 * 1000) {
+    const target = new URL('/auth-callback', location.origin);
+    target.search = location.search;
+    target.searchParams.set('next', safeNext(saved.next));
+    target.hash = location.hash;
+    location.replace(target.href);
+    return;
+   }
+  } catch {}
+ }
+ if (/^\/auth-callback(?:\.html)?$/.test(location.pathname)) {
+  try { sessionStorage.removeItem('colego-oauth-return'); } catch {}
+ }
  const callback=location.pathname.replace(/\.html$/,'')==='/recovery-callback';
  if(recovery&&!callback){
   // Run before Supabase or the normal signed-in homepage redirect can consume

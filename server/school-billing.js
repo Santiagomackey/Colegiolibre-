@@ -56,20 +56,48 @@ export async function syncSubscription(cfg, subscription) {
   if (!id) return subscription;
   if (!PROVIDER_ID.test(id)) throw fail(409, 'El identificador de la suscripción no es válido.');
   const stamp = new Date().toISOString();
-  const invoiceQuery = new URLSearchParams({ preapproval_id: id, limit: '20', sort: 'date_created', criteria: 'desc' });
+  const invoiceQuery = new URLSearchParams({ preapproval_id: id, limit: '20' });
   const [remote, invoices] = await Promise.all([mp(cfg, '/preapproval/' + id), mp(cfg, '/authorized_payments/search?' + invoiceQuery)]);
   if (remote.id !== id || remote.external_reference !== subscription.request_id || !Array.isArray(invoices.results)) {
     throw fail(409, 'Mercado Pago devolvió una suscripción distinta.');
   }
+  while (invoices.results.length < Number(invoices.paging?.total)) {
+    const offset = invoices.results.length;
+    invoiceQuery.set('offset', String(offset));
+    const page = await mp(cfg, '/authorized_payments/search?' + invoiceQuery);
+    if (Number(page.paging?.offset) !== offset || !page.results?.length) throw fail(502,'No pudimos verificar todas las cuotas.');
+    invoices.results.push(...page.results);
+  }
   const status = remote.status === 'canceled' ? 'cancelled' : remote.status;
   if (!known.includes(status)) throw fail(502, 'Estado de suscripción desconocido.');
-  const patch = { status, paid_through: paidThrough(invoices.results, subscription), provider_synced_at: stamp, updated_at: stamp };
+  // A temporarily empty search cannot revoke a period already confirmed by the provider.
+  const coverage = invoices.results.length ? paidThrough(invoices.results, subscription) : subscription.paid_through || null;
+  const patch = { status, paid_through: coverage, provider_synced_at: stamp, updated_at: stamp };
   const query = new URLSearchParams({
     request_id: 'eq.' + subscription.request_id, provider_subscription_id: 'eq.' + id,
     or: '(provider_synced_at.is.null,provider_synced_at.lt.' + stamp + ')'
   });
   const updated = await rest(cfg, 'institution_subscriptions?' + query, { method:'PATCH', body:patch, prefer:'return=representation' });
-  return updated[0] || (await select(cfg, 'institution_subscriptions', subscriptionFields, { request_id: subscription.request_id }))[0];
+  const saved = updated[0] || (await select(cfg, 'institution_subscriptions', subscriptionFields, { request_id: subscription.request_id }))[0];
+  if (!updated.length) return saved;
+  const latest = invoices.results.filter(invoice => invoice.preapproval_id === id && Date.parse(invoice.debit_date) <= Date.now())
+    .sort((a,b) => Date.parse(b.debit_date) - Date.parse(a.debit_date))[0];
+  return { ...saved, nextPaymentDate: status === 'authorized' && Number.isFinite(Date.parse(remote.next_payment_date)) ? remote.next_payment_date : null,
+    renewalFailed: status !== 'cancelled' && latest?.payment?.status === 'rejected' && Boolean(saved.paid_through) };
+}
+
+export async function notifyRejectedRenewal(cfg, subscription, invoice) {
+  if (!invoice?.id || invoice.preapproval_id !== subscription.provider_subscription_id ||
+      invoice.payment?.status !== 'rejected' || subscription.status === 'cancelled' ||
+      !subscription.paid_through || invoice.currency_id !== subscription.currency ||
+      Number(invoice.transaction_amount) !== Number(subscription.amount)) return;
+  // The same invoice can generate multiple webhooks. Insert one notice per installment.
+  const id = crypto.createHash('sha256').update('school-renewal:' + subscription.request_id + ':' + invoice.id).digest('hex').slice(0,32);
+  await rest(cfg, 'notifications?on_conflict=id', {method:'POST', prefer:'resolution=ignore-duplicates', body:{
+    id, user_id:subscription.user_id, type:'school_renewal_failed', title:'No se pudo renovar el plan de tu colegio',
+    body:'Mercado Pago rechazó la cuota. Revisá el medio de pago para continuar con el portal.',
+    action_url:'/instituciones?gestion=1'
+  }});
 }
 
 export async function beginSubscription(cfg, request, school, user, cycle, previous) {

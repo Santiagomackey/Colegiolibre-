@@ -41,6 +41,9 @@
           authorizationUrl = (await response.json()).url;
           if (new URL(authorizationUrl).origin !== 'https://accounts.google.com') throw Error('Unexpected authorization URL');
         }
+        try {
+          sessionStorage.setItem('colego-oauth-return', JSON.stringify({next: callback.searchParams.get('next'), at: Date.now()}));
+        } catch {}
         const browser=window.Capacitor?.Plugins?.Browser || (native?window.Capacitor?.registerPlugin?.('Browser'):null);
         if(native && browser?.open) await browser.open({url:authorizationUrl});
         else window.location.assign(authorizationUrl);

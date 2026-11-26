@@ -1,0 +1,83 @@
+html[data-theme] body.mobile-profile { background: #fff; color: #3b2722; }
+html[data-theme] body.mobile-profile :is(.profile-sidebar,.settings-panel) {
+  background: #fcfaf7;
+  border: 1px solid #e9ded5;
+  border-radius: 24px;
+  box-shadow: none;
+}
+html[data-theme] body.mobile-profile .profile-nav__item.is-active {
+  background: #e2f1f5;
+  color: #3b2722;
+}
+html[data-theme] body.mobile-profile :is(.content-header,.settings-panel)[hidden] { display: none !important; }
+html[data-theme] body.mobile-profile .settings-panel { padding: clamp(18px, 3vw, 34px); }
+.settings-panel > h2 { margin: 0 0 12px; color: #3b2722; font-size: clamp(1.2rem, 2vw, 1.65rem); }
+.account-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ded5;
+  font-size: 1.15rem;
+}
+html[data-theme] body.mobile-profile .account-identity .profile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #d5ebf2;
+  color: #3b2722;
+}
+html[data-theme] body.mobile-profile .settings-field input {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid #ddcfc6;
+  border-radius: 13px;
+  box-shadow: none;
+  background: #fff;
+}
+html[data-theme] body.mobile-profile .settings-actions { justify-content: flex-end; }
+html[data-theme] body.mobile-profile .settings-actions button[type="submit"] {
+  border: 0;
+  border-radius: 999px;
+  background: #ffca50;
+  color: #3b2722;
+  box-shadow: none;
+}
+.account-preferences__group {
+  display: grid;
+  grid-template-columns: minmax(125px, .35fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e9ded5;
+  border-radius: 16px;
+}
+.account-preferences__group h2 { margin: 0; font-size: 1.1rem; }
+.account-preferences__group a { color: #a0342a; text-underline-offset: .2em; }
+@media (max-width: 650px) {
+  .account-preferences__group { grid-template-columns: minmax(0, 1fr); }
+}
+html[data-theme] body.mobile-profile .account-identity .profile-avatar { flex: 0 0 48px; }
+
+html[data-theme] body.mobile-profile { background: #fff !important; }
+body.mobile-profile .cl-site-brand img { content: url("/images/colego-header-palette.webp"); }
+html[data-theme] body.mobile-profile .profile-sidebar .profile-card { display: none; }
+html[data-theme] body.mobile-profile .profile-sidebar { gap: 12px; }
+html[data-theme] body.mobile-profile .profile-nav { gap: 3px; }
+html[data-theme] body.mobile-profile .profile-nav__item { padding: 10px 12px; }
+html[data-theme] body.mobile-profile .account-identity .profile-avatar { font-size: 1rem; }
+html[data-theme] body.mobile-profile .settings-actions button[type="submit"] {
+  min-height: 44px;
+  background: #ffca50 !important;
+  color: #3b2722 !important;
+}
+body.mobile-profile .colego-publish-floating { display: none !important; }
+@media (min-width: 981px) {
+  html[data-theme] body.mobile-profile .page-layout {
+    width: min(calc(100% - 64px), 1180px);
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+  }
+}
