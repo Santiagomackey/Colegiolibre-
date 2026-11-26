@@ -35,12 +35,10 @@
     }
     const budget = params.get("max_price");
     if (budget === "custom" || (/^\d+$/.test(budget || "") && Number(budget) <= 100000000)) {
-      form.elements.max_price.closest("details").open = true;
       form.elements.max_price.value = budget === "custom" ? "" : budget;
     }
     const minimum = params.get("min_price");
     if (/^\d+$/.test(minimum || "") && Number(minimum) <= 100000000) {
-      form.elements.min_price.closest("details").open = true;
       form.elements.min_price.value = minimum;
     }
     for (const field of ["isbn", "edition", "size"]) {
