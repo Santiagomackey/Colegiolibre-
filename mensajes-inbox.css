@@ -191,3 +191,23 @@ html[data-theme] body.mobile-messages #message-form button {
   html[data-theme] body.mobile-messages[data-view="chat"] .messages-app { border: 0; border-radius: 0; }
 }
 html[data-theme] body.mobile-messages .messages-app { box-shadow: none; }
+
+body.mobile-messages .cl-site-brand img { content: url("/images/colego-header-palette.webp"); }
+html[data-theme] body.mobile-messages .conversation-avatar {
+  background: #d5ebf2;
+  width: 42px;
+  height: 42px;
+  font-size: .9rem;
+}
+html[data-theme] body.mobile-messages .conversation-item {
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+}
+html[data-theme] body.mobile-messages .conversation-item.is-active { background: #dceff5; }
+html[data-theme] body.mobile-messages .conversation-item:not(.is-active) { border-bottom-color: #eee7e0; }
+html[data-theme] body.mobile-messages .conversation-product { font-weight: 550; }
+@media (min-width: 881px) {
+  html[data-theme] body.mobile-messages .messages-page { width: min(1180px, calc(100% - 64px)); }
+  html[data-theme] body.mobile-messages .chat-panel > .product-panel .product-empty { padding: 8px 12px; }
+  html[data-theme] body.mobile-messages #message-form button { min-width: 92px; }
+}

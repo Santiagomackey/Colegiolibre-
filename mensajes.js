@@ -131,6 +131,8 @@
 
     if (requestedConversationId) {
       await openConversation(requestedConversationId, { pushHistory: false });
+    } else if (!phoneLayout.matches && state.conversations.length) {
+      await openConversation(state.conversations[0].id, { pushHistory: false, markRead: false });
     } else {
       renderConversationList();
       renderEmptyChat();
@@ -465,6 +467,7 @@
       ]
         .filter(Boolean)
         .join(" ");
+      item.setAttribute("aria-pressed", String(conversation.id === state.activeConversationId));
       item.setAttribute(
         "aria-label",
         `${getConversationName(conversation)}, ${conversation.wanted_title || conversation.product?.title || "producto"}${unreadCount ? `, ${unreadCount} sin leer` : ""}`
@@ -508,7 +511,7 @@
     });
   }
 
-  async function openConversation(conversationId, { pushHistory = true } = {}) {
+  async function openConversation(conversationId, { pushHistory = true, markRead = true } = {}) {
     if (!conversationId) return;
 
     let conversation = state.conversations.find(
@@ -563,8 +566,8 @@
     document.body.dataset.view = "chat";
     sizePhoneChat();
     await subscribeTyping(conversation.id);
-    await loadMessages(conversation.id);
-    await markConversationNotificationsRead(conversation.id);
+    await loadMessages(conversation.id, { markRead });
+    if (markRead) await markConversationNotificationsRead(conversation.id);
   }
 
   function renderConversationHeader(conversation) {
@@ -1149,7 +1152,7 @@
     `;
   }
 
-  async function loadMessages(conversationId, { scrollToLatest = false } = {}) {
+  async function loadMessages(conversationId, { scrollToLatest = false, markRead = true } = {}) {
     const columns = state.readAtSupported ? "*" : "id, conversation_id, sender_id, body, created_at";
     const { data, error } = await window.colegioLibreSupabase
       .from("messages")
@@ -1165,7 +1168,7 @@
       isMissingColumnError(error, "read_at")
     ) {
       state.readAtSupported = false;
-      await loadMessages(conversationId, { scrollToLatest });
+      await loadMessages(conversationId, { scrollToLatest, markRead });
       return;
     }
 
@@ -1175,7 +1178,7 @@
       return;
     }
 
-    await markConversationRead(conversationId);
+    if (markRead) await markConversationRead(conversationId);
     if (state.activeConversationId !== conversationId) return;
 
     state.activeMessages = data || [];

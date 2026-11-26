@@ -60,3 +60,24 @@ html[data-theme] body.mobile-profile .settings-actions button[type="submit"] {
   .account-preferences__group { grid-template-columns: minmax(0, 1fr); }
 }
 html[data-theme] body.mobile-profile .account-identity .profile-avatar { flex: 0 0 48px; }
+
+html[data-theme] body.mobile-profile { background: #fff !important; }
+body.mobile-profile .cl-site-brand img { content: url("/images/colego-header-palette.webp"); }
+html[data-theme] body.mobile-profile .profile-sidebar .profile-card { display: none; }
+html[data-theme] body.mobile-profile .profile-sidebar { gap: 12px; }
+html[data-theme] body.mobile-profile .profile-nav { gap: 3px; }
+html[data-theme] body.mobile-profile .profile-nav__item { padding: 10px 12px; }
+html[data-theme] body.mobile-profile .account-identity .profile-avatar { font-size: 1rem; }
+html[data-theme] body.mobile-profile .settings-actions button[type="submit"] {
+  min-height: 44px;
+  background: #ffca50 !important;
+  color: #3b2722 !important;
+}
+body.mobile-profile .colego-publish-floating { display: none !important; }
+@media (min-width: 981px) {
+  html[data-theme] body.mobile-profile .page-layout {
+    width: min(calc(100% - 64px), 1180px);
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+  }
+}
