@@ -602,6 +602,7 @@ function syncSchoolYear() {
   const label = level === "Primaria" ? "Grado" : level === "Secundaria" ? "Año" : "Año o grado";
   document.querySelector('label[for="anio-escolar"]').textContent = label;
   schoolYearSelect.disabled = !level;
+  schoolYearSelect.closest(".field-group").hidden = !level;
   if (!level) schoolYearSelect.value = "";
   Array.from(schoolYearSelect.options).forEach(option => {
     option.textContent = option.value ? option.value + ".º" + (level === "Primaria" ? " grado" : level === "Secundaria" ? " año" : "") : "Seleccioná una opción";
@@ -757,7 +758,12 @@ function getFinalLocation() {
   return locationSelect.value || publishState.defaultLocation || "Zona de tu colegio";
 }
 
+function syncPreviewVisibility() {
+  document.querySelector("details.preview-panel").hidden = !(imageSlots.length || titleInput.value.trim() || priceInput.value);
+}
+
 function updatePreview() {
+  syncPreviewVisibility();
   previewTitle.textContent = titleInput.value.trim() || defaultContent.title;
   previewPrice.textContent = formatPrice(priceInput.value);
   previewLocation.textContent = getFinalLocation();
@@ -844,6 +850,7 @@ function createEmptyTile(tile, index) {
 }
 
 function renderUploads() {
+  syncPreviewVisibility();
   uploadTiles.forEach((tile, index) => {
     const slot = imageSlots[index];
     tile.hidden = index > imageSlots.length;
