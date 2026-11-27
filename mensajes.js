@@ -4,7 +4,6 @@
   const {
     FALLBACK_PRODUCT_IMAGE,
     escapeHtml,
-    formatDateTime,
     formatPrice,
     formatRelativeDate,
     getCurrentProfile,
@@ -896,9 +895,8 @@
 
     if (transactionError || !transaction) {
       panel.innerHTML = `
-        <div class="trust-status-card trust-status-card--complete">
-          <strong>Venta finalizada</strong>
-          <span>La operación quedó marcada como completada.</span>
+        <div class="chat-sale-complete">
+          <strong>✓ Venta finalizada</strong>
         </div>
       `;
       return;
@@ -1260,27 +1258,30 @@
     const stream = document.createElement("div");
     stream.className = "message-stream";
 
+    const dayFormat = new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "long", year: "numeric" });
+    const timeFormat = new Intl.DateTimeFormat("es-AR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+    let previousDay = "";
     state.activeMessages.forEach((message) => {
+      const date = new Date(message.created_at);
+      const validDate = message.created_at && Number.isFinite(date.getTime());
+      const day = validDate ? dayFormat.format(date) : "";
+      if (day && day !== previousDay) {
+        const divider = document.createElement("div");
+        divider.className = "chat-day";
+        divider.textContent = day;
+        stream.appendChild(divider);
+        previousDay = day;
+      }
       const isMine = message.sender_id === state.currentUser.id;
       const article = document.createElement("article");
       article.className = isMine ? "message is-mine" : "message";
-      const status = isMine
-        ? `<span class="message__status"><svg class="icon"><use href="#icon-check"></use></svg>${
-            message.read_at ? "Leído" : "Enviado"
-          }</span>`
-        : `<span class="message__time">${escapeHtml(
-            formatDateTime(message.created_at)
-          )}</span>`;
-      article.innerHTML = `
-        <div class="message__body">${escapeHtml(message.body)}</div>
-        ${
-          isMine
-            ? `<span class="message__time">${escapeHtml(
-                formatDateTime(message.created_at)
-              )}</span>${status}`
-            : status
-        }
-      `;
+      const body = document.createElement("div");
+      body.className = "message__body";
+      body.textContent = message.body;
+      const meta = document.createElement("small");
+      meta.className = "chat-message-meta";
+      meta.textContent = [validDate ? timeFormat.format(date) : "", isMine ? (message.read_at ? "Leído" : "Enviado") : ""].filter(Boolean).join(" · ");
+      article.append(body, meta);
       stream.appendChild(article);
     });
 
