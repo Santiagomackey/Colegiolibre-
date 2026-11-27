@@ -45,7 +45,9 @@
       const value = params.get(field);
       if (value) {
         form.elements[field].value = value.slice(0, form.elements[field].maxLength);
-        form.elements[field].closest("details").open = true;
+        const extra = form.elements[field].closest("details");
+        if (extra) extra.open = true;
+        if (!form.elements.category.value) form.elements.category.value = field === "size" ? "Uniformes" : "Libros";
       }
     }
     if (params.get("view") === "school" || scope === "school") filter.value = "school";
@@ -53,6 +55,9 @@
       ? "school"
       : "zone";
     form.elements.scope.value = ["school", "zone", "both"].includes(scope) ? scope : defaultScope;
+    form.addEventListener("input", updatePreview);
+    form.addEventListener("change", updatePreview);
+    updatePreview();
     form.dispatchEvent(new Event("change", { bubbles: true }));
     document.querySelectorAll('[data-alert-view]').forEach(button=>button.addEventListener('click',()=>{
       view=button.dataset.alertView;
@@ -77,16 +82,34 @@
     }
   }
 
+  function updatePreview() {
+    const fields = form.elements;
+    const category = fields.category.value;
+    for (const label of form.querySelectorAll("[data-category-field]")) {
+      label.hidden = category !== (label.dataset.categoryField === "book" ? "Libros" : "Uniformes");
+      label.querySelector("input").disabled = label.hidden;
+    }
+    const format = value => "$ " + Number(value).toLocaleString("es-AR");
+    const min = fields.min_price.value, max = fields.max_price.value;
+    document.getElementById("request-name").textContent = fields.title.value.trim() || "Tu pedido";
+    document.getElementById("request-category").textContent = [category, category === "Uniformes" && fields.size.value ? "Talle " + fields.size.value : ""].filter(Boolean).join(" · ");
+    document.getElementById("request-art").textContent = ({ Libros:"📚", Uniformes:"👕", Mochilas:"🎒", Cuadernos:"📒", Útiles:"✏️", Apuntes:"📄", Tecnología:"💻" })[category] || "📦";
+    document.getElementById("request-budget").textContent = min && max ? format(min) + " – " + format(max) : min ? "Desde " + format(min) : max ? "Hasta " + format(max) : "Sin límite de precio";
+    document.getElementById("request-area").textContent = ({school:"Mi colegio",zone:"Mi zona",both:"Mi colegio y mi zona"})[fields.scope.value] || "";
+  }
+
   function clearReview() {
     reviewed = false;
     review.hidden = true;
     review.replaceChildren();
-    submitLabel.textContent = "Revisar pedido";
+    submitLabel.textContent = "Crear pedido";
   }
 
-  function reviewMaterials(value) {
-    const materials = value.split(/\n|\s+y\s+(?=(?:un[ao]?|el|la|libro|uniforme|cuaderno)\s)/i)
+  function splitMaterials(value) {
+    return value.split(/\n|\s+y\s+(?=(?:un[ao]?|el|la|libro|uniforme|cuaderno)\s)/i)
       .map(line => line.trim().replace(/^(?:necesito|busco|quiero)\s+/i,"")).filter(Boolean);
+  }
+  function reviewMaterials(materials) {
     if (!materials.length || materials.length > 8) return false;
     const heading = document.createElement("h3");
     heading.textContent = "Confirmá lo que vas a buscar";
@@ -261,11 +284,12 @@
     const scope = String(data.get("scope"));
     const title = String(data.get("title") || "").trim();
     if(title.length<3 || title.length>600){status.dataset.state='error';status.textContent=translate('Escribí al menos 3 letras para tu búsqueda.');return;}
-    if (!reviewed) {
-      if (!reviewMaterials(title)) status.textContent = "Agregá hasta 8 materiales, uno por línea.";
+    const parsed = splitMaterials(title);
+    if (!reviewed && parsed.length > 1) {
+      if (!reviewMaterials(parsed)) status.textContent = "Agregá hasta 8 materiales, uno por línea.";
       return;
     }
-    const materials = data.getAll("match_material").map(value => value.trim());
+    const materials = reviewed ? data.getAll("match_material").map(value => value.trim()) : parsed;
     if (!materials.length || materials.some(value => value.length < 3 || value.length > 120)) {
       status.textContent = "Cada material tiene que tener entre 3 y 120 caracteres.";
       return;
@@ -291,7 +315,7 @@
       return;
     }
     status.dataset.state = "loading";
-    status.textContent = "Creando tu alerta…";
+    status.textContent = "Creando tu pedido…";
     const record = { user_id: user.id, title, query: title, category: String(data.get("category") || ""), transaction_type: String(data.get("transaction_type") || "buy"), description: String(data.get("description") || "").trim(), scope, school_code: profile?.school_code || null, school_name: profile?.school_name || null, zone_code: profile?.zone_code || null, country: "Argentina", max_price: budget === "" ? null : Number(budget), min_price: minimum === "" ? null : Number(minimum),
       match_isbn:isbn || null, match_edition:edition || null, match_size:size || null,
       match_frequency:data.get("frequency"), match_private:!data.has("community") };
@@ -308,15 +332,18 @@
     finally { button.disabled = false; creating=false; }
     if (result.error) {
       status.dataset.state = "error";
-      status.textContent = "No pudimos crear tu alerta. Volvé a intentar en un momento.";
+      status.textContent = "No pudimos crear tu pedido. Volvé a intentar en un momento.";
       return;
     }
     status.dataset.state = "success";
+    const savedScope = form.elements.scope.value;
     form.reset();
+    form.elements.scope.value = savedScope;
     clearReview();
+    updatePreview();
     status.textContent = "Búsquedas activadas. ColeGo sigue buscando cuando aparezcan nuevas publicaciones.";
     const manage = document.createElement("a");
-    manage.href = "/busco?view=mine#pedidos";
+    manage.href = "/perfil?view=requests";
     manage.textContent = "Ver mis pedidos";
     const actions = document.createElement("span");
     actions.className = "wanted-success-actions";
