@@ -172,13 +172,14 @@ html[data-native-app] .materials-footer { display: none; }
   gap: 8px;
   height: 46px;
   padding: 0 17px;
-  border: 1px solid #edbc49;
+  border: 1px solid #a6cfd9;
   border-radius: 999px;
-  background: #ffca50;
+  background: #dceff3;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
 }
+.materials-home .school-bubble:focus-visible { outline-color: #317082; }
 .school-bubble:active { transform: scale(.97); }
 .school-popover {
   inset-block: auto calc(var(--school-bottom) + 56px);
