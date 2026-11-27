@@ -63,7 +63,30 @@ html[data-theme] body.publish-body .publish-main { border:0; box-shadow:none; pa
 #publish-form .photo-picker { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:14px; border:1px dashed #cbbcaf; border-radius:14px; background:#fcfaf7; }
 html[data-theme] body.publish-body #publish-form .photo-picker .upload-grid { display:flex; flex-wrap:wrap; width:auto; min-width:0; margin:0; gap:8px; }
 html[data-theme] body.publish-body #publish-form .photo-picker .upload-tile { width:auto; flex:0 0 auto; height:44px; aspect-ratio:auto; min-height:44px; display:inline-flex; flex-direction:row; align-items:center; gap:8px; padding:0 14px; border:1px solid #c5dfe8; background:#e3f1f6; color:#32231f; font:inherit; font-weight:650; }
-html[data-theme] body.publish-body #publish-form .photo-picker .upload-tile.has-image { width:110px; height:88px; padding:0; }
+html[data-theme] body.publish-body #publish-form .photo-picker .upload-grid { display:contents; }
+html[data-theme] body.publish-body #publish-form .photo-picker .upload-tile.has-image {
+  order:-1; display:grid; grid-template-columns:minmax(0,1fr) 32px; grid-template-rows:90px 34px;
+  align-items:center; width:134px; height:auto; padding:0; gap:0; overflow:hidden;
+  background:white; border:1px solid #ddcfc5; border-radius:10px;
+}
+#publish-form .photo-picker .has-image img.upload-thumb {
+  position:static; grid-column:1 / -1; grid-row:1; display:block;
+  width:100%; height:90px; object-fit:contain; background:#f7f5f2;
+}
+#publish-form .photo-picker .has-image :is(.cover-label,.cover-option) {
+  position:static; grid-column:1; grid-row:2; justify-self:start; margin-left:6px;
+  padding:2px 5px; font-size:12px; line-height:1.25; white-space:nowrap;
+}
+#publish-form .photo-picker .upload-tile__remove {
+  position:static; grid-column:2; grid-row:2; width:30px; height:30px;
+  background:transparent; color:#563e34; box-shadow:none;
+}
+#publish-form .photo-picker .upload-tile__remove:hover { background:#f6e9e4; }
+#publish-form .photo-picker .upload-tile__remove .icon { color:inherit; width:16px; height:16px; }
+#publish-form .preview-card .preview-image { object-fit:contain; }
+#publish-form .photo-picker:has(.has-image)::before { content:""; order:0; flex-basis:100%; height:0; }
+#publish-form .photo-picker:has(.has-image) { row-gap:5px; }
+#publish-form .photo-picker .camera-button { width:auto; }
 #publish-form .photo-picker .upload-tile .icon { width:18px; height:18px; }
 #publish-form .photo-picker .camera-button { min-height:44px; margin:0; }
 html[data-theme] body.publish-body #publish-form .field-row--academic:has(.field-group[hidden]) { grid-template-columns:1fr; }
