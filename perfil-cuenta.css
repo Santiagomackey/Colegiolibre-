@@ -336,3 +336,18 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .publicat
 body[data-account-view="publications"] :is(#dashboard-overview, #security-banner) {
   display: none !important;
 }
+
+/* Mount the open actions outside the listing's clipping and stacking contexts. */
+html[data-theme] body.mobile-profile > .publication-menu__dropdown {
+  position: fixed;
+  inset: auto;
+  width: min(220px, calc(100vw - 16px));
+  min-width: 0;
+  margin: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  z-index: 10000;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(59 39 34 / 15%);
+}
