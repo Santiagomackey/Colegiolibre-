@@ -1,0 +1,26 @@
+html[data-theme] body.publish-body .publish-main { background:white; border:0; box-shadow:none; }
+html[data-theme] body.publish-body .page-intro { padding:12px 0 20px; background:white; border:0; }
+html[data-theme] body.publish-body .publish-form {
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(265px,.9fr);
+  grid-template-areas:"photos preview" "fields preview" "actions preview";
+  align-items:start; gap:18px clamp(20px,3vw,44px); background:white;
+}
+.publish-media-column { grid-area:photos; }
+.publish-fields-column { grid-area:fields; }
+.publish-form > .form-actions { grid-area:actions; }
+html[data-theme] body.publish-body .publish-media-column > .field-group { background:transparent; border:0; padding:0; }
+html[data-theme] body.publish-body .publish-media-column .upload-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(120px,40%),1fr)); gap:8px; }
+html[data-theme] body.publish-body .publish-media-column .upload-tile { grid-column:auto; grid-row:auto; position:relative; width:100%; height:auto; min-height:0; aspect-ratio:1; padding:6px; overflow:hidden; border-radius:12px; background:#fcfaf7; border:1px dashed #cebbac; }
+.publish-form .upload-tile.has-image img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.cover-label,.cover-option { position:absolute; bottom:6px; left:6px; border-radius:8px; padding:3px 7px; font-size:.72rem; background:#dfedf3; color:#34231f; }
+html[data-theme] body.publish-body details.preview-panel { grid-area:preview; display:block; align-self:start; position:sticky; top:110px; padding:16px; border-radius:16px; border:1px solid #e8ded3; background:#fcf9f5; }
+.preview-panel summary { font-size:1.22rem; font-weight:700; cursor:pointer; }
+.preview-panel[open] summary { margin-bottom:12px; }
+.publish-form .preview-card { box-shadow:none; }
+html[data-theme] body.publish-body .publish-form .form-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+html[data-theme] body.publish-body #submit-product { flex:1 1 180px; background:#ffca43 !important; color:#33231e !important; -webkit-text-fill-color:#33231e !important; border-radius:12px; }
+#publish-form [hidden] { display:none !important; }
+@media(max-width:900px){
+  html[data-theme] body.publish-body .publish-form { grid-template-columns:minmax(0,1fr); grid-template-areas:"photos" "fields" "preview" "actions"; gap:14px; }
+  html[data-theme] body.publish-body details.preview-panel { position:static; }
+}
