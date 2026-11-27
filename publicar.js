@@ -4,7 +4,7 @@ const defaultContent = {
   condition: "Usado",
   location: "Zona de tu colegio",
   price: null,
-  title: "Tu producto"
+  title: "Título del producto"
 };
 
 const subjectOptions = [
@@ -90,7 +90,7 @@ const priceInput = document.querySelector("#precio");
 const locationSelect = document.querySelector("#ubicacion");
 const otherLocationInput = document.querySelector("#ubicacion-otro");
 const descriptionInput = document.querySelector("#descripcion");
-const conditionInputs = Array.from(document.querySelectorAll('input[name="estado"]'));
+const conditionSelect = document.querySelector("#estado-producto");
 
 const previewTitle = document.querySelector("#preview-title-text");
 const previewPrice = document.querySelector("#preview-price");
@@ -452,12 +452,8 @@ function populateFormForEditing(product) {
     otherLocationInput.hidden = true;
   }
 
-  const matchingCondition =
-    conditionInputs.find((input) => input.value === product.condition) ||
-    conditionInputs.find((input) => input.value === defaultContent.condition);
-  if (matchingCondition) {
-    matchingCondition.checked = true;
-  }
+  conditionSelect.value = product.condition || defaultContent.condition;
+  if (!conditionSelect.value) conditionSelect.value = defaultContent.condition;
 
   clearObjectUrls();
   imageSlots.length = 0;
@@ -510,9 +506,7 @@ function bindPreviewEvents() {
     updatePreview();
   });
 
-  conditionInputs.forEach((input) => {
-    input.addEventListener("change", updatePreview);
-  });
+  conditionSelect.addEventListener("change", updatePreview);
 
   locationSelect.addEventListener("change", () => {
     const isOther = locationSelect.value === "otro";
@@ -614,13 +608,21 @@ function syncSchoolYear() {
   });
 }
 function bindCategoryFields() {
-  const desktop = window.matchMedia("(min-width: 901px)");
+  const desktop = window.matchMedia("(min-width: 601px)");
   const preview = document.querySelector("details.preview-panel");
   const adaptPreview = () => { preview.open = desktop.matches; };
   adaptPreview();
   desktop.addEventListener("change", adaptPreview);
   schoolLevelSelect.addEventListener("change", syncSchoolYear);
-  categorySelect.addEventListener("change", updateCategoryFields);
+  categorySelect.addEventListener("change", () => {
+    const level = schoolLevelSelect.value;
+    const year = schoolYearSelect.value;
+    updateCategoryFields();
+    schoolLevelSelect.value = level;
+    syncSchoolYear();
+    schoolYearSelect.value = year;
+    updatePreview();
+  });
   [
     schoolLevelSelect,
     schoolYearSelect,
@@ -657,7 +659,7 @@ function updateCategoryFields() {
   document.getElementById("book-fields").hidden = categorySelect.value !== "Libros";
   resetDynamicFieldValues();
   dynamicProductFields.hidden = !config;
-  academicFieldsRow.hidden = !config;
+  academicFieldsRow.hidden = false;
   subjectFieldGroup.hidden = !config?.subject;
   subcategoryFieldGroup.hidden = !Array.isArray(config?.options);
   sizeFieldGroup.hidden = !Array.isArray(config?.sizes);
@@ -674,6 +676,8 @@ function updateCategoryFields() {
   });
 
   if (!config) {
+    schoolLevelSelect.disabled = false;
+    syncSchoolYear();
     updatePreview();
     return;
   }
@@ -742,7 +746,7 @@ function formatPrice(value) {
 }
 
 function getSelectedCondition() {
-  return conditionInputs.find((input) => input.checked)?.value || defaultContent.condition;
+  return conditionSelect.value || defaultContent.condition;
 }
 
 function getFinalLocation() {
@@ -771,6 +775,8 @@ function updatePreview() {
 
   const details = [
     categorySelect.value,
+    conditionValue,
+    shouldShowSize ? `${config.sizeLabel} ${sizeSelect.value}` : null,
     subjectSelect.value,
     subcategorySelect.value,
     schoolLevelSelect.value
@@ -913,7 +919,7 @@ function setFormBusy(isBusy, busyLabel) {
 
 function resetFormState() {
   form.reset();
-  document.querySelector("#estado-usado").checked = true;
+  conditionSelect.value = defaultContent.condition;
   titleInput.value = "";
   priceInput.value = "";
   categorySelect.value = "";
