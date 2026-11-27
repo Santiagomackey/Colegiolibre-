@@ -14,38 +14,6 @@
     return node;
   }
 
-  async function loadCatalog() {
-    const grid = document.getElementById("materials-catalog-grid");
-    const status = document.getElementById("materials-catalog-status");
-    try {
-      const { data, error } = await client.from("products").select("id,title,price,condition,image_url")
-        .eq("status", "available").or("moderation_status.eq.approved,moderation_status.is.null")
-        .order("created_at", { ascending: false }).limit(4);
-      if (error) throw error;
-      status.textContent = data.length ? "" : "Todavía no hay publicaciones disponibles.";
-      for (const product of data) {
-        const link = element("a", "", "materials-listing");
-        link.href = "/producto?id=" + encodeURIComponent(product.id);
-        const placeholder = () => element("span", "Sin foto", "materials-listing-placeholder");
-        if (/^https?:\/\//i.test(product.image_url || "")) {
-          const image = element("img");
-          image.alt = "";
-          image.loading = "lazy";
-          image.addEventListener("error", () => image.replaceWith(placeholder()), { once: true });
-          image.src = product.image_url;
-          link.append(image);
-        } else link.append(placeholder());
-        const copy = element("span", "", "materials-listing-copy");
-        copy.append(element("strong", product.title), element("small", product.condition),
-          element("strong", Number(product.price) === 0 ? "Gratis" : money.format(product.price), "materials-listing-price"));
-        link.append(copy);
-        grid.append(link);
-      }
-    } catch (_) {
-      status.textContent = "No pudimos cargar las publicaciones. Podés abrir el catálogo para volver a intentar.";
-    }
-  }
-
   function budgetText(item) {
     if (item.min_price != null && item.max_price != null) return money.format(item.min_price) + " a " + money.format(item.max_price);
     if (item.max_price != null) return "Hasta " + money.format(item.max_price);
@@ -154,7 +122,6 @@
     document.getElementById("materials-school-status").textContent = "Tu comunidad está habilitada.";
   }
 
-  void loadCatalog();
   Promise.resolve().then(() => api.getCurrentUser()).then(user => {
     if (user) void loadSchool().catch(() => {});
     return loadRequests(user);
