@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 <link rel="stylesheet" href="/marketplace-layout.css?v=2">
-<link rel="stylesheet" href="/busco-form.css?v=4">
+<link rel="stylesheet" href="/busco-form.css?v=pedido-previa-1">
 </head>
 <body class="wanted-page mobile-subpage mobile-wanted">
 <header class="cl-site-header" data-no-translate>
@@ -68,37 +68,36 @@
   
 
   <main class="wanted-shell">
-    <header class="wanted-intro" id="wanted-create-intro">
-      <h1>¿Qué necesitás para el cole?</h1>
-      <p>Guardá el material que buscás y ColeGo te avisa cuando aparezca.</p>
-    </header>
+    <nav id="wanted-create-intro" class="request-crumb" aria-label="Ruta de navegación"><a href="/perfil">Mi perfil</a> / <a href="/perfil?view=requests">Mis pedidos</a></nav>
 
     <section class="wanted-layout" id="crear-pedido">
       <form id="wanted-form" class="wanted-card wanted-create">
-        <header class="wanted-section-head"><h2>Nuevo pedido</h2></header>
-        <label>Nombre del material<textarea name="title" rows="3" maxlength="600" required placeholder="Ej. English File Intermediate, 4.ª edición"></textarea><small>Incluí el título y, si lo sabés, el nivel o la edición. Podés agregar hasta 8 materiales, uno por línea.</small></label>
+        <header class="wanted-section-head"><h1>Nuevo pedido</h1><p>Contanos qué material buscás para encontrar publicaciones que coincidan.</p></header>
+        <div class="request-editor"><div class="request-fields">
+        <label>¿Qué material buscás?<textarea name="title" rows="1" maxlength="600" required placeholder="Ej. English File Intermediate, 4.ª edición"></textarea><small>Incluí el título y, si lo sabés, el nivel o la edición. Podés agregar hasta 8 materiales, uno por línea.</small></label>
         <div class="wanted-request-row">
         <label>Categoría<select name="category"><option value="">Todas las categorías</option><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Apuntes</option><option>Cuadernos</option><option>Mochilas</option><option>Otros</option></select></label>
-        <fieldset class="wanted-budget">
+        <label data-category-field="book" hidden>ISBN (opcional)<input name="isbn" maxlength="32" placeholder="Ingresá el ISBN"></label>
+        <label data-category-field="uniform" hidden>Talle (opcional)<input name="size" maxlength="40" placeholder="Ej. 12 o M"></label>
+        </div><fieldset class="wanted-budget">
           <legend>Presupuesto <small>Opcional · en pesos</small></legend>
           <div class="wanted-two">
             <label>Desde<input name="min_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="8.000"></label>
             <label>Hasta<input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="10.000"></label>
           </div>
         </fieldset>
-        </div>
-        <fieldset><legend>¿Dónde querés que busquemos?</legend><div class="scope-grid">
-          <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b><small>Solo tu comunidad</small></label>
-          <label><input type="radio" name="scope" value="zone"><b>Mi zona</b><small>Colegios cercanos</small></label>
-          <label><input type="radio" name="scope" value="both"><b>Mi colegio y mi zona</b></label>
+        <fieldset><legend>¿Dónde querés buscar?</legend><div class="scope-grid">
+          <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b></label>
+          <label><input type="radio" name="scope" value="zone"><b>Mi zona</b></label>
+          <label><input type="radio" name="scope" value="both"><b>Ambos</b></label>
         </div></fieldset>
         <div class="wanted-options">
         <details class="wanted-extra">
           <summary>Datos del material <small>Opcional</small></summary>
           <div class="wanted-extra-fields">
-            <label>ISBN<input name="isbn" maxlength="32"></label>
-            <label>Edición<input name="edition" maxlength="80"></label>
-            <label>Talle<input name="size" maxlength="40"></label>
+            
+            <label data-category-field="book" hidden>Edición<input name="edition" maxlength="80"></label>
+            
             <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
           </div>
         </details>
@@ -112,7 +111,11 @@
         </details>
         </div>
         <section id="match-review" hidden aria-label="Revisar materiales"></section>
-        <button class="wanted-submit" type="submit"><span>Revisar pedido</span></button>
+        </div>
+        <aside class="request-preview" aria-labelledby="request-preview-heading"><h2 id="request-preview-heading">Vista previa del pedido</h2>
+          <div class="request-preview-item"><span id="request-art" aria-hidden="true">📦</span><div><strong id="request-name">Tu pedido</strong><small id="request-category"></small><b id="request-budget">Sin límite de precio</b><small id="request-area"></small></div></div>
+        </aside></div>
+        <div class="request-footer"><a href="/perfil?view=requests">Cancelar</a><button class="wanted-submit" type="submit"><span>Crear pedido</span></button></div>
         <p id="wanted-status" class="wanted-status" role="status"></p>
       </form>
 
@@ -127,7 +130,7 @@
   </main>
   <script src="vendor/supabase.js?v=20261109-release25"></script>
   <script src="supabase.js?v=20261110-recovery31"></script>
-  <script src="busco.js?v=formulario-3"></script>
+  <script src="busco.js?v=pedido-previa-1"></script>
   <script src="mobile-ui.js?v=20261111-more42"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/marketplace-upgrades.js?v=20261109-release25"></script>
