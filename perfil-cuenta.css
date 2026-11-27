@@ -265,3 +265,36 @@ html[data-theme] body.mobile-profile .account-credential .account-setting-link {
   .account-credential { grid-template-columns: minmax(0, 1fr) auto; }
   .account-credential .account-readonly { grid-column: 1 / -1; grid-row: 2; }
 }
+
+.publication-heading-icon { display: none; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .content-header > div { display: flex; align-items: center; gap: 10px; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-heading-icon { display: block; flex: none; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card {
+  grid-template-columns: minmax(0, 1fr) minmax(90px, .26fr) 174px;
+  background: transparent;
+  gap: 10px 14px;
+  padding: 7px 9px;
+}
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__left { grid-template-columns: 86px minmax(0, 1fr); }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-thumb { width: 86px; height: 58px; border-radius: 8px; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-thumb img { border-radius: 8px !important; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__time { text-align: left; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card > .publication-card__price { font-size: 1.08rem; font-weight: 800; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__stats { gap: 6px; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-quick-actions :is(a,button) {
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  gap: 4px;
+  padding: 0 9px;
+  border-color: #cdbbb1;
+  background: transparent;
+}
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-menu__trigger { width: 32px; height: 36px; border: 0; background: transparent; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-quick-actions .icon { width: 16px; height: 16px; }
+@media (max-width: 760px) {
+  html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card { grid-template-columns: minmax(0, 1fr) auto; }
+  html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__stats { grid-column: 1 / -1; justify-content: flex-end; }
+  html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__left { grid-template-columns: 54px minmax(0, 1fr); }
+  html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-thumb { width: 54px; height: 50px; }
+}

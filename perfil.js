@@ -959,6 +959,18 @@ function buildPublicationCard(item) {
   dropdown.innerHTML = buildMenuActions(item.status, item.moderationStatus);
   dropdown.insertAdjacentHTML("beforeend", '<button type="button" role="menuitem" data-delete-action>Eliminar publicación</button>');
   if (state.currentSection === "publications") {
+    card.insertBefore(price, quickActions.parentElement);
+    subline.after(published);
+    const detailText = [subline.textContent, item.published,
+      item.moderationStatus !== "approved" ? moderationLabel : ""].filter(Boolean).join(" · ");
+    published.textContent = detailText;
+    subline.hidden = true;
+    condition.hidden = true;
+    edit.setAttribute("aria-label", "Editar publicación");
+    edit.title = "Editar publicación";
+    edit.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/></svg>';
+    const pause = quickActions.querySelector("button");
+    if (pause) pause.insertAdjacentHTML("afterbegin", '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="3" height="16" rx="1"/><rect x="15" y="4" width="3" height="16" rx="1"/></svg>');
     const activity = document.createElement("div");
     activity.className = "publication-menu-activity";
     activity.setAttribute("role", "presentation");
