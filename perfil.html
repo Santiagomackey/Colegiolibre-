@@ -37,7 +37,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/transfer.css?v=mp-checkout-1"><link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/perfil-cuenta.css?v=2">
+<link rel="stylesheet" href="/perfil-cuenta.css?v=paneles-1">
 </head>
   <body class="mobile-subpage mobile-profile">
 <header class="cl-site-header" data-no-translate>
@@ -195,7 +195,7 @@
         <div class="profile-sidebar__divider"></div>
 
         <nav class="profile-nav profile-nav--secondary" aria-label="Configuración de la cuenta">
-          <a class="profile-nav__item" href="/pedidos"><svg class="icon"><use href="#icon-user"></use></svg><span>Mis pedidos</span></a>
+          <button class="profile-nav__item" type="button" data-profile-view="requests"><svg class="icon"><use href="#icon-user"></use></svg><span>Mis pedidos</span></button>
           <a class="profile-nav__item" href="/perfil?view=settings#datos-cobro">
             <svg class="icon"><use href="#icon-tag"></use></svg><span>Datos de cobro</span>
           </a>
@@ -365,18 +365,18 @@
         <section class="settings-panel account-preferences" id="account-preferences" aria-label="Ajustes de la cuenta" hidden>
           <section class="account-preferences__group">
             <h2>Cuenta</h2>
-              <div class="settings-danger-actions">
-                <button class="ghost-button ghost-button--profile" type="button" id="settings-logout-button">
-                  Cerrar sesión
-                </button>
-                <button class="danger-outline-button" type="button" id="settings-deactivate-button">
-                  Desactivar cuenta
-                </button>
-              </div>
+            <dl class="account-email"><dt>Correo electrónico</dt><dd id="account-settings-email"></dd></dl>
+            <button class="ghost-button ghost-button--profile" type="button" id="settings-logout-button">Cerrar sesión</button>
           </section>
           <section class="account-preferences__group">
-            <h2>Notificaciones</h2>
-            <a href="/busco">Gestionar avisos de mis búsquedas</a>
+            <h2>Avisos</h2>
+            <p>Consultá y pausá las búsquedas que te generan coincidencias.</p>
+            <a href="/busco?view=mine#pedidos">Gestionar mis búsquedas</a>
+          </section>
+          <section class="account-preferences__group">
+            <h2>Privacidad</h2>
+            <a href="/privacidad">Política de privacidad</a>
+            <button class="danger-outline-button" type="button" id="settings-deactivate-button">Desactivar cuenta</button>
           </section>
 <section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title">
   <h2 id="payment-settings-title">Datos de cobro</h2>
@@ -387,6 +387,15 @@
   </div>
   <a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a>
 </section>
+        </section>
+        <section class="settings-panel account-requests" id="account-requests" aria-label="Mis pedidos" hidden>
+          <div class="account-requests__heading">
+            <h2>Mis pedidos</h2>
+            <a class="account-primary-link" href="/busco#crear-pedido">Nuevo pedido</a>
+          </div>
+          <div id="account-request-list" aria-live="polite"></div>
+          <a class="account-secondary-link" href="/busco?view=mine#pedidos">Gestionar búsquedas</a>
+          <a class="account-secondary-link" href="/pedidos">Ver compras y ventas</a>
         </section>
       </main>
     </div>
@@ -426,6 +435,7 @@
 
             <div class="publication-card__time"></div>
 
+            <div class="publication-quick-actions" aria-label="Acciones rápidas"></div>
             <div class="publication-menu">
             <button
               class="publication-menu__trigger"
@@ -449,7 +459,7 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./perfil.js?v=cuenta-1"></script>
+<script src="./perfil.js?v=paneles-1"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     <script src="./mobile-ui.js?v=20261111-more42"></script>

@@ -13,7 +13,6 @@ const {
   getInitials,
   getProductFavoriteCount,
   getStatusLabel,
-  isAdminUser,
   loadUserDashboard
 } = window.colegioLibreApi;
 
@@ -138,7 +137,6 @@ async function initPerfil() {
 
   await hydrateDashboard(state.currentUser.id);
   await hydrateTransactions();
-  await exposeAdminNavigation();
   renderCounts();
   renderDashboard();
   renderSettingsForm();
@@ -154,24 +152,6 @@ async function initPerfil() {
   }
 }
 
-async function exposeAdminNavigation() {
-  if (!(await isAdminUser())) return;
-  const secondaryNav = document.querySelector(".profile-nav--secondary");
-  if (!secondaryNav || secondaryNav.querySelector("[data-admin-moderation]")) {
-    return;
-  }
-
-  secondaryNav.insertAdjacentHTML(
-    "afterbegin",
-    `
-      <a class="profile-nav__item" href="/moderacion" data-admin-moderation>
-        <svg class="icon"><use href="#icon-shield"></use></svg>
-        <span>Moderación</span>
-      </a>
-    `
-  );
-}
-
 function getCurrentProfileDestination() {
   return `/perfil${window.location.search}`;
 }
@@ -185,6 +165,7 @@ function hydrateViewState() {
     "purchases",
     "sales",
     "settings",
+    "requests",
     "profile"
   ]);
 
@@ -368,6 +349,7 @@ function renderSettingsForm() {
   document.getElementById("account-avatar").textContent = getInitials(state.profile?.name);
   settingsName.value = state.profile?.name || "";
   settingsEmail.value = state.currentUser?.email || "";
+  document.getElementById("account-settings-email").textContent = settingsEmail.value;
   settingsSchoolCode.value = state.profile?.school_code || "";
   settingsSchoolName.value = state.profile?.school_name || "";
   settingsZone.value = state.profile?.zone_code || "";
@@ -375,6 +357,11 @@ function renderSettingsForm() {
 
 function renderCurrentSection() {
   updateSectionUi();
+
+  if (state.currentSection === "requests") {
+    void renderAccountRequests();
+    return;
+  }
 
   if (state.currentSection === "publications") {
     renderPublicationList(state.publicationsByState[state.currentState], "No tenés publicaciones en esta sección.");
@@ -414,12 +401,77 @@ function renderCurrentSection() {
   );
 }
 
+async function renderAccountRequests() {
+  const list = document.getElementById("account-request-list");
+  const client = window.colegioLibreSupabase;
+  list.textContent = "Cargando pedidos…";
+  try {
+    const { data, error } = await client.from("wanted_posts")
+      .select("id,title,category,min_price,max_price,match_paused")
+      .eq("user_id", state.currentUser.id).eq("status", "active")
+      .order("created_at", { ascending: false }).limit(12);
+    if (error) throw error;
+    if (!data.length) {
+      list.textContent = "Todavía no guardaste materiales.";
+      return;
+    }
+    const rows = data.map(item => {
+      const row = document.createElement("article");
+      row.className = "account-request-row";
+      const name = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = item.title;
+      name.append(title);
+      if (item.category) {
+        const category = document.createElement("small");
+        category.textContent = item.category;
+        name.append(category);
+      }
+      const budget = document.createElement("span");
+      budget.textContent = item.min_price != null && item.max_price != null
+        ? formatPrice(item.min_price) + " a " + formatPrice(item.max_price)
+        : item.max_price != null ? "Hasta " + formatPrice(item.max_price)
+        : item.min_price != null ? "Desde " + formatPrice(item.min_price) : "Sin presupuesto";
+      const badge = document.createElement("span");
+      badge.className = "account-request-badge";
+      badge.textContent = item.match_paused ? "Pausado" : "Consultando…";
+      row.append(name, budget, badge);
+      if (!item.match_paused) {
+        void Promise.resolve(client.rpc("colego_match_results", { p_wanted: item.id })).then(({ data, error }) => {
+          if (error) throw error;
+          if (!data?.length) {
+            badge.textContent = "Buscando";
+            return;
+          }
+          badge.textContent = "Coincidencia encontrada";
+          badge.dataset.found = "true";
+          const link = document.createElement("a");
+          link.href = "/producto?id=" + encodeURIComponent(data[0].id);
+          link.textContent = "Ver coincidencia";
+          row.append(link);
+        }).catch(() => { badge.textContent = "Coincidencias no disponibles"; });
+      }
+      return row;
+    });
+    list.replaceChildren(...rows);
+  } catch (_) {
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.textContent = "Volver a intentar";
+    retry.addEventListener("click", () => void renderAccountRequests());
+    list.replaceChildren("No pudimos cargar tus pedidos. ", retry);
+  }
+}
+
 function updateSectionUi() {
   const meta = sectionMeta[state.currentSection] || sectionMeta.publications;
   const showsPublicationContent = state.currentSection === "publications" || state.currentSection === "sales";
   const showsSettings = state.currentSection === "settings";
   const showsProfile = state.currentSection === "profile";
-  sectionTitle.closest(".content-header").hidden = showsProfile || showsSettings;
+  const showsRequests = state.currentSection === "requests";
+  document.body.dataset.accountView = state.currentSection;
+  document.getElementById("account-requests").hidden = !showsRequests;
+  sectionTitle.closest(".content-header").hidden = showsProfile || showsSettings || showsRequests;
 
   sectionTitle.textContent = meta.title;
   sectionDescription.textContent = meta.description;
@@ -427,7 +479,7 @@ function updateSectionUi() {
   dashboardOverview.hidden = !showsPublicationContent;
   publicationPanel.hidden = !showsPublicationContent;
   securityBanner.hidden = !showsPublicationContent;
-  utilityPanel.hidden = showsPublicationContent || showsSettings || showsProfile;
+  utilityPanel.hidden = showsPublicationContent || showsSettings || showsProfile || showsRequests;
   settingsPanel.hidden = !showsProfile;
   accountPreferences.hidden = !showsSettings;
   publishButton.hidden = state.currentSection !== "publications";
@@ -828,6 +880,22 @@ function buildPublicationCard(item) {
   const dropdown = fragment.querySelector(".publication-menu__dropdown");
 
   card.dataset.productId = item.id;
+  const quickActions = fragment.querySelector(".publication-quick-actions");
+  const edit = document.createElement("a");
+  edit.href = "/publicar?edit=" + encodeURIComponent(item.id);
+  edit.textContent = "Editar";
+  edit.addEventListener("click", (event) => event.stopPropagation());
+  if (item.status === "available") {
+    const pause = document.createElement("button");
+    pause.type = "button";
+    pause.textContent = "Pausar";
+    pause.addEventListener("click", (event) => {
+      event.stopPropagation();
+      void updateProductStatus(item.id, "paused", pause);
+    });
+    quickActions.append(pause);
+  }
+  quickActions.append(edit);
 
   if (thumb) {
     thumb.innerHTML = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`;
@@ -1078,6 +1146,7 @@ function activateSection(nextSection) {
     "purchases",
     "sales",
     "settings",
+    "requests",
     "profile"
   ]);
   state.currentSection = allowedViews.has(nextSection) ? nextSection : "profile";
