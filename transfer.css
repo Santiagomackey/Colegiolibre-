@@ -13,3 +13,33 @@
 .pay-pickup-link-form{margin-top:16px}
 .pay-pickup-link-form label{display:grid;gap:6px;font-weight:650}
 .pay-pickup-link-form input{box-sizing:border-box;width:100%;min-height:44px;border:1px solid var(--pay-line);border-radius:10px;padding:8px 12px;font:inherit;color:var(--pay-ink);background:var(--pay-surface)}
+
+body[data-account-view="purchases"] .content-header { display: none !important; }
+body[data-account-view="purchases"] #utility-panel { padding: 0; border: 0; background: transparent; }
+.purchase-panel { padding: 10px; border: 1px solid #dfd1c5; border-radius: 16px; background: #fcf9f5; color: #32221e; }
+.purchase-panel h2 { display: flex; align-items: center; gap: 10px; margin: 0 4px 10px; font-size: 1.25rem; }
+.purchase-panel h2::before { content: ""; width: 20px; height: 22px; background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 26' fill='none' stroke='%2332221e' stroke-width='2'%3E%3Cpath d='M4 8h16l2 16H2L4 8zM8 9V6a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E"); }
+.purchase-table { width: 100%; border: 1px solid #e6dcd2; border-radius: 9px; border-spacing: 0; overflow: hidden; font-size: .9rem; }
+.purchase-table th { padding: 5px 10px; text-align: left; font-size: .76rem; background: #f1eae1; }
+.purchase-table td { padding: 6px 10px; vertical-align: middle; border-top: 1px solid #e6dcd2; }
+.purchase-product { display: flex; align-items: center; gap: 12px; }
+.purchase-photo { flex: none; position: relative; display: grid; place-items: center; width: clamp(54px,6vw,88px); height: 50px; overflow: hidden; border-radius: 7px; background: #ede6dd; }
+.purchase-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.purchase-table small { display: block; margin-top: 3px; font-size: .78rem; }
+.purchase-price { white-space: nowrap; font-weight: 650; }
+.purchase-badge { display: inline-block; padding: 5px 10px; border-radius: 99px; background: #fff0bf; font-size: .78rem; }
+.purchase-badge[data-paid="true"] { background: #e1f2da; }
+.purchase-badge[data-paid="true"]::before { content: "✓ "; }
+.purchase-actions { text-align: right; }
+.purchase-detail { display: inline-block; white-space: nowrap; padding: 8px 16px; border-radius: 9px; background: #ffca43; color: #32221e; font-weight: 700; text-decoration: none; }
+.purchase-cancel { display: block; margin: 4px 0 0 auto; background: transparent; border: 0; text-decoration: underline; cursor: pointer; }
+@media(max-width: 900px) {
+  .purchase-table, .purchase-table tbody { display: block; }
+  .purchase-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .purchase-table tr { display: grid; grid-template-columns: minmax(0,1fr) auto; padding: 10px; gap: 8px; }
+  .purchase-table tr + tr { border-top: 1px solid #e6dcd2; }
+  .purchase-table td { padding: 0; border: 0; }
+  .purchase-product { grid-column: 1 / -1; }
+  .purchase-pickup { align-self: center; }
+  .purchase-actions { align-self: end; }
+}
