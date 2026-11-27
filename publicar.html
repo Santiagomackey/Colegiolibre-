@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
+<link rel="stylesheet" href="/publicar-formulario.css?v=1">
 </head>
   <body class="publish-body mobile-subpage">
 <header class="cl-site-header" data-no-translate>
@@ -147,7 +148,7 @@
               <div class="upload-grid" id="upload-grid">
                 <button class="upload-tile upload-tile--hero" id="upload-trigger" type="button">
                   <svg class="icon"><use href="#icon-image"></use></svg>
-                  <span>Subí hasta 6 fotos. En computadora también podés arrastrarlas aquí</span>
+                  <span>Agregar foto</span>
                 </button>
 
                 <button class="upload-tile upload-tile--mini" type="button" data-slot="1" aria-label="Agregar foto 2">
@@ -157,6 +158,9 @@
                 <button class="upload-tile upload-tile--mini" type="button" data-slot="2" aria-label="Agregar foto 3">
                   <svg class="icon"><use href="#icon-plus"></use></svg>
                 </button>
+                <button class="upload-tile upload-tile--mini" type="button" data-slot="3" hidden aria-label="Agregar foto 4"></button>
+                <button class="upload-tile upload-tile--mini" type="button" data-slot="4" hidden aria-label="Agregar foto 5"></button>
+                <button class="upload-tile upload-tile--mini" type="button" data-slot="5" hidden aria-label="Agregar foto 6"></button>
               </div>
 
               <div class="upload-help-row">
@@ -170,35 +174,11 @@
                 </button>
               </div>
             </div>
-        <aside class="preview-panel" aria-labelledby="preview-title">
-          <h2 id="preview-title">Vista previa</h2>
 
-          <article class="preview-card">
-            <div class="preview-card__media">
-              <span class="preview-badge" id="preview-condition">Usado</span>
-              <span class="preview-size-badge" id="preview-size" hidden>Talle M</span>
-
-              <div class="preview-visual">
-                <div class="preview-visual__art" id="preview-art" aria-hidden="true"></div>
-                <img class="preview-image" id="preview-image" alt="Vista previa del producto" hidden />
-              </div>
-            </div>
-
-            <div class="preview-card__body">
-              <h3 id="preview-title-text">Tu producto</h3>
-              <p class="preview-price" id="preview-price">Precio</p>
-              <p class="preview-details" id="preview-details" hidden></p>
-              <p class="preview-location">
-                <svg class="icon"><use href="#icon-pin"></use></svg>
-                <span id="preview-location-text">Zona de tu colegio</span>
-              </p>
-            </div>
-          </article>
-        </aside>
             </div>
             <div class="publish-fields-column">
             <div class="field-group field-group--full">
-              <label for="titulo">Título del producto</label>
+              <label for="titulo">Título</label>
               <input
                 id="titulo"
                 name="titulo"
@@ -233,40 +213,6 @@
                 Completá los datos específicos
               </p>
 
-              <div class="field-row field-row--academic" id="academic-fields-row" hidden>
-                <div class="field-group">
-                  <label for="nivel-escolar">Nivel escolar</label>
-                  <div class="select-wrap">
-                    <select id="nivel-escolar" name="nivel_escolar">
-                      <option value="">Seleccioná el nivel</option>
-                      <option value="Primaria">Primaria</option>
-                      <option value="Secundaria">Secundaria</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                    <svg class="icon"><use href="#icon-chevron"></use></svg>
-                  </div>
-                </div>
-
-                <div class="field-group">
-                  <label for="anio-escolar">Año o grado</label>
-                  <div class="select-wrap">
-                    <select id="anio-escolar" name="anio_escolar">
-                      <option value="">Seleccioná el año</option>
-                      <option value="1">1.º</option>
-                      <option value="2">2.º</option>
-                      <option value="3">3.º</option>
-                      <option value="4">4.º</option>
-                      <option value="5">5.º</option>
-                      <option value="6">6.º</option>
-                      <option value="7">7.º</option>
-                    </select>
-                    <svg class="icon"><use href="#icon-chevron"></use></svg>
-                  </div>
-                </div>
-
-
-              </div>
-
               <div class="field-row" id="book-fields" hidden>
                 <div class="field-group"><label for="book-edition">Edición (opcional)</label><input id="book-edition" maxlength="80" placeholder="Ej. 5.ª edición en inglés"></div>
                 <div class="field-group"><label for="book-isbn">ISBN (opcional)</label><input id="book-isbn" maxlength="32" placeholder="Ej. 978-0-306-40615-7"></div>
@@ -300,6 +246,40 @@
                     <svg class="icon"><use href="#icon-chevron"></use></svg>
                   </div>
                 </div>
+              </div>
+
+              <div class="field-row field-row--academic" id="academic-fields-row" hidden>
+                <div class="field-group">
+                  <label for="nivel-escolar">Nivel escolar</label>
+                  <div class="select-wrap">
+                    <select id="nivel-escolar" name="nivel_escolar">
+                      <option value="">Sin nivel específico</option>
+                      <option value="Primaria">Primaria</option>
+                      <option value="Secundaria">Secundaria</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                    <svg class="icon"><use href="#icon-chevron"></use></svg>
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label for="anio-escolar">Año o grado</label>
+                  <div class="select-wrap">
+                    <select id="anio-escolar" name="anio_escolar">
+                      <option value="">Seleccioná el año</option>
+                      <option value="1">1.º</option>
+                      <option value="2">2.º</option>
+                      <option value="3">3.º</option>
+                      <option value="4">4.º</option>
+                      <option value="5">5.º</option>
+                      <option value="6">6.º</option>
+                      <option value="7">7.º</option>
+                    </select>
+                    <svg class="icon"><use href="#icon-chevron"></use></svg>
+                  </div>
+                </div>
+
+
               </div>
 
               <p class="field-help" id="dynamic-fields-help">
@@ -371,13 +351,38 @@
               ></textarea>
             </div>
 
+            </div>
+        <details class="preview-panel" open>
+          <summary id="preview-title">Vista previa</summary>
+
+          <article class="preview-card">
+            <div class="preview-card__media">
+              <span class="preview-badge" id="preview-condition">Usado</span>
+              <span class="preview-size-badge" id="preview-size" hidden>Talle M</span>
+
+              <div class="preview-visual">
+                <div class="preview-visual__art" id="preview-art" aria-hidden="true"></div>
+                <img class="preview-image" id="preview-image" alt="Vista previa del producto" hidden />
+              </div>
+            </div>
+
+            <div class="preview-card__body">
+              <h3 id="preview-title-text">Tu producto</h3>
+              <p class="preview-price" id="preview-price">Precio</p>
+              <p class="preview-details" id="preview-details" hidden></p>
+              <p class="preview-location">
+                <svg class="icon"><use href="#icon-pin"></use></svg>
+                <span id="preview-location-text">Zona de tu colegio</span>
+              </p>
+            </div>
+          </article>
+        </details>
             <div class="form-actions">
               <button class="action-button action-button--ghost" id="cancelar" type="button">Cancelar</button>
               <p id="match-demand" role="status" hidden></p>
               <button class="action-button action-button--primary" id="submit-product" type="submit">
                 Publicar producto
               </button>
-            </div>
             </div>
           </form>
         </div>
@@ -389,7 +394,7 @@
     <script src="./vendor/supabase.js?v=20261109-release25"></script>
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
-<script src="./publicar.js?v=school-materials-1"></script>
+<script src="./publicar.js?v=formulario-1"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     
