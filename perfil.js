@@ -405,7 +405,7 @@ async function renderAccountRequests() {
   list.textContent = "Cargando pedidos…";
   try {
     const { data, error } = await client.from("wanted_posts")
-      .select("id,title,category,min_price,max_price,match_paused")
+      .select("id,title,category,min_price,max_price,match_paused,created_at")
       .eq("user_id", state.currentUser.id).eq("status", "active")
       .order("created_at", { ascending: false }).limit(12);
     if (error) throw error;
@@ -416,24 +416,85 @@ async function renderAccountRequests() {
     const rows = data.map(item => {
       const row = document.createElement("article");
       row.className = "account-request-row";
+      const thumb = document.createElement("span");
+      thumb.className = "request-thumb";
+      thumb.setAttribute("aria-hidden", "true");
+      const icons = { Libros: "📚", Mochilas: "🎒", Uniformes: "👕", Tecnología: "💻", Cuadernos: "📒", Apuntes: "📄", Útiles: "✏️" };
+      thumb.textContent = /calculadora/i.test(item.title) ? "🧮" : icons[item.category] || "📦";
       const name = document.createElement("div");
       const title = document.createElement("strong");
       title.textContent = item.title;
       name.append(title);
-      if (item.category) {
-        const category = document.createElement("small");
-        category.textContent = item.category;
-        name.append(category);
-      }
+      const meta = document.createElement("small");
+      const created = new Date(item.created_at);
+      const days = Math.max(0, Math.floor((Date.now() - created.getTime()) / 86400000));
+      const age = Number.isFinite(days) && item.created_at
+        ? days === 0 ? "Creado hoy" : "Creado hace " + days + (days === 1 ? " día" : " días")
+        : "";
+      meta.textContent = [item.category, age].filter(Boolean).join(" · ");
+      name.append(meta);
       const budget = document.createElement("span");
       budget.textContent = item.min_price != null && item.max_price != null
-        ? formatPrice(item.min_price) + " a " + formatPrice(item.max_price)
+        ? formatPrice(item.min_price) + " – " + formatPrice(item.max_price)
         : item.max_price != null ? "Hasta " + formatPrice(item.max_price)
         : item.min_price != null ? "Desde " + formatPrice(item.min_price) : "Sin presupuesto";
       const badge = document.createElement("span");
       badge.className = "account-request-badge";
       badge.textContent = item.match_paused ? "Pausado" : "Consultando…";
-      row.append(name, budget, badge);
+      budget.className = "request-budget";
+      const options = document.createElement("button");
+      options.type = "button";
+      options.className = "request-options";
+      options.textContent = "Ver opciones";
+      options.hidden = true;
+      const matches = document.createElement("div");
+      matches.className = "request-matches";
+      matches.hidden = true;
+      matches.id = "request-matches-" + item.id;
+      options.setAttribute("aria-controls", matches.id);
+      options.setAttribute("aria-expanded", "false");
+      options.onclick = () => {
+        matches.hidden = !matches.hidden;
+        options.setAttribute("aria-expanded", String(!matches.hidden));
+      };
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "request-more";
+      more.textContent = "•••";
+      more.setAttribute("aria-label", "Opciones de " + item.title);
+      const actions = document.createElement("div");
+      actions.className = "request-actions";
+      actions.id = "request-actions-" + item.id;
+      actions.setAttribute("popover", "auto");
+      more.setAttribute("popovertarget", actions.id);
+      actions.addEventListener("beforetoggle", event => {
+        if (event.newState !== "open") return;
+        const rect = more.getBoundingClientRect();
+        actions.style.right = Math.max(8, document.documentElement.clientWidth - rect.right) + "px";
+        const above = innerHeight - rect.bottom < 160 && rect.top > 160;
+        actions.style.top = above ? "auto" : rect.bottom + 4 + "px";
+        actions.style.bottom = above ? innerHeight - rect.top + 4 + "px" : "auto";
+      });
+      const pause = document.createElement("button");
+      pause.type = "button";
+      pause.textContent = item.match_paused ? "Reanudar búsqueda" : "Pausar búsqueda";
+      pause.onclick = async () => {
+        pause.disabled = true;
+        try {
+          const { error } = await client.from("wanted_posts").update({ match_paused: !item.match_paused })
+            .eq("id", item.id).eq("user_id", state.currentUser.id);
+          if (error) throw error;
+          await renderAccountRequests();
+        } catch (_) {
+          pause.disabled = false;
+          showToast("No pudimos actualizar el pedido.");
+        }
+      };
+      const manage = document.createElement("a");
+      manage.href = "/busco?view=mine#pedidos";
+      manage.textContent = "Gestionar búsquedas";
+      actions.append(pause, manage);
+      row.append(thumb, name, budget, badge, options, more, matches, actions);
       if (!item.match_paused) {
         void Promise.resolve(client.rpc("colego_match_results", { p_wanted: item.id })).then(({ data, error }) => {
           if (error) throw error;
@@ -443,10 +504,13 @@ async function renderAccountRequests() {
           }
           badge.textContent = "Coincidencia encontrada";
           badge.dataset.found = "true";
-          const link = document.createElement("a");
-          link.href = "/producto?id=" + encodeURIComponent(data[0].id);
-          link.textContent = "Ver coincidencia";
-          row.append(link);
+          for (const product of data) {
+            const link = document.createElement("a");
+            link.href = "/producto?id=" + encodeURIComponent(product.id);
+            link.textContent = product.title + " · " + formatPrice(product.price);
+            matches.append(link);
+          }
+          options.hidden = false;
         }).catch(() => { badge.textContent = "Coincidencias no disponibles"; });
       }
       return row;
