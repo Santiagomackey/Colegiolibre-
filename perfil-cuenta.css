@@ -393,3 +393,27 @@ html[data-theme] body.mobile-profile > .publication-menu__dropdown {
   .account-request-row .account-request-badge { grid-row: 3; grid-column: 2 / -1; }
   .request-options { grid-column: 2; grid-row: 4; justify-self: start; }
 }
+
+#datos-cobro { padding: clamp(16px,2.5vw,28px); border-radius: 18px; background: #fcf9f5; }
+#datos-cobro [hidden] { display: none !important; }
+.billing-heading,.billing-connect,.billing-band,.billing-band strong,.billing-heading h2 { display: flex; align-items: center; gap: 12px; }
+.billing-heading,.billing-connect,.billing-band { justify-content: space-between; }
+.billing-heading h2,.billing-connect p { margin: 0; }
+.billing-card { border: 1px solid #ddcfc3; border-radius: 14px; overflow: hidden; background: white; }
+.billing-band { background: #e5f2f7; padding: 14px 18px; }
+.billing-band span { border: 1px solid #c9d6d8; border-radius: 99px; padding: 4px 10px; font-size: .82rem; }
+.billing-body { padding: 14px 18px; }
+.billing-connect p { margin-top: 4px; }
+#datos-cobro button { font: inherit; cursor: pointer; padding: 8px 12px; border: 1px solid #dacdc2; border-radius: 9px; color: #38251f; background: #fff; }
+#datos-cobro button.billing-primary { background: #ffca43; border-color: #ffca43; font-weight: 700; }
+#datos-cobro button:disabled { opacity: .6; cursor: default; }
+.billing-row { display: grid; grid-template-columns: minmax(60px,.45fr) minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 12px 0; overflow-wrap: anywhere; }
+.billing-row + .billing-row { border-top: 1px solid #e9dfd6; }
+#datos-cobro form label { display: grid; gap: 4px; margin-bottom: 8px; }
+#datos-cobro form input { min-width: 0; padding: 8px; font: inherit; border: 1px solid #ddcfc3; border-radius: 8px; }
+#datos-cobro [data-billing-message]:empty { display: none; }
+#datos-cobro [data-billing-mode="linked"] .billing-connect { margin-top: 10px; }
+#datos-cobro [data-billing-mode="linked"] .billing-body { display:flex; flex-direction:column; }
+#datos-cobro [data-billing-mode="linked"] .billing-connect { order: 2; }
+#datos-cobro [data-billing-mode="linked"] [data-mp-connect] { background: transparent; border: 0; text-decoration: underline; font-size: .82rem; }
+@media(max-width:600px) { .billing-connect,.billing-heading { flex-wrap: wrap; } .billing-row { grid-template-columns: auto minmax(0,1fr) auto; } }
