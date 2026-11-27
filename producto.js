@@ -500,8 +500,7 @@ function getProductAttributes(product) {
   if (category === "Libros" || category === "Apuntes") {
     attributes.push(
       ["Materia", product.subject],
-      ["Nivel", product.school_level],
-      ["Año o grado", product.school_year ? `${product.school_year}.º` : null]
+      ["ISBN", category === "Libros" ? product.isbn : null]
     );
   } else if (category === "Uniformes") {
     attributes.push(
@@ -520,6 +519,9 @@ function getProductAttributes(product) {
     attributes.push([labels[category] || "Tipo", product.subcategory]);
   }
 
+  if (product.school_level && product.school_level !== "No corresponde") {
+    attributes.push(["Nivel", product.school_level], [product.school_level === "Primaria" ? "Grado" : "Año", product.school_year ? `${product.school_year}.º` : null]);
+  }
   return attributes.filter(([, value]) => value !== null && value !== undefined && value !== "");
 }
 
