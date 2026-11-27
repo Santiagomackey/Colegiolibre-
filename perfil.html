@@ -37,7 +37,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/transfer.css?v=mp-checkout-1"><link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/perfil-cuenta.css?v=paneles-1">
+<link rel="stylesheet" href="/perfil-cuenta.css?v=ajustes-2">
 </head>
   <body class="mobile-subpage mobile-profile">
 <header class="cl-site-header" data-no-translate>
@@ -196,7 +196,7 @@
 
         <nav class="profile-nav profile-nav--secondary" aria-label="Configuración de la cuenta">
           <button class="profile-nav__item" type="button" data-profile-view="requests"><svg class="icon"><use href="#icon-user"></use></svg><span>Mis pedidos</span></button>
-          <a class="profile-nav__item" href="/perfil?view=settings#datos-cobro">
+          <a class="profile-nav__item" id="account-billing-link" href="/perfil?view=billing">
             <svg class="icon"><use href="#icon-tag"></use></svg><span>Datos de cobro</span>
           </a>
           <button class="profile-nav__item" type="button" data-profile-action="logout">
@@ -363,31 +363,31 @@
 
         </section>
         <section class="settings-panel account-preferences" id="account-preferences" aria-label="Ajustes de la cuenta" hidden>
-          <section class="account-preferences__group">
-            <h2>Cuenta</h2>
-            <dl class="account-email"><dt>Correo electrónico</dt><dd id="account-settings-email"></dd></dl>
-            <button class="ghost-button ghost-button--profile" type="button" id="settings-logout-button">Cerrar sesión</button>
+          <section class="account-preferences__group" aria-labelledby="account-group-title">
+            <h2 id="account-group-title"><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg> Cuenta</h2>
+            <div class="account-setting-row"><span>Correo electrónico</span><span id="account-settings-email" class="account-readonly"></span></div>
+            <div class="account-setting-row"><span>Contraseña</span><button class="account-setting-link" type="button" id="settings-password-button">Cambiar contraseña</button></div>
+            <p id="settings-password-status" role="status"></p>
           </section>
-          <section class="account-preferences__group">
-            <h2>Avisos</h2>
-            <p>Consultá y pausá las búsquedas que te generan coincidencias.</p>
-            <a href="/busco?view=mine#pedidos">Gestionar mis búsquedas</a>
+          <section class="account-preferences__group" aria-labelledby="alerts-group-title">
+            <h2 id="alerts-group-title">Avisos</h2>
+            <div class="account-setting-row"><div><strong>Coincidencias de tus pedidos</strong><p>Consultá o pausá los pedidos para los que querés recibir avisos.</p></div><a href="/busco?view=mine#pedidos">Gestionar avisos</a></div>
           </section>
-          <section class="account-preferences__group">
-            <h2>Privacidad</h2>
-            <a href="/privacidad">Política de privacidad</a>
-            <button class="danger-outline-button" type="button" id="settings-deactivate-button">Desactivar cuenta</button>
+          <section class="account-preferences__group" aria-labelledby="privacy-group-title">
+            <h2 id="privacy-group-title"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg> Privacidad</h2>
+            <div class="account-setting-row"><span>Datos de tu cuenta</span><a href="/privacidad">Política de privacidad</a></div>
+            <div class="account-setting-row"><div><strong>Desactivar cuenta</strong></div><button class="danger-outline-button" type="button" id="settings-deactivate-button">Desactivar cuenta</button></div>
           </section>
-<section id="datos-cobro" class="pay-settings" aria-labelledby="payment-settings-title">
+        </section>
+        <section id="datos-cobro" class="settings-panel pay-settings" hidden aria-labelledby="payment-settings-title">
   <h2 id="payment-settings-title">Datos de cobro</h2>
   <div data-mp-connect-card>
     <p class="pay-muted" data-mp-status role="status">Conectá Mercado Pago para recibir los pagos de tus ventas.</p>
     <button data-mp-connect class="pay-button pay-button--mercado-pago" type="button" disabled>Conectar Mercado Pago</button>
-    <a data-mp-login href="/login?next=%2Fperfil%3Fview%3Dsettings" hidden>Iniciar sesión</a>
+    <a data-mp-login href="/login?next=%2Fperfil%3Fview%3Dbilling" hidden>Iniciar sesión</a>
   </div>
   <a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a>
 </section>
-        </section>
         <section class="settings-panel account-requests" id="account-requests" aria-label="Mis pedidos" hidden>
           <div class="account-requests__heading">
             <h2>Mis pedidos</h2>
@@ -459,7 +459,7 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./perfil.js?v=paneles-1"></script>
+<script src="./perfil.js?v=ajustes-2"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     <script src="./mobile-ui.js?v=20261111-more42"></script>

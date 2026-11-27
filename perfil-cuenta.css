@@ -143,3 +143,24 @@ html[data-theme] body.mobile-profile .publication-stat { padding: 0 6px; }
   .account-preferences__group { grid-template-columns: minmax(0, 1fr); justify-items: start; }
   html[data-theme] body.mobile-profile .publication-card__stats { padding-inline-end: 40px; }
 }
+
+
+html[data-theme] body.mobile-profile #account-preferences .account-preferences__group {
+  display: block;
+  margin-bottom: 12px;
+  padding: 17px clamp(16px, 2.6vw, 26px) 10px;
+  border: 1px solid #e9ded5;
+  border-radius: 22px;
+  background: #fcfaf7;
+}
+.account-preferences__group h2 { display: flex; gap: 8px; align-items: center; padding-bottom: 8px; }
+.account-preferences__group h2 svg { flex: 0 0 20px; }
+.account-setting-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; min-height: 46px; padding: 7px 0; }
+.account-setting-row + .account-setting-row { border-top: 1px solid #e9ded5; }
+.account-setting-row p { margin-top: 4px; color: #65534a; font-size: .875rem; }
+.account-readonly { max-width: 100%; padding: 6px 10px; border: 1px solid #e9ded5; border-radius: 9px; background: #fff; overflow-wrap: anywhere; }
+.account-setting-link { min-height: 42px; padding: 0 12px; border: 0; border-radius: 999px; background: #fff0c9; color: #3b2722; font: inherit; font-weight: 650; cursor: pointer; }
+.account-setting-link:not(:disabled):hover { background: #ffca50; }
+#settings-password-status:empty { display: none; }
+#settings-password-status { margin: 6px 0; font-size: .875rem; }
+html[data-theme] body.mobile-profile .profile-nav__item[aria-current="page"] { background: #e5f2f5; color: #3b2722; }

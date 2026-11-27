@@ -36,7 +36,7 @@ const settingsEmail = document.querySelector("#settings-email");
 const settingsSchoolCode = document.querySelector("#settings-school-code");
 const settingsSchoolName = document.querySelector("#settings-school-name");
 const settingsZone = document.querySelector("#settings-zone");
-const settingsLogoutButton = document.querySelector("#settings-logout-button");
+const settingsPasswordButton = document.querySelector("#settings-password-button");
 const settingsDeactivateButton = document.querySelector("#settings-deactivate-button");
 
 const dashboardSummary = document.querySelector("#dashboard-summary");
@@ -142,11 +142,6 @@ async function initPerfil() {
   renderSettingsForm();
   renderCurrentSection();
 
-  if (state.currentSection === "settings" &&
-      (new URLSearchParams(window.location.search).get("section") === "cobro" || location.hash === "#datos-cobro")) {
-    document.getElementById("datos-cobro")?.scrollIntoView({ block: "start" });
-  }
-
   if (state.pendingNotice) {
     showToast(state.pendingNotice);
   }
@@ -158,13 +153,15 @@ function getCurrentProfileDestination() {
 
 function hydrateViewState() {
   const params = new URLSearchParams(window.location.search);
-  const rawView = params.get("view");
+  const rawView = params.get("view") === "settings" && (params.get("section") === "cobro" || location.hash === "#datos-cobro")
+    ? "billing" : params.get("view");
   const allowedViews = new Set([
     "publications",
     "messages",
     "purchases",
     "sales",
     "settings",
+    "billing",
     "requests",
     "profile"
   ]);
@@ -373,7 +370,7 @@ function renderCurrentSection() {
     return;
   }
 
-  if (state.currentSection === "profile" || state.currentSection === "settings") {
+  if (state.currentSection === "profile" || state.currentSection === "settings" || state.currentSection === "billing") {
     renderSettingsForm();
     return;
   }
@@ -469,9 +466,13 @@ function updateSectionUi() {
   const showsSettings = state.currentSection === "settings";
   const showsProfile = state.currentSection === "profile";
   const showsRequests = state.currentSection === "requests";
+  const showsBilling = state.currentSection === "billing";
+  document.getElementById("datos-cobro").hidden = !showsBilling;
+  if (showsBilling) document.getElementById("account-billing-link").setAttribute("aria-current", "page");
+  else document.getElementById("account-billing-link").removeAttribute("aria-current");
   document.body.dataset.accountView = state.currentSection;
   document.getElementById("account-requests").hidden = !showsRequests;
-  sectionTitle.closest(".content-header").hidden = showsProfile || showsSettings || showsRequests;
+  sectionTitle.closest(".content-header").hidden = showsProfile || showsSettings || showsRequests || showsBilling;
 
   sectionTitle.textContent = meta.title;
   sectionDescription.textContent = meta.description;
@@ -479,7 +480,7 @@ function updateSectionUi() {
   dashboardOverview.hidden = !showsPublicationContent;
   publicationPanel.hidden = !showsPublicationContent;
   securityBanner.hidden = !showsPublicationContent;
-  utilityPanel.hidden = showsPublicationContent || showsSettings || showsProfile || showsRequests;
+  utilityPanel.hidden = showsPublicationContent || showsSettings || showsProfile || showsRequests || showsBilling;
   settingsPanel.hidden = !showsProfile;
   accountPreferences.hidden = !showsSettings;
   publishButton.hidden = state.currentSection !== "publications";
@@ -1146,6 +1147,7 @@ function activateSection(nextSection) {
     "purchases",
     "sales",
     "settings",
+    "billing",
     "requests",
     "profile"
   ]);
@@ -1170,6 +1172,7 @@ function activateSection(nextSection) {
     url.searchParams.set("view", state.currentSection);
   }
   url.searchParams.delete("section");
+  if (url.hash === "#datos-cobro") url.hash = "";
 
   history.replaceState(null, "", url.pathname + url.search + url.hash);
   renderCurrentSection();
@@ -1185,6 +1188,30 @@ function closeMenusExcept(exception) {
     menu.closest(".publication-card")?.classList.toggle("is-menu-open", isException);
     trigger.setAttribute("aria-expanded", String(isException));
   });
+}
+
+async function sendSettingsPasswordLink() {
+  const status = document.getElementById("settings-password-status");
+  const email = state.currentUser?.email;
+  if (!email) {
+    status.textContent = "Tu cuenta no tiene un correo asociado.";
+    return;
+  }
+  settingsPasswordButton.disabled = true;
+  status.textContent = "Enviando el enlace…";
+  try {
+    const base = window.colegioLibreConfig?.publicSiteUrl || "https://www.colego.com.ar";
+    sessionStorage.setItem("colegiolibre-recovery-next", "/perfil?view=settings");
+    const { error } = await window.colegioLibreSupabase.auth.resetPasswordForEmail(email, {
+      redirectTo: new URL("/recovery-callback", base).href
+    });
+    if (error) throw error;
+    status.textContent = "Te enviamos un enlace a tu correo para cambiar la contraseña.";
+  } catch (_) {
+    status.textContent = "No pudimos enviar el enlace. Volvé a intentar en un momento.";
+  } finally {
+    settingsPasswordButton.disabled = false;
+  }
 }
 
 function bindEvents() {
@@ -1219,7 +1246,7 @@ function bindEvents() {
   });
 
   settingsForm?.addEventListener("submit", handleSettingsSubmit);
-  settingsLogoutButton?.addEventListener("click", handleLogout);
+  settingsPasswordButton?.addEventListener("click", sendSettingsPasswordLink);
   settingsDeactivateButton?.addEventListener("click", handleAccountDeactivation);
   settingsSchoolCode?.addEventListener("input", () => {
     settingsSchoolName.value = "";
