@@ -172,14 +172,15 @@ html[data-native-app] .materials-footer { display: none; }
   gap: 8px;
   height: 46px;
   padding: 0 17px;
-  border: 1px solid #a6cfd9;
+  border: 1px solid var(--colego-brick, #a0342a);
   border-radius: 999px;
-  background: #dceff3;
+  background: var(--colego-brick, #a0342a);
+  color: #fff;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
 }
-.materials-home .school-bubble:focus-visible { outline-color: #317082; }
+.materials-home .school-bubble:focus-visible { outline-color: var(--colego-brick, #a0342a); }
 .school-bubble:active { transform: scale(.97); }
 .school-popover {
   inset-block: auto calc(var(--school-bottom) + 56px);
