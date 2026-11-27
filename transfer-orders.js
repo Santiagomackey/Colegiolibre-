@@ -9,6 +9,7 @@
  }
  function render(){
   list.replaceChildren();const items=orders.filter(order=>order.role===view);
+  if(view==='buyer'){void window.renderColegoPurchases(list,{orders:items});return;}
   if(!items.length){const empty=T.el('div','pay-card pay-empty');empty.append(T.el('h2','',T.text('Todavía no hay pedidos acá','No orders here yet')),T.el('p','pay-muted',T.text('Tus reservas y compras aparecerán acá.','Your reservations and purchases will appear here.')));list.append(empty);return;}
   for(const order of items){const card=T.el('a','pay-order-card');card.href='/compra?id='+encodeURIComponent(order.id);const info=T.el('div');const title=T.el('h2','',order.product_title);title.dataset.noTranslate='';info.append(title,T.el('small','pay-muted',T.text('Pedido ','Order ')+order.id.slice(0,8)));const right=T.el('div','pay-order-card__right');right.append(T.el('strong','',T.money(order.amount)),T.el('span','pay-status',order.payment_provider==='pickup'&&order.status==='payment_pending'?T.text('Reservado','Reserved'):T.status(order.status)));card.append(info,right);list.append(card);}
  }
