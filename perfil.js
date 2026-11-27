@@ -353,6 +353,7 @@ function renderSettingsForm() {
 }
 
 function renderCurrentSection() {
+  restoreFloatingMenu();
   updateSectionUi();
 
   if (state.currentSection === "requests") {
@@ -994,11 +995,18 @@ function buildPublicationCard(item) {
   menuTrigger.addEventListener("click", (event) => {
     event.stopPropagation();
     const willOpen = dropdown.hidden;
-    closeMenusExcept(dropdown);
+    closeMenusExcept(willOpen ? dropdown : null);
     dropdown.hidden = !willOpen;
     card.classList.toggle("is-menu-open", willOpen);
     menuTrigger.setAttribute("aria-expanded", String(willOpen));
-    if (willOpen) dropdown.querySelector("button")?.focus();
+    if (willOpen) {
+      if (state.currentSection === "publications") {
+        floatingMenu = { dropdown, trigger: menuTrigger, owner: menuTrigger.parentElement };
+        document.body.append(dropdown);
+        positionFloatingMenu();
+      }
+      dropdown.querySelector("button")?.focus({ preventScroll: true });
+    }
   });
 
   dropdown.querySelectorAll("[data-status-action]").forEach((button) => {
@@ -1205,7 +1213,45 @@ function activateSection(nextSection) {
   renderCurrentSection();
 }
 
+let floatingMenu = null;
+
+function restoreFloatingMenu() {
+  if (!floatingMenu) return;
+  const { dropdown, owner, trigger } = floatingMenu;
+  floatingMenu = null;
+  dropdown.hidden = true;
+  dropdown.style.removeProperty("top");
+  dropdown.style.removeProperty("left");
+  dropdown.style.removeProperty("max-height");
+  owner.append(dropdown);
+  trigger.setAttribute("aria-expanded", "false");
+  owner.closest(".publication-card")?.classList.remove("is-menu-open");
+}
+
+function positionFloatingMenu() {
+  if (!floatingMenu) return;
+  const { dropdown, trigger } = floatingMenu;
+  const rect = trigger.getBoundingClientRect();
+  const height = document.documentElement.clientHeight;
+  if (!trigger.isConnected || rect.bottom <= 0 || rect.top >= height) {
+    restoreFloatingMenu();
+    return;
+  }
+
+  const margin = 8;
+  const gap = 4;
+  const below = height - rect.bottom - gap - margin;
+  const above = rect.top - gap - margin;
+  const openAbove = below < dropdown.scrollHeight + 2 && above > below;
+  dropdown.style.maxHeight = Math.max(0, openAbove ? above : below) + "px";
+  const box = dropdown.getBoundingClientRect();
+  dropdown.style.top = (openAbove ? rect.top - gap - box.height : rect.bottom + gap) + "px";
+  dropdown.style.left = Math.max(margin, Math.min(rect.right - box.width,
+    document.documentElement.clientWidth - margin - box.width)) + "px";
+}
+
 function closeMenusExcept(exception) {
+  restoreFloatingMenu();
   document.querySelectorAll(".publication-menu").forEach((menu) => {
     const trigger = menu.querySelector(".publication-menu__trigger");
     const dropdown = menu.querySelector(".publication-menu__dropdown");
@@ -1291,8 +1337,13 @@ function bindEvents() {
     });
   });
 
+  window.addEventListener("resize", positionFloatingMenu);
+  document.addEventListener("scroll", (event) => {
+    if (event.target !== floatingMenu?.dropdown) positionFloatingMenu();
+  }, true);
+
   document.addEventListener("click", (event) => {
-    if (!event.target.closest(".publication-menu")) {
+    if (!event.target.closest(".publication-menu, .publication-menu__dropdown")) {
       closeMenusExcept(null);
     }
   });
