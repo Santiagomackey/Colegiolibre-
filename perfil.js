@@ -367,7 +367,11 @@ function renderCurrentSection() {
   }
 
   if (state.currentSection === "sales") {
-    renderPublicationList(state.publicationsByState.sold, "Todavía no marcaste publicaciones como vendidas.");
+    void window.renderColegoPurchases(utilityPanel, {
+      role: "seller",
+      legacy: state.transactions.filter(t => t.seller_id === state.currentUser.id),
+      sold: state.products.filter(p => p.status === "sold")
+    });
     return;
   }
 
@@ -527,7 +531,7 @@ async function renderAccountRequests() {
 
 function updateSectionUi() {
   const meta = sectionMeta[state.currentSection] || sectionMeta.publications;
-  const showsPublicationContent = state.currentSection === "publications" || state.currentSection === "sales";
+  const showsPublicationContent = state.currentSection === "publications";
   const showsSettings = state.currentSection === "settings";
   const showsProfile = state.currentSection === "profile";
   const showsRequests = state.currentSection === "requests";
