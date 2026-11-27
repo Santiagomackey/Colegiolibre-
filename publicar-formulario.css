@@ -24,3 +24,36 @@ html[data-theme] body.publish-body #submit-product { flex:1 1 180px; background:
   html[data-theme] body.publish-body .publish-form { grid-template-columns:minmax(0,1fr); grid-template-areas:"photos" "fields" "preview" "actions"; gap:14px; }
   html[data-theme] body.publish-body details.preview-panel { position:static; }
 }
+
+/* One continuous listing form, with a compact summary just before publishing. */
+html[data-theme] body.publish-body #contenido { width:min(100% - 32px,840px); margin-inline:auto; }
+html[data-theme] body.publish-body .publish-main { padding:clamp(12px,3vw,30px); border:1px solid #e6dbd1; border-radius:20px; }
+html[data-theme] body.publish-body #publish-form { display:flex; flex-direction:column; align-items:stretch; gap:18px; }
+html[data-theme] body.publish-body .page-intro { margin:0 0 14px; padding:0; }
+.listing-intro-copy { font-size:.86rem; color:#65554d; }
+html[data-theme] body.publish-body #publish-form .field-group--compact { width:100%; max-width:none; }
+#publish-form .field-row > .field-group:only-child { flex:1; }
+html[data-theme] body.publish-body #publish-form :is(.listing-pair,.field-row--academic) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+#publish-form .listing-pair > div { min-width:0; width:auto; }
+html[data-theme] body.publish-body #publish-form :is(.dynamic-product-fields,.field-row--academic) { background:transparent; border:0; padding:0; }
+#publish-form .dynamic-product-fields__title,#dynamic-fields-help { display:none; }
+html[data-theme] body.publish-body #publish-form .upload-grid { display:flex; flex-wrap:wrap; }
+html[data-theme] body.publish-body #publish-form .upload-tile { flex:0 0 clamp(105px,18vw,155px); min-height:0; border-radius:12px; border:1px dashed #c7b7a8; }
+html[data-theme] body.publish-body #publish-form details.preview-panel { position:static; width:100%; padding:14px 18px; background:#faf5ed; }
+html[data-theme] body.publish-body #publish-form .preview-card { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:center; gap:14px; border:0; background:transparent; box-shadow:none; }
+html[data-theme] body.publish-body #publish-form .preview-card__media { padding:0; position:relative; border-radius:9px; overflow:hidden; }
+html[data-theme] body.publish-body #publish-form .preview-visual { min-height:0; height:72px; border-radius:9px; background:#eee7dd; }
+#publish-form .listing-photo-placeholder { height:100%; display:grid; place-items:center; color:#88796d; }
+#publish-form .listing-photo-placeholder svg { width:26px; height:26px; }
+#publish-form .preview-image { width:100%; height:100%; object-fit:cover; }
+html[data-theme] body.publish-body #publish-form .preview-card__body { padding:0; }
+#publish-form .preview-card__body h3,#publish-form .preview-card__body p { margin:2px 0; }
+#publish-form .preview-card__body .preview-location { display:none; }
+#publish-form .preview-card__media :is(.preview-badge,.preview-size-badge) { display:none; }
+html[data-theme] body.publish-body #publish-form .form-actions { display:grid; grid-template-columns:1fr; }
+#publish-form #submit-product { grid-row:2; width:100%; min-height:46px; }
+#publish-form #cancelar { grid-row:3; justify-self:center; }
+@media(max-width:600px) {
+ html[data-theme] body.publish-body #contenido { width:calc(100% - 16px); }
+ html[data-theme] body.publish-body .publish-main { padding:14px; }
+}
