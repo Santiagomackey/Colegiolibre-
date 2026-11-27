@@ -50,10 +50,25 @@ html[data-theme] body.publish-body #publish-form .preview-card__body { padding:0
 #publish-form .preview-card__body h3,#publish-form .preview-card__body p { margin:2px 0; }
 #publish-form .preview-card__body .preview-location { display:none; }
 #publish-form .preview-card__media :is(.preview-badge,.preview-size-badge) { display:none; }
-html[data-theme] body.publish-body #publish-form .form-actions { display:grid; grid-template-columns:1fr; }
-#publish-form #submit-product { grid-row:2; width:100%; min-height:46px; }
-#publish-form #cancelar { grid-row:3; justify-self:center; }
+html[data-theme] body.publish-body #publish-form .form-actions { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:center; }
+#publish-form #match-demand { grid-column:1 / -1; }
+#publish-form #submit-product { grid-column:2; width:100%; min-height:46px; }
+#publish-form #cancelar { grid-column:1; min-height:44px; }
 @media(max-width:600px) {
  html[data-theme] body.publish-body #contenido { width:calc(100% - 16px); }
  html[data-theme] body.publish-body .publish-main { padding:14px; }
+}
+
+html[data-theme] body.publish-body .publish-main { border:0; box-shadow:none; padding:clamp(14px,2.6vw,28px); }
+#publish-form .photo-picker { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:14px; border:1px dashed #cbbcaf; border-radius:14px; background:#fcfaf7; }
+html[data-theme] body.publish-body #publish-form .photo-picker .upload-grid { display:flex; flex-wrap:wrap; width:auto; min-width:0; margin:0; gap:8px; }
+html[data-theme] body.publish-body #publish-form .photo-picker .upload-tile { width:auto; flex:0 0 auto; height:44px; aspect-ratio:auto; min-height:44px; display:inline-flex; flex-direction:row; align-items:center; gap:8px; padding:0 14px; border:1px solid #c5dfe8; background:#e3f1f6; color:#32231f; font:inherit; font-weight:650; }
+html[data-theme] body.publish-body #publish-form .photo-picker .upload-tile.has-image { width:110px; height:88px; padding:0; }
+#publish-form .photo-picker .upload-tile .icon { width:18px; height:18px; }
+#publish-form .photo-picker .camera-button { min-height:44px; margin:0; }
+html[data-theme] body.publish-body #publish-form .field-row--academic:has(.field-group[hidden]) { grid-template-columns:1fr; }
+#publish-form #estado-producto { appearance:auto; background-image:none; }
+@media(max-width:600px){
+ html[data-theme] body.publish-body #contenido { width:100%; }
+ #publish-form .photo-picker { padding:10px; gap:8px; }
 }
