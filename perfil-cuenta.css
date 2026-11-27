@@ -248,7 +248,17 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .publicat
   font-size: .8rem;
 }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-menu__trigger { position: static; }
-html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-menu__dropdown { flex-basis: 100%; margin-left: auto; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-menu {
+  display: inline-flex;
+  position: relative;
+  inset: auto;
+}
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-menu__dropdown {
+  position: absolute;
+  inset: calc(100% + 4px) 0 auto auto;
+  width: min(220px, calc(100vw - 32px));
+  box-shadow: 0 8px 24px rgb(59 39 34 / 15%);
+}
 .publication-menu-activity { padding: 8px; color: #65534a; font-size: .8rem; }
 @media (max-width: 660px) {
   html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card { grid-template-columns: minmax(0,1fr); }
