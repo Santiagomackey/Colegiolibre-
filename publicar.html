@@ -38,7 +38,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/publicar-formulario.css?v=1">
+<link rel="stylesheet" href="/publicar-formulario.css?v=ficha-2">
 </head>
   <body class="publish-body mobile-subpage">
 <header class="cl-site-header" data-no-translate>
@@ -133,7 +133,7 @@
         <div class="publish-main">
           <header class="page-intro">
             <h1 id="publicar-titulo">Publicar un producto</h1>
-            <p id="publicar-subtitulo">Completá la información para publicar tu material.</p>
+            <p id="publicar-subtitulo" class="listing-intro-copy">Completá la información para publicar tu material.</p>
           </header>
 
           <form class="publish-form" id="publish-form" novalidate>
@@ -248,7 +248,12 @@
                 </div>
               </div>
 
-              <div class="field-row field-row--academic" id="academic-fields-row" hidden>
+              <p class="field-help" id="dynamic-fields-help">
+                Estos datos ayudan a encontrar el producto con filtros más precisos.
+              </p>
+            </div>
+
+              <div class="field-row field-row--academic" id="academic-fields-row">
                 <div class="field-group">
                   <label for="nivel-escolar">Nivel escolar</label>
                   <div class="select-wrap">
@@ -282,29 +287,13 @@
 
               </div>
 
-              <p class="field-help" id="dynamic-fields-help">
-                Estos datos ayudan a encontrar el producto con filtros más precisos.
-              </p>
-            </div>
-
-            <fieldset class="field-group field-group--full">
-              <legend>Estado del producto</legend>
-              <div class="condition-selector" role="radiogroup" aria-label="Estado del producto">
-                <input class="sr-only sr-only--input" id="estado-nuevo" name="estado" type="radio" value="Nuevo" />
-                <label for="estado-nuevo">Nuevo</label>
-
-                <input class="sr-only sr-only--input" id="estado-como-nuevo" name="estado" type="radio" value="Como nuevo" />
-                <label for="estado-como-nuevo">Como nuevo</label>
-
-                <input class="sr-only sr-only--input" id="estado-usado" name="estado" type="radio" value="Usado" checked />
-                <label for="estado-usado">Usado</label>
-
-                <input class="sr-only sr-only--input" id="estado-muy-usado" name="estado" type="radio" value="Muy usado" />
-                <label for="estado-muy-usado">Muy usado</label>
+            <div class="field-row listing-pair">
+              <div class="field-group">
+                <label for="estado-producto">Estado</label>
+                <select id="estado-producto" name="estado">
+                  <option>Nuevo</option><option>Como nuevo</option><option selected>Usado</option><option>Muy usado</option>
+                </select>
               </div>
-            </fieldset>
-
-            <div class="field-row">
               <div class="field-group field-group--compact">
                 <label for="precio">Precio</label>
                 <div class="currency-input">
@@ -361,13 +350,13 @@
               <span class="preview-size-badge" id="preview-size" hidden>Talle M</span>
 
               <div class="preview-visual">
-                <div class="preview-visual__art" id="preview-art" aria-hidden="true"></div>
+                <div class="listing-photo-placeholder" id="preview-art"><svg class="icon" aria-hidden="true"><use href="#icon-image"></use></svg></div>
                 <img class="preview-image" id="preview-image" alt="Vista previa del producto" hidden />
               </div>
             </div>
 
             <div class="preview-card__body">
-              <h3 id="preview-title-text">Tu producto</h3>
+              <h3 id="preview-title-text">Título del producto</h3>
               <p class="preview-price" id="preview-price">Precio</p>
               <p class="preview-details" id="preview-details" hidden></p>
               <p class="preview-location">
@@ -394,14 +383,14 @@
     <script src="./vendor/supabase.js?v=20261109-release25"></script>
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
-<script src="./publicar.js?v=formulario-1"></script>
+<script src="./publicar.js?v=ficha-2"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     
     <script src="./mobile-ui.js?v=20261111-more42"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-<script src="/marketplace-upgrades.js?v=20261109-release25"></script>
+
 <script src="/site-header.js?v=app-footer-1"></script>
 </body>
 </html>
