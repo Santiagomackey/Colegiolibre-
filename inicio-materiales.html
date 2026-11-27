@@ -21,7 +21,7 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </style>
-  <link rel="stylesheet" href="/inicio-materiales.css?v=logo-compact-1">
+  <link rel="stylesheet" href="/inicio-materiales.css?v=burbuja-colegio-1">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -61,8 +61,13 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
    <a class="materials-link" href="/explorar">Ver todo el catálogo</a>
   </section>
  </div>
- <section class="materials-school" aria-labelledby="school-title">
-  <div><h2 id="school-title">Mi colegio</h2><p id="materials-school-status">🔒 Se habilita con una suscripción activa y acceso verificado.</p></div>
+ <button class="school-bubble" type="button" popovertarget="school-panel">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6M5 9v11h14V9M10 20v-5h4v5"/><circle cx="12" cy="10" r="1.5"/></svg>
+  Mi colegio
+ </button>
+ <section class="school-popover" popover="auto" id="school-panel" aria-labelledby="school-title">
+  <h2 id="school-title">Mi colegio</h2>
+  <p id="materials-school-status">Se habilita con una suscripción activa y acceso verificado.</p>
   <a class="materials-link" id="materials-school-link" hidden>Entrar a mi colegio</a>
  </section>
  <section class="materials-sell" aria-labelledby="materials-sell-title">
@@ -84,7 +89,7 @@ html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
   </div>
   <div>
    <h2>Colegios</h2>
-   <a href="#school-title">Mi colegio</a>
+   <button class="school-footer-trigger" type="button" popovertarget="school-panel">Mi colegio</button>
    <a href="/instituciones">ColeGo para colegios</a>
   </div>
   <div>
