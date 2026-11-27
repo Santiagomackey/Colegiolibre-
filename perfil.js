@@ -906,7 +906,10 @@ function buildPublicationCard(item) {
     };
   }
 
-  title.textContent = item.title;
+  const listingLink = document.createElement("a");
+  listingLink.href = "/producto?id=" + encodeURIComponent(item.id);
+  listingLink.textContent = item.title;
+  title.append(listingLink);
   if (subline) {
     const details = [
       item.category,
@@ -955,9 +958,21 @@ function buildPublicationCard(item) {
   }
   dropdown.innerHTML = buildMenuActions(item.status, item.moderationStatus);
   dropdown.insertAdjacentHTML("beforeend", '<button type="button" role="menuitem" data-delete-action>Eliminar publicación</button>');
+  if (state.currentSection === "publications") {
+    const activity = document.createElement("div");
+    activity.className = "publication-menu-activity";
+    activity.setAttribute("role", "presentation");
+    activity.textContent = [
+      item.visits + (item.visits === 1 ? " visita" : " vistas"),
+      item.favorites + (item.favorites === 1 ? " favorito" : " favoritos"),
+      item.messages + (item.messages === 1 ? " mensaje" : " mensajes")
+    ].join(" · ");
+    for (const stat of stats) stat.remove();
+    dropdown.append(activity);
+  }
 
   card.addEventListener("click", (event) => {
-    if (event.target.closest(".publication-menu")) {
+    if (event.target.closest(".publication-menu, a")) {
       return;
     }
 
