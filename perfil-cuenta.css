@@ -322,3 +322,7 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .publicat
   html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__left { grid-template-columns: 54px minmax(0, 1fr); }
   html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-thumb { width: 54px; height: 50px; }
 }
+
+body[data-account-view="publications"] :is(#dashboard-overview, #security-banner) {
+  display: none !important;
+}
