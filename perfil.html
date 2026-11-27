@@ -37,7 +37,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/transfer.css?v=ventas-lista-1"><link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/perfil-cuenta.css?v=pedidos-filas-1">
+<link rel="stylesheet" href="/perfil-cuenta.css?v=cobro-2">
 </head>
   <body class="mobile-subpage mobile-profile">
 <header class="cl-site-header" data-no-translate>
@@ -386,13 +386,33 @@
           </section>
         </section>
         <section id="datos-cobro" class="settings-panel pay-settings" hidden aria-labelledby="payment-settings-title">
-  <h2 id="payment-settings-title">Datos de cobro</h2>
   <div data-mp-connect-card>
-    <p class="pay-muted" data-mp-status role="status">Conectá Mercado Pago para recibir los pagos de tus ventas.</p>
-    <button data-mp-connect class="pay-button pay-button--mercado-pago" type="button" disabled>Conectar Mercado Pago</button>
-    <a data-mp-login href="/login?next=%2Fperfil%3Fview%3Dbilling" hidden>Iniciar sesión</a>
+    <header class="billing-heading">
+      <h2 id="payment-settings-title"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8V6l14-4 2 5M3 8h17a1 1 0 0 1 1 1v11H4a1 1 0 0 1-1-1Z"/><path d="M17 13h4"/></svg> Datos de cobro</h2>
+      <button class="billing-primary" data-billing-edit type="button" hidden>Editar datos</button>
+    </header>
+    <p data-billing-intro>Administrá cómo cobrás tus ventas en ColeGo.</p>
+    <div class="billing-card">
+      <div class="billing-band"><strong><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8V6l14-4 2 5M3 8h17a1 1 0 0 1 1 1v11H4a1 1 0 0 1-1-1Z"/><path d="M17 13h4"/></svg> Mercado Pago</strong><span data-billing-state>Consultando…</span></div>
+      <div class="billing-body">
+        <div class="billing-connect">
+          <div><strong data-billing-prompt>Conectá tu cuenta de Mercado Pago</strong><p data-mp-status role="status">Consultando tu cuenta…</p></div>
+          <button data-mp-connect class="billing-primary" type="button" disabled>Conectar Mercado Pago</button>
+          <a data-mp-login href="/login?next=%2Fperfil%3Fview%3Dbilling" hidden>Iniciar sesión</a>
+        </div>
+        <div data-billing-details hidden>
+          <div class="billing-row"><span>Alias</span><strong data-billing-alias></strong><button data-billing-copy type="button" hidden>Copiar</button></div>
+          <div class="billing-row"><span>Titular</span><span data-billing-holder></span></div>
+        </div>
+        <form data-billing-form hidden>
+          <label>Alias<input name="alias" required minlength="6" maxlength="20" autocapitalize="none" spellcheck="false"></label>
+          <label>Titular<input name="holder" required minlength="2" maxlength="100"></label>
+          <div><button class="billing-primary" type="submit">Guardar datos</button> <button type="button" data-billing-cancel>Cancelar</button></div>
+        </form>
+        <p data-billing-message role="status"></p>
+      </div>
+    </div>
   </div>
-  <a class="pay-order-profile-link" href="/pedidos">Ver mis compras y ventas →</a>
 </section>
         <section class="settings-panel account-requests" id="account-requests" aria-label="Mis pedidos" hidden>
           <div class="account-requests__heading">
@@ -469,6 +489,6 @@
     <script src="./mobile-ui.js?v=20261111-more42"></script>
     <script src="./pwa.js?v=20261109-release25"></script>
     <script src="/global-search.js?v=20261109-release25"></script>
-<script src="/transfer-common.js?v=20261111-alias36"></script><script src="/mp-checkout-client.js?v=account-connect-1"></script><script src="/mp-link-settings.js?v=account-connect-1"></script><script src="/site-header.js?v=palette-logo-1"></script>
+<script src="/transfer-common.js?v=20261111-alias36"></script><script src="/mp-checkout-client.js?v=account-connect-1"></script><script src="/mp-link-settings.js?v=cobro-2"></script><script src="/site-header.js?v=palette-logo-1"></script>
 </body>
 </html>
