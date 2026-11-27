@@ -38,7 +38,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/publicar-formulario.css?v=ficha-2">
+<link rel="stylesheet" href="/publicar-formulario.css?v=ficha-3">
 </head>
   <body class="publish-body mobile-subpage">
 <header class="cl-site-header" data-no-translate>
@@ -145,17 +145,17 @@
               <input class="sr-only" id="fotos" name="fotos" type="file" accept="image/*" multiple />
               <input class="sr-only" id="foto-camara" type="file" accept="image/*" capture="environment" />
 
-              <div class="upload-grid" id="upload-grid">
+              <div class="photo-picker"><div class="upload-grid" id="upload-grid">
                 <button class="upload-tile upload-tile--hero" id="upload-trigger" type="button">
                   <svg class="icon"><use href="#icon-image"></use></svg>
                   <span>Agregar foto</span>
                 </button>
 
-                <button class="upload-tile upload-tile--mini" type="button" data-slot="1" aria-label="Agregar foto 2">
+                <button class="upload-tile upload-tile--mini" type="button" data-slot="1" hidden aria-label="Agregar foto 2">
                   <svg class="icon"><use href="#icon-plus"></use></svg>
                 </button>
 
-                <button class="upload-tile upload-tile--mini" type="button" data-slot="2" aria-label="Agregar foto 3">
+                <button class="upload-tile upload-tile--mini" type="button" data-slot="2" hidden aria-label="Agregar foto 3">
                   <svg class="icon"><use href="#icon-plus"></use></svg>
                 </button>
                 <button class="upload-tile upload-tile--mini" type="button" data-slot="3" hidden aria-label="Agregar foto 4"></button>
@@ -163,15 +163,17 @@
                 <button class="upload-tile upload-tile--mini" type="button" data-slot="5" hidden aria-label="Agregar foto 6"></button>
               </div>
 
-              <div class="upload-help-row">
-                <p class="upload-help">Formatos permitidos: JPG, PNG. Máx. 6MB c/u</p>
-                <button class="camera-button" id="camera-trigger" type="button">
+<button class="camera-button" id="camera-trigger" type="button">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                   </svg>
                   Sacar foto
                 </button>
+              </div>
+              <div class="upload-help-row">
+                <p class="upload-help">Hasta 6 fotos · Máximo 6 MB por foto</p>
+                
               </div>
             </div>
 
@@ -341,7 +343,7 @@
             </div>
 
             </div>
-        <details class="preview-panel" open>
+        <details class="preview-panel" hidden>
           <summary id="preview-title">Vista previa</summary>
 
           <article class="preview-card">
@@ -383,7 +385,7 @@
     <script src="./vendor/supabase.js?v=20261109-release25"></script>
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
-<script src="./publicar.js?v=ficha-2"></script>
+<script src="./publicar.js?v=ficha-3"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     
