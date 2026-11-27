@@ -173,35 +173,57 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .content-
   align-items: center;
   justify-content: space-between;
   margin: 0;
-  border-radius: 22px 22px 0 0;
+  border-radius: 14px 14px 0 0;
+  padding: 10px clamp(10px, 2vw, 20px) 6px;
   border-bottom: 0;
 }
 html[data-theme] body.mobile-profile[data-account-view="publications"] #publish-product-link {
   width: auto;
-  min-height: 42px;
-  padding: 0 16px;
+  min-height: 34px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #ffca43 !important;
+  border-color: #ffca43 !important;
+  color: #24170f !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-panel {
   padding: 0 clamp(10px, 2vw, 20px) 16px;
   margin-bottom: 14px;
   border: 1px solid #e9ded5;
   border-top: 0;
-  border-radius: 0 0 22px 22px;
+  border-radius: 0 0 14px 14px;
   background: #fcfaf7;
 }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-list {
+  margin-top: 12px;
+  border: 1px solid #e3d8cf;
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: none;
+  gap: 0;
+}
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 416px);
   padding: 0;
-  gap: 4px;
+  gap: 0;
   background: transparent;
   box-shadow: none;
 }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-tab {
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 33px;
+  min-width: 0;
+  padding: 0 4px;
+  justify-content: center;
+  background: transparent;
+  color: #332320;
+  font-size: .875rem;
   border: 1px solid #e9ded5;
   border-radius: 12px;
 }
-html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-tab.is-active { border-color: #cde5ec; }
+html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-tab.is-active { background: #dceff3; border-color: #dceff3; }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-tab::after { content: none; }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card {
   grid-template-columns: minmax(0, 1fr) minmax(0, auto);
@@ -273,7 +295,9 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .publicat
   grid-template-columns: minmax(0, 1fr) minmax(90px, .26fr) 174px;
   background: transparent;
   gap: 10px 14px;
-  padding: 7px 9px;
+  padding: 5px 9px;
+  border-radius: 0;
+  box-shadow: none;
 }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__left { grid-template-columns: 86px minmax(0, 1fr); }
 html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-thumb { width: 86px; height: 58px; border-radius: 8px; }
