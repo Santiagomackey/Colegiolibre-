@@ -424,6 +424,7 @@ function populateFormForEditing(product) {
   categorySelect.value = product.category || "";
   updateCategoryFields();
   schoolLevelSelect.value = product.school_level || "";
+  syncSchoolYear();
   schoolYearSelect.value =
     product.school_year !== null && product.school_year !== undefined
       ? String(product.school_year)
@@ -528,7 +529,7 @@ function bindPreviewEvents() {
 }
 
 function bindUploadEvents() {
-  uploadTiles.forEach((tile) => {
+  uploadTiles.forEach((tile, index) => {
     tile.addEventListener("click", (event) => {
       const removeIndex = event.target.closest("[data-remove-index]")?.getAttribute("data-remove-index");
 
@@ -538,6 +539,11 @@ function bindUploadEvents() {
         return;
       }
 
+      if (imageSlots[index] && index > 0) {
+        imageSlots.unshift(imageSlots.splice(index, 1)[0]);
+        renderUploads();
+        return;
+      }
       fileInput.value = "";
       fileInput.click();
     });
@@ -597,7 +603,23 @@ function bindUploadEvents() {
     }
   });
 }
+function syncSchoolYear() {
+  const level = schoolLevelSelect.value;
+  const label = level === "Primaria" ? "Grado" : level === "Secundaria" ? "Año" : "Año o grado";
+  document.querySelector('label[for="anio-escolar"]').textContent = label;
+  schoolYearSelect.disabled = !level;
+  if (!level) schoolYearSelect.value = "";
+  Array.from(schoolYearSelect.options).forEach(option => {
+    option.textContent = option.value ? option.value + ".º" + (level === "Primaria" ? " grado" : level === "Secundaria" ? " año" : "") : "Seleccioná una opción";
+  });
+}
 function bindCategoryFields() {
+  const desktop = window.matchMedia("(min-width: 901px)");
+  const preview = document.querySelector("details.preview-panel");
+  const adaptPreview = () => { preview.open = desktop.matches; };
+  adaptPreview();
+  desktop.addEventListener("change", adaptPreview);
+  schoolLevelSelect.addEventListener("change", syncSchoolYear);
   categorySelect.addEventListener("change", updateCategoryFields);
   [
     schoolLevelSelect,
@@ -635,7 +657,7 @@ function updateCategoryFields() {
   document.getElementById("book-fields").hidden = categorySelect.value !== "Libros";
   resetDynamicFieldValues();
   dynamicProductFields.hidden = !config;
-  academicFieldsRow.hidden = !config?.academic;
+  academicFieldsRow.hidden = !config;
   subjectFieldGroup.hidden = !config?.subject;
   subcategoryFieldGroup.hidden = !Array.isArray(config?.options);
   sizeFieldGroup.hidden = !Array.isArray(config?.sizes);
@@ -658,12 +680,10 @@ function updateCategoryFields() {
 
   dynamicFieldsTitle.textContent = config.title;
 
-  if (config.academic) {
-    schoolLevelSelect.disabled = false;
-    schoolYearSelect.disabled = false;
-    schoolLevelSelect.required = true;
-    schoolYearSelect.required = true;
-  }
+  schoolLevelSelect.disabled = false;
+  schoolLevelSelect.required = Boolean(config.academic);
+  schoolYearSelect.required = Boolean(config.academic);
+  syncSchoolYear();
 
   if (config.subject) {
     setSelectOptions(subjectSelect, config.optionalSubject ? "Sin materia" : "Seleccioná la materia", subjectOptions);
@@ -750,13 +770,14 @@ function updatePreview() {
     : "";
 
   const details = [
+    categorySelect.value,
     subjectSelect.value,
     subcategorySelect.value,
-    config?.academic && schoolLevelSelect.value
+    schoolLevelSelect.value
       ? schoolLevelSelect.value
       : null,
-    config?.academic && schoolYearSelect.value
-      ? `${schoolYearSelect.value}.º`
+    schoolLevelSelect.value && schoolYearSelect.value
+      ? schoolYearSelect.selectedOptions[0].textContent
       : null
   ].filter(Boolean);
 
@@ -791,7 +812,7 @@ function createTileImage(tile, url, index) {
   tile.classList.add("has-image");
   tile.innerHTML = `
     <img class="upload-thumb" alt="Foto seleccionada ${index + 1}" />
-    <span class="sr-only">Foto cargada ${index + 1}</span>
+    ${index === 0 ? '<span class="cover-label">Portada</span>' : '<span class="cover-option">Usar de portada</span>'}
     <span class="upload-tile__remove" data-remove-index="${index}" aria-hidden="true">
       <svg class="icon"><use href="#icon-close"></use></svg>
     </span>
@@ -805,20 +826,22 @@ function createEmptyTile(tile, index) {
   if (tile.id === "upload-trigger") {
     tile.innerHTML = `
       <svg class="icon"><use href="#icon-image"></use></svg>
-      <span>Subí hasta 6 fotos o arrastrá y soltá aquí</span>
+      <span>Agregar foto</span>
     `;
     return;
   }
 
   tile.innerHTML = `
     <svg class="icon"><use href="#icon-plus"></use></svg>
-    <span class="sr-only">Agregar foto ${index + 1}</span>
+    <span>Agregar foto</span>
   `;
 }
 
 function renderUploads() {
   uploadTiles.forEach((tile, index) => {
     const slot = imageSlots[index];
+    tile.hidden = index > imageSlots.length;
+    tile.setAttribute("aria-label", slot ? (index ? "Usar foto " + (index + 1) + " como portada" : "Portada. Agregar fotos") : "Agregar foto");
 
     if (slot) {
       createTileImage(tile, slot.url, index);
@@ -1013,11 +1036,9 @@ async function handleSubmit(event) {
       return;
     }
     const categoryConfig = categoryFieldConfig[category] || null;
-    const schoolLevel = categoryConfig?.academic
-      ? schoolLevelSelect.value
-      : "No corresponde";
+    const schoolLevel = schoolLevelSelect.value || "No corresponde";
     const schoolYear =
-      categoryConfig?.academic && schoolYearSelect.value
+      schoolLevelSelect.value && schoolYearSelect.value
         ? Number(schoolYearSelect.value)
         : null;
     const subject = categoryConfig?.subject ? subjectSelect.value || null : null;
@@ -1040,7 +1061,7 @@ async function handleSubmit(event) {
       return;
     }
 
-    if (categoryConfig?.academic && (!schoolLevel || !schoolYear)) {
+    if (categoryConfig?.academic && (!schoolLevelSelect.value || !schoolYear)) {
       showToast("Seleccioná el nivel y el año o grado.");
       return;
     }
