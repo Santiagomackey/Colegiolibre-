@@ -233,3 +233,35 @@ html[data-theme] body.mobile-profile[data-account-view="publications"] .publicat
   html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__stats { justify-content: flex-start; }
   html[data-theme] body.mobile-profile[data-account-view="publications"] .publication-card__time { text-align: left; }
 }
+
+
+/* Compact settings rows with a separate column for each account action. */
+html[data-theme] body.mobile-profile #account-preferences .account-preferences__group {
+  padding: 12px clamp(14px, 2.5vw, 25px) 10px;
+  border-radius: 16px;
+}
+.account-preferences__group h2 { padding-bottom: 6px; font-size: 1.12rem; }
+.account-setting-row { min-height: 38px; padding: 4px 0; }
+.account-credential {
+  display: grid;
+  grid-template-columns: minmax(115px, 1fr) minmax(0, 2.35fr) minmax(125px, auto);
+  gap: 8px 14px;
+}
+.account-credential + .account-credential { border-top: 0; }
+.account-credential .account-readonly { border-color: #d8cfc8; background: #fffdfa; min-height: 34px; }
+html[data-theme] body.mobile-profile .account-credential .account-setting-link {
+  justify-self: end;
+  min-height: 38px;
+  padding-inline: 4px;
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: .18em;
+}
+.account-email-change { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-block: 8px; }
+.account-email-change[hidden], .account-setting-status:empty { display: none; }
+.account-email-change input { min-width: 0; flex: 1 1 200px; padding: 8px 10px; border: 1px solid #d8cfc8; border-radius: 9px; font: inherit; }
+.account-setting-status { margin: 6px 0; font-size: .875rem; }
+@media (max-width: 640px) {
+  .account-credential { grid-template-columns: minmax(0, 1fr) auto; }
+  .account-credential .account-readonly { grid-column: 1 / -1; grid-row: 2; }
+}

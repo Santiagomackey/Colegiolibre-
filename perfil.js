@@ -1229,7 +1229,50 @@ async function sendSettingsPasswordLink() {
   }
 }
 
+function bindEmailChange() {
+  const button = document.getElementById("settings-email-button");
+  const form = document.getElementById("settings-email-change");
+  const input = document.getElementById("settings-new-email");
+  const status = document.getElementById("settings-email-status");
+  if (!button || !form || !input || !status) return;
+  button.addEventListener("click", () => {
+    form.hidden = !form.hidden;
+    button.setAttribute("aria-expanded", String(!form.hidden));
+    if (!form.hidden) input.focus();
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = input.value.trim();
+    if (email.toLowerCase() === state.currentUser?.email?.toLowerCase()) {
+      status.textContent = "Ese correo ya está asociado a tu cuenta.";
+      return;
+    }
+
+    const submit = form.querySelector('button[type="submit"]');
+    submit.disabled = true;
+    status.textContent = "Solicitando el cambio…";
+    try {
+      const base = window.colegioLibreConfig?.publicSiteUrl || "https://www.colego.com.ar";
+      const { error } = await window.colegioLibreSupabase.auth.updateUser({ email }, {
+        emailRedirectTo: new URL("/auth-callback", base).href
+      });
+      if (error) throw error;
+      form.reset();
+      form.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      button.focus();
+      status.textContent = "Revisá tus correos y seguí las instrucciones de confirmación.";
+    } catch (_) {
+      status.textContent = "No pudimos solicitar el cambio. Revisá el correo o volvé a intentar más tarde.";
+    } finally {
+      submit.disabled = false;
+    }
+  });
+}
+
 function bindEvents() {
+  bindEmailChange();
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       activateTab(tabToState[tab.id]);

@@ -37,7 +37,7 @@
 <link rel="stylesheet" href="/chrome-theme.css?v=20261109-nav-language">
 <link rel="stylesheet" href="/transfer.css?v=mp-checkout-1"><link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/marketplace-layout.css?v=3">
-<link rel="stylesheet" href="/perfil-cuenta.css?v=listados-2">
+<link rel="stylesheet" href="/perfil-cuenta.css?v=ajustes-3">
 </head>
   <body class="mobile-subpage mobile-profile">
 <header class="cl-site-header" data-no-translate>
@@ -365,12 +365,18 @@
         <section class="settings-panel account-preferences" id="account-preferences" aria-label="Ajustes de la cuenta" hidden>
           <section class="account-preferences__group" aria-labelledby="account-group-title">
             <h2 id="account-group-title"><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg> Cuenta</h2>
-            <div class="account-setting-row"><span>Correo electrónico</span><span id="account-settings-email" class="account-readonly"></span></div>
-            <div class="account-setting-row"><span>Contraseña</span><button class="account-setting-link" type="button" id="settings-password-button">Cambiar contraseña</button></div>
+            <div class="account-setting-row account-credential"><span>Correo electrónico</span><span id="account-settings-email" class="account-readonly"></span><button class="account-setting-link" type="button" id="settings-email-button" aria-controls="settings-email-change" aria-expanded="false">Cambiar correo</button></div>
+            <form id="settings-email-change" class="account-email-change" hidden>
+              <label for="settings-new-email">Nuevo correo electrónico</label>
+              <input id="settings-new-email" type="email" autocomplete="email" maxlength="254" required>
+              <button type="submit" class="account-setting-link">Enviar confirmación</button>
+            </form>
+            <p class="account-setting-status" id="settings-email-status" role="status"></p>
+            <div class="account-setting-row account-credential"><span>Contraseña</span><span class="account-readonly" aria-hidden="true">••••••••</span><button class="account-setting-link" type="button" id="settings-password-button">Cambiar contraseña</button></div>
             <p id="settings-password-status" role="status"></p>
           </section>
           <section class="account-preferences__group" aria-labelledby="alerts-group-title">
-            <h2 id="alerts-group-title">Avisos</h2>
+            <h2 id="alerts-group-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12h4"/></svg> Avisos</h2>
             <div class="account-setting-row"><div><strong>Coincidencias de tus pedidos</strong><p>Consultá o pausá los pedidos para los que querés recibir avisos.</p></div><a href="/busco?view=mine#pedidos">Gestionar avisos</a></div>
           </section>
           <section class="account-preferences__group" aria-labelledby="privacy-group-title">
@@ -459,7 +465,7 @@
 <script src="./supabase.js?v=20261110-recovery31"></script>
 <script src="./telemetry.js?v=20261109-release25"></script>
 <script src="./products.js?v=20261109-release25"></script>
-<script src="./perfil.js?v=listados-2"></script>
+<script src="./perfil.js?v=ajustes-3"></script>
 <script src="./native-bridge.js?v=account-connect-1"></script>
 <script src="./notifications.js?v=account-connect-1"></script>
     <script src="./mobile-ui.js?v=20261111-more42"></script>
