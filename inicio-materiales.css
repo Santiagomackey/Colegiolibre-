@@ -39,7 +39,7 @@
 @media (max-width: 1050px) {
   .materials-home { width: min(92%, 1552px); }
 }
-@media (max-width: 600px) {
+@media (max-width: 740px) {
   .materials-panels { grid-template-columns: minmax(0, 1fr); }
   .materials-card { border-radius: 22px; }
 }
@@ -118,7 +118,7 @@ html[data-native-app] .materials-footer { display: none; }
 .materials-price { text-align: right; }
 .materials-price small { display: block; font-weight: 500; font-size: .8rem; }
 .materials-feedback { margin: 0; }
-@media (max-width: 600px) {
+@media (max-width: 740px) {
  .materials-row { flex-wrap: wrap; }
 }
 

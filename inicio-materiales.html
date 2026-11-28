@@ -3,6 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    // Some mobile webviews restore a desktop layout width after the auth redirect.
+    (() => {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      const defaults = viewport.content;
+      function syncViewport() {
+        const width = window.screen.width;
+        const phone = width > 0 && width <= 600 && matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
+        if (!phone) {
+          viewport.content = defaults;
+        } else if (window.innerWidth > width + 100) {
+          viewport.content = defaults.replace('width=device-width', 'width=' + width);
+        }
+      }
+      syncViewport();
+      window.addEventListener('pageshow', syncViewport);
+      window.addEventListener('orientationchange', () => requestAnimationFrame(syncViewport));
+    })();
+  </script>
   <meta name="description" content="Pedí los materiales que necesitás para el cole y explorá las publicaciones de ColeGo.">
   <title>ColeGo</title>
   <script>if(window.Capacitor?.isNativePlatform?.()||/; wv\)|\bwv\b|capacitor/i.test(navigator.userAgent))document.documentElement.dataset.nativeApp="android";</script>
@@ -21,7 +40,7 @@ html body .cl-site-header .cl-site-search button{width:32px;height:32px;flex-bas
 
 html body .cl-site-header.cl-header-compact .cl-site-top{min-height:54px}
 </style>
-  <link rel="stylesheet" href="/inicio-materiales.css?v=plan-mini-1">
+  <link rel="stylesheet" href="/inicio-materiales.css?v=phone-layout-2">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
