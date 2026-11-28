@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/site-header.css?v=app-footer-1">
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 <link rel="stylesheet" href="/marketplace-layout.css?v=2">
-<link rel="stylesheet" href="/busco-form.css?v=pedido-previa-1">
+<link rel="stylesheet" href="/busco-form.css?v=pedido-ficha-2">
 </head>
 <body class="wanted-page mobile-subpage mobile-wanted">
 <header class="cl-site-header" data-no-translate>
@@ -72,48 +72,43 @@
 
     <section class="wanted-layout" id="crear-pedido">
       <form id="wanted-form" class="wanted-card wanted-create">
-        <header class="wanted-section-head"><h1>Nuevo pedido</h1><p>Contanos qué material buscás para encontrar publicaciones que coincidan.</p></header>
+        <header class="wanted-section-head"><h1><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 3h10l9 9-10 10-9-9Z"/><circle cx="8" cy="8" r="1"/></svg> Nuevo pedido</h1><p>Contanos qué material buscás para encontrar publicaciones que coincidan.</p></header>
         <div class="request-editor"><div class="request-fields">
-        <label>¿Qué material buscás?<textarea name="title" rows="1" maxlength="600" required placeholder="Ej. English File Intermediate, 4.ª edición"></textarea><small>Incluí el título y, si lo sabés, el nivel o la edición. Podés agregar hasta 8 materiales, uno por línea.</small></label>
+        <label>¿Qué material buscás?<textarea name="title" rows="1" maxlength="600" required placeholder="Ej. Libro de Biología 5"></textarea><small>Hasta 8 materiales, uno por línea.</small></label>
         <div class="wanted-request-row">
         <label>Categoría<select name="category"><option value="">Todas las categorías</option><option>Libros</option><option>Uniformes</option><option>Útiles</option><option>Tecnología</option><option>Apuntes</option><option>Cuadernos</option><option>Mochilas</option><option>Otros</option></select></label>
         <label data-category-field="book" hidden>ISBN (opcional)<input name="isbn" maxlength="32" placeholder="Ingresá el ISBN"></label>
         <label data-category-field="uniform" hidden>Talle (opcional)<input name="size" maxlength="40" placeholder="Ej. 12 o M"></label>
         </div><fieldset class="wanted-budget">
-          <legend>Presupuesto <small>Opcional · en pesos</small></legend>
+          <legend>Presupuesto <small>(opcional)</small></legend>
           <div class="wanted-two">
-            <label>Desde<input name="min_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="8.000"></label>
-            <label>Hasta<input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="10.000"></label>
+            <label class="budget-input"><span>Desde</span><i aria-hidden="true">$</i><input name="min_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="8.000"></label>
+            <label class="budget-input"><span>Hasta</span><i aria-hidden="true">$</i><input name="max_price" type="number" inputmode="numeric" min="0" max="100000000" step="1" placeholder="15.000"></label>
           </div>
         </fieldset>
         <fieldset><legend>¿Dónde querés buscar?</legend><div class="scope-grid">
-          <label><input type="radio" name="scope" value="school" checked><b>Mi colegio</b></label>
-          <label><input type="radio" name="scope" value="zone"><b>Mi zona</b></label>
+          <label><input type="radio" name="scope" value="school" checked><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m2 10 10-7 10 7M5 9v12h14V9M10 21v-6h4v6"/></svg><b>Mi colegio</b></label>
+          <label><input type="radio" name="scope" value="zone"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg><b>Mi zona</b></label>
           <label><input type="radio" name="scope" value="both"><b>Ambos</b></label>
         </div></fieldset>
-        <div class="wanted-options">
-        <details class="wanted-extra">
-          <summary>Datos del material <small>Opcional</small></summary>
+        <details class="request-more-settings"><summary>Más opciones</summary>
           <div class="wanted-extra-fields">
             
             <label data-category-field="book" hidden>Edición<input name="edition" maxlength="80"></label>
             
             <label>Detalles opcionales<textarea name="description" rows="3" maxlength="400" placeholder="Edición, año, talle, color o cualquier dato útil"></textarea></label>
           </div>
-        </details>
-        <details class="wanted-extra">
-          <summary>Preferencias del pedido <small>Opcional</small></summary>
+        
           <div class="wanted-extra-fields">
             <label>Tipo de búsqueda<select name="transaction_type" aria-label="Tipo de búsqueda"><option value="buy">Quiero comprar</option><option value="exchange">Acepto intercambio</option><option value="either">Compra o intercambio</option></select></label>
             <label>Frecuencia de avisos<select name="frequency"><option value="hourly">Hasta uno por hora</option><option value="daily">Hasta uno por día</option><option value="off">Sin avisos</option></select></label>
         <label class="wanted-community"><input name="community" type="checkbox"> Compartir el pedido con la comunidad</label>
           </div>
         </details>
-        </div>
         <section id="match-review" hidden aria-label="Revisar materiales"></section>
         </div>
         <aside class="request-preview" aria-labelledby="request-preview-heading"><h2 id="request-preview-heading">Vista previa del pedido</h2>
-          <div class="request-preview-item"><span id="request-art" aria-hidden="true">📦</span><div><strong id="request-name">Tu pedido</strong><small id="request-category"></small><b id="request-budget">Sin límite de precio</b><small id="request-area"></small></div></div>
+          <div class="request-preview-item"><span id="request-art" aria-hidden="true">◇</span><div><strong id="request-name">Tu pedido</strong><small id="request-category"></small><b id="request-budget">Sin límite de precio</b><small id="request-area"></small></div></div>
         </aside></div>
         <div class="request-footer"><a href="/perfil?view=requests">Cancelar</a><button class="wanted-submit" type="submit"><span>Crear pedido</span></button></div>
         <p id="wanted-status" class="wanted-status" role="status"></p>
@@ -130,7 +125,7 @@
   </main>
   <script src="vendor/supabase.js?v=20261109-release25"></script>
   <script src="supabase.js?v=20261110-recovery31"></script>
-  <script src="busco.js?v=pedido-previa-1"></script>
+  <script src="busco.js?v=pedido-ficha-2"></script>
   <script src="mobile-ui.js?v=20261111-more42"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/marketplace-upgrades.js?v=20261109-release25"></script>
