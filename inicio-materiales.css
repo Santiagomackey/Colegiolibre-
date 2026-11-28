@@ -212,3 +212,15 @@ html[data-native-app] .materials-footer { display: none; }
 @media (max-width: 760px) {
   .materials-footer { padding-bottom: calc(var(--school-bottom) + 60px); }
 }
+
+.school-plan-banner { width:fit-content; max-width:100%; margin:18px auto 0; display:flex; align-items:center; gap:12px; padding:10px 14px; border:1px solid var(--border); border-radius:13px; background:var(--paper); }
+.school-plan-banner > svg { flex:none; padding:6px; border-radius:8px; background:var(--sky); }
+.school-plan-banner h2 { margin:0; font-size:.96rem; }
+.school-plan-banner p { margin:3px 0 0; font-size:.82rem; line-height:1.4; }
+.school-plan-action { display:flex; flex:none; align-items:center; gap:12px; font-size:.86rem; }
+.school-plan-action a { display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:0 12px; border-radius:9px; background:var(--yellow); color:var(--ink); font-weight:700; text-decoration:none; }
+@media(max-width:740px) {
+ .school-plan-banner { display:grid; grid-template-columns:32px minmax(0,1fr); max-width:440px; width:100%; }
+ .school-plan-action { grid-column:1 / -1; justify-content:space-between; }
+ .school-plan-action a { min-height:44px; }
+}
