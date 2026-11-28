@@ -417,3 +417,18 @@ html[data-theme] body.mobile-profile > .publication-menu__dropdown {
 #datos-cobro [data-billing-mode="linked"] .billing-connect { order: 2; }
 #datos-cobro [data-billing-mode="linked"] [data-mp-connect] { background: transparent; border: 0; text-decoration: underline; font-size: .82rem; }
 @media(max-width:600px) { .billing-connect,.billing-heading { flex-wrap: wrap; } .billing-row { grid-template-columns: auto minmax(0,1fr) auto; } }
+
+#account-requests .request-matches { padding:14px; background:#fcfaf7; border:1px solid #e3d8cf; border-radius:12px; }
+.request-matches header h3 { margin:0; font-size:1.05rem; }
+.request-matches header p { margin:4px 0 12px; color:#65534a; }
+.match-option { display:grid; grid-template-columns:62px minmax(0,1fr) auto auto; gap:12px; align-items:center; padding:10px 0; border-top:1px solid #e3d8cf; }
+.match-option img { width:62px; height:58px; object-fit:cover; border-radius:7px; }
+.match-option small { display:block; overflow-wrap:anywhere; }
+.match-edition { display:inline-block; border-radius:99px; padding:3px 8px; margin-top:5px; background:#fff0bf; font-size:.75rem; }
+.match-edition.exact { background:#dcefd7; }
+#account-requests .request-matches .match-option a { background:#ffca43; border-radius:9px; padding:8px 12px; color:#33231e; font-weight:650; text-decoration:none; }
+@media(max-width:760px) {
+ .match-option { grid-template-columns:54px minmax(0,1fr); gap:8px; }
+ .match-option img { width:54px; }
+ .match-option > strong,.match-option > a { grid-column:2; justify-self:start; }
+}
