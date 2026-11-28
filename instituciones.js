@@ -74,12 +74,12 @@
   function renderSelectedPlan() {
     const annual = selectedBilling === "annual";
     const selector = document.getElementById("checkout-period");
-    selector.querySelector('input[value="' + selectedBilling + '"]').checked = true;
+    selector.value = selectedBilling;
     form.elements.billing_cycle.value = selectedBilling;
     document.getElementById("checkout-amount").textContent = annual ? "$199.000 ARS" : "$19.900 ARS";
     document.getElementById("checkout-renewal").textContent = annual
-      ? "Se renueva cada año. Ahorrás $39.800 frente a 12 pagos mensuales."
-      : "Se renueva cada mes.";
+      ? "Precio anual: $199.000 · Ahorrás $39.800 (2 meses)."
+      : "Precio mensual: $19.900";
     const url = new URL(location.href);
     url.searchParams.set("cycle", selectedBilling);
     loginRequired.querySelector("a").href = "/login?next=" + encodeURIComponent(url.pathname + url.search);
@@ -167,6 +167,9 @@
     officialName.value = "";
     selected.hidden = true;
     document.getElementById("portal-options").hidden = true;
+    document.getElementById("school-consent").hidden = true;
+    form.elements.authority_confirmed.disabled = true;
+    form.elements.authority_confirmed.checked = false;
     form.elements.short_name.disabled = form.elements.requested_code.disabled = true;
     search.required = true;
     search.hidden = false;
@@ -213,6 +216,9 @@
     officialName.value = name;
     selected.hidden = false;
     document.getElementById("portal-options").hidden = false;
+    document.getElementById("school-consent").hidden = false;
+    form.elements.authority_confirmed.disabled = false;
+    form.elements.authority_confirmed.checked = false;
     form.elements.short_name.disabled = form.elements.requested_code.disabled = false;
     search.setCustomValidity("");
     search.required = false;

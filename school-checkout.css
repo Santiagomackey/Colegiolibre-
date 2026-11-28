@@ -1,43 +1,34 @@
-.school-application { width: min(100%, 68rem); }
-.school-application .request-main { background: #fcf9f5; }
-.checkout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem,3vw,2.5rem); align-items: start; }
-.checkout-grid > * { min-width: 0; }
-.checkout-grid h2 { margin: 0 0 1rem; font-size: 1.25rem; line-height: 1.3; }
-.checkout-summary, .checkout-includes { border-radius: 14px; padding: clamp(1rem,2.3vw,1.6rem); }
-.checkout-summary { background: white; border: 1px solid #e5d7cb; }
-.checkout-includes { background: #f4eee5; }
-.checkout-includes ul { padding: 0; margin: 0; list-style: none; }
-.checkout-includes li { margin-top: .4rem; }
-.checkout-includes li::before { content: '✓'; color: #386b30; font-weight: 700; margin-right: .6rem; }
-#checkout-period { margin: 0; padding: 0; border: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .5rem; }
-#checkout-period legend { margin-bottom: .65rem; font-size: .95rem; font-weight: 650; }
-#checkout-period label { display: flex; align-items: baseline; gap: .5rem; border: 1px solid #ddcfc4; border-radius: 10px; padding: .75rem; font-weight: 700; cursor: pointer; }
-#checkout-period input { width: 1rem; height: 1rem; margin: 0; accent-color: #923b2c; }
-#checkout-period label:has(:checked) { background: #fff4df; border-color: #b87f25; }
-#checkout-period small, #checkout-period em { display: block; font-size: .8rem; font-style: normal; margin-top: .3rem; }
-#checkout-period em { color: #356238; }
-.checkout-total { border-top: 1px solid #e5d7cb; margin-top: 1.2rem; padding-top: 1rem; display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
-.checkout-total b { font-size: clamp(1.25rem,3vw,1.7rem); }
-#checkout-renewal,.checkout-after { color: #6f574d; font-size: .88rem; line-height: 1.5; }
-.checkout-summary .ib-submit { width: 100%; background: #ffca42; color: #29180d; border: 0; border-radius: 10px; }
-.checkout-summary .ib-status:empty { display: none; }
-@media(max-width: 720px) { .checkout-grid { grid-template-columns: 1fr; } }
-@media(max-width: 370px) { #checkout-period { grid-template-columns: 1fr; } }
-.checkout-crumb { display:flex; align-items:center; gap:.65rem; margin:0 .5rem 1rem; color:#795f52; font-size:.95rem; }
-.checkout-crumb a { color:#553527; }
-.school-application .request-heading h1 { font-size:clamp(30px,3.5vw,46px); margin:0 0 .45rem; letter-spacing:-.045em; }
-.school-application .request-heading p { font-size:17px; }
-.school-application .request-heading { margin-bottom:clamp(22px,3vw,34px); }
-.school-application .request-fields { margin-bottom:18px; }
-.checkout-grid h2,.school-application .request-fields legend { font-size:clamp(20px,2vw,24px); font-weight:750; letter-spacing:-.035em; }
-.school-application .portal-options { margin:0 0 18px; }
-.portal-options summary { cursor:pointer; color:#705347; text-decoration:underline; font-size:14px; }
-.portal-options[open] summary { margin-bottom:12px; }
-#checkout-period label { font-size:16px; line-height:1.25; }
-#checkout-period label small { font-size:14px; font-weight:500; }
-#checkout-period em { margin-top:6px; color:#376332; }
-.checkout-summary #payment-controls { gap:10px; }
-.checkout-summary .request-confirm { font-size:14px; align-items:center; }
-.checkout-summary .renewal-terms { font-size:13px; line-height:1.45; color:#695147; margin:0; }
-.checkout-summary #request-submit-label { justify-content:space-between; padding:12px 18px; min-height:50px; font-size:17px; }
-.checkout-summary #request-submit-label span { font-size:22px; }
+.school-application { width:min(100%,960px); margin:16px auto; color:#331e17; }
+.school-application .request-main { padding:clamp(18px,3vw,30px); background:#fbf8f4; border:1px solid #e0cdbd; border-radius:17px; }
+.school-application .request-heading { margin:0 0 24px; padding:0; }
+.school-application .request-heading h1 { margin:0 0 4px; font-size:clamp(30px,4vw,38px); line-height:1.16; letter-spacing:-.04em; font-weight:800; }
+.school-application .request-heading p { color:#695246; font-size:18px; line-height:1.4; }
+.checkout-grid { display:grid; grid-template-columns:minmax(0,.93fr) minmax(0,1fr); align-items:start; gap:24px; }
+.checkout-grid h2,.school-application .request-fields legend { color:#331e17; margin:0 0 12px; font-size:22px; font-weight:750; letter-spacing:-.03em; line-height:1.25; }
+.school-application .request-fields { margin:0 0 22px; }
+.school-application form .request-fields label { color:inherit; margin:0 0 5px; gap:5px; font-size:16px; font-weight:650; }
+.school-application .request-fields > label:has(input[type=email]) { margin:12px 0 0; }
+.school-application form .request-fields :is(input[type=search],input[type=email]) { height:38px; min-height:38px; padding:6px 12px; border:1px solid #cbbbad; border-radius:6px; font:400 16px/1.3 Inter,sans-serif; }
+.checkout-includes { padding:12px 16px; background:#f4eee6; border-radius:9px; }
+.checkout-includes h2 { font-size:19px; margin:0 0 8px; }
+.checkout-includes ul { list-style:none; margin:0; padding:0; }
+.checkout-includes li { display:flex; gap:12px; align-items:baseline; font-size:16px; line-height:1.65; }
+.checkout-includes li::before { content:'✓'; color:#426b33; font-weight:700; }
+.checkout-summary { background:#fff; border:1px solid #e3d3c6; border-radius:13px; padding:clamp(18px,2.4vw,24px); }
+.checkout-summary h2 { margin:0 0 15px; }
+.plan-line,.checkout-total { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.checkout-summary .plan-line label { margin:0; font-size:17px; color:inherit; }
+.checkout-summary #checkout-period { width:auto; min-height:34px; border:0; padding:3px; color:inherit; background:transparent; font:inherit; font-size:17px; cursor:pointer; }
+.checkout-total { flex-wrap:wrap; border-top:1px solid #ddcfc3; margin-top:12px; padding-top:16px; }
+.checkout-total strong { font-size:21px; }
+.checkout-total b { font-size:clamp(24px,3vw,29px); letter-spacing:-.04em; }
+#checkout-renewal,.checkout-after { margin:4px 0 0; color:#79685e; font-size:15px; line-height:1.5; }
+.checkout-summary .request-submit { border:0; padding:0; margin:26px 0 0; }
+.checkout-summary #request-submit-label { display:flex; gap:12px; justify-content:center; width:100%; padding:12px; min-height:55px; border-radius:10px; background:#ffca39; color:#27180b; font:750 18px/1.25 Inter,sans-serif; }
+.pay-mark { display:inline-grid; place-items:center; background:#5bc8eb; border-radius:50%; width:38px; height:28px; font-size:19px; }
+.checkout-summary .checkout-after { margin-top:12px; }
+.checkout-back { display:inline-block; margin-top:18px; color:inherit; text-decoration:underline; font-size:16px; }
+.portal-options,.school-application #school-consent { margin:0 0 14px; }
+.portal-options summary { cursor:pointer; text-decoration:underline; }
+#school-consent .request-confirm,.renewal-terms { font-size:14px; }
+@media(max-width:720px) { .checkout-grid { grid-template-columns:1fr; gap:18px; } .checkout-summary #request-submit-label { font-size:16px; } }

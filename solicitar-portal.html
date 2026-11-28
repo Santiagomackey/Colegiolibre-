@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>
-<link rel="stylesheet" href="/school-checkout.css?v=2">
+<link rel="stylesheet" href="/school-checkout.css?v=3">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -71,7 +71,6 @@
 
   <main class="ib-shell">
     <div class="institution-request school-application">
-      <nav class="checkout-crumb" aria-label="Ruta"><a href="/">Inicio</a> / <a href="/instituciones">ColeGo para colegios</a></nav>
       <section class="ib-card request-main" id="request-card" aria-labelledby="request-title">
         <header class="request-heading">
 
@@ -86,8 +85,8 @@
           <input id="billing-cycle" name="billing_cycle" type="hidden" value="monthly">
           <fieldset class="request-fields">
             <legend>Datos del colegio</legend>
-            <label for="school-search">Buscá tu colegio</label>
-            <input id="school-search" required type="search" autocomplete="off" placeholder="Nombre, dirección o CUE" aria-controls="school-results">
+            <label for="school-search">Colegio</label>
+            <input id="school-search" required type="search" autocomplete="off" placeholder="Buscá tu colegio" aria-controls="school-results">
             <div class="ib-results" id="school-results" role="group" aria-label="Colegios encontrados" aria-live="polite"></div>
             <input id="official-code" name="official_code" type="hidden">
             <input id="official-name" name="official_name" type="hidden">
@@ -106,7 +105,10 @@
             </div>
             <p class="request-address" id="request-address">colego.com.ar/colegio/</p>
           </details>
-
+          <div id="school-consent" hidden>
+            <label class="request-confirm"><input name="authority_confirmed" type="checkbox" disabled required><span>Confirmo que represento a este colegio.</span></label>
+            <p class="renewal-terms">Renovación automática. Podés cancelarla y conservar el acceso hasta el fin del período pago.</p>
+          </div>
         </form>
         <section class="checkout-includes">
           <h2>Qué incluye</h2>
@@ -115,13 +117,16 @@
         </div>
         <aside class="checkout-summary">
           <h2>Resumen de la suscripción</h2>
-          <fieldset id="checkout-period"><legend>Plan institucional</legend>
-            <label><input type="radio" name="period" value="monthly" checked><span>Mensual<small>$19.900 por mes</small></span></label>
-            <label><input type="radio" name="period" value="annual"><span>Anual<small>$199.000 por año</small><em>2 meses de ahorro</em></span></label>
-          </fieldset>
+          <div class="plan-line">
+            <label for="checkout-period">Plan institucional</label>
+            <select id="checkout-period" aria-label="Frecuencia del plan institucional">
+              <option value="monthly">Mensual</option>
+              <option value="annual">Anual</option>
+            </select>
+          </div>
           <div aria-live="polite">
             <div class="checkout-total"><strong>Total de hoy</strong><b id="checkout-amount">$19.900 ARS</b></div>
-            <p id="checkout-renewal">Se renueva cada mes.</p>
+            <p id="checkout-renewal">Precio mensual: $19.900</p>
           </div>
         <div id="login-required" class="request-sign-in" hidden>
           <p>Iniciá sesión para continuar al pago.</p>
@@ -129,14 +134,13 @@
         </div>
 
           <div class="request-submit" id="payment-controls" hidden>
-            <label class="request-confirm"><input form="institution-request-form" name="authority_confirmed" type="checkbox" required><span>Confirmo que represento a este colegio.</span></label>
-            <p class="renewal-terms">Renovación automática. Podés cancelarla y conservar el acceso hasta el fin del período pago.</p>
-            <button class="ib-submit" type="submit" form="institution-request-form" id="request-submit-label">Pagar con Mercado Pago <span aria-hidden="true">→</span></button>
+            <button class="ib-submit" type="submit" form="institution-request-form" id="request-submit-label"><span class="pay-mark" aria-hidden="true">🤝</span> Pagar con Mercado Pago <span aria-hidden="true">→</span></button>
             <p id="request-status" class="ib-status" role="status" tabindex="-1"></p>
           </div>
           <p class="checkout-after">Con el pago acreditado y tu vínculo verificado, podés personalizar el portal.</p>
         </aside>
         </div>
+        <a class="checkout-back" href="/instituciones#planes">Volver</a>
       </section>
 
     </div>
@@ -145,7 +149,7 @@
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
   <script src="./supabase.js?v=20261110-recovery31"></script>
-  <script src="./instituciones.js?v=school-checkout-11"></script>
+  <script src="./instituciones.js?v=school-checkout-12"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/notifications.js?v=20261110-shell32"></script>
 <script src="/site-header.js?v=app-footer-1"></script>
