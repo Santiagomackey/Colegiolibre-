@@ -526,3 +526,10 @@ html body .cl-site-header .cl-site-top > .cl-site-brand img {
   html body .cl-site-header .cl-site-top > .cl-site-brand { width: 124px; }
   html body .cl-site-header .cl-site-top > .cl-site-brand img { max-width: 116px; max-height: 30px; }
 }
+
+.cl-site-header .cl-site-account-menu .cl-site-menu-panel { background:#fcfaf7; border-radius:16px; }
+.cl-site-header .cl-site-account-menu [data-account-section] { gap:10px; border:0; color:#38251f; background:transparent; }
+.cl-site-header .cl-site-account-menu [data-account-section]:is(:hover,[aria-current="page"]) { background:#e3f1f4; }
+.cl-site-account-menu [data-account-section] svg { flex:none; width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.cl-site-account-menu .cl-site-menu-panel hr { width:calc(100% - 16px); margin:4px auto; border:0; border-top:1px solid #e5d9cf; }
+.cl-site-account-menu [data-site-logout][hidden] { display:none!important; }
