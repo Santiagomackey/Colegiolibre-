@@ -7,16 +7,94 @@
  const labels={searchLabel:['Buscar material escolar','Search school supplies'],searchPlaceholder:['¿Qué material estás buscando?','What school supplies are you looking for?'],messages:['Mensajes','Messages'],favorites:['Favoritos','Favorites'],profile:['Mi perfil','My profile'],settings:['Configuración','Settings'],orders:['Mis compras y ventas','My purchases and sales'],logout:['Cerrar sesión','Sign out'],accountMenu:['Abrir menú de cuenta','Open account menu'],categories:['Categorías','Categories'],accountActions:['Acciones de tu cuenta','Account actions'],all:['Todo','All'],explore:['Explorar','Browse'],newest:['Recién publicados','New arrivals'],notes:['Apuntes y exámenes','Notes and exams'],alerts:['Alertas','Alerts'],school:['Mi colegio','My school'],help:['Ayuda','Help'],sell:['Publicar','Sell'],home:['Inicio','Home'],login:['Iniciar sesión','Sign in'],Libros:['Libros','Books'],Apuntes:['Apuntes','Notes'],Cuadernos:['Cuadernos','Notebooks'],'Útiles':['Útiles','Supplies'],Mochilas:['Mochilas','Backpacks'],'Tecnología':['Tecnología','Technology'],Uniformes:['Uniformes','Uniforms'],Otros:['Otros','Other']};
  let user=null,profile=null,run=0;
  const text=key=>(labels[key]||[key,key])[document.documentElement.dataset.language==='en'?1:0];
- labels.mercadoPagoAlias=['Mercado Pago','Mercado Pago'];
+ function buildAccountMenu() {
+  const menu = header.querySelector('.cl-site-account-menu .cl-site-menu-panel');
+  if (!menu) return;
+  const logout = menu.querySelector('[data-site-logout]');
+  const entries = [
+  [
+    "profile",
+    "Perfil",
+    "Profile",
+    "<circle cx=\"12\" cy=\"8\" r=\"4\" /> <path d=\"M4.5 19.5a8.5 8.5 0 0 1 15 0\" />"
+  ],
+  [
+    "settings",
+    "Ajustes",
+    "Settings",
+    "<path d=\"M12 8.6a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Zm8.1 3.4c0-.4 0-.7-.1-1l2-1.5-2-3.5-2.4 1a8.5 8.5 0 0 0-1.8-1l-.4-2.6H9.4L9 6a8.5 8.5 0 0 0-1.8 1L4.8 6 2.8 9.5l2 1.5c-.1.3-.1.6-.1 1s0 .7.1 1l-2 1.5 2 3.5 2.4-1c.6.4 1.2.7 1.8 1l.4 2.6h4.1l.4-2.6c.6-.3 1.2-.6 1.8-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.6.1-1Z\" />"
+  ],
+  [
+    "publications",
+    "Mis publicaciones",
+    "My listings",
+    "<path d=\"M4 10h16v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z\" /> <path d=\"m6 10 1.6-5h8.8L18 10\" /> <path d=\"M9 14h6\" />"
+  ],
+  [
+    "purchases",
+    "Compras",
+    "Purchases",
+    "<path d=\"M6 8h12l1 11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z\" /> <path d=\"M9 8V6a3 3 0 0 1 6 0v2\" />"
+  ],
+  [
+    "sales",
+    "Ventas",
+    "Sales",
+    "<path d=\"M20 10 11 19 3 11V4h7Z\" /> <circle cx=\"7.5\" cy=\"7.5\" r=\"1\" />"
+  ],
+  [
+    "requests",
+    "Mis pedidos",
+    "My requests",
+    "<circle cx=\"12\" cy=\"8\" r=\"4\" /> <path d=\"M4.5 19.5a8.5 8.5 0 0 1 15 0\" />"
+  ],
+  [
+    "billing",
+    "Datos de cobro",
+    "Payment details",
+    "<path d=\"M20 10 11 19 3 11V4h7Z\" /> <circle cx=\"7.5\" cy=\"7.5\" r=\"1\" />"
+  ],
+  [
+    "logout",
+    "Cerrar sesión",
+    "Sign out",
+    "<path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4\" /> <path d=\"m16 17 5-5-5-5\" /> <path d=\"M21 12H9\" />"
+  ]
+];
+  menu.replaceChildren();
+  for (const [view, es, en, icon] of entries) {
+   if (view === 'requests') menu.append(document.createElement('hr'));
+   const item = view === 'logout' ? logout : document.createElement('a');
+   if (!item) continue;
+   item.removeAttribute('data-site-text');
+   if (view !== 'logout') item.href = view === 'profile' ? '/perfil' : '/perfil?view=' + view;
+   item.dataset.accountSection = view;
+   item.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24">' + icon + '</svg>';
+   const label = document.createElement('span');
+   const key = 'account_' + view;
+   labels[key] = [es, en];
+   label.dataset.siteText = key;
+   label.textContent = text(key);
+   item.append(label);
+   menu.append(item);
+  }
+  menu.parentElement.addEventListener('toggle', () => {
+   const active = /^\/perfil(?:\.html)?\/?$/.test(location.pathname)
+     ? document.body.dataset.accountView || new URLSearchParams(location.search).get('view') || 'profile' : '';
+   for (const link of menu.querySelectorAll('a')) {
+    if (link.dataset.accountSection === active) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+   }
+  });
+ }
+
  labels.browseCategories=['Ver todas las categorías','Browse all categories'];
  function addMenuLinks(){
   if (!document.querySelector('.colego-publish-cta') && !/^\/publicar(?:\.html)?\/?$/.test(location.pathname)) {
    document.body.insertAdjacentHTML('beforeend',
     '<a class="colego-publish-cta colego-publish-floating" href="/publicar" aria-label="Publicar un producto" data-site-text="sell">Publicar</a>');
   }
-  header.querySelector('.cl-site-account-menu [data-site-text="settings"]')?.insertAdjacentHTML(
-   'afterend','<a class="cl-site-mp-link" href="/perfil?view=settings#datos-cobro" data-site-text="mercadoPagoAlias">Mercado Pago</a>'
-  );
+  buildAccountMenu();
   header.querySelector('.cl-site-categories .cl-site-menu-panel')?.insertAdjacentHTML(
    'beforeend','<a class="cl-site-all-categories" href="/explorar" data-site-text="browseCategories">Ver todas las categorías</a>'
   );
