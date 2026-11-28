@@ -72,25 +72,36 @@
   }
 
   function renderSelectedPlan() {
-    var name = document.getElementById("selected-plan-name");
-    var copy = document.getElementById("selected-plan-copy");
-    updateAddress();
-    if (name) name.textContent = "Básico";
-    if (copy) copy.textContent = selectedBilling === "annual"
-      ? currency.format(199000) + " por año"
-      : currency.format(19900) + " por mes";
+    const annual = selectedBilling === "annual";
+    const selector = document.getElementById("checkout-period");
+    selector.querySelector('input[value="' + selectedBilling + '"]').checked = true;
+    form.elements.billing_cycle.value = selectedBilling;
+    document.getElementById("checkout-amount").textContent = annual ? "$199.000 ARS" : "$19.900 ARS";
+    document.getElementById("checkout-renewal").textContent = annual
+      ? "Se renueva cada año. Ahorrás $39.800 frente a 12 pagos mensuales."
+      : "Se renueva cada mes.";
+    const url = new URL(location.href);
+    url.searchParams.set("cycle", selectedBilling);
+    loginRequired.querySelector("a").href = "/login?next=" + encodeURIComponent(url.pathname + url.search);
 
   }
 
   async function init() {
+    if (form) {
+      renderSelectedPlan();
+      document.getElementById("checkout-period").addEventListener("change", event => {
+        selectedBilling = event.target.value;
+        renderSelectedPlan();
+      });
+    }
     currentUser = await api.getCurrentUser(true);
     if (form) {
       form.elements.requested_plan.value = selectedPlan;
       form.elements.billing_cycle.value = selectedBilling;
-      loginRequired.querySelector("a").href = "/login?next=" + encodeURIComponent(location.pathname + location.search);
+      document.getElementById("payment-controls").hidden = !currentUser;
       loginRequired.hidden = Boolean(currentUser);
       form.hidden = !currentUser;
-      renderSelectedPlan();
+      updateAddress();
       if (currentUser) {
         bind();
         form.elements.contact_email.value = currentUser.email || "";
@@ -239,6 +250,7 @@
       return;
     }
     sending = true;
+    document.getElementById("checkout-period").disabled = true;
     var button = document.getElementById("request-submit-label");
     button.disabled = true;
     status.textContent = "Preparando el pago…";
@@ -253,13 +265,14 @@
         requestId = existing.data.id;
       }
       if (!requestId) throw Error("No pudimos guardar los datos del colegio. Volvé a intentar.");
-      const checkout = await billing(requestId,{cycle:selectedBilling});
+      const checkout = await billing(requestId,{cycle:record.billing_cycle});
       if (!checkout.init_point) throw Error("No pudimos abrir Mercado Pago. Volvé a intentar.");
       window.location.assign(checkout.init_point);
     } catch (error) {
       status.textContent = error.message || "No pudimos iniciar el pago.";
     } finally {
       sending = false;
+      document.getElementById("checkout-period").disabled = false;
       button.disabled = false;
       status.focus();
     }
