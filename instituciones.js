@@ -157,6 +157,8 @@
         updateAddress();
       }
     });
+    const options = document.getElementById("portal-options");
+    options.addEventListener("invalid", () => { options.open = true; }, true);
     form.addEventListener("submit", submit);
   }
 
@@ -164,6 +166,9 @@
     officialCode.value = "";
     officialName.value = "";
     selected.hidden = true;
+    document.getElementById("portal-options").hidden = true;
+    form.elements.short_name.disabled = form.elements.requested_code.disabled = true;
+    search.required = true;
     search.hidden = false;
     search.labels[0].hidden = false;
   }
@@ -207,7 +212,10 @@
     officialCode.value = school.database_code || school.code;
     officialName.value = name;
     selected.hidden = false;
+    document.getElementById("portal-options").hidden = false;
+    form.elements.short_name.disabled = form.elements.requested_code.disabled = false;
     search.setCustomValidity("");
+    search.required = false;
     search.hidden = true;
     search.labels[0].hidden = true;
     selected.querySelector("strong").textContent = name;

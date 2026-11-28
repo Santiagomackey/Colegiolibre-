@@ -23,3 +23,21 @@
 .checkout-summary .ib-status:empty { display: none; }
 @media(max-width: 720px) { .checkout-grid { grid-template-columns: 1fr; } }
 @media(max-width: 370px) { #checkout-period { grid-template-columns: 1fr; } }
+.checkout-crumb { display:flex; align-items:center; gap:.65rem; margin:0 .5rem 1rem; color:#795f52; font-size:.95rem; }
+.checkout-crumb a { color:#553527; }
+.school-application .request-heading h1 { font-size:clamp(30px,3.5vw,46px); margin:0 0 .45rem; letter-spacing:-.045em; }
+.school-application .request-heading p { font-size:17px; }
+.school-application .request-heading { margin-bottom:clamp(22px,3vw,34px); }
+.school-application .request-fields { margin-bottom:18px; }
+.checkout-grid h2,.school-application .request-fields legend { font-size:clamp(20px,2vw,24px); font-weight:750; letter-spacing:-.035em; }
+.school-application .portal-options { margin:0 0 18px; }
+.portal-options summary { cursor:pointer; color:#705347; text-decoration:underline; font-size:14px; }
+.portal-options[open] summary { margin-bottom:12px; }
+#checkout-period label { font-size:16px; line-height:1.25; }
+#checkout-period label small { font-size:14px; font-weight:500; }
+#checkout-period em { margin-top:6px; color:#376332; }
+.checkout-summary #payment-controls { gap:10px; }
+.checkout-summary .request-confirm { font-size:14px; align-items:center; }
+.checkout-summary .renewal-terms { font-size:13px; line-height:1.45; color:#695147; margin:0; }
+.checkout-summary #request-submit-label { justify-content:space-between; padding:12px 18px; min-height:50px; font-size:17px; }
+.checkout-summary #request-submit-label span { font-size:22px; }

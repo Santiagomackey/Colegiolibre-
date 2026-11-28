@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="/notifications.css?v=20261109-release25">
 <link rel="stylesheet" href="/app-shell.css?v=20261111-more42">
 <script src="/app-shell.js?v=20261111-more42"></script>
-<link rel="stylesheet" href="/school-checkout.css?v=1">
+<link rel="stylesheet" href="/school-checkout.css?v=2">
 </head>
 <body>
 <header class="cl-site-header" data-no-translate>
@@ -71,9 +71,10 @@
 
   <main class="ib-shell">
     <div class="institution-request school-application">
+      <nav class="checkout-crumb" aria-label="Ruta"><a href="/">Inicio</a> / <a href="/instituciones">ColeGo para colegios</a></nav>
       <section class="ib-card request-main" id="request-card" aria-labelledby="request-title">
         <header class="request-heading">
-          <a href="/instituciones#planes">← Volver al plan</a>
+
           <h1 id="request-title">Contratar la suscripción</h1>
           <p>Creá un espacio privado para las familias de tu colegio.</p>
         </header>
@@ -86,7 +87,7 @@
           <fieldset class="request-fields">
             <legend>Datos del colegio</legend>
             <label for="school-search">Buscá tu colegio</label>
-            <input id="school-search" type="search" autocomplete="off" placeholder="Nombre, dirección o CUE" aria-controls="school-results">
+            <input id="school-search" required type="search" autocomplete="off" placeholder="Nombre, dirección o CUE" aria-controls="school-results">
             <div class="ib-results" id="school-results" role="group" aria-label="Colegios encontrados" aria-live="polite"></div>
             <input id="official-code" name="official_code" type="hidden">
             <input id="official-name" name="official_name" type="hidden">
@@ -97,15 +98,14 @@
             <label>Correo institucional<input name="contact_email" type="email" required placeholder="autoridad@colegio.edu.ar"></label>
           </fieldset>
 
-          <fieldset class="request-fields">
-            <legend>Página del colegio</legend>
+          <details class="portal-options" id="portal-options" hidden>
+            <summary>Editar nombre y dirección del portal</summary>
             <div class="ib-two">
-              <label>Nombre público<input name="short_name" required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
-              <label>Dirección del portal<input name="requested_code" required maxlength="50" pattern="[A-Za-z0-9_\-]+" placeholder="instituto-del-parque" aria-describedby="request-address"></label>
+              <label>Nombre público<input name="short_name" disabled required maxlength="50" placeholder="Ej. Instituto del Parque"></label>
+              <label>Dirección del portal<input name="requested_code" disabled required maxlength="50" pattern="[A-Za-z0-9_\-]+" placeholder="instituto-del-parque" aria-describedby="request-address"></label>
             </div>
             <p class="request-address" id="request-address">colego.com.ar/colegio/</p>
-
-          </fieldset>
+          </details>
 
         </form>
         <section class="checkout-includes">
@@ -129,12 +129,12 @@
         </div>
 
           <div class="request-submit" id="payment-controls" hidden>
-            <label class="request-confirm"><input form="institution-request-form" name="authority_confirmed" type="checkbox" required><span>Confirmo que pertenezco o represento a esta comunidad educativa.</span></label>
-            <p>Al pagar, autorizás el cobro automático con la frecuencia elegida. Podés cancelar la renovación y usar el portal hasta que termine el período pago.</p>
-            <button class="ib-submit" type="submit" form="institution-request-form" id="request-submit-label">Pagar con Mercado Pago</button>
+            <label class="request-confirm"><input form="institution-request-form" name="authority_confirmed" type="checkbox" required><span>Confirmo que represento a este colegio.</span></label>
+            <p class="renewal-terms">Renovación automática. Podés cancelarla y conservar el acceso hasta el fin del período pago.</p>
+            <button class="ib-submit" type="submit" form="institution-request-form" id="request-submit-label">Pagar con Mercado Pago <span aria-hidden="true">→</span></button>
             <p id="request-status" class="ib-status" role="status" tabindex="-1"></p>
           </div>
-          <p class="checkout-after">Cuando se acredite el pago y se verifique tu vínculo con el colegio, vas a poder personalizar el portal.</p>
+          <p class="checkout-after">Con el pago acreditado y tu vínculo verificado, podés personalizar el portal.</p>
         </aside>
         </div>
       </section>
@@ -145,7 +145,7 @@
 
   <script src="./vendor/supabase.js?v=20261109-release25"></script>
   <script src="./supabase.js?v=20261110-recovery31"></script>
-  <script src="./instituciones.js?v=school-checkout-10"></script>
+  <script src="./instituciones.js?v=school-checkout-11"></script>
   <script src="/global-search.js?v=20261109-release25"></script>
 <script src="/notifications.js?v=20261110-shell32"></script>
 <script src="/site-header.js?v=app-footer-1"></script>
