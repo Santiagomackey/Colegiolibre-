@@ -403,13 +403,77 @@ function renderCurrentSection() {
   );
 }
 
+async function showRequestMatches(panel, request, results, budget, client) {
+  panel.textContent = "Cargando opciones…";
+  try {
+    const { data, error } = await client.from("products")
+      .select("id,title,price,condition,image_url,category,book_edition,isbn,school_name,location")
+      .in("id", results.map(product => product.id))
+      .eq("status", "available").eq("moderation_status", "approved");
+    if (error) throw error;
+    const byId = new Map(data.map(product => [product.id, product]));
+    const products = results.filter(match => byId.has(match.id));
+    if (!products.length) {
+      panel.textContent = "Estas publicaciones ya no están disponibles.";
+      return;
+    }
+    const summary = document.createElement("header");
+    const heading = document.createElement("h3");
+    heading.textContent = "Opciones para " + request.title;
+    const criteria = document.createElement("p");
+    criteria.textContent = [budget, request.match_isbn && "ISBN " + request.match_isbn, request.match_edition].filter(Boolean).join(" · ");
+    summary.append(heading, criteria);
+    panel.replaceChildren(summary);
+    for (const match of products) {
+      const product = byId.get(match.id);
+      const entry = document.createElement("section");
+      entry.className = "match-option";
+      const image = document.createElement("img");
+      image.alt = "";
+      image.loading = "lazy";
+      image.src = product.image_url || FALLBACK_PRODUCT_IMAGE;
+      image.onerror = () => { image.onerror = null; image.src = FALLBACK_PRODUCT_IMAGE; };
+      const description = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = product.title;
+      const details = document.createElement("small");
+      details.textContent = [product.condition, product.book_edition, product.isbn && "ISBN " + product.isbn].filter(Boolean).join(" · ");
+      const area = document.createElement("small");
+      area.textContent = [product.school_name, product.location].filter(Boolean).join(" · ") || "Zona a consultar";
+      description.append(name, details, area);
+      if (product.category === "Libros" || request.category === "Libros") {
+        const chip = document.createElement("span");
+        const normalize = value => String(value || "").replace(/[\s-]/g, "").toUpperCase();
+        const exact = Boolean(request.match_isbn && normalize(request.match_isbn) === normalize(product.isbn));
+        chip.className = exact ? "match-edition exact" : "match-edition";
+        chip.textContent = exact ? "ISBN exacto" : "Revisá la edición";
+        description.append(chip);
+      }
+      const price = document.createElement("strong");
+      price.textContent = formatPrice(product.price);
+      const link = document.createElement("a");
+      link.href = "/producto?id=" + encodeURIComponent(product.id);
+      link.textContent = "Ver publicación";
+      link.setAttribute("aria-label", "Ver publicación: " + product.title);
+      entry.append(image, description, price, link);
+      panel.append(entry);
+    }
+  } catch (_) {
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.textContent = "Reintentar";
+    retry.onclick = () => void showRequestMatches(panel, request, results, budget, client);
+    panel.replaceChildren("No pudimos cargar las opciones. ", retry);
+  }
+}
+
 async function renderAccountRequests() {
   const list = document.getElementById("account-request-list");
   const client = window.colegioLibreSupabase;
   list.textContent = "Cargando pedidos…";
   try {
     const { data, error } = await client.from("wanted_posts")
-      .select("id,title,category,min_price,max_price,match_paused,created_at")
+      .select("id,title,category,min_price,max_price,match_paused,created_at,match_isbn,match_edition")
       .eq("user_id", state.currentUser.id).eq("status", "active")
       .order("created_at", { ascending: false }).limit(12);
     if (error) throw error;
@@ -457,9 +521,11 @@ async function renderAccountRequests() {
       matches.id = "request-matches-" + item.id;
       options.setAttribute("aria-controls", matches.id);
       options.setAttribute("aria-expanded", "false");
+      let results = [];
       options.onclick = () => {
         matches.hidden = !matches.hidden;
         options.setAttribute("aria-expanded", String(!matches.hidden));
+        if (!matches.hidden && !matches.hasChildNodes()) void showRequestMatches(matches, item, results, budget.textContent, client);
       };
       const more = document.createElement("button");
       more.type = "button";
@@ -508,12 +574,7 @@ async function renderAccountRequests() {
           }
           badge.textContent = "Coincidencia encontrada";
           badge.dataset.found = "true";
-          for (const product of data) {
-            const link = document.createElement("a");
-            link.href = "/producto?id=" + encodeURIComponent(product.id);
-            link.textContent = product.title + " · " + formatPrice(product.price);
-            matches.append(link);
-          }
+          results = data;
           options.hidden = false;
         }).catch(() => { badge.textContent = "Coincidencias no disponibles"; });
       }
