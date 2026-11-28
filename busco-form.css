@@ -138,3 +138,22 @@ html[data-theme] .wanted-page .request-footer .wanted-submit { border-radius:11p
  .request-fields .wanted-options { grid-template-columns:minmax(0,1fr); }
  html[data-theme] .wanted-page .wanted-shell { width:calc(100% - 16px); }
 }
+
+#wanted-form .wanted-section-head h1 { display:flex; align-items:center; gap:.6em; font-size:clamp(1.45rem,2.5vw,2rem); }
+#wanted-form .wanted-section-head svg { width:1em; height:1em; }
+#wanted-form .request-fields > label,#wanted-form .wanted-request-row > label,#wanted-form legend { font-size:1rem; font-weight:650; color:#38251f; }
+#wanted-form .wanted-two .budget-input { display:flex; flex-direction:row; align-items:center; gap:0; border:1px solid #daccc0; border-radius:10px; overflow:hidden; background:white; }
+#wanted-form .budget-input span { align-self:stretch; display:grid; place-items:center; padding:0 12px; background:#f4ece1; font-weight:500; }
+#wanted-form .budget-input i { font-style:normal; margin-left:10px; }
+html[data-theme] .wanted-page #wanted-form .budget-input input { width:0; min-width:0; flex:1; border:0; padding-inline:5px; margin:0; }
+#wanted-form .budget-input:focus-within { outline:2px solid #6aacc2; }
+html[data-theme] .wanted-page #wanted-form .scope-grid label { position:relative; font-size:.95rem; gap:6px; cursor:pointer; min-height:44px; }
+#wanted-form .scope-grid label input { position:absolute; width:1px; height:1px; opacity:0; }
+#wanted-form .scope-grid label:focus-within { outline:2px solid #32718a; z-index:1; }
+#wanted-form .scope-grid label:has(:checked)::after { content:"✓"; }
+.request-more-settings summary { font-size:.84rem; cursor:pointer; color:#65534a; }
+#wanted-form .request-preview { padding:clamp(16px,2vw,24px); border-color:#ddcfc3; }
+#wanted-form .request-preview-item strong { font-size:1.15rem; }
+#wanted-form #request-budget { font-size:1.05rem; }
+#wanted-form #request-art { width:clamp(52px,6vw,84px); height:clamp(68px,8vw,104px); background:#f0e9df; color:#856b55; }
+#wanted-form .request-footer { gap:22px; }
