@@ -93,7 +93,7 @@
     const min = fields.min_price.value, max = fields.max_price.value;
     document.getElementById("request-name").textContent = fields.title.value.trim() || "Tu pedido";
     document.getElementById("request-category").textContent = [category, category === "Uniformes" && fields.size.value ? "Talle " + fields.size.value : ""].filter(Boolean).join(" · ");
-    document.getElementById("request-art").textContent = ({ Libros:"📚", Uniformes:"👕", Mochilas:"🎒", Cuadernos:"📒", Útiles:"✏️", Apuntes:"📄", Tecnología:"💻" })[category] || "📦";
+    document.getElementById("request-art").textContent = ({ Libros:"📚", Uniformes:"👕", Mochilas:"🎒", Cuadernos:"📒", Útiles:"✏️", Apuntes:"📄", Tecnología:"💻" })[category] || "◇";
     document.getElementById("request-budget").textContent = min && max ? format(min) + " – " + format(max) : min ? "Desde " + format(min) : max ? "Hasta " + format(max) : "Sin límite de precio";
     document.getElementById("request-area").textContent = ({school:"Mi colegio",zone:"Mi zona",both:"Mi colegio y mi zona"})[fields.scope.value] || "";
   }
